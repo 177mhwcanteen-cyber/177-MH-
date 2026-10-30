@@ -68,6 +68,8 @@ function renderCount(el){
   if(el.contains(document.activeElement)&&document.activeElement.matches("[data-cn],#ckq")){drawCount();$("#ckdone").textContent=done+" / "+T.length;return}
   el.innerHTML=`<div class="cnthead"><div><h2 class="sec" style="margin:0">🔢 गिनती</h2><span class="note">शुरू: ${ftime(C.start)} · ${esc(C.by||"")}</span></div><b id="ckdone">${done} / ${T.length}</b></div>
   <p class="note" style="margin:6px 0 10px">रैक के हिसाब से एक-एक पैकेट <b>स्कैन</b> करें (हर स्कैन = 1 गिना), या संख्या सीधे लिखें। जो सामान नहीं है, उसमें 0 लिखें।</p>
+  <div class="pqrow" style="margin-bottom:8px"><input class="inp" id="ckrack" placeholder="🗄️ अभी कौन सा रैक? (जैसे R1, फ्रिज, काउंटर)" value="${esc(C.rack||"")}" autocomplete="off" aria-label="रैक"></div>
+  <div class="chips" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${racks().map(r=>`<button type="button" class="chip${C.rack===r?" on":""}" data-ckr="${esc(r)}">${esc(r)}</button>`).join("")}</div>
   <div class="pqrow"><input class="inp" id="ckq" type="search" placeholder="🔍 नाम या कोड" value="${esc(Q)}" autocomplete="off" aria-label="खोजें"><button class="scanbtn" type="button" data-ckscan aria-label="स्कैन">📷</button></div>
   <div class="list" id="cklist"></div>
   <div style="height:150px"></div>
@@ -76,15 +78,18 @@ function renderCount(el){
 }
 function drawCount(){
   const box=$("#cklist");if(!box)return;const q=Q.trim().toLowerCase();
-  box.innerHTML=tracked().filter(it=>hit(it,q)).map(it=>{const v=C.n[it.id];const has=v!=null;
-    return `<div class="li cntrow ${has?"ok":""}" data-crow="${esc(it.id)}">${tileHTML(it)}<div class="mid"><b>${esc(it.name)}</b><span>#${esc(it.code||"")}${it.size?" · "+esc(it.size):""}</span></div>
+  box.innerHTML=tracked().filter(it=>hit(it,q)&&(q||!C.rack||it.rack===C.rack||(C.rk&&C.rk[it.id]===C.rack))).map(it=>{const v=C.n[it.id];const has=v!=null;
+    return `<div class="li cntrow ${has?"ok":""}" data-crow="${esc(it.id)}">${tileHTML(it)}<div class="mid"><b>${esc(it.name)}</b><span>#${esc(it.code||"")}${it.size?" · "+esc(it.size):""}${it.rack?" · 🗄️ "+esc(it.rack):""}</span></div>
     <div class="cstep2"><button type="button" data-cdec="${esc(it.id)}" aria-label="एक कम">−</button><input class="inp" data-cn="${esc(it.id)}" inputmode="numeric" value="${has?v:""}" placeholder="—" aria-label="${esc(it.name)} कितने गिने"><button type="button" data-cinc="${esc(it.id)}" aria-label="एक और">+</button></div></div>`}).join("")||'<p class="note">कुछ नहीं मिला</p>';
 }
-function setCnt(id,v){if(v==null||v==="")delete C.n[id];else C.n[id]=Math.max(0,r2(num(v)));saveC()}
+function setCnt(id,v){if(v==null||v==="")delete C.n[id];else{C.n[id]=Math.max(0,r2(num(v)));const it=S.items.find(i=>i.id===id);if(it)setRack(it)}saveC()}
+/* 🗄️ रैक-वार गिनती: रैक चुनकर जो सामान गिनो, वह उसी रैक का हो जाता है (मालिक के लिए अपने-आप सेव) */
+const racks=()=>[...new Set(S.items.map(i=>i.rack).filter(Boolean).concat(C&&C.rack?[C.rack]:[]))].sort();
+function setRack(it){if(!C.rack||it.rack===C.rack)return;C.rk=C.rk||{};C.rk[it.id]=C.rack;it.rack=C.rack;if(!S.demo&&S.db)S.db.doc("items/"+it.id).update({rack:C.rack}).catch(()=>{})}
 SK.scanCount=function(it){
   if(!it.track){toast(it.name+" की गिनती नहीं रखी जाती");return}
-  C.n[it.id]=(+C.n[it.id]||0)+1;saveC();toast("✓ "+it.name+" · गिने: "+C.n[it.id]);
-  const inp=document.querySelector(`[data-cn="${CSS.escape(it.id)}"]`);
+  C.n[it.id]=(+C.n[it.id]||0)+1;setRack(it);saveC();toast("✓ "+it.name+" · गिने: "+C.n[it.id]+(C.rack?" · 🗄️ "+C.rack:""));
+  let inp=document.querySelector(`[data-cn="${CSS.escape(it.id)}"]`);if(!inp){drawCount();inp=document.querySelector(`[data-cn="${CSS.escape(it.id)}"]`)}
   if(inp){inp.value=C.n[it.id];const r=inp.closest(".cntrow");r.classList.add("ok","flash");setTimeout(()=>r.classList.remove("flash"),500);try{r.scrollIntoView({block:"nearest"})}catch(e){}}
   const d=$("#ckdone");if(d)d.textContent=Object.keys(C.n).length+" / "+tracked().length;
 };
@@ -172,9 +177,11 @@ SK.bind=function(){
   el.addEventListener("input",e=>{const t=e.target;
     if(t.id==="skq"){Q=t.value;drawList();return}
     if(t.id==="ckq"){Q=t.value;drawCount();return}
+    if(t.id==="ckrack"){C.rack=t.value.trim();saveC();drawCount();return}
     if(t.dataset.cn){setCnt(t.dataset.cn,t.value);t.closest(".cntrow").classList.toggle("ok",t.value!=="");const d=$("#ckdone");if(d)d.textContent=Object.keys(C.n).length+" / "+tracked().length}});
   el.addEventListener("click",e=>{
     if(e.target.closest("[data-skstart]")){startCount();return}
+    const rk=e.target.closest("[data-ckr]");if(rk){C.rack=C.rack===rk.dataset.ckr?"":rk.dataset.ckr;saveC();SK.render();return}
     if(e.target.closest("[data-skwaste]")){if(window.SR)SR.wasteSheet();return}
     const w=e.target.closest("[data-skw]");if(w){if(window.SR)SR.wasteSheet(w.dataset.skw,"एक्सपायर");return}
     if(e.target.closest("[data-skin]")){S.tab="kharid";showTab();return}

@@ -158,7 +158,7 @@ function pItemSheet(id,idx,qty0){
     ${it?"":`<label class="qf"><input id="piN" autocomplete="off" placeholder="क्या लिया — पॉलीथीन, रस्सी…" value="${esc(ln?ln.name:"")}" style="font-size:20px"></label>`}
     <div class="qrow"><label class="qf"><input id="piQ" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="0" value="${q0}" aria-label="वज़न"><span>${kg&&it?"कि.ग्रा":u}</span></label>
       <span class="or">×</span><label class="qf"><span>₹</span><input id="piR" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="${lr?lr.rate:"भाव"}" value="${r0}" aria-label="भाव"><span>/${kg&&it?"kg":u}</span></label></div>
-    ${it&&+it.pack>1?`<label class="note" style="display:flex;gap:8px;align-items:center;font-size:15px"><input type="checkbox" id="piPk" checked style="width:22px;height:22px"> 📦 पैकेट में लिख रहे हैं (1 पैकेट = ${+it.pack} पीस) — मात्रा पैकेट, भाव ₹/पैकेट</label>`:""}
+    ${it&&+it.perPack>1?`<label class="note" style="display:flex;gap:8px;align-items:center;font-size:15px"><input type="checkbox" id="piPk" checked style="width:22px;height:22px"> 📦 पैकेट में लिख रहे हैं (1 पैकेट = ${+it.perPack} पीस) — मात्रा पैकेट, भाव ₹/पैकेट</label>`:""}
     ${pk?`<label class="qf qexp"><span>एक्सपायरी</span><input id="piE" type="date" value="${esc(e0)}" aria-label="एक्सपायरी तारीख"></label>${+it.mrp?`<span class="note" style="margin:-4px 2px 0">MRP ₹${+it.mrp} · बिक्री ₹${+it.sale||0}</span>`:""}`:""}
     <div class="qchips2">${chips.map(([v,l])=>`<button type="button" data-piq="${v}">${l}${kg&&it?" किलो":""}</button>`).join("")}</div>
     <div id="piB" class="pbadge" style="min-height:0"></div>
@@ -167,13 +167,13 @@ function pItemSheet(id,idx,qty0){
   </div>`;
   const sh=$("#sheet"),Q=$("#piQ"),Rt=$("#piR"),btn=sh.querySelector("[data-pisave]");
   const rate=()=>num(Rt.value)>0?num(Rt.value):(String(Rt.value).trim()===""&&lr?lr.rate:0);
-  const pkN=()=>it&&+it.pack>1&&$("#piPk")&&$("#piPk").checked?+it.pack:1;
+  const pkN=()=>it&&+it.perPack>1&&$("#piPk")&&$("#piPk").checked?+it.perPack:1;
   const upd=()=>{const q=num(Q.value),r=rate(),n=pkN();btn.disabled=!(q>0&&r>0);
     try{Q.nextElementSibling.textContent=n>1?"पैकेट":(kg&&it?"कि.ग्रा":u);Rt.nextElementSibling.textContent=n>1?"/पैकेट":"/"+(kg&&it?"kg":u)}catch(e){}
     btn.textContent=q>0&&r>0?(n>1?`${ln?"बदलें":"जोड़ें"} · ${q} पैकेट (${q*n} पीस) × ${rs(r)} = ${rs(r2(q*r))}`:`${ln?"बदलें":"जोड़ें"} · ${fq(q,kg&&it?"kg":(it?it.unit:"pc"))} × ${rs(r)} = ${rs(r2(q*r))}`):"वज़न और भाव लिखें";
     if(it)$("#piB").innerHTML=r>0&&String(Rt.value).trim()!==""?rateBadge(it.id,Math.round(r/n*10000)/10000):""};
   const save=()=>{
-    const PK=it&&+it.pack>1&&$("#piPk")&&$("#piPk").checked?+it.pack:1;
+    const PK=it&&+it.perPack>1&&$("#piPk")&&$("#piPk").checked?+it.perPack:1;
     const q=r2(num(Q.value)*PK*1000)/1000,r=Math.round(rate()/PK*10000)/10000,nm=it?it.name:String(($("#piN")||{}).value||"").trim();
     if(!it&&!nm){toast("क्या लिया — यह लिखें");$("#piN").focus();return}if(!(q>0)){Q.focus();return}if(!(r>0)){Rt.focus();return}
     const xd=pk&&$("#piE")?$("#piE").value:"";
