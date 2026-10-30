@@ -710,6 +710,11 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .qchips2.one button{flex:1 1 0;min-width:40px;padding:8px 2px;font-size:13.5px;border-radius:10px;white-space:nowrap}
 .qchips2.one button.rp{border-color:var(--haldi);background:#fff8e6}
 .qpop .big{padding:10px;font-size:15px;border-radius:12px}
+
+/* 🔄 अपडेट बटन */
+.updbox .big.upd{background:linear-gradient(120deg,var(--leaf),var(--hdr3,#4f46e5));color:#fff;font-weight:800}
+.updbox .big.upd:disabled{opacity:.6}
+.updbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:8px}.updbar i{display:block;height:100%;width:0;background:var(--leaf);transition:width .25s}
 </style>
 
 <header class="px">
@@ -1950,6 +1955,7 @@ function renderSettings(){
     <p class="note" style="margin:0">${SE.isNative?(SE.printer.addr?"चुना हुआ: <b>"+esc(SE.printer.name)+"</b> · "+(SE.printer.mm==="100"?"4 इंच · लेबल-भाषा (TSPL)":SE.printer.mm+"mm"):"पहले फोन की Bluetooth सेटिंग में प्रिंटर को pair करें, फिर यहाँ चुनें।"):"प्रिंटर Android ऐप में चुना जाता है। वेब में बिल फोन के प्रिंट से छपेगा।"}</p>
     ${SE.isNative?'<div class="row2" style="margin:0"><button class="big ghost" data-prnpick="58">58mm प्रिंटर चुनें</button><button class="big ghost" data-prnpick="80">80mm प्रिंटर चुनें</button></div><button class="big ghost" data-prnpick="100">4 इंच प्रिंटर (Xprinter XP-D4601B जैसा) चुनें</button><div id="prnList"></div><button class="big ghost" data-prntest>टेस्ट प्रिंट</button>':""}</div>
   ${window.SF?SF.labelSettingsHTML():""}
+  <div class="card2"><h3>🔄 ऐप अपडेट</h3>${updBoxHTML()}</div>
   <div class="card2"><h3>📦 पुराने ऐप का डेटा</h3><p class="note" style="margin:0">पुराने (आर्टिफ़ैक्ट) ऐप का सामान, भाव, खरीद इतिहास, उधार खाते और संस्थाएँ यहाँ लाएँ। जो पहले से है वह नहीं बदलेगा।</p><button class="big ghost" data-migrate>पुराना डेटा लाएँ</button></div>
   <h3 style="margin:0 0 4px">सामान और भाव</h3><p class="note" style="margin:0 0 8px">MRP = पैकेट पर छपा · बिक्री = ग्राहक से लेंगे · खरीद = हमें पड़ा। फोटो बदलने के लिए फोटो पर टैप करें। ${(()=>{const n=S.items.filter(i=>!i.photo).length;return n?`<b style="color:var(--chili)">${n} सामान की असली फोटो अभी बाकी है।</b> अच्छी रोशनी में ऊपर से फोटो खींचकर लगाएँ।`:'<b style="color:var(--leaf)">सबकी फोटो लग चुकी है।</b>'})()}</p>
   <div class="list">${S.items.filter(i=>!i.virtual).map(it=>`<div class="setitem" data-sid="${esc(it.id)}">
@@ -2007,6 +2013,7 @@ $("#p-set").addEventListener("click",async e=>{
   const ps=e.target.closest("[data-prnset]");if(ps){SE.printer.pick(ps.dataset.prnset,ps.dataset.n,ps.dataset.w);renderSettings();toast("प्रिंटर चुन लिया: "+ps.dataset.n);return}
   if(e.target.closest("[data-prntest]")){printBill({no:"TEST",date:today(),ts:Date.now(),partyName:"टेस्ट",lines:[{name:"आलू",qty:1.5,unit:"kg",rate:20,amt:30}],total:30,pay:{cash:30},byName:biller()});return}
   if(e.target.closest("[data-migrate]")){migrateOld();return}
+  if(e.target.closest("[data-updnow]")){runUpdate();return}
   const gm=e.target.closest("[data-gem]");if(gm){if(window.SI)SI.copyGemini(gm.dataset.gem);return}
   const ph=e.target.closest("[data-photo]");if(ph){const fi=$("#photoIn");fi.dataset.for=ph.dataset.photo;fi.click();return}
   if(e.target.closest("[data-additem]")){
@@ -2049,6 +2056,20 @@ function reportA4(date){
   <h2>सभी बिल</h2><table><tr><th>बिल</th><th>समय</th><th>ग्राहक</th><th>बिलर</th><th class="r">रकम</th><th>भुगतान</th></tr>
   ${S.dayBills.map(b=>`<tr><td>${esc(b.no)}</td><td>${ftime(b.ts)}</td><td>${esc(b.partyName||"")}</td><td>${esc(b.byName||"")}</td><td class="r">${rs(b.total)}</td><td>${b.cancelled?"रद्द":[b.pay.cash?"नकद "+rs(b.pay.cash):"",b.pay.upi?"UPI "+rs(b.pay.upi):"",b.pay.udhar?"उधार "+rs(b.pay.udhar):"",b.mode==="inst"?"संस्था":""].filter(Boolean).join(", ")}</td></tr>`).join("")}</table>`;
 }
+/* 🔄 अपडेट बटन — कर्मचारी को बस इतना: "👤 नाम दबाओ → ऐप अपडेट करें" */
+function updBoxHTML(){return `<div class="updbox"><button class="big upd" data-updnow>🔄 ऐप अपडेट करें</button><div class="updbar" hidden><i></i></div><p class="note updmsg" style="margin:6px 0 0;text-align:center">अभी: ${esc(SE.version)} · नया संस्करण GitHub से आता है, आपका कोई डेटा नहीं मिटता</p></div>`}
+async function runUpdate(){const B=[...document.querySelectorAll("[data-updnow]")];if(B.some(b=>b.disabled))return;
+  if(S.saving){toast("बिल सेव हो रहा है — एक पल रुकें");return}
+  const say=(m,k,pc)=>{document.querySelectorAll(".updbox").forEach(x=>{const ms=x.querySelector(".updmsg"),bar=x.querySelector(".updbar"),bt=x.querySelector("[data-updnow]");if(ms){ms.textContent=m;ms.style.color=k==="bad"?"var(--chili)":k==="ok"?"var(--leaf)":""}if(bar){bar.hidden=pc==null;if(pc!=null)bar.firstElementChild.style.width=pc+"%"}if(bt)bt.disabled=!(k==="bad"||k==="ok")})};
+  await SE.updateNow(say);if(S.isOwner&&!S.demo)autoNewData(true)}
+/* मालिक का फ़ोन: नए संस्करण में आया नया सामान/खरीद (migrate.json) अपने-आप जोड़ो — सिर्फ़ जोड़ना, पहले वाला कभी नहीं बदलता/मिटता।
+   कर्मचारियों के फ़ोन में वही सामान Firebase से तुरंत आ जाता है। */
+async function autoNewData(force){if(!S.isOwner||S.demo||!S.db)return;if(!force&&lsGet("mh_data_ver")===SE.version)return;
+  try{const r=await fetch("migrate.json",{cache:"no-store"});if(!r.ok)return;const m=await r.json();let n=0;
+    for(const [col,docs] of Object.entries(m)){for(const [id,data] of Object.entries(docs)){
+      if(col==="items"&&S.items.some(i=>i.id===id))continue;
+      const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists)continue;const d={...data};if(d.by==="")d.by=S.uid||"";await ref.set(d);n++}}
+    lsSet("mh_data_ver",SE.version);if(n)toast("📦 GitHub से "+n+" नई चीज़ें जुड़ीं (पुराना कुछ नहीं बदला)")}catch(e){}}
 async function migrateOld(){
   if(!S.isOwner||S.demo){toast("सिर्फ मालिक");return}
   try{toast("पुराना डेटा ला रहे हैं…");const r=await fetch("migrate.json",{cache:"no-store"});const m=await r.json();let n=0,skip=0;
@@ -2067,7 +2088,7 @@ function openBiller(next){
   <button class="big" data-ok>सेव करें</button></div></div>`;
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}if(e.target.closest("[data-ok]")){const v=$("#bName").value.trim();if(!v){toast("नाम लिखें");return}S.staff=v;lsSet("se_staff",v);closeSheet();renderTabs();next&&next()}};
 }
-$("#who").onclick=()=>{if(!S.demo){$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="बिलर"><div class="grab"></div><div class="sh-head"><h3>👤 ${esc(biller())}</h3><button class="x" data-close aria-label="बंद करें">✕</button></div><p class="note">इस फोन पर अभी आपके नाम से बिल बन रहे हैं${S.isOwner?" (मालिक)":""}।</p><button class="big ghost" data-logout>लॉग-आउट — दूसरा व्यक्ति</button><p class="verline">ऐप संस्करण ${esc(SE.version)}${SE.isNative?" · Android":" · वेब"}</p></div></div>`;$("#sheet").onclick=e=>{if(e.target.matches("[data-close]")||e.target.closest("[data-close].x")){closeSheet();return}if(e.target.closest("[data-logout]")){closeSheet();logoutStaff()}};return}openBiller()};
+$("#who").onclick=()=>{if(!S.demo){$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="बिलर"><div class="grab"></div><div class="sh-head"><h3>👤 ${esc(biller())}</h3><button class="x" data-close aria-label="बंद करें">✕</button></div><p class="note">इस फोन पर अभी आपके नाम से बिल बन रहे हैं${S.isOwner?" (मालिक)":""}।</p>${updBoxHTML()}<button class="big ghost" data-logout>लॉग-आउट — दूसरा व्यक्ति</button><p class="verline">ऐप संस्करण ${esc(SE.version)}${SE.isNative?" · Android":" · वेब"}</p></div></div>`;$("#sheet").onclick=e=>{if(e.target.matches("[data-close]")||e.target.closest("[data-close].x")){closeSheet();return}if(e.target.closest("[data-updnow]")){runUpdate();return}if(e.target.closest("[data-logout]")){closeSheet();logoutStaff()}};return}openBiller()};
 
 /* ---------- data ---------- */
 function subBills(){
@@ -2103,7 +2124,8 @@ async function boot(){
   if(window.SF)SF.onDb(db);
   if(window.SK)SK.onDb(db);
   if(S.isOwner)db.collection("staff").onSnapshot(s=>{S.staffDocs=s.docs.map(d=>({id:d.id,...d.data()}));if(S.tab==="set"&&!$("#p-set").contains(document.activeElement))renderSettings()},()=>{});
-  setTimeout(()=>SE.checkUpdate(toast),4000);
+  setTimeout(()=>SE.checkUpdate(toast),4000);SE.autoUpdateLoop(toast);SE.beforeUpdate=()=>{try{syncTab()}catch(e){}};
+  if(S.isOwner&&!S.demo)setTimeout(autoNewData,6000);
   const sortItems=a=>a.sort((x,y)=>(x.order??999)-(y.order??999)||x.name.localeCompare(y.name,"hi"));
   db.collection("items").onSnapshot(s=>{S.items=sortItems(s.docs.map(d=>({id:d.id,...d.data()})));if(window.SR)SR.addVirtual();if(S.isOwner&&window.SF&&S.items.some(i=>!i.plu))SF.ensurePLU();S.cart.forEach(l=>{const it=item(l.id);if(it&&!l.changed&&!l.free){l.board=priceOf(it);l.rate=l.board;l.cost=+it.cost||0;l.amt=r2(l.qty*l.rate)}});renderPane();renderCart()},()=>toast("सामान की लिस्ट लोड नहीं हुई"));
   db.doc("settings/main").onSnapshot(s=>{S.settings=s.exists?s.data():{};checkLock();if(S.tab!=="set")renderPane()});

@@ -419,6 +419,37 @@ SE.checkUpdate=async function(toast){
   }catch(e){}
 };
 SE._busy=()=>false;
+/* 🔄 "ऐप अपडेट करें" बटन — GitHub (Pages) से नया संस्करण अभी लाकर तुरंत लगाओ।
+   Play Store / WhatsApp जैसे ऐप का "Update now" तरीका: जाँचो → डाउनलोड (प्रतिशत दिखाओ) → लगाओ → ऐप अपने-आप दोबारा खुले।
+   डेटा Firebase में है, इसलिए अपडेट से कोई बिल/स्टॉक/सामान नहीं मिटता; चालू बिल के टैब फ़ोन में सेव रहते हैं। */
+SE.latest=async function(){const r=await fetch(CFG.updateUrl.replace(/\/?$/,"/")+"update/version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("सर्वर "+r.status);return r.json()};
+SE.updateNow=async function(say){
+  say=say||(()=>{});
+  if(!CFG.updateUrl){say("अपडेट का पता सेट नहीं है","bad");return}
+  if(!navigator.onLine){say("इंटरनेट बंद है — चालू करके दोबारा दबाएँ","bad");return}
+  say("🔍 नया संस्करण देख रहे हैं…");
+  let v;try{v=await SE.latest()}catch(e){say("GitHub से जवाब नहीं आया — थोड़ी देर बाद दबाएँ","bad");return}
+  if(!v||!v.version){say("संस्करण नहीं मिला","bad");return}
+  if(v.version===SE.version){say("✅ ऐप पूरा नया है — संस्करण "+SE.version,"ok");return}
+  if(SE.isNative&&v.minNative&&+v.minNative>+(window.SE_NATIVE_MIN||1)){say("नई APK चाहिए — GitHub Releases से mh-wet-canteen.apk डाउनलोड करके इंस्टॉल करें","bad");return}
+  if(SE.isNative&&N.CapacitorUpdater){const U=N.CapacitorUpdater;let h=null;
+    try{h=await U.addListener("download",e=>{const pc=Math.round(+e.percent||0);say("⬇️ नया संस्करण "+v.version+" आ रहा है… "+pc+"%","busy",pc)})}catch(e){}
+    try{let b=null;try{const l=await U.list();b=(l.bundles||[]).find(x=>x.version===v.version&&x.status!=="error")}catch(e){}
+      if(!b)b=await U.download({url:new URL(v.url,CFG.updateUrl.replace(/\/?$/,"/")).href,version:v.version});
+      try{h&&h.remove()}catch(e){}
+      say("✨ लग रहा है — ऐप 2 सेकंड में दोबारा खुलेगा","ok",100);try{SE.beforeUpdate&&SE.beforeUpdate()}catch(e){}
+      await new Promise(r=>setTimeout(r,900));await U.set({id:b.id});
+    }catch(e){try{h&&h.remove()}catch(x){}say("अपडेट नहीं हुआ: "+(e.message||e)+" — दोबारा दबाएँ","bad")}
+    return}
+  // वेब (Chrome): पुराना कैश हटाकर नया पेज
+  say("✨ नया संस्करण "+v.version+" लग रहा है…","ok",100);try{SE.beforeUpdate&&SE.beforeUpdate()}catch(e){}
+  try{if(navigator.serviceWorker){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()))}if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}}catch(e){}
+  location.replace(location.pathname+"?v="+encodeURIComponent(v.version));
+};
+/* ऐप खुला रहे तब भी हर 30 मिनट और फ़ोन पर वापस आते ही चुपचाप जाँच */
+SE.autoUpdateLoop=function(toast){if(SE._loop)return;SE._loop=1;
+  setInterval(()=>{if(document.visibilityState==="visible")SE.checkUpdate(toast)},30*60000);
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&Date.now()-(SE._lastChk||0)>10*60000){SE._lastChk=Date.now();SE.checkUpdate(toast)}})};
 SE.applyUpdateNow=async()=>{if(SE._pendingBundle)try{await N.CapacitorUpdater.set({id:SE._pendingBundle.id})}catch(e){}};
 
 /* वेब (Chrome) के लिए ऑफ़लाइन कैश */

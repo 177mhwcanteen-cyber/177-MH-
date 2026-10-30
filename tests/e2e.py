@@ -150,6 +150,10 @@ async def main():
         await pg.click(sel + " [data-dec]")
         assert await pg.evaluate(f"!S.cart.some(l=>l.id==='{pcid}')"), "minus at 1 removes"
         print("tap-add/stepper ok", pcid)
+        await pg.click("#who"); await pg.wait_for_selector("[data-updnow]"); await pg.click("[data-updnow]"); await pg.wait_for_timeout(300)
+        assert "पता" in await pg.text_content(".updmsg"), await pg.text_content(".updmsg")
+        await pg.screenshot(path=f"{SHOTS}/3f-update-btn.png"); await pg.evaluate("closeSheet()")
+        print("update button ok")
         # झलक: तम्बाकू टाइलें + मिठाई का छोटा पॉपअप (सिर्फ़ स्क्रीनशॉट)
         mig = json.load(open(os.path.join(WWW, "migrate.json"), encoding="utf-8"))
         extra = [dict(v, id=k, sale=(v.get("mrp") or 20)) for k, v in mig["items"].items() if k.startswith("t-")]
