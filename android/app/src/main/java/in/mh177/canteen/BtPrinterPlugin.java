@@ -1,0 +1,368 @@
+package in.mh177.canteen;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothSocket;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
+import androidx.core.content.FileProvider;
+import java.io.File;
+import java.io.FileOutputStream;
+import android.os.Build;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
+import android.util.Base64;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import com.getcapacitor.JSArray;
+import com.getcapacitor.JSObject;
+import com.getcapacitor.PermissionState;
+import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.Permission;
+import com.getcapacitor.annotation.PermissionCallback;
+
+import java.io.OutputStream;
+import java.util.Set;
+import java.util.UUID;
+
+/**
+ * सब्ज़ी एक्सप्रेस — ब्लूटूथ थर्मल प्रिंटर (ESC/POS, Bluetooth Classic SPP) और A4 प्रिंट/PDF।
+ * JS: BtPrinter.list(), BtPrinter.print({address, data(base64)}), BtPrinter.printHtml({html, name})
+ */
+@CapacitorPlugin(
+    name = "BtPrinter",
+    permissions = {
+        @Permission(alias = "bt", strings = { Manifest.permission.BLUETOOTH_CONNECT }),
+        @Permission(alias = "loc", strings = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION }),
+        @Permission(alias = "notif", strings = { Manifest.permission.POST_NOTIFICATIONS })
+    }
+)
+public class BtPrinterPlugin extends Plugin {
+    private static final UUID SPP = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private WebView printView; // प्रिंट पूरा होने तक रखना ज़रूरी
+
+    private boolean needPerm() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && getPermissionState("bt") != PermissionState.GRANTED;
+    }
+
+    private BluetoothAdapter adapter() {
+        BluetoothManager m = (BluetoothManager) getContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        return m == null ? null : m.getAdapter();
+    }
+
+    @PluginMethod
+    public void list(PluginCall call) {
+        if (needPerm()) { requestPermissionForAlias("bt", call, "afterPermList"); return; }
+        doList(call);
+    }
+
+    @PermissionCallback
+    private void afterPermList(PluginCall call) {
+        if (needPerm()) { call.reject("Bluetooth की अनुमति नहीं मिली"); return; }
+        doList(call);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void doList(PluginCall call) {
+        BluetoothAdapter a = adapter();
+        if (a == null) { call.reject("इस फोन में Bluetooth नहीं है"); return; }
+        if (!a.isEnabled()) { call.reject("फोन का Bluetooth चालू करें"); return; }
+        JSArray arr = new JSArray();
+        Set<BluetoothDevice> bonded = a.getBondedDevices();
+        if (bonded != null) for (BluetoothDevice d : bonded) {
+            JSObject o = new JSObject();
+            o.put("name", d.getName());
+            o.put("address", d.getAddress());
+            arr.put(o);
+        }
+        JSObject r = new JSObject();
+        r.put("devices", arr);
+        call.resolve(r);
+    }
+
+    @PluginMethod
+    public void print(PluginCall call) {
+        if (needPerm()) { requestPermissionForAlias("bt", call, "afterPermPrint"); return; }
+        doPrint(call);
+    }
+
+    @PermissionCallback
+    private void afterPermPrint(PluginCall call) {
+        if (needPerm()) { call.reject("Bluetooth की अनुमति नहीं मिली"); return; }
+        doPrint(call);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void doPrint(final PluginCall call) {
+        final String address = call.getString("address");
+        final String data = call.getString("data");
+        if (address == null || data == null) { call.reject("प्रिंटर या डेटा नहीं"); return; }
+        new Thread(() -> {
+            BluetoothSocket s = null;
+            try {
+                BluetoothAdapter a = adapter();
+                if (a == null || !a.isEnabled()) throw new Exception("फोन का Bluetooth चालू करें");
+                a.cancelDiscovery();
+                BluetoothDevice dev = a.getRemoteDevice(address);
+                byte[] bytes = Base64.decode(data, Base64.DEFAULT);
+                try {
+                    s = dev.createRfcommSocketToServiceRecord(SPP);
+                    s.connect();
+                } catch (Exception first) {
+                    try { if (s != null) s.close(); } catch (Exception ignore) {}
+                    s = dev.createInsecureRfcommSocketToServiceRecord(SPP);
+                    s.connect();
+                }
+                OutputStream out = s.getOutputStream();
+                int chunk = 512;
+                for (int i = 0; i < bytes.length; i += chunk) {
+                    out.write(bytes, i, Math.min(chunk, bytes.length - i));
+                    out.flush();
+                    Thread.sleep(12);
+                }
+                Thread.sleep(400);
+                call.resolve();
+            } catch (Exception e) {
+                call.reject("प्रिंटर से जुड़ नहीं पाए — प्रिंटर चालू है? " + e.getMessage());
+            } finally {
+                try { if (s != null) s.close(); } catch (Exception ignore) {}
+            }
+        }).start();
+    }
+
+    @PluginMethod
+    public void printHtml(final PluginCall call) {
+        final String html = call.getString("html", "");
+        final String name = call.getString("name", "सब्ज़ी एक्सप्रेस रिपोर्ट");
+        getActivity().runOnUiThread(() -> {
+            try {
+                WebView wv = new WebView(getActivity());
+                wv.getSettings().setJavaScriptEnabled(false);
+                wv.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        PrintManager pm = (PrintManager) getActivity().getSystemService(Context.PRINT_SERVICE);
+                        PrintDocumentAdapter ad = view.createPrintDocumentAdapter(name);
+                        PrintAttributes attrs = new PrintAttributes.Builder()
+                            .setMediaSize(PrintAttributes.MediaSize.ISO_A4).build();
+                        pm.print(name, ad, attrs);
+                        call.resolve();
+                    }
+                });
+                printView = wv;
+                wv.loadDataWithBaseURL("https://localhost/", html, "text/html", "UTF-8", null);
+            } catch (Exception e) {
+                call.reject("प्रिंट नहीं खुला: " + e.getMessage());
+            }
+        });
+    }
+
+    /** बिल PDF/फोटो बनाकर WhatsApp (या कोई भी ऐप) से भेजना। phone 10 अंक हो तो सीधे उसी नंबर की चैट खुलती है। */
+    @PluginMethod
+    public void shareFile(PluginCall call) {
+        try {
+            String b64 = call.getString("data");
+            String name = call.getString("name", "bill").replaceAll("[^A-Za-z0-9_-]", "_");
+            boolean pdf = Boolean.TRUE.equals(call.getBoolean("pdf", true));
+            String phone = call.getString("phone", "");
+            String text = call.getString("text", "");
+            byte[] bytes = Base64.decode(b64, Base64.DEFAULT);
+            File dir = new File(getContext().getCacheDir(), "share");
+            dir.mkdirs();
+            File f;
+            if (pdf) {
+                Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                PdfDocument doc = new PdfDocument();
+                PdfDocument.PageInfo pi = new PdfDocument.PageInfo.Builder(bm.getWidth(), bm.getHeight(), 1).create();
+                PdfDocument.Page pg = doc.startPage(pi);
+                pg.getCanvas().drawColor(Color.WHITE);
+                pg.getCanvas().drawBitmap(bm, 0, 0, null);
+                doc.finishPage(pg);
+                f = new File(dir, name + ".pdf");
+                FileOutputStream os = new FileOutputStream(f);
+                doc.writeTo(os);
+                os.close();
+                doc.close();
+            } else {
+                f = new File(dir, name + ".png");
+                FileOutputStream os = new FileOutputStream(f);
+                os.write(bytes);
+                os.close();
+            }
+            Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", f);
+            Intent it = new Intent(Intent.ACTION_SEND);
+            it.setType(pdf ? "application/pdf" : "image/png");
+            it.putExtra(Intent.EXTRA_STREAM, uri);
+            if (text != null && !text.isEmpty()) it.putExtra(Intent.EXTRA_TEXT, text);
+            it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (phone != null && phone.length() == 10) {
+                it.putExtra("jid", "91" + phone + "@s.whatsapp.net");
+                for (String pkg : new String[] { "com.whatsapp", "com.whatsapp.w4b" }) {
+                    try {
+                        it.setPackage(pkg);
+                        getActivity().startActivity(it);
+                        call.resolve();
+                        return;
+                    } catch (ActivityNotFoundException ignore) { }
+                }
+                it.setPackage(null);
+                it.removeExtra("jid");
+            }
+            Intent ch = Intent.createChooser(it, "बिल भेजें");
+            ch.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            getActivity().startActivity(ch);
+            call.resolve();
+        } catch (Exception e) {
+            call.reject("शेयर नहीं हुआ: " + e.getMessage());
+        }
+    }
+
+    /* ================= 📍 गाड़ी की लोकेशन ================= */
+    private boolean locOk() { return getPermissionState("loc") == PermissionState.GRANTED; }
+
+    private boolean gpsOn() {
+        android.location.LocationManager lm = (android.location.LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (lm == null) return false;
+        try { return lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER); } catch (Exception e) { return false; }
+    }
+
+    private JSObject trackState() {
+        JSObject o = new JSObject();
+        o.put("perm", locOk());
+        o.put("gps", gpsOn());
+        o.put("running", TrackService.running);
+        o.put("lastFix", TrackService.lastFix);
+        return o;
+    }
+
+    @PluginMethod
+    public void trackStatus(PluginCall call) { call.resolve(trackState()); }
+
+    @PluginMethod
+    public void trackStart(PluginCall call) {
+        if (!locOk()) { requestPermissionForAlias("loc", call, "afterLoc"); return; }
+        startTrack(call);
+    }
+
+    @PermissionCallback
+    private void afterLoc(PluginCall call) {
+        if (!locOk()) { call.resolve(trackState()); return; }
+        if (Build.VERSION.SDK_INT >= 33 && getPermissionState("notif") != PermissionState.GRANTED) {
+            requestPermissionForAlias("notif", call, "afterNotif");
+            return;
+        }
+        startTrack(call);
+    }
+
+    @PermissionCallback
+    private void afterNotif(PluginCall call) { startTrack(call); }
+
+    private void startTrack(PluginCall call) {
+        try {
+            Intent it = new Intent(getContext(), TrackService.class);
+            it.putExtra("name", call.getString("name", ""));
+            androidx.core.content.ContextCompat.startForegroundService(getContext(), it);
+        } catch (Exception e) {
+            JSObject o = trackState();
+            o.put("error", String.valueOf(e.getMessage()));
+            call.resolve(o);
+            return;
+        }
+        call.resolve(trackState());
+    }
+
+    @PluginMethod
+    public void trackStop(PluginCall call) {
+        try { getContext().stopService(new Intent(getContext(), TrackService.class)); } catch (Exception ignore) { }
+        call.resolve(trackState());
+    }
+
+    @PluginMethod
+    public void trackDrain(PluginCall call) {
+        JSObject o = trackState();
+        o.put("data", TrackService.drain(getContext()));
+        call.resolve(o);
+    }
+
+    @PluginMethod
+    public void openLocationSettings(PluginCall call) {
+        try {
+            Intent it = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getActivity().startActivity(it);
+        } catch (Exception ignore) { }
+        call.resolve();
+    }
+
+    /* ✉️ SMS ऐप खोलकर संदेश तैयार */
+    @PluginMethod
+    public void sms(PluginCall call) {
+        try {
+            Intent it = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + call.getString("phone", "")));
+            it.putExtra("sms_body", call.getString("text", ""));
+            getActivity().startActivity(it);
+            call.resolve();
+        } catch (Exception e) { call.reject("SMS नहीं खुला: " + e.getMessage()); }
+    }
+
+    /* कोई भी फाइल (जैसे AI वाली PDF) — base64 से बनाकर भेजना/सेव करना */
+    @PluginMethod
+    public void shareBytes(PluginCall call) {
+        try {
+            String name = call.getString("name", "file").replaceAll("[^A-Za-z0-9_.-]", "_");
+            byte[] bytes = Base64.decode(call.getString("data", ""), Base64.DEFAULT);
+            File dir = new File(getContext().getCacheDir(), "share");
+            dir.mkdirs();
+            File f = new File(dir, name);
+            FileOutputStream os = new FileOutputStream(f);
+            os.write(bytes);
+            os.close();
+            Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", f);
+            Intent it = new Intent(Intent.ACTION_SEND);
+            it.setType(call.getString("mime", "application/pdf"));
+            it.putExtra(Intent.EXTRA_STREAM, uri);
+            it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent ch = Intent.createChooser(it, "PDF भेजें / सेव करें");
+            ch.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            getActivity().startActivity(ch);
+            call.resolve();
+        } catch (Exception e) { call.reject("फाइल नहीं बनी: " + e.getMessage()); }
+    }
+
+    /* टेक्स्ट फाइल (AI ऑडिट पैक) बनाकर भेजना/सेव करना */
+    @PluginMethod
+    public void shareText(PluginCall call) {
+        try {
+            String name = call.getString("name", "report").replaceAll("[^A-Za-z0-9_.-]", "_");
+            File dir = new File(getContext().getCacheDir(), "share");
+            dir.mkdirs();
+            File f = new File(dir, name);
+            FileOutputStream os = new FileOutputStream(f);
+            os.write(call.getString("text", "").getBytes("UTF-8"));
+            os.close();
+            Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", f);
+            Intent it = new Intent(Intent.ACTION_SEND);
+            it.setType(call.getString("mime", "text/plain"));
+            it.putExtra(Intent.EXTRA_STREAM, uri);
+            it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent ch = Intent.createChooser(it, "फाइल भेजें / सेव करें");
+            ch.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            getActivity().startActivity(ch);
+            call.resolve();
+        } catch (Exception e) { call.reject("फाइल नहीं बनी: " + e.getMessage()); }
+    }
+}

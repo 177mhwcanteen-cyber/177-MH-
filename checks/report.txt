@@ -1,0 +1,59 @@
+Mon Oct 26 16:09:53 UTC 2026
+== authorized domains ==
+{
+  "projectId": "780214438822",
+  "authorizedDomains": [
+    "localhost",
+    "bhairav-canteen.firebaseapp.com",
+    "bhairav-canteen.web.app",
+    "177mhwcanteen-cyber.github.io"
+  ]
+}
+
+== email/password provider ==
+{
+  "error": {
+    "code": 400,
+    "message": "INVALID_LOGIN_CREDENTIALS",
+    "errors": [
+      {
+        "message": "INVALID_LOGIN_CREDENTIALS",
+        "domain": "global",
+        "reason": "invalid"
+      }
+    ]
+  }
+}
+
+== rules: settings/main without login (expect PERMISSION_DENIED) ==
+{
+  "error": {
+    "code": 403,
+    "message": "Missing or insufficient permissions.",
+    "status": "PERMISSION_DENIED"
+  }
+}
+
+== rules: staffIndex without login (expect NOT_FOUND = rule allows) ==
+{
+  "error": {
+    "code": 404,
+    "message": "Document \"projects/bhairav-canteen/databases/(default)/documents/staffIndex/0000000000\" not found.",
+    "status": "NOT_FOUND"
+  }
+}
+
+== rules: items without login (expect PERMISSION_DENIED) ==
+{
+  "error": {
+    "code": 403,
+    "message": "Missing or insufficient permissions.",
+    "status": "PERMISSION_DENIED"
+  }
+}
+
+== pages ==
+index 200
+projectId: "bhairav-canteen"
+window.SE_BUILD="1.3.1026";window.SE_NATIVE_MIN=1;window.SE_PHOTOS=["k1001","k1002","k1003","k1004","k1005","k1006","k1007","k1008","k1009","k1010","k1011","k1012","k1013","k1014","k1015","k1016","k1017","k1018","k1019","k1020","k1021","k1022","k1023","k1024","k1025","k1026","k1027","k1028","k1029","k1030","k1031","k1032"];
+

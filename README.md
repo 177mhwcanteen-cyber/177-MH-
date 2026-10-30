@@ -1,0 +1,41 @@
+# भैरव कैंटीन — बिलिंग ऐप (Android + वेब)
+
+विक्रम जी की सब्ज़ी गाड़ी (जसाई, बाड़मेर, बाड़मेर) के लिए बिलिंग, स्टॉक, उधार और रिपोर्ट।
+
+## कैसे काम करता है
+| हिस्सा | कहाँ | बदलाव कैसे पहुँचता है |
+|---|---|---|
+| ऐप का खोल (APK) | कर्मचारी के फोन में एक बार | Releases से नई APK (कभी-कभार) |
+| ऐप का अंदर का हिस्सा (स्क्रीन, हिसाब) | GitHub Pages | हर बदलाव पर फोन में **अपने-आप** |
+| डेटा (बिल, स्टॉक, भाव, उधार) | Firebase Firestore (Mumbai) | लाइव — ऐप अपडेट से कभी नहीं मिटता |
+| रोज़ की कॉपी | Google Sheet (Apps Script) | हर घंटे |
+
+* बिना इंटरनेट बिल बनते हैं; नेट आते ही सर्वर पर चले जाते हैं।
+* कर्मचारी कोई बिल मिटा/बदल नहीं सकते (`firestore.rules`)। रेट सिर्फ़ मालिक बदलते हैं।
+* स्कैनर: Google ML Kit (Android), वेब में Chrome का BarcodeDetector।
+* प्रिंट: ब्लूटूथ थर्मल 58/80mm (हिंदी, इमेज मोड) और A4 रिपोर्ट/PDF।
+* 🛒 मंडी खरीद: दुकान/आढ़तिया, अपने-आप खरीद नंबर (ख-दिन/महीना-क्रम), जोड़ ऐप करता है, पिछले भाव से तुलना, भुगतान (विक्रम जी / गल्ला / UPI / बाकी), बिल फोटो → Drive।
+* 🌙 रात का स्टॉक + 📊 दिन का पूरा हिसाब: कल रात + खरीद − संस्था − आज रात = बिका माल; असली मुनाफ़ा; भाव के हिसाब से कम बिक्री।
+* 🏷️ बारकोड लेबल, दो तरह के: 🥬 सब्ज़ी की टोकरी (नाम + भाव/किलो + बारकोड; स्कैन पर वज़न पूछे) और 🛒 किराना पैकेट (दुकान, नाम, मात्रा, कीमत, एक्सपायरी, बारकोड; स्कैन पर 1 पैकेट)। पक्का कोड 20+सामान कोड+00000 (कंपनी का बारकोड हो तो वही)। TSPL लेबल प्रिंटर, रसीद प्रिंटर, A4 शीट।
+* संस्था का भाव अपने-आप = आज की खरीद का औसत भाव।
+
+## लिंक
+* APK: `https://github.com/177mhwcanteen-cyber/bhairav-canteen-app/releases/latest/download/sabji-express.apk`
+* वेब (मालिक मोड, Chrome में): `https://177mhwcanteen-cyber.github.io/bhairav-canteen-app/`
+
+## एक बार की सेटिंग
+1. `web/config.js` में Firebase का `firebaseConfig` भरें।
+2. Firebase Console → Firestore → Rules में `firestore.rules` चिपकाकर Publish।
+3. Firebase Console → Authentication → Email/Password चालू।
+4. GitHub → Settings → Pages → Source: **GitHub Actions**।
+5. (वैकल्पिक) `apps-script/` वाला कोड Google Sheet के Apps Script में।
+
+## बनाने वाले के लिए
+```
+npm ci
+npm run build          # www/ और dist/ बनाता है
+npx cap sync android   # Android में कॉपी
+python3 scripts/port.py <पुरानी sabji.html> web/index.html   # सिर्फ़ पहली बार का बदलाव
+python3 tests/e2e.py www /tmp/shots                         # नकली Firebase के साथ पूरा टेस्ट
+```
+`android/app/sabji-release.jks` साइन करने की चाबी है — इसे बदलें नहीं, वरना नई APK पुरानी के ऊपर इंस्टॉल नहीं होगी।

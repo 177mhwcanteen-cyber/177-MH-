@@ -1,0 +1,19 @@
+{
+  "appId": "in.mh177.canteen",
+  "appName": "177 MH कैंटीन",
+  "webDir": "www",
+  "android": { "allowMixedContent": false, "captureInput": true },
+  "server": { "androidScheme": "https" },
+  "plugins": {
+    "CapacitorUpdater": {
+      "autoUpdate": false,
+      "appReadyTimeout": 15000,
+      "autoDeleteFailed": true,
+      "autoDeletePrevious": true,
+      "resetWhenUpdate": true,
+      "statsUrl": "",
+      "updateUrl": "",
+      "channelUrl": ""
+    }
+  }
+}

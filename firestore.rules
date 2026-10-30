@@ -1,0 +1,118 @@
+rules_version = '2';
+// सब्ज़ी एक्सप्रेस — सर्वर के पक्के नियम
+// • रेट, सब्ज़ी, सेटिंग, कर्मचारी: सिर्फ़ मालिक (विक्रम जी) बदल सकते हैं
+// • बिल, उधार, स्टॉक का इतिहास: कर्मचारी सिर्फ़ नया जोड़ सकते हैं — मिटा या बदल नहीं सकते
+// • कोई भी बिल कभी नहीं मिटता (रद्द होने पर भी निशान रहता है)
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner() {
+      return signedIn()
+        // मालिक की ईमेल की छाप (SHA-256) — Public कोड में ईमेल साफ़ नहीं दिखती
+        && hashing.sha256(request.auth.token.email.lower()).toHexString().lower() == 'd05c53d3cdca521782c90e21f807a1add61726965096709cb1ae4f3612b96151'
+        && request.auth.token.email_verified == true;
+    }
+    function active() {
+      return isOwner() || (signedIn()
+        && exists(/databases/$(database)/documents/staff/$(request.auth.uid))
+        && get(/databases/$(database)/documents/staff/$(request.auth.uid)).data.active == true);
+    }
+    function onlyKeys(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
+    function noChange() { return request.resource.data.diff(resource.data).affectedKeys().size() == 0; }
+
+    // लॉगिन से पहले सिर्फ़ यह पता चलता है कि नंबर का कौन-सा खाता चालू है (नाम/PIN नहीं)
+    match /staffIndex/{phone} { allow read: if true; allow write: if isOwner(); }
+    match /staff/{uid} {
+      allow read: if isOwner() || (signedIn() && request.auth.uid == uid);
+      allow write: if isOwner();
+    }
+
+    // सामान: मालिक सब कुछ; कर्मचारी सिर्फ़ नया जोड़ सकते हैं (मालिक की मंज़ूरी बाकी रहती है)
+    match /items/{id} {
+      allow read: if active();
+      allow create: if isOwner() || (active() && request.resource.data.pending == true && request.resource.data.addedBy == request.auth.uid);
+      // कर्मचारी सिर्फ़ उन्हीं सामान का बिक्री भाव बदल सकते हैं जिन पर मालिक ने 'flex' लगाया है (किसने, कब, पुराना भाव — सब दर्ज)
+      allow update: if isOwner() || (active() && resource.data.flex == true && onlyKeys(['sale', 'rateTs', 'rateBy', 'rateByName', 'ratePrev']) && request.resource.data.rateBy == request.auth.uid);
+      allow delete: if isOwner();
+    }
+    match /settings/{id} { allow read: if active(); allow write: if isOwner(); }
+    match /photos/{id}   { allow read: if active(); allow write: if isOwner(); }
+    match /priceLog/{id} { allow read: if isOwner(); allow create: if isOwner() || (active() && request.resource.data.by == request.auth.uid); }
+
+    match /days/{date}/bills/{no} {
+      allow read: if active();
+      allow create: if active() && request.resource.data.by == request.auth.uid;
+      // कर्मचारी सिर्फ़ ग्राहक का नंबर जोड़ सकते हैं; रद्द सिर्फ़ मालिक
+      // सेटल होने से पहले बनाने वाला खुद बदल/सेटल कर सकता है (हर बदलाव edits में दर्ज); सेटल के बाद ताला
+      allow update: if isOwner() || (active() && (noChange() || onlyKeys(['custPhone'])))
+        || (active() && resource.data.get('settled', true) == false && resource.data.by == request.auth.uid
+            && onlyKeys(['lines', 'sub', 'total', 'cost', 'rateChanged', 'edits', 'editCount', 'pay', 'payMode', 'settled', 'settleTs', 'mode', 'partyId', 'partyName', 'custPhone']));
+      allow delete: if false;
+    }
+    match /days/{date}/meta/{doc}    { allow read, create, update: if active(); allow delete: if isOwner(); }
+    match /days/{date}/kharch/{id}   { allow read, create: if active(); allow update, delete: if isOwner(); }
+
+    match /ledger/{id} {
+      allow read, create: if active();
+      allow update: if isOwner() || (active() && noChange());
+      allow delete: if isOwner();
+    }
+    match /parties/{id} {
+      allow read, create: if active();
+      allow update: if isOwner() || (active() && onlyKeys(['lastCart', 'lastTs', 'phone', 'remindTs']));
+      allow delete: if false;
+    }
+    match /customers/{id} { allow read, create, update: if active(); allow delete: if false; }
+    // हर ग्राहक की पूरी खरीद का इतिहास — कभी नहीं मिटता
+    match /customers/{id}/hist/{h} { allow read, create, update: if active(); allow delete: if false; }
+    match /pstock/{id}    { allow read, create, update: if active(); allow delete: if false; }
+    match /stockLog/{id}  { allow read, create: if active(); }
+    match /inward/{id}    { allow read, create: if active(); }
+    match /billPhotos/{no} { allow read, create: if active(); allow update, delete: if isOwner(); }
+    match /counts/{id}    { allow create: if active(); allow read, update, delete: if isOwner(); }
+    match /batches/{id}   { allow read, create: if active(); allow update, delete: if isOwner(); }
+    match /presence/{id}  { allow read, write: if active(); }
+
+    // मंडी खरीद: कर्मचारी नई डाल सकते हैं, बाद में सिर्फ़ फोटो जुड़ सकती है — बदलना/मिटाना मालिक का
+    match /purchases/{id} {
+      allow read: if active();
+      allow create: if active() && request.resource.data.by == request.auth.uid;
+      allow update: if isOwner() || (active() && (noChange() || onlyKeys(['photos', 'photoPending'])));
+      allow delete: if false;
+    }
+    match /suppliers/{id} {
+      allow read, create: if active();
+      allow update: if isOwner() || (active() && onlyKeys(['lastTs', 'phone']));
+      allow delete: if false;
+    }
+    match /supPay/{id}   { allow read, create: if active(); allow update, delete: if isOwner(); }
+    match /cancelReq/{id} {
+      allow read: if active();
+      allow create: if active() && request.resource.data.by == request.auth.uid && request.resource.data.status == 'pending';
+      allow update: if isOwner();
+      allow delete: if false;
+    }
+    match /labelLog/{id} { allow create: if active(); allow read: if isOwner(); }
+
+    // 📍 गाड़ी की लोकेशन: हर फोन सिर्फ़ अपनी लोकेशन लिखे, देखे सिर्फ़ मालिक; कोई मिटा नहीं सकता
+    match /trk/{id} {
+      allow read: if isOwner();
+      allow create, update: if active() && request.resource.data.uid == request.auth.uid;
+      allow delete: if false;
+    }
+    match /live/{uid} {
+      allow read: if isOwner() || (signedIn() && request.auth.uid == uid);
+      allow write: if active() && request.auth.uid == uid;
+    }
+    match /places/{id} { allow read: if active(); allow write: if isOwner(); }
+
+    // 🔐 मालिक का UPI मिलान, असली दुकानदार, अपने खाते — कर्मचारी पढ़ भी नहीं सकते
+    match /pay/{id}      { allow read, write: if isOwner(); }
+    match /payees/{id}   { allow read, write: if isOwner(); }
+    match /ownerCfg/{id} { allow read, write: if isOwner(); }
+
+    // पहरेदार की निजी छाप — सिर्फ़ मालिक
+    match /data/users/{uid}/{doc} { allow read, write: if isOwner() && request.auth.uid == uid; }
+  }
+}

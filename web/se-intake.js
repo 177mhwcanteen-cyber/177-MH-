@@ -1,0 +1,283 @@
+/* 177 MH कैंटीन — 📸 फोटो से माल (AI)
+   हर सामान की 3 फोटो (आगे / MRP-एक्सपायरी / बारकोड) + मात्रा + भाव → AI के लिए PDF →
+   Claude/Gemini का जवाब (JSON) चिपकाएँ → नया सामान बने / स्टॉक बढ़े / खेप-एक्सपायरी / खरीद का रिकॉर्ड।
+   बड़ी फोटो सिर्फ़ इसी फोन (IndexedDB) में; ऐप में सिर्फ़ ~6-10 KB की छोटी फोटो जाती है। */
+(function(){
+"use strict";
+const SI=window.SI={};
+const num=v=>{const n=parseFloat(String(v??"").replace(",","."));return isFinite(n)?n:0};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const SRC={opening:"🏁 ओपनिंग स्टॉक",mh:"🏥 177 MH से",shop:"🏪 दुकान से"};
+const PAYS={vikram:"विक्रम जी ने दिया",galla:"गल्ले से नकद",upi:"UPI से",udhar:"बाकी (उधार)"};
+const KINDS=[["f","आगे की फोटो","📦",true],["p","MRP / एक्सपायरी","🏷️",false],["b","बारकोड","📟",false]];
+const MAXN=30;
+let B=null,CUR=null,VIEW="form",PV=null,PASTE="";
+
+/* ---------- फोन में फोटो (IndexedDB) ---------- */
+const IDB={db:null,
+  open(){return this.db||(this.db=new Promise((res,rej)=>{const r=indexedDB.open("bh-intake",1);r.onupgradeneeded=()=>r.result.createObjectStore("p",{keyPath:"k"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}))},
+  async tx(mode,fn){const d=await this.open();return new Promise((res,rej)=>{const t=d.transaction("p",mode);const st=t.objectStore("p");const out=fn(st);t.oncomplete=()=>res(out&&out.result!==undefined?out.result:undefined);t.onerror=()=>rej(t.error)})},
+  put(k,blob){return this.tx("readwrite",s=>s.put({k,blob}))},
+  async get(k){const d=await this.open();return new Promise(res=>{const r=d.transaction("p").objectStore("p").get(k);r.onsuccess=()=>res(r.result?r.result.blob:null);r.onerror=()=>res(null)})},
+  async delPrefix(pre){const d=await this.open();return new Promise(res=>{const t=d.transaction("p","readwrite"),st=t.objectStore("p");const r=st.openCursor();r.onsuccess=()=>{const c=r.result;if(!c)return;if(String(c.key).startsWith(pre))c.delete();c.continue()};t.oncomplete=()=>res();t.onerror=()=>res()})}};
+const pk=(n,k)=>B.id+"_"+n+"_"+k;
+
+function shrink(file,max,q){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);
+  img.onload=()=>{const sc=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(new Error("photo")),"image/jpeg",q)};
+  img.onerror=rej;img.src=u})}
+const toURL=blob=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(blob)});
+async function thumbOf(blob,px){const b=await shrink(blob,px||120,.6);return toURL(b)}
+function pick(cb){const fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.capture="environment";fi.onchange=()=>{const f=fi.files[0];if(f)cb(f)};fi.click()}
+
+/* ---------- स्थिति ---------- */
+function load(){try{B=JSON.parse(localStorage.getItem("bh_intake")||"null")}catch(e){B=null}if(B&&!B.entries)B.entries=[];CUR=B?(B.cur||blank()):null}
+function save(){try{if(B){B.cur=CUR;localStorage.setItem("bh_intake",JSON.stringify(B))}else localStorage.removeItem("bh_intake")}catch(e){toast("फोन में जगह कम है")}}
+function blank(){return {n:(B?B.entries.reduce((a,e)=>Math.max(a,e.n),0):0)+1,qty:"",cost:"",sale:"",bar:"",match:"",has:{},th:{}}}
+load();
+SI.active=()=>!!(B&&B.open);
+SI.open=function(){if(!B)B={open:true,id:"",src:"",entries:[]};B.open=true;if(!CUR)CUR=blank();VIEW="form";save();if(typeof camOff==="function")camOff(false);SI.render()};
+function close(){B.open=false;save();if(window.SF)SF.renderKharid(1)}
+
+/* ---------- AI निर्देश ---------- */
+function prompt(){
+  const src=B.src==="mh"?"Received from 177 MH canteen (internal transfer)":B.src==="shop"?"Purchased from shop: "+(B.shop||"-"):"Opening stock (already on shelf)";
+  return `177 MH WET CANTEEN - PRODUCT ENTRY (batch ${B.id})
+You are helping "177 MH Canteen" (Military Hospital wet canteen, Akashvani Road, Barmer, India) add products to its billing app.
+Source of these goods: ${src}.
+Every following page is ONE product, numbered #N. It has up to 3 photos: FRONT (pack front), PRICE (MRP / expiry / batch label), BARCODE.
+Printed on each page: QTY = pieces received, COST = purchase price per piece (may be blank), SALE = selling price per piece (blank = sell at MRP), BARCODE = digits already read by the app (may be blank).
+
+Read every photo carefully. Reply with ONLY ONE json code block in exactly this shape:
+{"app":"mh177","v":1,"batch":"${B.id}","items":[
+ {"n":1,"name":"Parle-G 70g","hi":"<Hindi name in Devanagari>","brand":"Parle","size":"70g","mrp":10,"sale":10,"cost":8,"qty":12,"exp":"2027-03-31","mfg":"2026-09-30","batchNo":"B123","barcode":"8901719101038","cat":"kirana","sub":"sweet","emoji":"<one emoji>","note":""}
+]}
+
+Rules:
+1. One object per page, same order, "n" = page number #N.
+2. name: short English billing name, max 22 characters: Brand + product + size. Example "Lays Magic Masala 52g".
+3. hi: simple Hindi name in Devanagari script.
+4. mrp: the MRP printed on the pack in rupees (incl. of all taxes). null if not readable.
+5. sale: use the SALE printed on the page if present, else the same as mrp.
+6. cost and qty: copy exactly from the page. Never invent.
+7. exp: expiry date as YYYY-MM-DD. If the pack says "best before N months from manufacture", calculate it from mfg. If only month and year, use the last day of that month. null if not readable.
+8. barcode: prefer the BARCODE printed on the page; otherwise the digits under the barcode in the photo; null if none.
+9. cat: "kirana" for packaged goods, "fast" for cooked food, "sabzi" for vegetables or fruit.
+10. sub (only for kirana): one of namkeen, dryfruit, achar, rashan, drinks, sweet, clean.
+11. If you are not sure about any value, put null and explain in "note" in simple Hindi. Never guess numbers.
+After the json block write 2-3 short lines in Hindi about anything doubtful.`}
+SI.prompt=()=>B?prompt():"";
+
+/* ---------- स्क्रीन ---------- */
+SI.render=function(el){
+  el=el||$("#p-kharid");if(!el||!B)return;
+  if(!B.src)return renderStart(el);
+  if(VIEW==="paste")return renderPaste(el);
+  const E=B.entries,n=E.length;
+  el.innerHTML=`<div class="sihead"><div><h2 class="sec" style="margin:0">📸 फोटो से माल</h2><span class="note">${SRC[B.src]}${B.src==="shop"&&B.shop?" · "+esc(B.shop):""} · ${esc(B.id)}</span></div><button class="big ghost" data-siclose style="width:auto;padding:8px 14px">✕ बंद</button></div>
+  ${n<MAXN?formHTML():`<div class="card2"><b>एक PDF में ${MAXN} सामान हो गए</b><p class="note" style="margin:0">अब PDF बनाकर AI में डालें। अगले सामान नई खेप में।</p></div>`}
+  ${n?`<h3 style="margin:14px 0 6px">इस खेप में ${n} सामान</h3><div class="list silist">${E.map(e=>`<div class="li"><span class="sith">${e.th.f?`<img src="${e.th.f}" alt="">`:"📦"}</span><div class="mid"><b>#${e.n} · ${e.match&&item(e.match)?esc(item(e.match).name):"नया / AI बताएगा"}</b><span>${e.qty} पीस${num(e.cost)?" · खरीद ₹"+num(e.cost):""}${num(e.sale)?" · बिक्री ₹"+num(e.sale):""}${e.bar?" · 📟 "+esc(e.bar):""} · ${["f","p","b"].filter(k=>e.has[k]).length} फोटो</span></div><button class="lnk" data-sidel="${e.n}" style="color:var(--chili)">हटाएँ</button></div>`).join("")}</div>`:""}
+  <div class="siact">
+    <button class="big" data-sipdf ${n?"":"disabled"}>📄 AI के लिए PDF बनाएँ (${n})</button>
+    <div class="row2" style="margin:0"><button class="big ghost" data-sipaste ${n?"":"disabled"}>📋 AI का जवाब चिपकाएँ</button><button class="big ghost" data-sicopy>🧾 AI निर्देश कॉपी</button></div>
+    <p class="note" style="margin:0">PDF को Claude या Gemini में डालकर लिखें: <b>"PDF के पहले पेज के निर्देश मानो"</b> — फिर उसका जवाब यहाँ चिपकाएँ।</p>
+    ${n?`<button class="lnk" data-sireset style="color:var(--chili);justify-self:start">यह पूरी खेप मिटाएँ</button>`:""}</div>`;
+};
+function formHTML(){
+  const c=CUR,m=c.match&&item(c.match);
+  return `<div class="card2 siform"><h3>#${c.n} · अगला सामान</h3>
+  <div class="sislots">${KINDS.map(([k,l,ic,req])=>`<button type="button" class="sislot ${c.has[k]?"ok":""}" data-siph="${k}">${c.th[k]?`<img src="${c.th[k]}" alt="">`:`<span class="ic">${ic}</span>`}<span class="lb">${l}${req?" *":""}</span>${c.has[k]?'<i class="tick">✓</i>':""}</button>`).join("")}</div>
+  <div class="sibar">${c.bar?`📟 <b>${esc(c.bar)}</b> ${m?`· <span class="pill green">♻️ पहले से: ${esc(m.name)}</span>`:`· <span class="pill blue">🆕 नया सामान</span>`}`:`<span class="note">बारकोड की फोटो लें या 📷 से स्कैन करें — ऐप नंबर खुद पढ़ लेगा</span>`}<button class="scanbtn" type="button" data-siscan aria-label="बारकोड स्कैन">📷</button></div>
+  <div class="row3 sinums"><label class="fld">कितने पीस *<input class="inp" id="siQ" inputmode="numeric" value="${esc(c.qty)}" placeholder="0"></label><label class="fld">खरीद ₹/पीस<input class="inp" id="siC" inputmode="decimal" value="${esc(c.cost)}" placeholder="${m&&+m.cost?+m.cost:"पता हो तो"}"></label><label class="fld">बिक्री ₹<input class="inp" id="siS" inputmode="decimal" value="${esc(c.sale)}" placeholder="${m&&+m.sale?+m.sale:"= MRP"}"></label></div>
+  <button class="big" data-sinext>✓ जोड़ें, अगला सामान</button></div>`;
+}
+function renderStart(el){
+  el.innerHTML=`<div class="sihead"><h2 class="sec" style="margin:0">📸 फोटो से माल</h2><button class="big ghost" data-siclose style="width:auto;padding:8px 14px">✕ बंद</button></div>
+  <div class="card2 sihero"><div class="sihero-ic">🤖</div><div><b>फोटो लो, AI नाम-MRP-एक्सपायरी भरेगा</b><p class="note" style="margin:2px 0 0">हर सामान की 3 फोटो + मात्रा → PDF → Claude/Gemini → जवाब चिपकाओ → सब चढ़ गया।</p></div></div>
+  <h3 style="margin:12px 0 6px">माल कहाँ से आया?</h3>
+  <div class="sisrc">${Object.entries(SRC).map(([k,v])=>`<button class="big ghost" data-sisrc="${k}">${v}</button>`).join("")}</div>
+  <div id="sishop" hidden class="card2"><label class="fld">🏪 दुकान का नाम<input class="inp" id="siShop" placeholder="जैसे गणेश ट्रेडर्स"></label>
+  <div class="paym" style="margin:6px 0 0">${Object.entries(PAYS).map(([k,v],i)=>`<button data-sipay="${k}" aria-pressed="${i===0}">${v}</button>`).join("")}</div>
+  <button class="big" data-sishopgo style="margin-top:8px">शुरू करें</button></div>`;
+}
+function startBatch(src,shop,pay){
+  const d=today().slice(5).replace("-","");B={open:true,id:"F"+d+"-"+Math.random().toString(36).slice(2,6).toUpperCase(),src,shop:shop||"",pay:pay||"",ts:Date.now(),entries:[]};CUR=blank();save();SI.render();
+}
+
+/* ---------- फोटो, बारकोड ---------- */
+async function takePhoto(k){
+  pick(async f=>{
+    try{
+      toast("फोटो छोटी कर रहे हैं…");
+      const big=await shrink(f,k==="p"?1500:k==="b"?1000:1100,k==="p"?.78:.72);
+      await IDB.put(pk(CUR.n,k),big);CUR.has[k]=true;CUR.th[k]=await thumbOf(big,120);
+      if(k==="b"&&typeof decodeImage==="function"){try{const c=await decodeImage(big);if(c)setBar(c);else toast("बारकोड नहीं पढ़ा — AI पढ़ लेगा, या 📷 से स्कैन करें")}catch(e){}}
+      save();SI.render();beep(true);
+    }catch(e){toast("फोटो नहीं ली जा सकी")}
+  });
+}
+function setBar(code){code=String(code||"").replace(/\s/g,"");CUR.bar=code;const it=findByCode(code);CUR.match=it?it.id:"";
+  if(it&&!CUR.sale&&+it.sale)CUR.sale="";save();toast(it?"♻️ पहले से है: "+it.name:"🆕 नया बारकोड "+code)}
+SI.scan=function(code){if(!B||!B.src||VIEW!=="form")return false;setBar(code);beep(true);SI.render();return true};
+function addEntry(){
+  const q=num($("#siQ").value);CUR.qty=$("#siQ").value;CUR.cost=$("#siC").value;CUR.sale=$("#siS").value;
+  if(!CUR.has.f){toast("पहले आगे की फोटो लें");return}
+  if(!(q>0)){toast("कितने पीस — लिखें");$("#siQ").focus();return}
+  B.entries.push({n:CUR.n,qty:q,cost:num(CUR.cost)||"",sale:num(CUR.sale)||"",bar:CUR.bar,match:CUR.match,has:{...CUR.has},th:{f:CUR.th.f||""}});
+  CUR=blank();save();SI.render();toast("✓ जुड़ गया · अब "+B.entries.length+" सामान");window.scrollTo(0,0);document.body.scrollTop=0;
+}
+
+/* ---------- 📄 PDF ---------- */
+function loadPdf(){return window.jspdf?Promise.resolve():new Promise((res,rej)=>{const s=document.createElement("script");s.src="lib/jspdf.min.js";s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+function dims(url){return new Promise(res=>{const i=new Image();i.onload=()=>res([i.width,i.height]);i.onerror=()=>res([4,3]);i.src=url})}
+function hiLine(t,w){const c=document.createElement("canvas");c.width=w*4;c.height=64;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.fillStyle="#3730a3";
+  let f=30;do{x.font=`700 ${f}px "Mukta","Noto Sans Devanagari",sans-serif`;f--}while(x.measureText(t).width>c.width-12&&f>12);x.textBaseline="middle";x.fillText(t,6,32);return c.toDataURL("image/png")}
+async function makePdf(){
+  const btn=$("[data-sipdf]");if(btn){btn.disabled=true;btn.textContent="⏳ PDF बन रही है…"}
+  try{
+    await loadPdf();const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:"mm",format:"a4",compress:true});
+    const W=210,M=12;
+    doc.addImage(hiLine("यह PDF Claude या Gemini में डालें और लिखें: \"PDF के पहले पेज के निर्देश मानो\"",186),"PNG",M,8,186,8);
+    doc.setFont("helvetica","normal");doc.setFontSize(9);
+    doc.text(doc.splitTextToSize(prompt(),W-2*M),M,22);
+    const srcEn=B.src==="mh"?"177 MH transfer":B.src==="shop"?"Shop: "+(B.shop||""):"Opening stock";
+    for(const e of B.entries){
+      doc.addPage();doc.setFont("helvetica","bold");doc.setFontSize(18);doc.text("#"+e.n,M,16);
+      doc.setFontSize(11);doc.setFont("helvetica","normal");
+      const it=e.match&&item(e.match);
+      const ln=[`QTY: ${e.qty}`,`COST: ${e.cost||"-"}`,`SALE: ${e.sale||"-"}`,`BARCODE: ${e.bar||"-"}`,`SOURCE: ${srcEn}`].join("   |   ");
+      doc.text(ln,M+16,16);
+      if(it)doc.text("Already in app as: "+String(it.name).replace(/[^\x20-\x7E]/g,""),M+16,22);
+      const boxes={f:[M,28,90,120],p:[M+96,28,90,120],b:[M,154,90,120]};
+      for(const [k,lb] of [["f","FRONT"],["p","PRICE / MRP / EXPIRY"],["b","BARCODE"]]){
+        const [x,y,w,h]=boxes[k];doc.setFontSize(9);doc.setTextColor(90);doc.text(lb,x,y-1.5);doc.setTextColor(0);
+        doc.setDrawColor(200);doc.rect(x,y,w,h);
+        if(!e.has[k]){doc.text("(no photo)",x+w/2-8,y+h/2);continue}
+        const blob=await IDB.get(pk(e.n,k));if(!blob){doc.text("(photo missing)",x+w/2-10,y+h/2);continue}
+        const url=await toURL(blob);const [iw,ih]=await dims(url);const sc=Math.min(w/iw,h/ih),dw=iw*sc,dh=ih*sc;
+        doc.addImage(url,"JPEG",x+(w-dw)/2,y+(h-dh)/2,dw,dh,undefined,"FAST");
+      }
+    }
+    const name="MH177_"+B.id+"_"+B.entries.length+"items.pdf";
+    if(window.SENative&&SENative.isNative){const b64=doc.output("datauristring").split(",")[1];await SENative.BtPrinter.shareBytes({name,data:b64,mime:"application/pdf"})}
+    else doc.save(name);
+    B.pdfAt=Date.now();save();toast("📄 PDF बन गई — अब Claude/Gemini में डालें");
+  }catch(e){toast("PDF नहीं बनी: "+(e.message||e))}
+  SI.render();
+}
+
+/* ---------- 📋 जवाब चिपकाना ---------- */
+function renderPaste(el){
+  el.innerHTML=`<div class="sihead"><div><h2 class="sec" style="margin:0">📋 AI का जवाब</h2><span class="note">${esc(B.id)} · ${B.entries.length} सामान · ${SRC[B.src]}</span></div><button class="big ghost" data-siback style="width:auto;padding:8px 14px">‹ वापस</button></div>
+  ${PV?pvHTML():`<div class="card2"><p class="note" style="margin:0 0 6px">Claude/Gemini ने जो जवाब दिया, वो <b>पूरा</b> कॉपी करके यहाँ चिपकाएँ।</p>
+  <textarea class="inp" id="siPaste" rows="9" placeholder='{"app":"mh177", ... }' style="font:13px monospace">${esc(PASTE)}</textarea>
+  <button class="big" data-sicheck style="margin-top:8px">🔍 जाँचें</button></div>`}`;
+}
+function parse(t){
+  let s=String(t||"");const f=s.match(/```(?:json)?\s*([\s\S]*?)```/);if(f)s=f[1];
+  const a=s.indexOf("{"),b=s.lastIndexOf("}");if(a<0||b<a)throw new Error("जवाब में { } वाला हिस्सा नहीं मिला");
+  const j=JSON.parse(s.slice(a,b+1).replace(/[“”]/g,'"'));const items=Array.isArray(j)?j:j.items;if(!Array.isArray(items)||!items.length)throw new Error("items की लिस्ट खाली है");return {j,items};
+}
+const okDate=d=>/^\d{4}-\d{2}-\d{2}$/.test(String(d||""))&&!isNaN(new Date(d+"T12:00:00"));
+function check(){
+  PASTE=$("#siPaste").value;
+  try{const {j,items}=parse(PASTE);
+    if(j.batch&&j.batch!==B.id)toast("⚠ यह जवाब किसी दूसरी खेप ("+j.batch+") का लगता है — ध्यान से देखें");
+    PV=B.entries.map(e=>{const a=items.find(x=>+x.n===+e.n)||{};const bar=String(a.barcode||e.bar||"").replace(/\D/g,"");
+      const ex=(e.match&&item(e.match))||(bar&&findByCode(bar))||null;
+      return {e,a,ex,use:true,name:String(a.name||(ex&&ex.name)||"").slice(0,24),hi:String(a.hi||""),bar,
+        qty:num(e.qty)||num(a.qty),sale:num(e.sale)||num(a.sale)||num(a.mrp)||(ex?+ex.sale:0),mrp:num(a.mrp)||(ex?+ex.mrp||0:0),cost:num(e.cost)||num(a.cost),exp:okDate(a.exp)?a.exp:""}});
+    const miss=PV.filter(r=>!r.a.n).length;if(miss)toast("⚠ "+miss+" सामान का जवाब AI ने नहीं दिया");
+  }catch(err){toast("जवाब समझ नहीं आया: "+err.message);return}
+  SI.render();
+}
+function pvHTML(){
+  const nNew=PV.filter(r=>r.use&&!r.ex).length,nOld=PV.filter(r=>r.use&&r.ex).length;
+  return `<div class="card2"><b>🆕 ${nNew} नया सामान · ♻️ ${nOld} में स्टॉक जुड़ेगा</b><p class="note" style="margin:2px 0 0">नाम या भाव ठीक करना हो तो यहीं बदल दें। ⚠ वाली लाइनें ध्यान से देखें।</p></div>
+  <div class="list sipv">${PV.map((r,i)=>{const warn=!r.name||!(r.sale>0)||!r.qty||(r.a.note);const past=r.exp&&r.exp<today();
+    return `<div class="li sirow ${r.use?"":"off"} ${warn||past?"warn":""}"><label class="sichk"><input type="checkbox" data-pvuse="${i}" ${r.use?"checked":""}></label><span class="sith">${r.e.th.f?`<img src="${r.e.th.f}" alt="">`:"📦"}</span>
+    <div class="mid"><div class="sipvt">${r.ex?`<span class="pill green">♻️ ${esc(r.ex.name)}</span>`:`<span class="pill blue">🆕 नया ${esc(r.a.emoji||"")}</span>`} <small>#${r.e.n}</small></div>
+      ${r.ex?"":`<input class="inp" data-pvname="${i}" value="${esc(r.name)}" placeholder="नाम" maxlength="24">`}
+      <span>${esc(r.hi||"")}${r.a.size?" · "+esc(r.a.size):""} · ${r.qty} पीस · MRP ${r.mrp?"₹"+r.mrp:"—"} · ${r.exp?(past?"⚠ एक्सपायर "+fdate(r.exp):"एक्स. "+fdate(r.exp)):"एक्सपायरी नहीं मिली"}${r.bar?" · 📟 "+esc(r.bar):""}</span>
+      ${r.a.note?`<span class="sinote">⚠ ${esc(r.a.note)}</span>`:""}</div>
+    <label class="fld sipr">बिक्री ₹<input class="inp" data-pvsale="${i}" inputmode="decimal" value="${r.sale||""}"></label></div>`}).join("")}</div>
+  <div class="siact"><button class="big" data-siapply>✓ सब चढ़ाएँ (${PV.filter(r=>r.use).length})</button><button class="big ghost" data-sirepaste>दूसरा जवाब चिपकाएँ</button></div>`;
+}
+async function apply(){
+  const rows=PV.filter(r=>r.use);if(!rows.length){toast("कुछ चुना नहीं");return}
+  const bad=rows.find(r=>!r.ex&&(!r.name||!(r.sale>0)))||rows.find(r=>!(r.qty>0));if(bad){toast("#"+bad.e.n+": नाम, बिक्री ₹ और मात्रा ज़रूरी");return}
+  const btn=$("[data-siapply]");btn.disabled=true;btn.textContent="⏳ चढ़ रहा है…";
+  const ts=Date.now(),date=today(),why=(B.src==="opening"?"ओपनिंग स्टॉक":B.src==="mh"?"177 MH से":"दुकान: "+B.shop)+" · फोटो "+B.id;
+  const lines=[];let nNew=0,nOld=0,photoKB=0;
+  for(const r of rows){
+    let id;
+    if(r.ex){id=r.ex.id;nOld++;
+      if(S.isOwner){const p={};if(!r.ex.hi&&r.hi)p.hi=r.hi;if(!r.ex.size&&r.a.size)p.size=r.a.size;if(!(+r.ex.mrp)&&r.mrp)p.mrp=r.mrp;if(!r.ex.sub&&r.a.sub)p.sub=r.a.sub;if(!(+r.ex.cost)&&r.cost)p.cost=r.cost;
+        if(!r.ex.barcode&&r.bar)p.barcode=r.bar;if(Object.keys(p).length){Object.assign(r.ex,p);if(!S.demo)S.db.doc("items/"+id).update(p).catch(()=>{})}}}
+    else{nNew++;id="i"+uid();const cat=["kirana","fast","sabzi"].includes(r.a.cat)?r.a.cat:"kirana",code=nextCode(cat);
+      const bar=/^\d{8,14}$/.test(r.bar)&&!findByCode(r.bar)?r.bar:ean13("2000000"+code+"0");
+      const it={name:r.name,hi:r.hi,emoji:r.a.emoji||"📦",cat,sub:(SUBS[cat]||[]).some(([k])=>k===r.a.sub)?r.a.sub:"",unit:"pc",size:r.a.size||"",mrp:r.mrp,sale:r.sale,cost:r.cost||0,code,barcode:bar,track:true,min:5,
+        hue:Math.floor(Math.random()*360),order:S.items.length+1,active:true,src:"photo-ai",addedBy:S.uid||"",addedByName:biller(),addedTs:ts,pending:!S.isOwner,...(r.exp?{exp:r.exp}:{})};
+      // ऐप में छोटी फोटो (≈6-10 KB)
+      try{const big=await IDB.get(pk(r.e.n,"f"));if(big){const sm=await shrink(big,220,.66);photoKB+=sm.size/1024;
+        if(S.demo||!S.isOwner){SE.photos[id]=await toURL(sm);it.photo=""}else{it.photo=await SE.savePhoto(id,sm,220,.66)}}}catch(e){}
+      try{if(!S.demo)await S.db.collection("items").doc(id).set(it);if(!item(id))S.items.push({id,...it});if(S.isOwner&&!S.demo&&typeof logPrice==="function")logPrice(id,"sale",0,r.sale)}
+      catch(e){toast("#"+r.e.n+" नहीं बना: "+(e.code||e.message||""));continue}}
+    const nm=item(id).name;
+    await adjStock([[id,r.qty]],why);
+    if(r.exp){const bt={itemId:id,exp:r.exp,qty:r.qty,date,ts,pid:B.id,src:B.src};S.batches=S.batches||[];S.batches.push({id:"t"+uid(),...bt});if(!S.demo)S.db.collection("batches").doc("x"+uid()).set(bt).catch(()=>{})}
+    lines.push({id,name:nm,unit:"pc",qty:r.qty,rate:r2(r.cost||0),amt:r2((r.cost||0)*r.qty),billAmt:r2((r.cost||0)*r.qty),prev:0,...(r.exp?{exp:r.exp}:{})});
+  }
+  let pdoc=null;
+  if(B.src!=="opening"&&lines.length){
+    const tot=r2(lines.reduce((a,l)=>a+l.amt,0)),mh=B.src==="mh",pid="p"+uid();
+    pdoc={date,ts,by:S.uid||"",byName:biller(),supId:"",supName:mh?"177 MH कैंटीन":B.shop||"दुकान",supPhone:"",lines,gross:tot,disc:0,total:tot,
+      pay:mh?"mh":(B.pay||"vikram"),paid:mh||B.pay==="udhar"?0:tot,due:!mh&&B.pay==="udhar"?tot:0,src:mh?"mh":"shop",note:"📸 फोटो से (AI) · "+B.id,photos:[],photoPending:0,cancelled:false};
+    try{if(!S.demo)await S.db.collection("purchases").doc(pid).set(pdoc);S.purch=S.purch||[];if(S.demo||!S.purch.find(p=>p.id===pid))S.purch.push({id:pid,...pdoc});S.purchHist&&S.purchHist.push({id:pid,...pdoc});pdoc={id:pid,...pdoc}}catch(e){toast("खरीद का रिकॉर्ड नहीं बना: "+(e.code||""))}
+  }
+  const old=B.id,src=B.src;await IDB.delPrefix(old+"_");B=null;CUR=null;PV=null;PASTE="";VIEW="form";save();
+  toast(`✓ ${nNew} नया · ${nOld} पुराने में स्टॉक जुड़ा${photoKB?` · फोटो कुल ${Math.round(photoKB)} KB`:""}`);beep(true);
+  if(window.SF)SF.renderKharid(1);
+  if(src==="mh"&&pdoc&&window.SF&&SF.mhSlip)setTimeout(()=>SF.mhSlip(pdoc,"फोटो "+old),300);
+}
+
+/* ---------- 🎨 Gemini फोटो प्रॉम्प्ट ---------- */
+SI.geminiPrompt=function(it){return `Create a clean e-commerce product photo of this exact product: ${it.name}${it.size&&!String(it.name).includes(it.size)?" "+it.size:""}.
+Use my attached photo as the only reference. Keep the real packaging, colours, brand logo and printed text exactly as they are; do not redesign anything.
+Square 1:1 image, pure white background, product centred and filling about 80% of the frame, straight front view, soft studio light, gentle shadow under the pack.
+No hands, no other objects, no extra text, no watermark. Output size 800x800.`};
+SI.copyGemini=async function(id){const it=item(id);if(!it)return;try{await navigator.clipboard.writeText(SI.geminiPrompt(it));toast("🎨 Gemini प्रॉम्प्ट कॉपी — Gemini में अपनी फोटो के साथ चिपकाएँ, बनी फोटो यहीं लगाएँ (अपने-आप छोटी होगी)")}catch(e){toast("कॉपी नहीं हुआ")}};
+
+/* ---------- घटनाएँ ---------- */
+SI.bind=function(){
+  const el=$("#p-kharid");
+  el.addEventListener("input",e=>{if(!SI.active())return;const t=e.target;
+    if(t.id==="siQ"){CUR.qty=t.value;save()}else if(t.id==="siC"){CUR.cost=t.value;save()}else if(t.id==="siS"){CUR.sale=t.value;save()}
+    else if(t.id==="siPaste")PASTE=t.value;
+    else if(t.dataset.pvname!=null)PV[+t.dataset.pvname].name=t.value.trim();
+    else if(t.dataset.pvsale!=null)PV[+t.dataset.pvsale].sale=num(t.value)});
+  el.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.pvuse!=null){PV[+t.dataset.pvuse].use=t.checked;SI.render()}});
+  el.addEventListener("click",async e=>{
+    if(e.target.closest("[data-siopen]")){SI.open();return}
+    if(!SI.active())return;
+    if(e.target.closest("[data-siclose]")){close();return}
+    const sr=e.target.closest("[data-sisrc]");if(sr){const k=sr.dataset.sisrc;if(k==="shop"){$("#sishop").hidden=false;$("#siShop").focus();return}startBatch(k);return}
+    const sp=e.target.closest("[data-sipay]");if(sp){document.querySelectorAll("[data-sipay]").forEach(x=>x.setAttribute("aria-pressed",x===sp));return}
+    if(e.target.closest("[data-sishopgo]")){const nm=$("#siShop").value.trim();if(!nm){toast("दुकान का नाम लिखें");return}const p=document.querySelector('[data-sipay][aria-pressed="true"]');startBatch("shop",nm,p?p.dataset.sipay:"vikram");return}
+    const ph=e.target.closest("[data-siph]");if(ph){takePhoto(ph.dataset.siph);return}
+    if(e.target.closest("[data-siscan]")){if(typeof liveScan==="function")liveScan();return}
+    if(e.target.closest("[data-sinext]")){addEntry();return}
+    const dl=e.target.closest("[data-sidel]");if(dl){const n=+dl.dataset.sidel;B.entries=B.entries.filter(x=>x.n!==n);for(const k of "fpb")IDB.tx("readwrite",s=>s.delete(pk(n,k))).catch(()=>{});save();SI.render();return}
+    if(e.target.closest("[data-sipdf]")){makePdf();return}
+    if(e.target.closest("[data-sicopy]")){try{await navigator.clipboard.writeText(prompt());toast("🧾 AI निर्देश कॉपी हो गया")}catch(err){toast("कॉपी नहीं हुआ")}return}
+    if(e.target.closest("[data-sipaste]")){VIEW="paste";PV=null;SI.render();setTimeout(()=>{const t=$("#siPaste");if(t)t.focus()},80);return}
+    if(e.target.closest("[data-siback]")){VIEW="form";PV=null;SI.render();return}
+    if(e.target.closest("[data-sicheck]")){check();return}
+    if(e.target.closest("[data-sirepaste]")){PV=null;SI.render();return}
+    if(e.target.closest("[data-siapply]")){apply();return}
+    const rs_=e.target.closest("[data-sireset]");if(rs_){if(rs_.dataset.sure!=="1"){rs_.dataset.sure="1";rs_.textContent="पक्का? सारी फोटो मिट जाएँगी";return}await IDB.delPrefix(B.id+"_");B=null;CUR=null;save();if(window.SF)SF.renderKharid(1);toast("खेप मिटा दी")}
+  });
+};
+SI.cardHTML=function(){const n=B&&B.entries?B.entries.length:0;
+  return `<button class="sicard" data-siopen><span class="sicard-ic">📸</span><span><b>फोटो से माल चढ़ाएँ <i class="ai">AI</i></b><small>${n?`चालू खेप: ${n} सामान · ${B.src?SRC[B.src]:""}`:"3 फोटो + मात्रा → AI नाम, MRP, एक्सपायरी भरेगा"}</small></span><span class="go">›</span></button>`};
+})();

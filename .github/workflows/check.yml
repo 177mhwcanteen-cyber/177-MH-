@@ -1,0 +1,34 @@
+# जाँच: Firebase (लॉगिन, डोमेन, नियम) और GitHub Pages — नतीजा checks/report.txt में
+name: check
+on:
+  push:
+    paths: [".github/check-request"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: check
+        run: |
+          K=PASTE; P=PASTE; F=https://firestore.googleapis.com/v1/projects/$P/databases/\(default\)/documents
+          mkdir -p checks; R=checks/report.txt; date -u > $R
+          echo "== authorized domains ==" >> $R
+          curl -s "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getProjectConfig?key=$K" -H "Referer: https://177mhwcanteen-cyber.github.io/" >> $R; echo >> $R
+          echo "== email/password provider ==" >> $R
+          curl -s -X POST "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$K" -H 'Content-Type: application/json' -d '{"email":"no-such-user-check@example.com","password":"x12345","returnSecureToken":true}' | head -c 400 >> $R; echo >> $R
+          echo "== rules: settings/main without login (expect PERMISSION_DENIED) ==" >> $R
+          curl -s "$F/settings/main?key=$K" | head -c 300 >> $R; echo >> $R
+          echo "== rules: staffIndex without login (expect NOT_FOUND = rule allows) ==" >> $R
+          curl -s "$F/staffIndex/0000000000?key=$K" | head -c 300 >> $R; echo >> $R
+          echo "== rules: items without login (expect PERMISSION_DENIED) ==" >> $R
+          curl -s "$F/items/k1001?key=$K" | head -c 300 >> $R; echo >> $R
+          echo "== pages ==" >> $R
+          curl -s -o /dev/null -w "index %{http_code}\n" https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/ >> $R
+          curl -s https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/config.js | grep -o 'projectId: "[^"]*"' >> $R || true
+          curl -s https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/build.js >> $R; echo >> $R
+          ls >> /dev/null
+          git config user.name "check-bot"; git config user.email "check-bot@users.noreply.github.com"
+          git add checks/report.txt; git commit -m "जाँच का नतीजा [skip ci]" && git push
