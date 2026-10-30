@@ -656,11 +656,20 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 #sklist .li{display:flex;align-items:center;gap:10px}#sklist .mid{flex:1;min-width:0}
 .card .offp{white-space:nowrap;display:inline-block}.card .pr{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 4px}
 .skstats{grid-template-columns:repeat(auto-fit,minmax(74px,1fr))}.skstats b{font-size:18px}
+/* 177 MH: ऊपर वाला 🛒 बटन = सीधे बिलिंग+स्कैनर; बिल-टैब पूरी चौड़ाई में (4–5 एक साथ), मोबाइल/नाम पतली पट्टी */
+#lgBtn{cursor:pointer;transition:transform .12s}#lgBtn:active{transform:scale(.88)}
+#lgBtn:focus-visible{outline:2px solid var(--haldi);outline-offset:2px}
+.btabs{flex-wrap:wrap;row-gap:6px}
+#bts{flex:1 1 100%!important;max-width:100%!important;gap:5px}
+#bts .btab{min-width:0;flex:0 0 calc((100% - 25px)/5.4);padding:3px 2px 3px 7px;font-size:11px;border-radius:10px}
+#bts .btab small{font-size:13px}#bts .btab .bx{width:18px;height:18px;font-size:12px}
+#bts .btab.new{flex:0 0 auto;padding:3px 10px;font-size:18px}
+.bcust{flex:1 1 100%!important;border-radius:10px}.bcust input{font-size:13px;padding:5px 0}.bcust .ic{font-size:13px}
 </style>
 
 <header class="px">
   <div class="brand">
-    <i class="lg" aria-hidden="true" title="177 MH कैंटीन · आकाशवाणी रोड, बाड़मेर">🛒</i>
+    <i class="lg" id="lgBtn" role="button" tabindex="0" aria-label="बिलिंग और स्कैनर खोलें" title="छूते ही बिलिंग + स्कैनर">🛒</i>
     <nav class="tabs" role="tablist" id="tabs" aria-label="177 MH कैंटीन"></nav>
     <button class="who" id="who" type="button">👤</button>
   </div>
@@ -831,7 +840,7 @@ function saveHeld(){}
 function blankTab(){return {mode:"walk",partyId:"",inst:"",cust:{phone:"",name:""},cart:[],ts:Date.now()}}
 function syncTab(){if(!S.bt.length)S.bt=[blankTab()];const t=S.bt[S.ai]||(S.bt[S.ai]=blankTab());t.mode=S.mode;t.partyId=S.partyId;t.inst=S.inst;t.cust={...S.cust};t.cart=S.cart;lsSet("se_tabs",JSON.stringify(S.bt))}
 function loadTab(i){const t=S.bt[i];S.ai=i;S.mode=t.mode||"walk";S.partyId=t.partyId||"";S.inst=t.inst||"";S.cust=t.cust||{phone:"",name:""};S.cart=t.cart||[]}
-function tabLabel(t,i){const p=S.parties.find(x=>x.id===t.partyId);return t.mode==="inst"?t.inst||"संस्था":t.mode==="udhar"&&p?p.name:(t.cust&&(t.cust.name||t.cust.phone))||"ग्राहक "+(i+1)}
+function tabLabel(t,i){const p=S.parties.find(x=>x.id===t.partyId);return t.mode==="inst"?t.inst||"संस्था":t.mode==="udhar"&&p?p.name:(t.cust&&(t.cust.name||t.cust.phone))||"बिल "+(i+1)}
 function switchTab(i){syncTab();loadTab(i);closeSheet();refreshAfterCart()}
 function newTab(){syncTab();S.bt.push(blankTab());loadTab(S.bt.length-1);closeSheet();refreshAfterCart();window.scrollTo(0,0);toast("नया बिल खुला — पिछला बिल ऊपर टैब में है")}
 function closeCurTab(){S.bt.splice(S.ai,1);if(!S.bt.length)S.bt=[blankTab()];loadTab(Math.min(S.ai,S.bt.length-1));lsSet("se_tabs",JSON.stringify(S.bt))}
@@ -870,6 +879,7 @@ function renderTabs(){
   const TI={stock:"📦",bill:"🧾",kharid:"🚚",udhar:"📒",bills:"📋",day:"🌙",label:"🏷️",route:"📍",report:"📈",set:"⚙️"};$("#tabs").innerHTML=tabsList().map(([k,v])=>`<button role="tab" aria-selected="${S.tab===k}" data-tab="${k}"><span class="ti">${TI[k]||""}</span> ${v}</button>`).join("");{const a=$("#tabs [aria-selected=\"true\"]");if(a&&a.scrollIntoView)try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}
   $("#who").textContent="👤 "+(biller()||"नाम डालें");
 }
+{const L=document.getElementById("lgBtn");if(L){const go=()=>{if(S.tab!=="bill"){S.tab="bill";showTab()}window.scrollTo(0,0);try{if(typeof camOn==="function")camOn()}catch(e){}};L.onclick=go;L.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}}}
 $("#tabs").onclick=e=>{const b=e.target.closest("[data-tab]");if(!b)return;S.tab=b.dataset.tab;showTab()};
 function showTab(){
   renderTabs();
