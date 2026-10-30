@@ -1,12 +1,11 @@
-Mon Oct 26 16:09:53 UTC 2026
+Fri Oct 30 16:30:09 UTC 2026
 == authorized domains ==
 {
-  "projectId": "780214438822",
+  "projectId": "1053363286177",
   "authorizedDomains": [
     "localhost",
-    "bhairav-canteen.firebaseapp.com",
-    "bhairav-canteen.web.app",
-    "177mhwcanteen-cyber.github.io"
+    "mh177-canteen.firebaseapp.com",
+    "mh177-canteen.web.app"
   ]
 }
 
@@ -38,7 +37,7 @@ Mon Oct 26 16:09:53 UTC 2026
 {
   "error": {
     "code": 404,
-    "message": "Document \"projects/bhairav-canteen/databases/(default)/documents/staffIndex/0000000000\" not found.",
+    "message": "Document \"projects/mh177-canteen/databases/(default)/documents/staffIndex/0000000000\" not found.",
     "status": "NOT_FOUND"
   }
 }
@@ -54,6 +53,6 @@ Mon Oct 26 16:09:53 UTC 2026
 
 == pages ==
 index 200
-projectId: "bhairav-canteen"
-window.SE_BUILD="1.3.1026";window.SE_NATIVE_MIN=1;window.SE_PHOTOS=["k1001","k1002","k1003","k1004","k1005","k1006","k1007","k1008","k1009","k1010","k1011","k1012","k1013","k1014","k1015","k1016","k1017","k1018","k1019","k1020","k1021","k1022","k1023","k1024","k1025","k1026","k1027","k1028","k1029","k1030","k1031","k1032"];
+projectId: "mh177-canteen"
+window.SE_BUILD="1.4.1030";window.SE_NATIVE_MIN=1;window.SE_PHOTOS=[];
 
