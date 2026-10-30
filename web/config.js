@@ -13,7 +13,8 @@ window.SE_CONFIG = {
     appId: "1:1053363286177:web:e9503b0c7b41daa78580e0"
   },
   // मालिक की ईमेल की छाप (SHA-256) — ईमेल यहाँ साफ़ नहीं लिखी जाती (भैरव वाली ही — एक लॉगिन से सब दुकानें)
-  ownerHash: "d05c53d3cdca521782c90e21f807a1add61726965096709cb1ae4f3612b96151",
+  // मालिक: mhwetcanteen@gmail.com (मुख्य) + भैरव वाली ईमेल (मास्टर ऐप के लिए)
+  ownerHash: ["faa61c07b7ccc34cd10502cf475eb852ff0413a045c95108294f12fbe07c2d37", "d05c53d3cdca521782c90e21f807a1add61726965096709cb1ae4f3612b96151"],
   ownerName: "विक्रम जी",
   photoUrl: "",
   updateUrl: "https://177mhwcanteen-cyber.github.io/177-MH-/"

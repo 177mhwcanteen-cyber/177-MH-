@@ -15,7 +15,7 @@ const staffPass=(ph,pin)=>`se-${pin}-${ph}`;
 // मालिक की ईमेल कोड में साफ़ नहीं लिखी — सिर्फ़ उसकी "छाप" (SHA-256), ताकि Public कोड में ईमेल न दिखे
 const OH={};
 async function isOwnerMail(email){email=String(email||"").trim().toLowerCase();if(!email||!CFG.ownerHash)return false;if(email in OH)return OH[email];
-  try{const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(email));OH[email]=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("")===String(CFG.ownerHash).toLowerCase()}catch(e){OH[email]=false}return OH[email]}
+  try{const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(email));OH[email]=[].concat(CFG.ownerHash).map(x=>String(x).toLowerCase()).includes([...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join(""))}catch(e){OH[email]=false}return OH[email]}
 SE.configured=!!(CFG.firebase&&CFG.firebase.apiKey&&!/^PASTE/.test(CFG.firebase.apiKey));
 
 /* ---------- Firebase शुरू ---------- */

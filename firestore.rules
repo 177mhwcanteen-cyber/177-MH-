@@ -10,7 +10,7 @@ service cloud.firestore {
     function isOwner() {
       return signedIn()
         // मालिक की ईमेल की छाप (SHA-256) — Public कोड में ईमेल साफ़ नहीं दिखती
-        && hashing.sha256(request.auth.token.email.lower()).toHexString().lower() == 'd05c53d3cdca521782c90e21f807a1add61726965096709cb1ae4f3612b96151'
+        && hashing.sha256(request.auth.token.email.lower()).toHexString().lower() in ['faa61c07b7ccc34cd10502cf475eb852ff0413a045c95108294f12fbe07c2d37', 'd05c53d3cdca521782c90e21f807a1add61726965096709cb1ae4f3612b96151']
         && request.auth.token.email_verified == true;
     }
     function active() {
