@@ -726,7 +726,7 @@ const DEMO_ITEMS=[
  ["p0665", "Peda", "🍬", "mithai", "kg", 420, 0, 0, "", "mithai", "5019", 420],
  ["p0687", "Rasmalai (kg)", "🍬", "mithai", "kg", 480, 0, 0, "", "mithai", "5020", 480],
  ["p0693", "Rasmalai ₹110", "🍬", "mithai", "pc", 110, 0, 0, "", "mithai", "5021", 110],
- ["p0425", "Ganna Juice", "🥟", "fast", "pl", 30, 0, 0, "", "nashta", "5022", 30],
+ ["p0425", "Ganna Juice", "🥟", "fast", "pc", 30, 0, 0, "", "nashta", "5022", 30],
  ["p0098", "Amul Gold Milk 500ml", "🥛", "kirana", "pc", 36, 34.5, 0, "8901262260107", "dairy", "5023", 36],
  ["p0609", "Momos", "🥟", "fast", "pl", 25, 0, 0, "", "nashta", "5024", 25],
  ["p0550", "Lassi", "🥛", "kirana", "pc", 50, 0, 0, "", "dairy", "5025", 50],
@@ -1655,6 +1655,24 @@ function cashCalc(d){
   return {cashSale,jamaCash,khCash,khAll,float,expected,counted,diff:counted==null?null:r2(counted-expected)};
 }
 function diffPill(diff){if(diff==null)return '<span class="pill blue">अभी गिना नहीं</span>';if(Math.abs(diff)<=5)return '<span class="pill green">✓ पूरा मिला</span>';return diff<0?`<span class="pill red">${rs(-diff)} कम है</span>`:`<span class="pill blue">${rs(diff)} ज़्यादा है</span>`}
+/* 📊 मालिक की लाइव रिपोर्ट: श्रेणी-वार बिक्री, टॉप सामान, चेतावनियाँ — और AI के लिए एक लाइन वाला हिसाब */
+const LIVE_CAT={mithai:"🍬 मिठाई-पनीर",fast:"🥟 नाश्ता",tob:"📦 कोड वाले",dairy:"🥛 दूध-दही",ice:"🍦 आइसक्रीम",drinks:"🥤 ड्रिंक",kirana:"🛒 किराना",sabzi:"🥬 सब्ज़ी-फल",inst:"🏢 संस्था/ट्रांसफर"};
+function liveData(){const bl=(S.dayBills||[]).filter(b=>!b.cancelled&&!b.pending);const cat={},top={},warns=[];let tot=0,cash=0,upi=0,ud=0,profit=0;
+  for(const b of bl){const inst=b.mode==="inst";if(!inst){tot+=+b.total||0;cash+=+(b.pay&&b.pay.cash)||0;upi+=+(b.pay&&b.pay.upi)||0;ud+=+(b.pay&&b.pay.udhar)||0}
+    (b.warn||[]).forEach(w=>warns.push(`बिल ${b.no} (${b.byName||""}): ${w}`));if(b.rateChanged)warns.push(`बिल ${b.no} (${b.byName||""}): भाव बदला गया`);
+    for(const l of b.lines||[]){const it=S.items.find(x=>x.id===l.id)||{};const k=inst?"inst":it.cat==="mithai"?"mithai":it.cat==="fast"?"fast":it.cat==="sabzi"?"sabzi":(["tob","dairy","ice","drinks"].includes(it.sub)?it.sub:"kirana");
+      cat[k]=(cat[k]||0)+(+l.amt||0);if(!inst)profit+=(+l.amt||0)-(+l.cost||0)*(+l.qty||0);
+      const nm=it.name||l.realName||l.name;const t=top[nm]=top[nm]||{q:0,a:0,u:l.unit};t.q+=+l.qty||0;t.a+=+l.amt||0}}
+  return {n:bl.length,tot:r2(tot),cash:r2(cash),upi:r2(upi),ud:r2(ud),profit:Math.round(profit),cat:Object.entries(cat).sort((a,b)=>b[1]-a[1]),top:Object.entries(top).sort((a,b)=>b[1].a-a[1].a).slice(0,10),warns}}
+function liveText(){const L=liveData();return `177 MH कैंटीन · ${fdate(S.billsDate)} · ${ftime(Date.now())} तक\nबिक्री ${rs(L.tot)} (${L.n} बिल) · नकद ${rs(L.cash)} · UPI ${rs(L.upi)} · उधार ${rs(L.ud)} · मुनाफ़ा लगभग ${rs(L.profit)}\nश्रेणी: ${L.cat.map(([k,v])=>`${LIVE_CAT[k]||k} ${rs(r2(v))}`).join(" · ")}\nटॉप: ${L.top.map(([n,t])=>`${n} ${fq(t.q,t.u)} ${rs(r2(t.a))}`).join(" · ")}\nचेतावनियाँ (${L.warns.length}): ${L.warns.join(" | ")||"कोई नहीं"}`}
+function ownerLiveHTML(){const L=liveData(),mx=Math.max(1,...L.cat.map(c=>c[1]));
+  return `<div class="card2"><h3>📊 आज की बिक्री — श्रेणी-वार</h3>
+  <div class="stkmeta"><span>कुल ${L.n} बिल · मुनाफ़ा लगभग</span><b>${rs(L.tot)} · ${rs(L.profit)}</b></div>
+  ${L.cat.map(([k,v])=>`<div style="margin:6px 0"><div class="stkmeta" style="margin:0"><span>${LIVE_CAT[k]||k}</span><b>${rs(r2(v))}</b></div><div style="height:6px;border-radius:4px;background:var(--line,#e5e7f0)"><div style="height:6px;border-radius:4px;width:${Math.round(v/mx*100)}%;background:var(--brand,#5b3df5)"></div></div></div>`).join("")||'<p class="note">आज अभी कोई बिक्री नहीं।</p>'}
+  ${L.top.length?`<h4 style="margin:12px 0 4px">🏆 सबसे ज़्यादा बिके</h4>${L.top.map(([n,t],i)=>`<div class="stkmeta"><span>${i+1}. ${esc(n)} · ${fq(t.q,t.u)}</span><b>${rs(r2(t.a))}</b></div>`).join("")}`:""}
+  <h4 style="margin:12px 0 4px">⚠️ आज की चेतावनियाँ (${L.warns.length})</h4>${L.warns.length?L.warns.map(w=>`<p class="note" style="margin:2px 0">• ${esc(w)}</p>`).join(""):'<p class="note">कोई नहीं ✓</p>'}
+  <button class="big ghost" style="margin-top:10px" data-livecopy>🤖 AI के लिए हिसाब कॉपी करें</button></div>`}
+document.addEventListener("click",async e=>{if(!e.target.closest("[data-livecopy]"))return;const t=liveText();try{await navigator.clipboard.writeText(t);toast("✓ कॉपी हो गया — Claude को चिपका दें")}catch(_){toast("कॉपी नहीं हुआ")}});
 function renderDay(){
   const d=S.billsDate,c=cashCalc(d),rows=stockRows();
   const _k=window.SF?SF.dayKpi():{buy:0,short:0};const buyTot=_k.buy,shortTot=_k.short;
@@ -1664,6 +1682,7 @@ function renderDay(){
   <div class="kpi ${shortTot>0?"red":""}"><span>माल में कमी (बिक्री रेट)</span><b>${rs(shortTot)}</b></div><div class="kpi"><span>गल्ला</span><b style="font-size:16px;padding-top:6px">${diffPill(c.diff)}</b></div></div>
 
   ${window.SK&&!S.isOwner?SK.staffBtnHTML():""}
+  ${S.isOwner?ownerLiveHTML():""}
   <div class="card2"><h3>गल्ला मिलान</h3>
     <div class="stkmeta"><span>सुबह खुला पैसा</span><b>${rs(c.float)}</b></div>
     <div class="stkmeta"><span>+ नकद बिक्री</span><b>${rs(c.cashSale)}</b></div>
