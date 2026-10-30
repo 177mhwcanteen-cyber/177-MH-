@@ -25,6 +25,7 @@ async def page(b, mock, users, cfg=True):
     pg.on("console", lambda m: m.type == "error" and errs.append("console: " + m.text))
     await pg.add_init_script(f"window.__MOCK__={json.dumps(mock)};window.__USERS__={json.dumps(users)};window.print=()=>{{window.__printed=(window.__printed||0)+1}};")
     await pg.route("**/lib/vendor.js", lambda r: r.fulfill(body=MOCK, content_type="application/javascript"))
+    await pg.route("**/migrate.json", lambda r: r.fulfill(body=open(os.path.join(H, "fixture-migrate.json"), encoding="utf8").read(), content_type="application/json"))
     await pg.route("**/config.js", lambda r: r.fulfill(body=CFG if cfg else "window.SE_CONFIG={};", content_type="application/javascript"))
     async def up(r):
         UPLOADS.append(len(r.request.post_data or ""))

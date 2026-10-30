@@ -1,6 +1,6 @@
-# भैरव कैंटीन — बिलिंग ऐप (Android + वेब)
+# 177 MH कैंटीन — बिलिंग ऐप (Android + वेब)
 
-विक्रम जी की सब्ज़ी गाड़ी (जसाई, बाड़मेर, बाड़मेर) के लिए बिलिंग, स्टॉक, उधार और रिपोर्ट।
+विक्रम जी की सब्ज़ी गाड़ी (आकाशवाणी रोड, बाड़मेर, बाड़मेर) के लिए बिलिंग, स्टॉक, उधार और रिपोर्ट।
 
 ## कैसे काम करता है
 | हिस्सा | कहाँ | बदलाव कैसे पहुँचता है |
@@ -20,8 +20,8 @@
 * संस्था का भाव अपने-आप = आज की खरीद का औसत भाव।
 
 ## लिंक
-* APK: `https://github.com/177mhwcanteen-cyber/bhairav-canteen-app/releases/latest/download/sabji-express.apk`
-* वेब (मालिक मोड, Chrome में): `https://177mhwcanteen-cyber.github.io/bhairav-canteen-app/`
+* APK: `https://github.com/177mhwcanteen-cyber/mh-wet-canteen-app/releases/latest/download/sabji-express.apk`
+* वेब (मालिक मोड, Chrome में): `https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/`
 
 ## एक बार की सेटिंग
 1. `web/config.js` में Firebase का `firebaseConfig` भरें।

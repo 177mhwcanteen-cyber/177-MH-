@@ -20,6 +20,7 @@ const DAYS_BACK = 3;
 function setup() {
   ScriptApp.getProjectTriggers().forEach(t => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger('syncAll').timeBased().everyHours(1).create();
+  ScriptApp.newTrigger('liveJson').timeBased().everyMinutes(15).create();
   ScriptApp.newTrigger('backupJson').timeBased().atHour(7).everyDays(1).inTimezone('Asia/Kolkata').create();
   ScriptApp.newTrigger('backupJson').timeBased().atHour(22).everyDays(1).inTimezone('Asia/Kolkata').create();
   syncAll();
@@ -199,3 +200,37 @@ function fsGet_(path) {
 }
 function folder_(parent, name) { const it = parent.getFoldersByName(name); return it.hasNext() ? it.next() : parent.createFolder(name); }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+
+/* 🤖 Claude के लिए लाइव हिसाब — हर 15 मिनट Drive में "177 MH कैंटीन बैकअप/mh177-live.json" (एक ही फाइल, ऊपर से नई)
+   विक्रम जी Claude से पूछें "अभी तक कितनी मिठाई बिकी?" → Claude यही फाइल पढ़कर बताए। */
+function liveJson() {
+  const items = {}; fsList_('items').forEach(i => items[i._id] = i);
+  const CAT = it => it.cat === 'mithai' ? 'मिठाई-पनीर' : it.cat === 'fast' ? 'नाश्ता' : it.cat === 'sabzi' ? 'सब्ज़ी-फल' :
+    ({ tob: 'कोड वाले (गुटखा/सिगरेट)', dairy: 'दूध-दही', ice: 'आइसक्रीम', drinks: 'ड्रिंक' })[it.sub] || 'किराना';
+  const day = d => {
+    const bills = fsList_('days/' + d + '/bills').filter(b => !b.cancelled && !b.pending);
+    const r = { date: d, bills: bills.length, total: 0, cash: 0, upi: 0, udhar: 0, profit: 0, transfer: 0, byCategory: {}, byItem: {}, byBiller: {}, warnings: [], lastBillAt: '' };
+    let last = 0;
+    bills.forEach(b => {
+      const inst = b.mode === 'inst', p = b.pay || {};
+      if (inst) r.transfer += +b.total || 0; else { r.total += +b.total || 0; r.cash += +p.cash || 0; r.upi += +p.upi || 0; r.udhar += +p.udhar || 0; }
+      r.byBiller[b.byName || '?'] = (r.byBiller[b.byName || '?'] || 0) + (+b.total || 0);
+      (b.warn || []).forEach(w => r.warnings.push('बिल ' + b.no + ' (' + (b.byName || '') + '): ' + w));
+      if (b.rateChanged) r.warnings.push('बिल ' + b.no + ' (' + (b.byName || '') + '): भाव बदला');
+      last = Math.max(last, +b.ts || 0);
+      (b.lines || []).forEach(l => {
+        const it = items[l.id] || {}, c = inst ? 'संस्था/ट्रांसफर' : CAT(it), nm = it.name || l.realName || l.name;
+        r.byCategory[c] = Math.round(((r.byCategory[c] || 0) + (+l.amt || 0)) * 100) / 100;
+        const x = r.byItem[nm] = r.byItem[nm] || { qty: 0, amt: 0, unit: l.unit }; x.qty = Math.round((x.qty + (+l.qty || 0)) * 1000) / 1000; x.amt = Math.round((x.amt + (+l.amt || 0)) * 100) / 100;
+        if (!inst) r.profit += (+l.amt || 0) - (+l.cost || 0) * (+l.qty || 0);
+      });
+    });
+    r.profit = Math.round(r.profit); r.lastBillAt = ist_(last);
+    return r;
+  };
+  const days = daysBack_(7).map(d => { try { return day(d); } catch (e) { return { date: d, error: String(e) }; } });
+  const out = { app: '177 MH वेट कैंटीन', note: 'रकम ₹ में; profit = बिक्री − लागत (जिन सामान की लागत डली है)', updatedAt: ist_(Date.now()), today: days[0], last7days: days };
+  const root = folder_(DriveApp.getRootFolder(), '177 MH कैंटीन बैकअप');
+  const it = root.getFilesByName('mh177-live.json');
+  if (it.hasNext()) it.next().setContent(JSON.stringify(out, null, 1)); else root.createFile('mh177-live.json', JSON.stringify(out, null, 1), 'application/json');
+}
