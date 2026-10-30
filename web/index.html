@@ -1154,6 +1154,8 @@ async function saveBill(){
   /* 🛡️ 177 MH चेतावनियाँ (पुरानी गलतियों से सीख) — C3 अजीब भाव, C4 बहुत ज़्यादा मात्रा, C9 ₹0 बिल; C10 हर चेतावनी बिल में दर्ज */
   const warn=[];
   if(!(tot>0)&&S.mode!=="inst"){toast("₹0 का बिल नहीं बनता — सामान और भाव देखें");return}
+  if(S.mode==="udhar"&&party&&pay.udhar>0){const lim=+party.limit>0?+party.limit:UD_LIMIT,after=r2(bal(party.id)+pay.udhar);
+    if(after>lim){if(!S.isOwner){toast(`⛔ ${party.name} की उधार सीमा ₹${lim} है — बाकी ₹${after} हो जाएगा। विक्रम जी से सीमा बढ़वाएँ या नकद/UPI लें`);return}warn.push(`उधार सीमा पार: ${party.name} ₹${after} (सीमा ₹${lim})`)}}
   for(const l of lines){const it=S.items.find(x=>x.id===l.id),base=it?(+it.sale||0):0;
     if(!(l.rate>0)&&!l.free){toast(`"${l.name}" का भाव ₹0 है — बिल नहीं बनेगा`);return}
     if(base>0&&(l.rate>base*3||l.rate<base/3)){if(!S.isOwner){toast(`"${l.name}" का भाव ₹${l.rate} गलत लगता है (असली ₹${base}) — विक्रम जी से पूछें`);return}warn.push(`भाव ${l.name}: ₹${l.rate} (असली ₹${base})`)}
@@ -1240,13 +1242,16 @@ function showReceipt(b,fresh,offline){
 
 /* ---------- people / udhar ---------- */
 /* उधार खाता: नाम + मोबाइल (ज़रूरी) + पिछला बाकी + यूनिट */
+/* 🛡️ C5: हर नए उधार खाते की सीमा पहले से तय (मालिक बदल सकते हैं) */
+const UD_LIMIT=2000;
 async function createParty(o){
   const name=String(o.name||"").trim(),phone=String(o.phone||"").replace(/\D/g,"").slice(-10),qtr=String(o.qtr||"").trim(),open=r2(parseFloat(String(o.open||"").replace(",","."))||0);
   if(!name){toast("नाम लिखें");return null}
   if(phone.length!==10){toast("उधार खाते के लिए 10 अंक का मोबाइल नंबर ज़रूरी है");return null}
   const dup=S.parties.find(p=>String(p.phone||"")===phone);if(dup){toast("यह नंबर पहले से "+dup.name+" के खाते में है — वही खाता लगा दिया");return dup.id}
   if(open<0){toast("पिछला बाकी 0 या उससे ज़्यादा लिखें");return null}
-  const id="p"+Date.now().toString(36),d={name,phone,qtr,ts:Date.now(),by:S.uid||"",byName:biller(),...(open>0?{open}:{})};
+  const rank=String(o.rank||"").trim(),limit=S.isOwner?(parseFloat(o.limit)||UD_LIMIT):UD_LIMIT;
+  const id="p"+Date.now().toString(36),d={name,phone,qtr,rank,limit,ts:Date.now(),by:S.uid||"",byName:biller(),...(open>0?{open}:{})};
   try{
     if(!S.demo)await S.db.collection("parties").doc(id).set(d);
     if(!S.parties.find(x=>x.id===id))S.parties.push({id,...d});
@@ -1274,13 +1279,14 @@ function openNewParty(done){
   <div class="sh-head"><h3>नया उधार खाता</h3><button class="x" data-close aria-label="बंद करें">✕</button></div>
   <label class="fld" style="margin-bottom:10px">नाम (जैसे JCO मेस)<input class="inp" id="npName"></label>
   <label class="fld" style="margin-bottom:10px">मोबाइल नंबर (ज़रूरी)<input class="inp" id="npPhone" inputmode="tel" placeholder="10 अंक"></label>
-  <label class="fld" style="margin-bottom:10px">यूनिट<input class="inp" id="npQtr" placeholder="जैसे 15 भैरव / 177 MH"></label>
+  <div class="row2" style="margin:0 0 10px"><label class="fld">यूनिट / कंपनी<input class="inp" id="npQtr" placeholder="जैसे 177 MH / 318 WKSP"></label><label class="fld">रैंक / आर्मी नं.<input class="inp" id="npRank" placeholder="जैसे हवलदार · 1234567"></label></div>
+  ${S.isOwner?`<label class="fld" style="margin-bottom:10px">उधार सीमा ₹<input class="inp" id="npLim" inputmode="numeric" placeholder="${UD_LIMIT}"></label>`:`<p class="note" style="margin:0 0 10px">उधार सीमा ₹${UD_LIMIT} — ज़्यादा के लिए विक्रम जी से कहें</p>`}
   <label class="fld" style="margin-bottom:14px">पिछला बाकी ₹ (पुराने रजिस्टर से, हो तो)<input class="inp" id="npOpen" inputmode="decimal" placeholder="0"></label>
   <button class="big" data-ok>खाता बनाएँ</button></div></div>`;
   $("#sheet").onclick=async e=>{
     if(e.target.matches("[data-close]")){closeSheet();return}
     if(e.target.closest("[data-ok]")){
-      const id=await createParty({name:$("#npName").value,phone:$("#npPhone").value,qtr:$("#npQtr").value,open:$("#npOpen").value});
+      const id=await createParty({name:$("#npName").value,phone:$("#npPhone").value,qtr:$("#npQtr").value,rank:($("#npRank")||{}).value,limit:($("#npLim")||{}).value,open:$("#npOpen").value});
       if(id){closeSheet();done&&done(id)}
     }
   };
