@@ -990,7 +990,7 @@ $("#p-bill").addEventListener("click",e=>{
   if(e.target.closest("[data-custtoggle]")){S.showCust=!S.showCust;renderBill();if(S.showCust){const f=$("#custPh");if(f)f.focus()}return}
   if(e.target.closest("[data-repeat]")){repeatLast();return}
 
-  const it=e.target.closest("[data-item]");if(it){const x=item(it.dataset.item);if(priceOf(x)>0){if(S.qq>0)quickAdd(x,S.qq);else if(isPc(x.unit))quickAdd(x,1);else openQty(x)}else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast(S.mode==="inst"?"इसका खरीद रेट नहीं डाला गया":"इसका बिक्री रेट नहीं डाला गया — मालिक से पूछें");}
+  const it=e.target.closest("[data-item]");if(it){const x=item(it.dataset.item);if(priceOf(x)>0){if(S.qq>0)quickAdd(x,S.qq);else if(isPc(x.unit)&&x.sub!=="tob")quickAdd(x,1);else openQty(x)}else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast(S.mode==="inst"?"इसका खरीद रेट नहीं डाला गया":"इसका बिक्री रेट नहीं डाला गया — मालिक से पूछें");}
 });
 $("#p-bill").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("[data-item]")){e.preventDefault();e.target.click()}});
 function decItem(id){let i=-1;S.cart.forEach((l,k)=>{if(l.id===id&&!l.changed&&!l.free)i=k});if(i<0)i=S.cart.map(l=>l.id).lastIndexOf(id);if(i<0)return;const l=S.cart[i];if(l.qty>1){l.qty=r2(l.qty-1);l.amt=r2(l.qty*l.rate)}else S.cart.splice(i,1);refreshAfterCart()}
@@ -1041,7 +1041,7 @@ function openQty(it,lineIdx){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(
   const ln=lineIdx!=null?S.cart[lineIdx]:null,kg=it.unit==="kg",u=UNITS[it.unit]||it.unit;
   const board=priceOf(it);let rate=ln&&it.flex?ln.rate:board;const st={qty:ln?ln.qty:0,amt:null};
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
-  const chips=kg?[[.25,"¼"],[.5,"½"],[1,"1"],[2,"2"]]:[[1,"1"],[2,"2"],[3,"3"],[5,"5"]];
+  const chips=kg?[[.25,"¼"],[.5,"½"],[1,"1"],[2,"2"]]:it.sub==="tob"?[[1,"1"],[5,"5"],[10,"10"],[20,"20"]]:[[1,"1"],[2,"2"],[3,"3"],[5,"5"]];
   $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="${esc(it.name)} कितना चाहिए">
     <div class="qh">${tileHTML(it)}<div class="qn"><b>${esc(it.name)}</b><span>${rs(board)} / ${u}${it.flex?" · भाव बदल सकते हैं":""}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     <div class="qrow"><label class="qf"><input id="qIn" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="0" value="${ln?+(+ln.qty).toFixed(3):""}" aria-label="${kg?"किलो":"गिनती"}"><span>${kg?"कि.ग्रा":u}</span></label><span class="or">या</span><label class="qf"><span>₹</span><input id="aIn" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="0" aria-label="कितने रुपये का"></label></div>
@@ -1383,13 +1383,15 @@ function codes(it){return String(it.barcode||"").split(/[,\s]+/).filter(Boolean)
 function findByCode(c){return S.items.find(i=>codes(i).includes(c))||S.items.find(i=>i.code&&String(i.code)===c)}
 function beep(ok){camFlash(ok);try{if(navigator.vibrate)navigator.vibrate(ok?35:[60,40,60])}catch(e){}try{const A=beep.a||(beep.a=new (window.AudioContext||window.webkitAudioContext)());const o=A.createOscillator(),g=A.createGain();o.frequency.value=ok?1250:330;g.gain.value=.08;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+(ok?.09:.25))}catch(e){}}
 async function adjStock(pairs,why){
-  pairs=pairs.filter(p=>p[1]);
+  /* 📦→🔹 पैकेट वाला सामान (packOf) का स्टॉक उसके पीस वाले सामान में गिना जाता है: 1 पैकेट = perPack पीस */
+  pairs=pairs.map(([id,d])=>{const it=item(id);return it&&it.packOf&&+it.perPack>0&&item(it.packOf)?[it.packOf,r2(d*it.perPack)]:[id,d]}).filter(p=>p[1]);
   for(const [id,d] of pairs){
     const cur=+(S.pstock[id]?.qty)||0;S.pstock[id]={...(S.pstock[id]||{}),qty:r2(cur+d),ts:Date.now()};
     if(!S.demo){try{await S.db.collection("pstock").doc(id).set({qty:SE.inc(r2(d)),ts:Date.now(),by:S.uid||"",byName:biller(),last:why||""},{merge:true});S.db.collection("stockLog").doc("m"+Date.now().toString(36)+Math.random().toString(36).slice(2,5)).set({itemId:id,d:r2(d),why:why||"",ts:Date.now(),date:today(),by:S.uid||"",byName:biller()}).catch(()=>{})}catch(e){toast("स्टॉक अपडेट नहीं हुआ")}}
   }
 }
-function trackedPairs(lines,sign){return lines.filter(l=>item(l.id)?.track).map(l=>[l.id,sign*l.qty])}
+function packMap(id,q){const it=item(id);return it&&it.packOf&&+it.perPack>0&&item(it.packOf)?[it.packOf,r2(q*it.perPack)]:[id,q]}
+function trackedPairs(lines,sign){return lines.filter(l=>{const it=item(l.id);return it&&(it.track||(it.packOf&&item(it.packOf)?.track))}).map(l=>packMap(l.id,sign*l.qty))}
 async function handleScan(code){
   code=String(code||"").trim();if(!code)return;
   if(S.tab==="kharid"&&window.SI&&SI.active()&&SI.scan(code))return;
@@ -1990,7 +1992,7 @@ function reportA4(date){
 async function migrateOld(){
   if(!S.isOwner||S.demo){toast("सिर्फ मालिक");return}
   try{toast("पुराना डेटा ला रहे हैं…");const r=await fetch("migrate.json",{cache:"no-store"});const m=await r.json();let n=0,skip=0;
-    for(const [col,docs] of Object.entries(m)){for(const [id,data] of Object.entries(docs)){const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists){skip++;continue}await ref.set(data);n++}}
+    for(const [col,docs] of Object.entries(m)){for(const [id,data] of Object.entries(docs)){const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists){skip++;continue}const d={...data};if(d.by==="")d.by=S.uid||"";await ref.set(d);n++}}
     toast(`✓ ${n} चीज़ें आईं · ${skip} पहले से थीं (नहीं बदलीं)`)}catch(err){
     if(/permission/i.test(err.code||err.message||"")){const d=await SE.ownerDiag();toast(d.ok?"अनुमति अब ठीक है — दोबारा दबाएँ":"सर्वर ने मना किया: "+d.why);return}
     toast("नहीं आया: "+(err.message||err.code||""))}
