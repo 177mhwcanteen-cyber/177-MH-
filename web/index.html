@@ -1957,7 +1957,7 @@ function loadDemo(){
   S.items=DEMO_ITEMS.map(([id,name,emoji,cat,unit,sale,cost,hue,barcode,sub,code,mrp],i)=>({id,name,emoji,cat,unit,sale,cost,hue,sub,code,mrp,alias:ALIAS[id]||"",barcode:barcode||"",track:!!barcode,min:5,order:i,active:true,photo:SE.bundled.has(id)?"b":""}));
   S.pstock={};
   S.parties=[{id:"jco",name:"JCO मेस",phone:""},{id:"officers",name:"अफसर मेस",phone:""}];
-  S.settings={upi:"",payee:"177 MH Canteen"};
+  S.settings={upi:"",payee:"177 MH Canteen",insts:["15 भैरव कैंटीन","मारवाड़ रसोई (होटल)","अमूल स्टोर"]};
 }
 async function boot(){
   S.staff=lsGet("se_staff");S.view=lsGet("se_view")||"grid";S.sortTop=lsGet("se_sort")!=="0";try{S.top7=JSON.parse(lsGet("se_top7")||"{}")}catch(e){S.top7={}}try{S.bt=JSON.parse(lsGet("se_tabs")||"[]")}catch(e){S.bt=[]}
