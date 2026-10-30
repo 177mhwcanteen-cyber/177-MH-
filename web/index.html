@@ -664,7 +664,17 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 #bts .btab{min-width:0;flex:0 0 calc((100% - 25px)/5.4);padding:3px 2px 3px 7px;font-size:11px;border-radius:10px}
 #bts .btab small{font-size:13px}#bts .btab .bx{width:18px;height:18px;font-size:12px}
 #bts .btab.new{flex:0 0 auto;padding:3px 10px;font-size:18px}
-.bcust{flex:1 1 100%!important;border-radius:10px}.bcust input{font-size:13px;padding:5px 0}.bcust .ic{font-size:13px}
+/* ग्राहक पट्टी: दो बराबर साफ़ खाने, फोकस पर सिर्फ़ नारंगी किनारा */
+.bcust:not(.pill){flex:1 1 100%!important;display:grid!important;grid-template-columns:1fr 1fr;gap:8px;background:transparent!important;box-shadow:none!important;padding:0!important;border-radius:0}
+.bcust:not(.pill) label{display:flex;align-items:center;gap:6px;height:38px;padding:0 10px!important;border-radius:11px!important;background:rgba(255,255,255,.08)!important;border:1.5px solid rgba(255,255,255,.16)!important;flex:none!important}
+.bcust:not(.pill) label+label{border-left:1.5px solid rgba(255,255,255,.16)!important}
+.bcust:not(.pill) label:focus-within{background:rgba(255,255,255,.12)!important;border-color:var(--haldi)!important}
+.bcust:not(.pill) input{color:#fff!important;font-size:14px;font-weight:700;padding:0!important}
+.bcust:not(.pill) input::placeholder{color:rgba(255,255,255,.55)!important;font-weight:600}
+.bcust:not(.pill) .ic{font-size:14px;opacity:.9}
+.bcust.pill{flex:1 1 100%!important;border-radius:11px}
+/* बिलिंग स्क्रीन पर "शुभ रात्रि / आज के बिल" वाली पट्टी नहीं — जगह सामान के लिए */
+#greet{display:none!important}
 </style>
 
 <header class="px">
@@ -847,7 +857,7 @@ function closeCurTab(){S.bt.splice(S.ai,1);if(!S.bt.length)S.bt=[blankTab()];loa
 function renderBcust(){
   const b=$("#bcust");if(!b||b.contains(document.activeElement))return;
   if(S.mode==="walk"){const ok=S.cust.phone.length===10,known=ok&&S.customers.find(x=>x.id===S.cust.phone);
-    b.className="bcust";b.innerHTML=`<label><span class="ic" id="phIc">${ok?"✅":"📱"}</span><input id="custPh" inputmode="tel" autocomplete="off" placeholder="मोबाइल" value="${esc(S.cust.phone)}" aria-label="ग्राहक का मोबाइल नंबर"></label><label><span class="ic">${known?"⭐":"🙂"}</span><input id="custNm" autocomplete="off" placeholder="नाम" value="${esc(S.cust.name||(known&&known.name)||"")}" aria-label="ग्राहक का नाम"></label>`}
+    b.className="bcust";b.innerHTML=`<label><span class="ic" id="phIc">${ok?"✅":"📱"}</span><input id="custPh" inputmode="tel" autocomplete="off" placeholder="मोबाइल नंबर" value="${esc(S.cust.phone)}" aria-label="ग्राहक का मोबाइल नंबर"></label><label><span class="ic">${known?"⭐":"🙂"}</span><input id="custNm" autocomplete="off" placeholder="ग्राहक का नाम" value="${esc(S.cust.name||(known&&known.name)||"")}" aria-label="ग्राहक का नाम"></label>`}
   else if(S.mode==="udhar"){const p=S.parties.find(x=>x.id===S.partyId);b.className="bcust pill";b.textContent=p?`📒 ${p.name}${bal(p.id)>0?" · बाकी "+rs(bal(p.id)):""}`:"📒 नीचे उधार खाता चुनें"}
   else{b.className="bcust pill";b.textContent=S.inst?"🏠 "+S.inst:"🏠 नीचे संस्था चुनें"}
 }
