@@ -154,27 +154,64 @@ async def main():
         assert "पता" in await pg.text_content(".updmsg"), await pg.text_content(".updmsg")
         await pg.screenshot(path=f"{SHOTS}/3f-update-btn.png"); await pg.evaluate("closeSheet()")
         print("update button ok")
-        # ---------- 🛍️ बाज़ार खरीद (खरीदार) ----------
-        await pg.click('[data-tab="mkt"]'); await pg.wait_for_selector("[data-mknew]"); await pg.click("[data-mknew]")
-        await pg.fill("#mkShop", "शर्मा किराना"); await pg.fill("#mkPh", "98290 11111")
-        await pg.evaluate("handleScan('8906079510407')"); await pg.wait_for_timeout(200)
-        assert await pg.input_value("#mkName") == "20-20 Pista 250g", await pg.input_value("#mkName")
+        # ---------- 🛍️ बाज़ार खरीद (खरीदार) — स्कैन से ----------
+        await pg.click('[data-tab="mkt"]'); await pg.wait_for_selector("[data-mknew]"); await pg.screenshot(path=f"{SHOTS}/7z-market-home-empty.png")
+        await pg.click("[data-mknew]"); await pg.wait_for_timeout(150)
+        await pg.evaluate("handleScan('8906079510407')"); await pg.wait_for_timeout(250)
+        assert await pg.evaluate("JSON.parse(localStorage.getItem('mh_mkt_draft')).lines[0].name") == "20-20 Pista 250g"
         await pg.evaluate("handleScan('8906079510407')"); await pg.wait_for_timeout(100)
-        assert await pg.input_value("#mkQ") == "2"
-        await pg.fill("#mkR", "560"); await pg.fill("#mkM", "599")
-        assert "कम" in await pg.text_content("#mkGain"), await pg.text_content("#mkGain")
-        await pg.click("[data-mkadd]")
-        await pg.fill("#mkName", "India Gate चावल 1kg"); await pg.fill("#mkQ", "5"); await pg.fill("#mkR", "100"); await pg.fill("#mkM", "130")
-        assert "30%" in await pg.text_content("#mkGain"); await pg.press("#mkM", "Enter")
-        assert await pg.evaluate("JSON.parse(localStorage.getItem('mh_mkt_draft')).lines.length") == 2
-        await pg.screenshot(path=f"{SHOTS}/7a-market-draft.png", full_page=True)
-        await pg.click("[data-mksend]"); await pg.wait_for_timeout(150)
-        assert "बिल की फोटो" in await pg.text_content("#toast")
-        await pg.click("[data-mksend]"); await pg.wait_for_timeout(600)
+        assert await pg.evaluate("JSON.parse(localStorage.getItem('mh_mkt_draft')).lines[0].qty") == 2
+        ln = '.mk-ln >> nth=0'
+        await pg.fill(ln + ' >> [data-f="rate"]', "560"); await pg.fill(ln + ' >> [data-f="mrp"]', "599"); await pg.press(ln + ' >> [data-f="mrp"]', "Enter"); await pg.wait_for_timeout(100)
+        assert "🔴" in await pg.text_content(".mk-ln >> nth=0")
+        await pg.fill("#mkQ", "India Gate चावल 1kg"); await pg.press("#mkQ", "Enter"); await pg.wait_for_timeout(150)
+        await pg.fill(ln + ' >> [data-f="qty"]', "5"); await pg.fill(ln + ' >> [data-f="rate"]', "100"); await pg.fill(ln + ' >> [data-f="mrp"]', "130"); await pg.press(ln + ' >> [data-f="mrp"]', "Enter")
+        await pg.wait_for_timeout(150); await pg.screenshot(path=f"{SHOTS}/7a-market-draft.png")
+        # 🤖 AI बिल: GST + भाड़ा बाँटना
+        await pg.click('[data-mode="ai"]'); await pg.wait_for_timeout(100)
+        aij = {"app":"mh177-bill","ref":"x","supplier":{"name":"Shree Traders","gstin":"08ABCDE1234F1Z5","billNo":"ST-77","date":"2026-10-31"},
+               "items":[{"name":"Dairy Milk 50g","qty":10,"rate":100,"taxable":1000,"gstPct":18,"gstAmt":180,"lineTotal":1180,"mrp":200,"barcode":""},
+                        {"name":"Parle-G 100g","qty":20,"free":4,"rate":8,"taxable":160,"gstPct":18,"gstAmt":28.8,"lineTotal":188.8,"mrp":10}],
+               "billDiscount":0,"freight":30,"otherCharges":0,"roundOff":1.2,"grandTotal":1400}
+        await pg.fill("#mkPaste", json.dumps(aij)); await pg.click("[data-aiapply]"); await pg.wait_for_timeout(200)
+        d = await pg.evaluate("JSON.parse(localStorage.getItem('mh_mkt_draft'))")
+        dm = [l for l in d["lines"] if l["name"] == "Dairy Milk 50g"][0]; pg_ = [l for l in d["lines"] if l["name"] == "Parle-G 100g"][0]
+        assert abs(dm["rate"] - 120.69) < 0.02 and pg_["qty"] == 24, (dm["rate"], pg_)
+        assert abs(sum(l["qty"]*l["rate"] for l in d["lines"] if l.get("ai")) - 1400) < 0.5
+        await pg.evaluate("handleScan('8901262152334')"); await pg.wait_for_selector("[data-mm]")
+        await pg.click('[data-mm]:has-text("Dairy Milk")'); await pg.wait_for_timeout(150)
+        await pg.screenshot(path=f"{SHOTS}/7c-market-ai.png")
+        await pg.click("[data-fin]"); await pg.wait_for_selector("[data-fsend]"); await pg.wait_for_timeout(700); await pg.screenshot(path=f"{SHOTS}/7d-market-finish.png")
+        for _ in range(4):
+            if not await pg.is_visible("[data-fsend]"): break
+            await pg.click("[data-fsend]"); await pg.wait_for_timeout(250)
+        await pg.wait_for_timeout(500)
         mb = list((await pg.evaluate("window.__MOCK__.mbuys||{}")).values())
-        assert mb and mb[0]["total"] == 1620 and mb[0]["shop"] == "शर्मा किराना" and mb[0]["phone"] == "9829011111" and mb[0]["pay"]["status"] == "pending" and len(mb[0]["low"]) == 1, mb
-        assert mb[0]["lines"][0]["lid"].endswith("-01") and mb[0]["by"]
-        await pg.wait_for_timeout(200); await pg.screenshot(path=f"{SHOTS}/7b-market-home.png")
+        assert mb and mb[0]["status"] == "sent" and mb[0]["pay"]["status"] == "pending" and mb[0]["aiKey"] and len(mb[0]["low"]) == 1, mb
+        assert abs(mb[0]["total"] - (1120 + 500 + 1400)) < 1, mb[0]["total"]
+        # वही बिल दोबारा → रोक
+        await pg.click("[data-mknew]"); await pg.click('[data-mode="ai"]'); await pg.fill("#mkPaste", json.dumps(aij)); await pg.click("[data-aiapply]"); await pg.wait_for_timeout(200)
+        assert "पहले ही" in await pg.text_content("#toast"), await pg.text_content("#toast")
+        await pg.click("[data-mkback]"); await pg.wait_for_timeout(300); await pg.screenshot(path=f"{SHOTS}/7b-market-home.png")
+        # मालिक: भुगतान · दूसरा साथी: गिनकर पक्का
+        no = mb[0]["no"]; uid0 = await pg.evaluate("S.uid")
+        await pg.evaluate("S.isOwner=true;SM.render()"); await pg.wait_for_timeout(100)
+        await pg.click(f'[data-mkopen="{no}"]'); await pg.wait_for_selector("[data-paid]"); await pg.screenshot(path=f"{SHOTS}/7e-market-pay.png")
+        await pg.fill("#mkUtr", "123456789012"); await pg.click("[data-paid]"); await pg.wait_for_timeout(300)
+        assert (await pg.evaluate(f"window.__MOCK__.mbuys['{no}'].pay"))["status"] == "paid"
+        await pg.evaluate("S.isOwner=false;S.uid='other-biller';SM.render()"); await pg.wait_for_timeout(100)
+        await pg.click("[data-rstart]"); await pg.wait_for_timeout(100)
+        pis0 = await pg.evaluate("(window.__MOCK__.pstock.k1010||{}).qty||0")
+        await pg.evaluate("handleScan('8906079510407')"); await pg.wait_for_timeout(100)
+        await pg.screenshot(path=f"{SHOTS}/7f-market-recv.png")
+        await pg.click("[data-recv]"); await pg.wait_for_timeout(800)
+        m = await pg.evaluate(f"window.__MOCK__.mbuys['{no}']")
+        assert m["status"] == "recv" and m["recv"]["diff"], m.get("recv")
+        pis1 = await pg.evaluate("(window.__MOCK__.pstock.k1010||{}).qty||0")
+        assert abs(pis1 - pis0 - 1) < 1e-6, (pis0, pis1)
+        assert any(p.get("mp") == no for p in (await pg.evaluate("window.__MOCK__.purchases")).values())
+        await pg.evaluate(f"S.uid='{uid0}';SM.render()")
+        print("market pay+receive ok")
         await pg.click('[data-tab="bill"]'); await pg.wait_for_timeout(200)
         print("market buy ok", mb[0]["no"], mb[0]["total"])
         # झलक: तम्बाकू टाइलें + मिठाई का छोटा पॉपअप (सिर्फ़ स्क्रीनशॉट)

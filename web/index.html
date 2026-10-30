@@ -934,7 +934,7 @@ $("#btabs").onclick=e=>{
 };
 
 /* ---------- tabs ---------- */
-function tabsList(){const _mp=window.SM&&S.isOwner?SM.pendingPay():0;const t=[["bill","बिलिंग"],["mkt","बाज़ार खरीद"+(_mp?" 🔴"+_mp:"")],["kharid","माल आया"],["stock","स्टॉक"+(window.SK&&SK.counting()?" 🔢":"")],["udhar","उधार खाता"],["bills","आज के बिल"],["day","दिन का हिसाब"]];t.push(["label","लेबल"]);const _cr=(S.cancelReqs||[]).length;if(S.isOwner)t.push(["report","रिपोर्ट"+(guardOpen()+_cr?" 🔴"+(guardOpen()+_cr):"")],["set","रेट व सेटिंग"]);return t}
+function tabsList(){const _mp=window.SM?SM.badge():0;const t=[["bill","बिलिंग"],["mkt","बाज़ार खरीद"+(_mp?" 🔴"+_mp:"")],["kharid","माल आया"],["stock","स्टॉक"+(window.SK&&SK.counting()?" 🔢":"")],["udhar","उधार खाता"],["bills","आज के बिल"],["day","दिन का हिसाब"]];t.push(["label","लेबल"]);const _cr=(S.cancelReqs||[]).length;if(S.isOwner)t.push(["report","रिपोर्ट"+(guardOpen()+_cr?" 🔴"+(guardOpen()+_cr):"")],["set","रेट व सेटिंग"]);return t}
 function renderTabs(){
   const TI={mkt:"🛍️",stock:"📦",bill:"🧾",kharid:"🚚",udhar:"📒",bills:"📋",day:"🌙",label:"🏷️",route:"📍",report:"📈",set:"⚙️"};$("#tabs").innerHTML=tabsList().map(([k,v])=>`<button role="tab" aria-selected="${S.tab===k}" data-tab="${k}"><span class="ti">${TI[k]||""}</span> ${v}</button>`).join("");{const a=$("#tabs [aria-selected=\"true\"]");if(a&&a.scrollIntoView)try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}
   $("#who").textContent="👤 "+(biller()||"नाम डालें");
@@ -1264,7 +1264,8 @@ async function saveBill(){
   const cph=S.mode==="walk"?S.cust.phone:"",cnm=S.mode==="walk"?S.cust.name:"";
   const cost=r2(lines.reduce((a,l)=>a+l.cost*l.qty,0));
   if(c.no==="…"&&window.SF)c.no=await SF.reserveBillNo();
-  const bill={no:c.no,ts:now,date,by:S.uid||"",byName:biller(),mode:S.mode,partyId:S.mode==="udhar"?S.partyId:"",partyName:S.mode==="udhar"?(party?.name||""):S.mode==="inst"?S.inst:(cnm||"VIP ग्राहक"),custPhone:cph,custName:cnm,
+  const _l=window.SR&&SR.last&&Date.now()-SR.last.ts<15*60000?SR.last:null;
+  const bill={...(_l?{loc:{lat:_l.lat,lng:_l.lng,acc:_l.acc||0}}:{}),no:c.no,ts:now,date,by:S.uid||"",byName:biller(),mode:S.mode,partyId:S.mode==="udhar"?S.partyId:"",partyName:S.mode==="udhar"?(party?.name||""):S.mode==="inst"?S.inst:(cnm||"VIP ग्राहक"),custPhone:cph,custName:cnm,
     lines,sub:cartTotal(),disc:+c.disc||0,total:S.mode==="inst"?cartTotal():tot,pay,payMode:c.pay,cost,
     rateChanged:lines.some(l=>l.changed),cancelled:false,...(warn.length?{warn}:{}),settled:c.pay!=="pending",...(c.photo?{photo:true}:{})};if(window.SR)SR.stamp(bill);
   if(c.photo){const ph={d:c.photo,no:c.no,date,ts:now,by:S.uid||"",byName:biller()};S.billPhotos=S.billPhotos||{};S.billPhotos[c.no]=c.photo;if(!S.demo)S.db.collection("billPhotos").doc(c.no).set(ph).catch(()=>{})}
@@ -1431,6 +1432,8 @@ function openParty(pid){
 }
 
 /* ---------- bills list ---------- */
+/* कर्मचारी को सिर्फ़ अपने बनाए बिल/बिक्री दिखे — पूरी दुकान का हिसाब सिर्फ़ मालिक को */
+function ownOnly(fn){return function(){if(S.isOwner||S.demo)return fn.apply(this,arguments);const all=S.dayBills;S.dayBills=(all||[]).filter(b=>b.by===S.uid);try{return fn.apply(this,arguments)}finally{S.dayBills=all}}}
 function renderBills(){
   const bills=[...S.dayBills].sort((a,b)=>b.ts-a.ts);
   const live=bills.filter(b=>!b.cancelled);
@@ -1766,6 +1769,7 @@ function liveData(){const bl=(S.dayBills||[]).filter(b=>!b.cancelled&&!b.pending
       cat[k]=(cat[k]||0)+(+l.amt||0);if(!inst)profit+=(+l.amt||0)-(+l.cost||0)*(+l.qty||0);
       const nm=it.name||l.realName||l.name;const t=top[nm]=top[nm]||{q:0,a:0,u:l.unit};t.q+=+l.qty||0;t.a+=+l.amt||0}}
   const last=bl.reduce((m,b)=>Math.max(m,+b.ts||0),0),hr=new Date().getHours(),idle=S.billsDate===today()&&hr>=8&&hr<22&&(!last||Date.now()-last>2*3600e3)?(last?Math.round((Date.now()-last)/36e5*10)/10:null):0;
+  if(window.SM)SM.warns(S.billsDate).forEach(w=>warns.push(w));
   (S.priceLog||[]).filter(l=>l.field==="sale"&&today(new Date(l.ts))===S.billsDate).forEach(l=>warns.push(`✏️ भाव बदला: ${l.name} ${rs(l.old)} → ${rs(l.new)} (${l.byName||""}, ${ftime(l.ts)})`));
   if(idle!==0)warns.unshift(idle?`⏰ ${idle} घंटे से कोई बिल नहीं बना — दुकान खुली है तो बिक्री बिना बिल तो नहीं?`:"⏰ आज अभी तक एक भी बिल नहीं बना");
   const noCost=[...new Set(bl.flatMap(b=>(b.lines||[]).filter(l=>!(+l.cost>0)).map(l=>(S.items.find(x=>x.id===l.id)||{}).name||l.name)))];
@@ -2161,6 +2165,6 @@ boot();
 <script src="se-stock.js"></script>
 <script src="se-intake.js"></script>
 <script src="se-market.js"></script>
-<script>if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
+<script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>
