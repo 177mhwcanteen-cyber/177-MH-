@@ -173,6 +173,9 @@ function pItemSheet(id,idx,qty0){
     if(!it&&!nm){toast("क्या लिया — यह लिखें");$("#piN").focus();return}if(!(q>0)){Q.focus();return}if(!(r>0)){Rt.focus();return}
     const xd=pk&&$("#piE")?$("#piE").value:"";
     if(xd&&xd<today()){toast("यह माल पहले से एक्सपायर है — तारीख जाँचें");$("#piE").focus();return}
+    /* 🛡️ C6: रकम को भाव वाले खाने में लिखने की गलती (पुराना ₹7,040 वाला मामला) */
+    if(r>=1000&&P._bigR!==r+"|"+nm){P._bigR=r+"|"+nm;toast(`एक ${it&&it.unit==="kg"?"किलो":"पीस"} का भाव ₹${r}? पूरी रकम नहीं, एक का भाव लिखें — सही है तो दोबारा दबाएँ`);return}
+    if(it&&it.cost>0&&(r>it.cost*3||r<it.cost/3)&&P._oddR!==r+"|"+it.id){P._oddR=r+"|"+it.id;toast(`पिछली खरीद ₹${it.cost} थी, अब ₹${r}? सही है तो दोबारा दबाएँ`);return}
     const line={id:it?it.id:"",name:nm,unit:it?it.unit:"pc",qty:q,rate:r,...(xd?{exp:xd}:{})};
     if(ln)P.lines[idx]=line;else{const ex=it?P.lines.findIndex(l=>l.id===it.id&&num(l.rate)===r):-1;if(ex>-1&&(P.lines[ex].exp||"")===(line.exp||""))P.lines[ex]={...line,qty:r2((num(P.lines[ex].qty)+q)*1000)/1000};else P.lines.push(line)}
     P.q="";P.net="";saveDraft();closeSheet();SF.renderKharid(1);beep(true);toast("✓ "+nm+" "+fq(q,line.unit)+" × "+rs(r)+" = "+rs(r2(q*r)));
@@ -250,6 +253,8 @@ async function savePurchase(){
   if(S.saving)return;S.saving=true;
   const isMH=P.src==="mh",shop=isMH?MH:(String(P.shop||"").trim()||"दुकान"),ph=isMH?"":String(P.phone||"").replace(/\D/g,"").slice(-10);
   let sup=shopKnown(shop,ph);
+  /* 🛡️ C6: नया सप्लायर सिर्फ़ मोबाइल नंबर के साथ (पहले एक ही सप्लायर 3 नामों से बना था) */
+  if(!sup&&!isMH&&ph.length!==10){S.saving=false;toast("नए सप्लायर का 10 अंक मोबाइल नंबर लिखें — ताकि एक ही दुकान दो नाम से न बने");return}
   if(!sup){const sid="s"+uid(),d={name:shop,phone:ph.length===10?ph:"",ts:Date.now(),lastTs:Date.now(),by:S.uid||"",byName:biller()};
     if(!S.demo)S.db.collection("suppliers").doc(sid).set(d).catch(()=>{});sup={id:sid,...d};S.suppliers.unshift(sup)}
   const net=pNet(),disc=r2(gross-net),f=gross>0?net/gross:1;

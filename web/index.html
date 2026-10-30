@@ -1150,12 +1150,21 @@ async function saveBill(){
   else if(c.pay==="split"){const cp=Math.min(tot,parseFloat(c.cashPart)||0);pay.cash=cp;pay.udhar=r2(tot-cp)}
   const now=Date.now(),date=today();
   const lines=S.cart.map(l=>({id:l.id,name:l.name,emoji:l.emoji||"",unit:l.unit,qty:l.qty,rate:l.rate,board:l.board,cost:l.cost,amt:l.amt,mrp:+(S.items.find(x=>x.id===l.id)?.mrp)||0,changed:!!l.changed,free:!!l.free,...(l.note?{note:l.note}:{})}));
+  /* 🛡️ 177 MH चेतावनियाँ (पुरानी गलतियों से सीख) — C3 अजीब भाव, C4 बहुत ज़्यादा मात्रा, C9 ₹0 बिल; C10 हर चेतावनी बिल में दर्ज */
+  const warn=[];
+  if(!(tot>0)&&S.mode!=="inst"){toast("₹0 का बिल नहीं बनता — सामान और भाव देखें");return}
+  for(const l of lines){const it=S.items.find(x=>x.id===l.id),base=it?(+it.sale||0):0;
+    if(!(l.rate>0)&&!l.free){toast(`"${l.name}" का भाव ₹0 है — बिल नहीं बनेगा`);return}
+    if(base>0&&(l.rate>base*3||l.rate<base/3)){if(!S.isOwner){toast(`"${l.name}" का भाव ₹${l.rate} गलत लगता है (असली ₹${base}) — विक्रम जी से पूछें`);return}warn.push(`भाव ${l.name}: ₹${l.rate} (असली ₹${base})`)}
+    const big=l.unit==="kg"?l.qty>10:l.qty>50;if(big)warn.push(`ज़्यादा मात्रा: ${l.name} ${l.qty}${l.unit==="kg"?" किलो":""}`)}
+  const bigLines=warn.filter(w=>w.startsWith("ज़्यादा"));const wkey=bigLines.join("|");
+  if(bigLines.length&&S.bigOk!==wkey){S.bigOk=wkey;toast("⚠️ "+bigLines[0]+" — सही है तो दोबारा सेव दबाएँ");return}S.bigOk="";
   const cph=S.mode==="walk"?S.cust.phone:"",cnm=S.mode==="walk"?S.cust.name:"";
   const cost=r2(lines.reduce((a,l)=>a+l.cost*l.qty,0));
   if(c.no==="…"&&window.SF)c.no=await SF.reserveBillNo();
   const bill={no:c.no,ts:now,date,by:S.uid||"",byName:biller(),mode:S.mode,partyId:S.mode==="udhar"?S.partyId:"",partyName:S.mode==="udhar"?(party?.name||""):S.mode==="inst"?S.inst:(cnm||"VIP ग्राहक"),custPhone:cph,custName:cnm,
     lines,sub:cartTotal(),disc:+c.disc||0,total:S.mode==="inst"?cartTotal():tot,pay,payMode:c.pay,cost,
-    rateChanged:lines.some(l=>l.changed),cancelled:false,settled:c.pay!=="pending",...(c.photo?{photo:true}:{})};if(window.SR)SR.stamp(bill);
+    rateChanged:lines.some(l=>l.changed),cancelled:false,...(warn.length?{warn}:{}),settled:c.pay!=="pending",...(c.photo?{photo:true}:{})};if(window.SR)SR.stamp(bill);
   if(c.photo){const ph={d:c.photo,no:c.no,date,ts:now,by:S.uid||"",byName:biller()};S.billPhotos=S.billPhotos||{};S.billPhotos[c.no]=c.photo;if(!S.demo)S.db.collection("billPhotos").doc(c.no).set(ph).catch(()=>{})}
   S.saving=true;drawCheckout();
   if(S.demo){S.dayBills=[bill,...S.dayBills];if(pay.udhar>0)S.ledger.push({id:c.no,ts:now,date,partyId:bill.partyId,partyName:bill.partyName,type:"udhar",amt:pay.udhar,billNo:c.no,byName:biller()});await adjStock(trackedPairs(lines,-1),"बिल "+c.no);S.saving=false;closeCurTab();refreshAfterCart();if(bill.settled===false&&window.SB)SB.settleSheet(bill);else showReceipt(bill,true);return}
