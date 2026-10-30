@@ -14,7 +14,7 @@
  * "177 MH कैंटीन बैकअप" फ़ोल्डर में जाएगा (पिछले 60 बैकअप रखे जाते हैं, पुराने अपने-आप हटते हैं)।
  * Sheet में कुछ भी हाथ से बदलने से ऐप का डेटा नहीं बदलता (सिर्फ़ पढ़ने की कॉपी है)।
  */
-const PROJECT_ID = 'PASTE'; // 177 MH का Firebase प्रोजेक्ट ID (Claude भरेगा, जैसे bhairav-canteen-1a2b3)
+const PROJECT_ID = 'mh177-canteen'; // 177 MH का Firebase प्रोजेक्ट ID (Claude भरेगा, जैसे bhairav-canteen-1a2b3)
 const DAYS_BACK = 3;
 
 function setup() {
