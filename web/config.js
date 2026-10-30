@@ -15,5 +15,5 @@ window.SE_CONFIG = {
   ownerHash: "d05c53d3cdca521782c90e21f807a1add61726965096709cb1ae4f3612b96151",
   ownerName: "विक्रम जी",
   photoUrl: "",
-  updateUrl: "https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/"
+  updateUrl: "https://177mhwcanteen-cyber.github.io/177-MH-/"
 };

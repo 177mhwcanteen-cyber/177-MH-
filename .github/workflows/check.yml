@@ -26,9 +26,9 @@ jobs:
           echo "== rules: items without login (expect PERMISSION_DENIED) ==" >> $R
           curl -s "$F/items/k1001?key=$K" | head -c 300 >> $R; echo >> $R
           echo "== pages ==" >> $R
-          curl -s -o /dev/null -w "index %{http_code}\n" https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/ >> $R
-          curl -s https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/config.js | grep -o 'projectId: "[^"]*"' >> $R || true
-          curl -s https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/build.js >> $R; echo >> $R
+          curl -s -o /dev/null -w "index %{http_code}\n" https://177mhwcanteen-cyber.github.io/177-MH-/ >> $R
+          curl -s https://177mhwcanteen-cyber.github.io/177-MH-/config.js | grep -o 'projectId: "[^"]*"' >> $R || true
+          curl -s https://177mhwcanteen-cyber.github.io/177-MH-/build.js >> $R; echo >> $R
           ls >> /dev/null
           git config user.name "check-bot"; git config user.email "check-bot@users.noreply.github.com"
           git add checks/report.txt; git commit -m "जाँच का नतीजा [skip ci]" && git push

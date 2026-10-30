@@ -21,7 +21,7 @@
 
 ## लिंक
 * APK: `https://github.com/177mhwcanteen-cyber/mh-wet-canteen-app/releases/latest/download/sabji-express.apk`
-* वेब (मालिक मोड, Chrome में): `https://177mhwcanteen-cyber.github.io/mh-wet-canteen-app/`
+* वेब (मालिक मोड, Chrome में): `https://177mhwcanteen-cyber.github.io/177-MH-/`
 
 ## एक बार की सेटिंग
 1. `web/config.js` में Firebase का `firebaseConfig` भरें।
