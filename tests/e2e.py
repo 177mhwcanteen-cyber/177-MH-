@@ -131,8 +131,41 @@ async def main():
 
         # ---------- 4) भाव पर रोक ----------
         await pg.evaluate("S.rateMode=true;renderBill()"); await pg.click('[data-item="k1010"]'); await pg.wait_for_timeout(200)
-        assert "सिर्फ़ विक्रम जी" in await pg.text_content("#toast")
-        await pg.evaluate("S.rateMode=false;renderBill()")
+        assert await pg.is_visible("#rnIn"), "staff should be able to open rate sheet"
+        await pg.fill("#rnIn", "9999"); await pg.click("[data-rnsave]"); await pg.wait_for_timeout(200)
+        assert "बहुत बड़ा" in await pg.text_content("#toast"), "extreme rate needs 2nd press"
+        await pg.evaluate("closeSheet();S.rateMode=false;renderBill()")
+        # टैप से जोड़ो / गिनती लिखो / माइनस से हटाओ
+        await pg.evaluate("S.cart=[];renderCart();renderBill()")
+        pcid = await pg.evaluate("(S.items.find(i=>isPc(i.unit)&&priceOf(i)>0&&document.querySelector('#grid [data-item=\"'+i.id+'\"]'))||{}).id")
+        sel = f'#grid [data-item="{pcid}"]'
+        await pg.click(sel + " .tile"); await pg.click(sel + " .tile")
+        assert await pg.evaluate(f"S.cart.find(l=>l.id==='{pcid}').qty") == 2
+        assert await pg.evaluate("!document.querySelector('#sheet').innerHTML.trim()"), "no popup for piece items"
+        assert "in" in (await pg.get_attribute(sel, "class")).split()
+        await pg.click(sel + " [data-qo]"); await pg.fill(sel + " .qinl", "6"); await pg.press(sel + " .qinl", "Enter")
+        assert await pg.evaluate(f"S.cart.find(l=>l.id==='{pcid}').qty") == 6
+        await pg.screenshot(path=f"{SHOTS}/3b-tap-stepper.png")
+        await pg.click(sel + " [data-qo]"); await pg.fill(sel + " .qinl", "1"); await pg.press(sel + " .qinl", "Enter")
+        await pg.click(sel + " [data-dec]")
+        assert await pg.evaluate(f"!S.cart.some(l=>l.id==='{pcid}')"), "minus at 1 removes"
+        print("tap-add/stepper ok", pcid)
+        # झलक: तम्बाकू टाइलें + मिठाई का छोटा पॉपअप (सिर्फ़ स्क्रीनशॉट)
+        mig = json.load(open(os.path.join(WWW, "migrate.json"), encoding="utf-8"))
+        extra = [dict(v, id=k, sale=(v.get("mrp") or 20)) for k, v in mig["items"].items() if k.startswith("t-")]
+        extra.append(dict(id="m-kaju", name="Kaju Katli", hi="काजू कतली", emoji="", cat="mithai", unit="kg", sale=880, active=True, order=0))
+        extra.append(dict(id="m-paneer", name="Paneer", hi="पनीर", emoji="", cat="mithai", unit="kg", sale=360, active=True, order=0))
+        await pg.evaluate("x=>{S.items.push(...x);S.cat='kirana';S.sub='all';renderBill()}", extra)
+        await pg.evaluate("S.q='';$('#q').value='';S.cat='kirana';S.sub='tob';renderBill()"); await pg.wait_for_timeout(200)
+        await pg.click('#grid [data-item="t-vimal"] .tile'); await pg.click('#grid [data-item="t-vimal"] .tile'); await pg.click('#grid [data-item="t-rajni"] .tile')
+        await pg.wait_for_timeout(400); await pg.screenshot(path=f"{SHOTS}/3c-tobacco.png")
+        await pg.evaluate("S.cat='mithai';S.sub='all';renderBill()"); await pg.wait_for_timeout(200)
+        await pg.screenshot(path=f"{SHOTS}/3d-mithai.png")
+        await pg.click('#grid [data-item="m-kaju"] .tile'); await pg.wait_for_timeout(300)
+        await pg.screenshot(path=f"{SHOTS}/3e-weigh-popup.png")
+        await pg.click('#sheet [data-a="50"]'); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("S.cart.find(l=>l.id==='m-kaju').amt") == 50
+        await pg.evaluate("S.cart=[];S.items=S.items.filter(i=>!i.id.startsWith('t-')&&!i.id.startsWith('m-'));S.cat='all';renderCart();renderBill()")
 
         # ---------- 5) उधार खाता ----------
         await pg.evaluate("openNewParty(id=>{window.__np=id})"); await pg.wait_for_timeout(200)

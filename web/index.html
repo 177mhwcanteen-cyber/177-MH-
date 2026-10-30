@@ -675,6 +675,41 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .bcust.pill{flex:1 1 100%!important;border-radius:11px}
 /* बिलिंग स्क्रीन पर "शुभ रात्रि / आज के बिल" वाली पट्टी नहीं — जगह सामान के लिए */
 #greet{display:none!important}
+
+/* ===== v10 काउंटर: टैप से जोड़ो, उठा हुआ कार्ड, स्टेपर, छोटा वज़न पॉपअप, अपने-आप टाइल आर्ट ===== */
+.tile.art{background:
+  radial-gradient(circle at 18% 22%,rgba(255,255,255,.28) 0 2px,transparent 2.6px) 0 0/16px 16px,
+  radial-gradient(120% 90% at 50% 18%,hsl(var(--h) 78% 66%),hsl(var(--h) 70% 44%) 62%,hsl(calc(var(--h) + 24) 72% 30%))}
+.tile.art::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.32),transparent 42%);pointer-events:none}
+.tile.art .em{position:relative;z-index:1;transform:translateY(-6px)}
+.tile .tbr{display:none}
+.grid .tile.art .tbr{display:block;position:absolute;left:6px;right:6px;bottom:6px;z-index:2;font-family:var(--f-display);font-weight:800;font-size:12.5px;line-height:1.15;letter-spacing:.3px;color:#fff;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 6px;border-radius:8px;background:rgba(0,0,0,.24);backdrop-filter:blur(2px);text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.grid .tile.art.hasimg .tbr,.grid.rows .tile .tbr{display:none}
+.grid.rows .tile.art .em{transform:none}
+.grid .card{transition:transform .22s cubic-bezier(.3,1.5,.5,1),box-shadow .22s ease}
+.grid .card.in{transform:translateY(-5px) scale(1.025);box-shadow:0 12px 24px -8px rgba(22,120,60,.55),0 0 0 2.5px var(--leaf);z-index:1}
+.grid .card.in:active{transform:translateY(-3px) scale(.99)}
+.qbub{position:absolute;top:6px;right:6px;z-index:3;min-width:26px;height:26px;padding:0 7px;border-radius:99px;display:grid;place-items:center;font-weight:900;font-size:14px;color:#fff;background:var(--leaf);box-shadow:0 3px 8px rgba(0,0,0,.28);animation:qb .3s cubic-bezier(.3,1.8,.5,1)}
+@keyframes qb{from{transform:scale(.3)}to{transform:scale(1)}}
+.grid.rows .qbub{position:static;order:-1;margin-left:6px}
+.card .addb{background:linear-gradient(#fff,#f3fbf5)}
+.card .cstep{height:38px;border-radius:12px;background:var(--leaf);box-shadow:0 4px 10px -4px rgba(22,120,60,.7)}
+.card .cstep button{width:42px;height:38px;font-size:22px}
+.card .cstep button:active{background:rgba(255,255,255,.22)}
+.card .cstep b{flex:1;height:30px;line-height:30px;margin:0 2px;border-radius:8px;background:rgba(255,255,255,.18);font-size:16px}
+.qinl{flex:1;min-width:0;width:40px;height:30px;margin:4px 2px;border:0;border-radius:8px;text-align:center;font-weight:900;font-size:17px;color:var(--ink);background:#fff;outline:3px solid var(--haldi)}
+@media (prefers-reduced-motion:reduce){.grid .card.in{transform:none}.qbub{animation:none}}
+/* छोटा वज़न पॉपअप — काम रुके नहीं */
+.qpop{max-width:400px;padding:10px 10px 12px;gap:8px;border-radius:18px}
+.qpop .qh{gap:8px}.qpop .qh .tile{width:38px;border-radius:10px}.qpop .qh .tile .em{font-size:20px;transform:none}
+.qpop .qn b{font-size:16px}.qpop .qn span{font-size:12.5px}
+.qpop .x{width:34px;height:34px;font-size:15px}
+.qpop .qf{border-radius:12px;padding:0 10px}.qpop .qf input{font-size:21px;padding:4px 0}.qpop .qf span{font-size:13px}
+.qchips2.one{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:1px}
+.qchips2.one::-webkit-scrollbar{display:none}
+.qchips2.one button{flex:1 1 0;min-width:40px;padding:8px 2px;font-size:13.5px;border-radius:10px;white-space:nowrap}
+.qchips2.one button.rp{border-color:var(--haldi);background:#fff8e6}
+.qpop .big{padding:10px;font-size:15px;border-radius:12px}
 </style>
 
 <header class="px">
@@ -834,11 +869,20 @@ function toast(m){if(document.documentElement.classList.contains("camon")){const
 function insts(){return (S.settings.insts&&S.settings.insts.length)?S.settings.insts:["177 MH कैंटीन","मारवाड़ रसोई (होटल)","रामविनायक डोसा पॉइंट"]}
 function item(id){return S.items.find(i=>i.id===id)}
 function priceOf(it){return S.mode==="inst"?(window.SF?SF.costOf(it):(+it.cost||0)):(+it.sale||0)}
+/* 🎨 हर सामान की अपने-आप सुंदर टाइल — नया सामान जुड़ते ही बिना फोटो के भी रंग, चिह्न और ब्रांड नाम (art() नाम से तय, हर अपडेट में अपने-आप) */
+const BRAND_ART=[[/vimal|विमल/i,4,"🌿","विमल"],[/rajni|रजनी/i,198,"🌸","रजनीगंधा"],[/tansen|तानसेन/i,228,"🎵","तानसेन"],[/sigg|signature|सिग्नेचर/i,200,"✒️","Siggnature"],[/nevla|नेवला/i,288,"🍂","नेवला"],[/ganesh|गणेश/i,42,"🍂","गणेश 701"],[/\b502\b|pataka|पटाका/i,262,"🎆","502 पटाका"],[/gold flake|गोल्ड फ्लेक/i,38,"🚬","Gold Flake"],[/classic|क्लासिक/i,214,"🚬","Classic"],[/amul|अमूल/i,212,"🥛","Amul"],[/haldiram|हल्दीराम/i,352,"🥨","Haldiram"],[/bikaji|बीकाजी/i,18,"🥨","Bikaji"],[/cadbury|dairy milk|5 star|perk/i,280,"🍫","Cadbury"],[/parle/i,48,"🍪","Parle"],[/britannia/i,356,"🍪","Britannia"],[/pepsi|coca|coke|thums|sprite|fanta|7up|mirinda|limca|maaza|frooti|slice/i,0,"🥤",""],[/lays|kurkure|bingo|uncle chips/i,30,"🍟",""],[/maggi|yippee|noodle/i,50,"🍜",""]];
+const KW_ART=[[/mithai|barfi|बर्फी|ladd?u|लड्डू|peda|पेड़ा|rasgull|रसगुल्ल|gulab|गुलाब जामुन|kaju|काजू|jalebi|जलेबी|ghevar|घेवर|sweet|मिठाई/i,"🍬"],[/paneer|पनीर/i,"🧀"],[/samosa|समोसा|kachori|कचौरी/i,"🥟"],[/momo/i,"🥟"],[/ganna|गन्ना|juice|जूस/i,"🧃"],[/tea|chai|चाय/i,"🍵"],[/coffee|कॉफी/i,"☕"],[/ice ?cream|kulfi|कुल्फी|cone/i,"🍦"],[/milk|doodh|दूध|lassi|लस्सी|chaach|छाछ|dahi|दही/i,"🥛"],[/water|पानी|bisleri|kinley/i,"💧"],[/cold ?drink|soda|सोडा/i,"🥤"],[/chocolate|चॉकलेट|choco/i,"🍫"],[/biscuit|बिस्कुट|cookie/i,"🍪"],[/namkeen|नमकीन|bhujia|भुजिया|mixture|sev|सेव/i,"🥨"],[/chips|चिप्स/i,"🍟"],[/cake|केक|pastry/i,"🍰"],[/bread|ब्रेड|pav|bun/i,"🍞"],[/soap|साबुन|lux|lifebuoy|dettol/i,"🧼"],[/shampoo|शैम्पू|oil|तेल|lotion|cream/i,"🧴"],[/paste|colgate|brush|ब्रश/i,"🪥"],[/atta|आटा|maida|सूजी|besan/i,"🌾"],[/rice|chawal|चावल/i,"🍚"],[/dal|दाल|chana|चना|rajma/i,"🫘"],[/masala|मसाला|haldi|हल्दी|mirch|मिर्च|jeera/i,"🌶️"],[/sugar|cheeni|चीनी|shakkar/i,"🍚"],[/ghee|घी/i,"🫙"],[/surf|detergent|vim|wheel|ariel|tide|rin/i,"🫧"],[/battery|cell/i,"🔋"],[/egg|अंडा/i,"🥚"],[/onion|प्याज|potato|आलू|tomato|टमाटर|sabzi|सब्ज़ी/i,"🥬"],[/fruit|apple|सेब|banana|केला/i,"🍎"],[/gutk|gutkh|गुटखा|zarda|ज़र्दा|जर्दा|pan masala|पान मसाला|supari|सुपारी/i,"🌿"],[/tambak|tobacco|तम्बाकू|khaini|खैनी/i,"🍂"],[/cigar|sigret|सिगरेट|bidi|biri|बीड़ी/i,"🚬"]];
+function hhash(x){let h=7;for(const c of String(x))h=(h*31+c.codePointAt(0))>>>0;return h}
+function art(it){const k=(it.name||"")+" "+(it.hi||"")+" "+(it.alias||"");const b=BRAND_ART.find(r=>r[0].test(k));
+  const generic=!it.emoji||it.emoji==="🛒"||it.emoji==="📦";const kw=generic&&KW_ART.find(r=>r[0].test(k));
+  const em=b&&generic?b[2]:kw?kw[1]:(it.emoji||"🛒");
+  const brand=(b&&b[3])||String(it.name||"").split(/\s*[·|]\s*|\s+/)[0].slice(0,14);
+  const h=b?b[1]:(it.hue!=null&&!(generic&&+it.hue===30)?+it.hue:hhash(brand)%360);return {em,h,brand}}
 function tileHTML(it,cls=""){
-  const h=it.hue??120;
-  const em=`<span class="em" aria-hidden="true">${esc(it.emoji||"🛒")}</span>`;
+  const a=art(it);
+  const em=`<span class="em" aria-hidden="true">${esc(a.em)}</span><span class="tbr" aria-hidden="true">${esc(a.brand)}</span>`;
   const psrc=SE.photoSrc(it);const img=psrc?`<img src="${esc(psrc)}" alt="" loading="lazy" decoding="async" style="position:absolute;inset:0" onerror="this.remove()">`:"";
-  return `<div class="tile ${cls}" style="--h:${+h};position:relative">${em}${img}</div>`;
+  return `<div class="tile art ${psrc?"hasimg":""} ${cls}" style="--h:${+a.h};position:relative">${em}${img}</div>`;
 }
 function biller(){return S.staff||S.meName||""}
 function liveBills(){return S.dayBills.filter(b=>!b.cancelled)}
@@ -965,18 +1009,26 @@ function renderBill(){
   const q=bl.q,list=bl.list;
   if(!S.items.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1"><b>सामान की लिस्ट अभी खाली है</b>मालिक "रेट व सेटिंग" में जाकर सामान और उनके भाव डालें, फिर यहाँ फोटो वाले कार्ड दिखेंगे।</div>`;return}
   if(!list.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1"><b>"${esc(q)}" नहीं मिली</b>दूसरा नाम लिखकर देखें।</div>`+(window.SR?SR.addCardHTML(q):"");return}
-  const LL=window.SF&&SF.liveLeftMap?SF.liveLeftMap():null;$("#grid").innerHTML=list.map(it=>{
-    const p=priceOf(it);const inCart=S.cart.filter(l=>l.id===it.id).reduce((a,l)=>a+l.qty,0);
+  const LL=window.SF&&SF.liveLeftMap?SF.liveLeftMap():null;$("#grid").innerHTML=list.map(it=>cardHTML(it,LL)).join("")+(window.SR?SR.addCardHTML():"");
+}
+function cardHTML(it,LL){{
+    const p=priceOf(it);const inCart=S.cart.filter(l=>l.id===it.id).reduce((a,l)=>a+l.qty,0),pcIn=isPc(it.unit)&&inCart>0;
     let left=stockLeft(it.id);if(left==null&&LL&&LL[it.id]!=null)left=LL[it.id];
     const id=esc(it.id),pc=isPc(it.unit),xp=expInfo(it),low=left!=null&&(it.track?left<=lowOf(it):left<=0.5);
     const mrp=+it.mrp||0,off=S.mode!=="inst"&&p>0&&mrp>p?Math.round((mrp-p)/mrp*100):0;
     const sz=[it.size,it.code?"#"+it.code:""].filter(Boolean).join(" · ");
-    return `<div class="card ${p>0?"":"off"}" role="button" tabindex="0" data-item="${id}">${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${xp?`<span class="xp ${xp.k}">${xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(it.name)}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(it.name)} एक कम">−</button><b data-qo="${id}">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(it.name)} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
-  }).join("")+(window.SR?SR.addCardHTML():"");
-}
+    return `<div class="card ${p>0?"":"off"} ${inCart>0?"in":""}" role="button" tabindex="0" data-item="${id}">${pcIn?`<span class="qbub" aria-hidden="true">${+inCart.toFixed(2)}</span>`:""}${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${xp?`<span class="xp ${xp.k}">${xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(it.name)}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(it.name)} एक कम">−</button><b data-qo="${id}" role="button" aria-label="${esc(it.name)} की गिनती लिखें">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(it.name)} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
+  }}
+/* कार्ट बदला तो सिर्फ़ वही एक कार्ड दोबारा बनाओ — 5000 सामान पर भी झटपट */
+function patchCard(id){const g=$("#grid");const c=g&&g.querySelector('[data-item="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');const it=item(id);if(!c||!it)return false;
+  const LL=window.SF&&SF.liveLeftMap?SF.liveLeftMap():null;const t=document.createElement("div");t.innerHTML=cardHTML(it,LL);const n=t.firstElementChild;if(!n)return false;c.replaceWith(n);return true}
+function cartTouched(id){renderCart();if(S.tab!=="bill")return;if(S.q||!patchCard(id))renderBill()}
+function setQty(id,q){q=Math.round((+q||0)*1000)/1000;const i=S.cart.findIndex(l=>l.id===id&&!l.changed&&!l.free);const it=item(id);
+  if(i<0){if(q>0&&it)quickAdd(it,q);return}
+  if(!(q>0))S.cart.splice(i,1);else{const l=S.cart[i];l.qty=q;l.amt=r2(q*l.rate)}cartTouched(id)}
 $("#p-bill").addEventListener("click",e=>{
   if(e.target.closest("[data-ratemode]")){S.rateMode=!S.rateMode;renderBill();if(S.rateMode)toast("✏️ अब जिस सामान का भाव बदलना है, उसे दबाएँ");return}
-  const rmi=S.rateMode&&e.target.closest("[data-item]");if(rmi&&window.SR){const x=item(rmi.dataset.item);if(!S.isOwner&&!x.flex){beep(false);toast(x.name+" का भाव सिर्फ़ विक्रम जी बदल सकते हैं");return}SR.rateSheet(x);return}
+  const rmi=S.rateMode&&e.target.closest("[data-item]");if(rmi&&window.SR){const x=item(rmi.dataset.item);SR.rateSheet(x);return}
   const ni=e.target.closest("[data-newitem]");if(ni&&window.SR){SR.newItemSheet(ni.dataset.newitem);return}
   const m=e.target.closest("[data-mode]");if(m){setMode(m.dataset.mode);return}
   const c=e.target.closest("[data-cat]");if(c){S.cat=c.dataset.cat;S.sub="all";S.flt="";renderBill();return}
@@ -984,16 +1036,23 @@ $("#p-bill").addEventListener("click",e=>{
   const fl=e.target.closest("[data-flt]");if(fl){S.flt=S.flt===fl.dataset.flt?"":fl.dataset.flt;renderBill();return}
   const dc=e.target.closest("[data-dec]");if(dc){decItem(dc.dataset.dec);return}
   const ic=e.target.closest("[data-inc]");if(ic){const x=item(ic.dataset.inc);if(x)quickAdd(x,1);return}
-  const qo=e.target.closest("[data-qo]");if(qo){const x=item(qo.dataset.qo),li=S.cart.findIndex(l=>l.id===qo.dataset.qo&&!l.changed&&!l.free);if(x)openQty(x,li>-1?li:undefined);return}
+  const qo=e.target.closest("[data-qo]");if(qo){const x=item(qo.dataset.qo),li=S.cart.findIndex(l=>l.id===qo.dataset.qo&&!l.changed&&!l.free);if(!x)return;if(!isPc(x.unit)){openQty(x,li>-1?li:undefined);return}inlineQty(qo,x);return}
+  if(e.target.closest(".qinl"))return;
   if(e.target.closest("[data-sorttop]")){S.sortTop=!S.sortTop;lsSet("se_sort",S.sortTop?"1":"0");toast(S.sortTop?"पिछले 14 दिन में सबसे ज़्यादा बिका सामान ऊपर":"सामान पुराने क्रम में");renderBill();return}
   if(e.target.closest("[data-view]")){S.view=S.view==="list"?"grid":"list";lsSet("se_view",S.view);renderBill();return}
   if(e.target.closest("[data-custtoggle]")){S.showCust=!S.showCust;renderBill();if(S.showCust){const f=$("#custPh");if(f)f.focus()}return}
   if(e.target.closest("[data-repeat]")){repeatLast();return}
 
-  const it=e.target.closest("[data-item]");if(it){const x=item(it.dataset.item);if(priceOf(x)>0){if(S.qq>0)quickAdd(x,S.qq);else if(isPc(x.unit)&&x.sub!=="tob")quickAdd(x,1);else openQty(x)}else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast(S.mode==="inst"?"इसका खरीद रेट नहीं डाला गया":"इसका बिक्री रेट नहीं डाला गया — मालिक से पूछें");}
+  const it=e.target.closest("[data-item]");if(it){const x=item(it.dataset.item);if(priceOf(x)>0){if(S.qq>0)quickAdd(x,S.qq);else if(isPc(x.unit))quickAdd(x,1);else openQty(x)}else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast(S.mode==="inst"?"इसका खरीद रेट नहीं डाला गया":"इसका बिक्री रेट नहीं डाला गया — मालिक से पूछें");}
 });
 $("#p-bill").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("[data-item]")){e.preventDefault();e.target.click()}});
-function decItem(id){let i=-1;S.cart.forEach((l,k)=>{if(l.id===id&&!l.changed&&!l.free)i=k});if(i<0)i=S.cart.map(l=>l.id).lastIndexOf(id);if(i<0)return;const l=S.cart[i];if(l.qty>1){l.qty=r2(l.qty-1);l.amt=r2(l.qty*l.rate)}else S.cart.splice(i,1);refreshAfterCart()}
+/* बीच की गिनती दबाओ → वहीं लिखो (5, 6…) · Enter/बाहर दबाते ही लागू · 0 = हटाओ */
+function inlineQty(el,it){const cur=el.textContent.trim();const inp=document.createElement("input");inp.className="qinl";inp.inputMode="numeric";inp.enterKeyHint="done";inp.autocomplete="off";inp.value=cur;inp.setAttribute("aria-label",it.name+" कितने");
+  el.replaceWith(inp);inp.focus();inp.select();let done=false;
+  const fin=ok=>{if(done)return;done=true;const v=parseFloat(String(inp.value).replace(",","."));if(ok&&isFinite(v)&&String(v)!==cur){setQty(it.id,Math.max(0,v));beep(true)}else cartTouched(it.id)};
+  inp.addEventListener("keydown",ev=>{ev.stopPropagation();if(ev.key==="Enter"){ev.preventDefault();fin(true)}if(ev.key==="Escape"){ev.preventDefault();fin(false)}});
+  inp.addEventListener("blur",()=>fin(true));inp.addEventListener("click",ev=>ev.stopPropagation())}
+function decItem(id){let i=-1;S.cart.forEach((l,k)=>{if(l.id===id&&!l.changed&&!l.free)i=k});if(i<0)i=S.cart.map(l=>l.id).lastIndexOf(id);if(i<0)return;const l=S.cart[i];if(l.qty>1){l.qty=r2(l.qty-1);l.amt=r2(l.qty*l.rate)}else S.cart.splice(i,1);cartTouched(id);beep(true)}
 $("#p-bill").addEventListener("change",e=>{
   if(e.target.id==="partySel"){if(e.target.value==="__new"){e.target.value=S.partyId;openNewParty(id=>{S.partyId=id;renderBill()})}else S.partyId=e.target.value}
   if(e.target.id==="instSel")S.inst=e.target.value;
@@ -1027,7 +1086,7 @@ function quickAdd(it,q){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(q);if
   const ex=S.cart.find(l=>l.id===it.id&&!l.changed&&!l.free);
   if(ex){ex.qty=Math.round((ex.qty+q)*1000)/1000;ex.amt=r2(ex.qty*ex.rate)}
   else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:q,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:r2(q*p)});
-  clearSearch();refreshAfterCart();popItem(it.id);beep(true);toast("✓ "+it.name+" "+fq(q,it.unit)+" · "+rs(r2(q*p)));
+  const wasQ=!!S.q;clearSearch();if(wasQ)refreshAfterCart();else cartTouched(it.id);popItem(it.id);beep(true);toast("✓ "+it.name+" "+fq(q,it.unit)+" · "+rs(r2(q*p)));
 }
 function setMode(m){
   if(m===S.mode)return;S.mode=m;
@@ -1041,12 +1100,12 @@ function openQty(it,lineIdx){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(
   const ln=lineIdx!=null?S.cart[lineIdx]:null,kg=it.unit==="kg",u=UNITS[it.unit]||it.unit;
   const board=priceOf(it);let rate=ln&&it.flex?ln.rate:board;const st={qty:ln?ln.qty:0,amt:null};
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
-  const chips=kg?[[.25,"¼"],[.5,"½"],[1,"1"],[2,"2"]]:it.sub==="tob"?[[1,"1"],[5,"5"],[10,"10"],[20,"20"]]:[[1,"1"],[2,"2"],[3,"3"],[5,"5"]];
+  const chips=kg?[[.25,"¼"],[.5,"½"],[1,"1"]]:it.sub==="tob"?[[1,"1"],[5,"5"],[10,"10"],[20,"20"]]:[[1,"1"],[2,"2"],[3,"3"],[5,"5"]];
   $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="${esc(it.name)} कितना चाहिए">
     <div class="qh">${tileHTML(it)}<div class="qn"><b>${esc(it.name)}</b><span>${rs(board)} / ${u}${it.flex?" · भाव बदल सकते हैं":""}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     <div class="qrow"><label class="qf"><input id="qIn" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="0" value="${ln?+(+ln.qty).toFixed(3):""}" aria-label="${kg?"किलो":"गिनती"}"><span>${kg?"कि.ग्रा":u}</span></label><span class="or">या</span><label class="qf"><span>₹</span><input id="aIn" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="0" aria-label="कितने रुपये का"></label></div>
     ${it.flex?`<label class="qf" style="border-style:dashed"><span>भाव ₹</span><input id="rtIn" inputmode="decimal" autocomplete="off" value="${rate}" aria-label="इस बार का भाव"><span>/ ${u}</span></label>`:""}
-    <div class="qchips2">${chips.map(([v,l])=>`<button type="button" data-q="${v}">${l}${kg?" किलो":""}</button>`).join("")}</div>${kg?`<div class="qchips2">${[5,10,20,50,100].map(v=>`<button type="button" data-a="${v}">₹${v}</button>`).join("")}</div>`:""}
+    <div class="qchips2 one">${chips.map(([v,l])=>`<button type="button" data-q="${v}">${l}${kg?" kg":""}</button>`).join("")}${kg?[10,20,50,100].map(v=>`<button type="button" class="rp" data-a="${v}">₹${v}</button>`).join(""):""}</div>
     <button class="big" data-add disabled>जोड़ें</button>
     ${ln?'<button class="lnk" data-rm style="justify-self:center">बिल से हटाएँ</button>':""}
   </div>`;
@@ -1699,6 +1758,7 @@ function liveData(){const bl=(S.dayBills||[]).filter(b=>!b.cancelled&&!b.pending
       cat[k]=(cat[k]||0)+(+l.amt||0);if(!inst)profit+=(+l.amt||0)-(+l.cost||0)*(+l.qty||0);
       const nm=it.name||l.realName||l.name;const t=top[nm]=top[nm]||{q:0,a:0,u:l.unit};t.q+=+l.qty||0;t.a+=+l.amt||0}}
   const last=bl.reduce((m,b)=>Math.max(m,+b.ts||0),0),hr=new Date().getHours(),idle=S.billsDate===today()&&hr>=8&&hr<22&&(!last||Date.now()-last>2*3600e3)?(last?Math.round((Date.now()-last)/36e5*10)/10:null):0;
+  (S.priceLog||[]).filter(l=>l.field==="sale"&&today(new Date(l.ts))===S.billsDate).forEach(l=>warns.push(`✏️ भाव बदला: ${l.name} ${rs(l.old)} → ${rs(l.new)} (${l.byName||""}, ${ftime(l.ts)})`));
   if(idle!==0)warns.unshift(idle?`⏰ ${idle} घंटे से कोई बिल नहीं बना — दुकान खुली है तो बिक्री बिना बिल तो नहीं?`:"⏰ आज अभी तक एक भी बिल नहीं बना");
   const noCost=[...new Set(bl.flatMap(b=>(b.lines||[]).filter(l=>!(+l.cost>0)).map(l=>(S.items.find(x=>x.id===l.id)||{}).name||l.name)))];
   let gp=null;try{gp=parseFloat(localStorage.getItem("mh_gpay_"+S.billsDate))}catch(e){}

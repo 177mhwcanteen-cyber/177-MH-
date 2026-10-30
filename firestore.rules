@@ -32,8 +32,8 @@ service cloud.firestore {
     match /items/{id} {
       allow read: if active();
       allow create: if isOwner() || (active() && request.resource.data.pending == true && request.resource.data.addedBy == request.auth.uid);
-      // कर्मचारी सिर्फ़ उन्हीं सामान का बिक्री भाव बदल सकते हैं जिन पर मालिक ने 'flex' लगाया है (किसने, कब, पुराना भाव — सब दर्ज)
-      allow update: if isOwner() || (active() && resource.data.flex == true && onlyKeys(['sale', 'rateTs', 'rateBy', 'rateByName', 'ratePrev']) && request.resource.data.rateBy == request.auth.uid)
+      // कर्मचारी किसी भी सामान का बिक्री भाव बदल सकते हैं — किसने, कब, पुराना भाव सब दर्ज, मालिक की रिपोर्ट में
+      allow update: if isOwner() || (active() && onlyKeys(['sale', 'rateTs', 'rateBy', 'rateByName', 'ratePrev']) && request.resource.data.rateBy == request.auth.uid)
         // 177 MH: रैक-वार गिनती में कर्मचारी सिर्फ़ रैक लिख सकते हैं
         || (active() && onlyKeys(['rack']));
       allow delete: if isOwner();

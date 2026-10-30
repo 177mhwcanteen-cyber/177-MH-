@@ -542,10 +542,12 @@ SR.rateSheet=function(it){
     <div class="qrow"><label class="qf"><span>नया ₹</span><input id="rnIn" inputmode="decimal" autocomplete="off" placeholder="${old}"><span>/${u}</span></label></div>
     ${S.isOwner&&cost>0?`<p class="note" id="rnM" style="margin:0">खरीद ${rs(cost)}/${u}</p>`:""}
     <button class="big" data-rnsave>✓ नया भाव लगाएँ</button>
-    ${S.isOwner?"":`<p class="note" style="margin:0;text-align:center">नया भाव सबके फोन में तुरंत लग जाएगा</p>`}</div>`;
+    ${S.isOwner?"":`<p class="note" style="margin:0;text-align:center">नया भाव सबके फोन में तुरंत लग जाएगा · विक्रम जी की रिपोर्ट में आपके नाम से दर्ज होगा</p>`}</div>`;
   const I=$("#rnIn");
   $("#sheet").oninput=()=>{const n=num(I.value),m=$("#rnM");if(m&&n>0)m.innerHTML=`खरीद ${rs(cost)} → बिक्री ${rs(n)} · मुनाफ़ा <b style="color:${n>cost?"var(--leaf)":"var(--chili)"}">${Math.round((n-cost)/cost*100)}%</b>`};
+  let sure="";
   const save=async()=>{const n=r2(num(I.value));if(!(n>0)){toast("नया भाव लिखें");return}if(n===old){closeSheet();return}
+    if(old>0&&(n>old*3||n<old/3)&&sure!==String(n)){sure=String(n);beep(false);toast("⚠️ "+rs(old)+" → "+rs(n)+" बहुत बड़ा बदलाव है — सही है तो दोबारा दबाएँ");return}
     try{if(!S.demo){await S.db.collection("items").doc(it.id).update({sale:n,rateTs:Date.now(),rateBy:S.uid||"",rateByName:biller(),ratePrev:old});
         await S.db.collection("priceLog").doc("r"+Date.now().toString(36)).set({itemId:it.id,name:it.name,field:"sale",old,new:n,ts:Date.now(),by:S.uid||"",byName:biller()})}
       it.sale=n;closeSheet();refreshAfterCart();toast("✏️ "+it.name+": "+rs(old)+" → "+rs(n))}
