@@ -971,7 +971,7 @@ function repeatLast(){
   const src=S.mode==="walk"?S.customers.find(x=>x.id===S.cust.phone):S.parties.find(x=>x.id===S.partyId);
   if(!src||!src.lastCart)return;let n=0;
   src.lastCart.forEach(lc=>{const it=item(lc.id);if(!it||it.active===false)return;const p=priceOf(it);if(!(p>0))return;
-    S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:it.name,emoji:it.emoji,unit:it.unit,qty:lc.qty,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,amt:r2(lc.qty*p)});n++});
+    S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:lc.qty,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,amt:r2(lc.qty*p)});n++});
   refreshAfterCart();toast(n+" चीज़ें आज के रेट पर जुड़ीं");
 }
 function holdCurrent(){newTab()}
@@ -993,7 +993,7 @@ function quickAdd(it,q){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(q);if
   const p=priceOf(it);if(!(p>0))return;
   const ex=S.cart.find(l=>l.id===it.id&&!l.changed&&!l.free);
   if(ex){ex.qty=Math.round((ex.qty+q)*1000)/1000;ex.amt=r2(ex.qty*ex.rate)}
-  else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:it.name,emoji:it.emoji,unit:it.unit,qty:q,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:r2(q*p)});
+  else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:q,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:r2(q*p)});
   clearSearch();refreshAfterCart();popItem(it.id);beep(true);toast("✓ "+it.name+" "+fq(q,it.unit)+" · "+rs(r2(q*p)));
 }
 function setMode(m){
@@ -1020,7 +1020,7 @@ function openQty(it,lineIdx){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(
   const sh=$("#sheet"),qi=$("#qIn"),ai=$("#aIn"),btn=sh.querySelector("[data-add]");
   const upd=()=>{const amt=r2(st.qty*rate);btn.disabled=!(st.qty>0);btn.textContent=st.qty>0?`${ln?"बदलें":"जोड़ें"} · ${fq(st.qty,it.unit)} = ${rs(amt)}`:(kg?"किलो या रुपये लिखें":"गिनती लिखें")};
   const add=()=>{if(!(st.qty>0))return;const q=Math.round(st.qty*1000)/1000;
-    const line={key:ln?ln.key:Math.random().toString(36).slice(2),id:it.id,name:it.name,emoji:it.emoji,unit:it.unit,qty:q,rate:r2(rate),board:r2(board),cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:r2(rate)!==r2(board),free:false,amt:r2(q*rate)};
+    const line={key:ln?ln.key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:q,rate:r2(rate),board:r2(board),cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:r2(rate)!==r2(board),free:false,amt:r2(q*rate)};
     if(ln)S.cart[lineIdx]=line;else{const ex=S.cart.findIndex(l=>l.id===it.id&&!l.changed&&!l.free);if(ex>-1){S.cart[ex].qty=Math.round((S.cart[ex].qty+q)*1000)/1000;S.cart[ex].amt=r2(S.cart[ex].qty*S.cart[ex].rate)}else S.cart.push(line)}
     closeSheet();clearSearch();refreshAfterCart();beep(true);toast("✓ "+it.name+" "+fq(q,it.unit)+" · "+rs(line.amt));
     if(lineIdx!=null&&S.chk&&S.cart.length)drawCheckout();};
@@ -1363,11 +1363,22 @@ async function handleScan(code){
   if(!canSell(it))return;
   const ex=S.cart.find(l=>l.id===it.id&&!l.changed&&!l.free);
   if(ex){ex.qty=r2(ex.qty+1);ex.amt=r2(ex.qty*ex.rate)}
-  else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:it.name,emoji:it.emoji,unit:it.unit,qty:1,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:p});
+  else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:1,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:p});
   clearSearch();refreshAfterCart();popItem(it.id);
   const inCart=S.cart.filter(l=>l.id===it.id).reduce((a,l)=>a+l.qty,0),left=it.track?r2((+(S.pstock[it.id]?.qty)||0)-inCart):null;
   toast("✓ "+it.name+" · "+rs(p)+(inCart>1?" · कुल "+inCart:"")+(left!=null&&left<0?" · ⚠ स्टॉक में इतना नहीं दिखता":""));
 }
+/* 🗂️ पहचान सूची (पुराने Vyapar के 657 सामान) — सिर्फ़ नाम/कंपनी/पिछला भाव भरने के लिए; स्टॉक नहीं */
+let PEH=null;async function pehchan(){if(PEH)return PEH;try{const r=await fetch("pehchan.json");const j=await r.json();PEH=new Map();j.items.forEach(x=>x.barcodes.forEach(b=>PEH.set(b.code,x)))}catch(e){PEH=new Map()}return PEH}
+const PEH_SUB={NAM:"namkeen",DRY:"dryfruit",SAU:"achar",RAS:"rashan",MAS:"rashan",BAK:"rashan",BEV:"drinks",BIS:"sweet",CHO:"sweet",DAI:"dairy",ICE:"ice",TOB:"tob",OTH:"clean",POO:"clean"};
+async function pehchanFill(code){const m=await pehchan(),x=m.get(code);window.PEH_HIT=x?{code,x}:null;if(!x||!$("#nbName"))return;
+  $("#nbName").value=x.bill;$("#nbHi").value=x.hi||"";if(x.mrp)$("#nbMrp").value=x.mrp;
+  const sb=$("#nbSub");if(sb&&PEH_SUB[x.cat]&&[...sb.options].some(o=>o.value===PEH_SUB[x.cat]))sb.value=PEH_SUB[x.cat];
+  const n=document.createElement("p");n.className="note";n.style.cssText="background:var(--soft,#eef3ff);padding:8px 10px;border-radius:10px;margin:0 0 10px";
+  n.textContent=`🗂️ पहचान सूची से भरा: ${x.brand?x.brand+" · ":""}${x.bill}`+(x.lastSale?` — पिछली बार ₹${x.lastSale} में बिका`:"")+(S.isOwner&&x.lastPur?`, खरीद ₹${x.lastPur}`:"")+`। आज का MRP पैकेट पर देखकर भाव लिखें।`;
+  const c=$("#sheet .card2");if(c)c.parentNode.insertBefore(n,c)}
+/* 🔒 गुप्त कोड वाले सामान (गुटखा/ज़र्दा/सिगरेट): बिल/प्रिंट/WhatsApp पर असली नाम नहीं छपता */
+function billNm(it){return it&&it.secret?"Misc Item "+it.secret:(it?it.name:"")}
 function unknownCode(code){
   const own=S.isOwner,subs=SUBS.kirana;
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="नया बारकोड"><div class="grab"></div>
@@ -1382,6 +1393,7 @@ function unknownCode(code){
   ${own?`<h4 style="margin:4px 0 6px">या पहले से बने सामान में यह बारकोड जोड़ें</h4>
   <div class="row2"><select class="inp" id="nbAttach" aria-label="सामान चुनें"><option value="">— सामान चुनें —</option>${S.items.filter(i=>!i.virtual).map(i=>`<option value="${esc(i.id)}">${esc(i.name)}${i.code?" #"+esc(i.code):""}</option>`).join("")}</select><button class="big ghost" data-nbattach>जोड़ें</button></div>`:""}
   </div></div>`;
+  pehchanFill(code);
   $("#sheet").onclick=async e=>{
     if(e.target.matches("[data-close]")){closeSheet();return}
     if(e.target.closest("[data-nbsave]")){
@@ -1390,7 +1402,8 @@ function unknownCode(code){
       if(mrp>0&&sale>mrp){toast("बिक्री भाव MRP से ज़्यादा नहीं हो सकता");return}
       if(findByCode(code)){closeSheet();handleScan(code);return}
       const id="b"+Date.now().toString(36),sub=$("#nbSub").value;
-      const it={name,hi:$("#nbHi").value.trim(),emoji:"📦",cat:"kirana",sub,unit:"pc",mrp,sale,cost,code:nextCode("kirana"),hue:210,order:S.items.length+1,active:true,barcode:code,track:true,min:5,alias:"",
+      const pc=window.PEH_HIT&&PEH_HIT.code===code?PEH_HIT.x:null;
+      const it={name,hi:$("#nbHi").value.trim(),emoji:"📦",cat:"kirana",sub,unit:"pc",mrp,sale,cost,code:nextCode("kirana"),brand:pc?pc.brand||"":"",size:pc?pc.size||"":"",secret:pc&&pc.secret?pc.secret:"",hue:210,order:S.items.length+1,active:true,barcode:code,track:true,min:5,alias:"",
         addedBy:S.uid||"",addedByName:biller(),addedTs:Date.now(),pending:!own};
       try{if(!S.demo)await S.db.collection("items").doc(id).set(it);if(!item(id))S.items.push({id,...it});if(!S.demo&&own)logPrice(id,"sale",0,sale);
         if(qty>0)await adjStock([[id,qty]],"शुरुआती स्टॉक");closeSheet();toast("✓ "+name+" जुड़ गया · कोड "+it.code);if(!S.scanIn)handleScan(code);else if(S.tab==="day")renderDay()}catch(err){toast("नहीं जुड़ा — "+(err.code||err.message||""))}return}
@@ -1828,6 +1841,7 @@ function renderSettings(){
     <div class="row2" style="margin:0"><select class="inp" id="ni-cat">${CATS.slice(1).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select><select class="inp" id="ni-unit">${Object.entries(UNITS).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></div>
     <input class="inp code" id="ni-bar" placeholder="बारकोड (खाली छोड़ें तो अपना बनेगा)">
     <input class="inp" id="ni-alias" placeholder="खोज के दूसरे नाम (जैसे biscuit parle)">
+    <div class="row2" style="margin:8px 0 0"><label class="fld">🔒 गुप्त कोड (गुटखा/सिगरेट)<input class="inp" id="ni-secret" placeholder="जैसे S-05 · खाली = नाम छपेगा"></label><label class="fld">1 बड़े पैकेट में पीस<input class="inp" id="ni-pack" inputmode="numeric" placeholder="जैसे 32"></label></div>
     <div class="row2" style="margin:0"><input class="inp" id="ni-mrp" inputmode="decimal" placeholder="MRP ₹"><input class="inp" id="ni-sale" inputmode="decimal" placeholder="बिक्री ₹"></div>
     <div class="row2" style="margin:0"><input class="inp" id="ni-cost" inputmode="decimal" placeholder="खरीद ₹"><input class="inp" id="ni-emoji" placeholder="इमोजी 🛒"></div>
     <button class="big" data-additem>जोड़ें</button></div>
@@ -1861,7 +1875,7 @@ $("#p-set").addEventListener("click",async e=>{
     const id="i"+Date.now().toString(36);
     const code=nextCode($("#ni-cat").value),bar=$("#ni-bar").value.trim().replace(/\s+/g,""),cat=$("#ni-cat").value,unit=$("#ni-unit").value;
     if(bar&&findByCode(bar)){toast("यह बारकोड पहले से "+findByCode(bar).name+" में है");return}
-    const it={name,hi:$("#ni-hi").value.trim(),alias:$("#ni-alias").value.trim(),emoji:$("#ni-emoji").value.trim()||"🛒",cat,unit,code,barcode:bar||ean13("2000000"+code+"0"),track:cat==="kirana",min:5,mrp:parseFloat($("#ni-mrp").value)||0,sale:parseFloat($("#ni-sale").value)||0,cost:parseFloat($("#ni-cost").value)||0,hue:Math.floor(Math.random()*360),order:S.items.length+1,active:true};
+    const it={name,hi:$("#ni-hi").value.trim(),alias:$("#ni-alias").value.trim(),secret:($("#ni-secret").value.trim().toUpperCase()),pack:(parseInt($("#ni-pack").value)||0),emoji:$("#ni-emoji").value.trim()||"🛒",cat,unit,code,barcode:bar||ean13("2000000"+code+"0"),track:cat==="kirana",min:5,mrp:parseFloat($("#ni-mrp").value)||0,sale:parseFloat($("#ni-sale").value)||0,cost:parseFloat($("#ni-cost").value)||0,hue:Math.floor(Math.random()*360),order:S.items.length+1,active:true};
     try{if(S.demo)S.items.push({id,...it});else await S.db.collection("items").doc(id).set(it);toast(name+" जुड़ गया · कोड "+code);renderSettings()}catch(err){toast("नहीं जुड़ा — सिर्फ मालिक जोड़ सकते हैं")}
   }
 });
