@@ -154,6 +154,29 @@ async def main():
         assert "पता" in await pg.text_content(".updmsg"), await pg.text_content(".updmsg")
         await pg.screenshot(path=f"{SHOTS}/3f-update-btn.png"); await pg.evaluate("closeSheet()")
         print("update button ok")
+        # ---------- 🛍️ बाज़ार खरीद (खरीदार) ----------
+        await pg.click('[data-tab="mkt"]'); await pg.wait_for_selector("[data-mknew]"); await pg.click("[data-mknew]")
+        await pg.fill("#mkShop", "शर्मा किराना"); await pg.fill("#mkPh", "98290 11111")
+        await pg.evaluate("handleScan('8906079510407')"); await pg.wait_for_timeout(200)
+        assert await pg.input_value("#mkName") == "20-20 Pista 250g", await pg.input_value("#mkName")
+        await pg.evaluate("handleScan('8906079510407')"); await pg.wait_for_timeout(100)
+        assert await pg.input_value("#mkQ") == "2"
+        await pg.fill("#mkR", "560"); await pg.fill("#mkM", "599")
+        assert "कम" in await pg.text_content("#mkGain"), await pg.text_content("#mkGain")
+        await pg.click("[data-mkadd]")
+        await pg.fill("#mkName", "India Gate चावल 1kg"); await pg.fill("#mkQ", "5"); await pg.fill("#mkR", "100"); await pg.fill("#mkM", "130")
+        assert "30%" in await pg.text_content("#mkGain"); await pg.press("#mkM", "Enter")
+        assert await pg.evaluate("JSON.parse(localStorage.getItem('mh_mkt_draft')).lines.length") == 2
+        await pg.screenshot(path=f"{SHOTS}/7a-market-draft.png", full_page=True)
+        await pg.click("[data-mksend]"); await pg.wait_for_timeout(150)
+        assert "बिल की फोटो" in await pg.text_content("#toast")
+        await pg.click("[data-mksend]"); await pg.wait_for_timeout(600)
+        mb = list((await pg.evaluate("window.__MOCK__.mbuys||{}")).values())
+        assert mb and mb[0]["total"] == 1620 and mb[0]["shop"] == "शर्मा किराना" and mb[0]["phone"] == "9829011111" and mb[0]["pay"]["status"] == "pending" and len(mb[0]["low"]) == 1, mb
+        assert mb[0]["lines"][0]["lid"].endswith("-01") and mb[0]["by"]
+        await pg.wait_for_timeout(200); await pg.screenshot(path=f"{SHOTS}/7b-market-home.png")
+        await pg.click('[data-tab="bill"]'); await pg.wait_for_timeout(200)
+        print("market buy ok", mb[0]["no"], mb[0]["total"])
         # झलक: तम्बाकू टाइलें + मिठाई का छोटा पॉपअप (सिर्फ़ स्क्रीनशॉट)
         mig = json.load(open(os.path.join(WWW, "migrate.json"), encoding="utf-8"))
         extra = [dict(v, id=k, sale=(v.get("mrp") or 20)) for k, v in mig["items"].items() if k.startswith("t-")]

@@ -77,6 +77,13 @@ service cloud.firestore {
     match /presence/{id}  { allow read, write: if active(); }
 
     // मंडी खरीद: कर्मचारी नई डाल सकते हैं, बाद में सिर्फ़ फोटो जुड़ सकती है — बदलना/मिटाना मालिक का
+    // 🛍️ बाज़ार खरीद: खरीदार अपनी एंट्री भेजे; मालिक सब देखे; कर्मचारी सिर्फ़ अपनी; कभी मिटे नहीं
+    match /mbuys/{id} {
+      allow read: if isOwner() || (active() && resource.data.by == request.auth.uid);
+      allow create: if active() && request.resource.data.by == request.auth.uid;
+      allow update: if isOwner();
+      allow delete: if false;
+    }
     match /purchases/{id} {
       allow read: if active();
       allow create: if active() && request.resource.data.by == request.auth.uid;
