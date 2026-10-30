@@ -705,68 +705,70 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 <script>
 const ALIAS={aloo:"potato aalu",pyaj:"onion pyaz",tamatar:"tomato",kheera:"cucumber",adrak:"ginger",shimla:"capsicum",gajar:"carrot",phoolgobhi:"cauliflower gobhi",harimirch:"chilli mirchi",dhaniya:"coriander",palak:"spinach",nimbu:"lemon",kela:"banana",anar:"pomegranate",nariyal:"coconut"};
 const DEMO_ITEMS=[
- ["p0162", "Barfi", "🍬", "mithai", "kg", 440, 0, 0, "", "mithai", "5001", 440],
- ["p0168", "Besan Barfi", "🍬", "mithai", "kg", 340, 0, 0, "", "mithai", "5002", 340],
- ["p0169", "Besan Laddu", "🍬", "mithai", "kg", 400, 0, 0, "", "mithai", "5003", 400],
- ["p0224", "Boondi Laddu", "🍬", "mithai", "kg", 420, 0, 0, "", "mithai", "5004", 420],
- ["p0265", "Cham Cham", "🍬", "mithai", "kg", 400, 0, 0, "", "mithai", "5005", 400],
- ["p0446", "Gond Laddu", "🍬", "mithai", "kg", 480, 0, 0, "", "mithai", "5006", 480],
- ["p0455", "Gulab Jamun", "🍬", "mithai", "kg", 380, 0, 0, "", "mithai", "5007", 380],
- ["p0456", "Gulab Jamun 1pc", "🍬", "mithai", "pc", 25, 0, 0, "", "mithai", "5008", 25],
- ["p0480", "Imarti", "🍬", "mithai", "kg", 400, 0, 0, "", "mithai", "5009", 400],
- ["p0494", "Jalebi", "🍬", "mithai", "kg", 200, 0, 0, "", "mithai", "5010", 200],
- ["p0509", "Kaju Katli", "🍬", "mithai", "kg", 720, 0, 0, "", "mithai", "5011", 720],
- ["p0510", "Kaju Katli Peda", "🍬", "mithai", "kg", 720, 0, 0, "", "mithai", "5012", 720],
- ["p0524", "Kesar Peda", "🍬", "mithai", "kg", 480, 0, 0, "", "mithai", "5013", 480],
- ["p0543", "Laddu", "🍬", "mithai", "kg", 380, 0, 0, "", "mithai", "5014", 380],
- ["p0590", "Meetha Mawa", "🍬", "mithai", "kg", 420, 0, 0, "", "mithai", "5015", 420],
- ["p0597", "Milk Cake", "🍬", "mithai", "kg", 365, 0, 0, "", "mithai", "5016", 365],
- ["p0603", "Mithai (mix)", "🍬", "mithai", "kg", 400, 0, 0, "", "mithai", "5017", 400],
- ["p0612", "Motichoor Laddu", "🍬", "mithai", "kg", 380, 0, 0, "", "mithai", "5018", 380],
- ["p0665", "Peda", "🍬", "mithai", "kg", 420, 0, 0, "", "mithai", "5019", 420],
- ["p0687", "Rasmalai (kg)", "🍬", "mithai", "kg", 480, 0, 0, "", "mithai", "5020", 480],
- ["p0693", "Rasmalai ₹110", "🍬", "mithai", "pc", 110, 0, 0, "", "mithai", "5021", 110],
- ["p0425", "Ganna Juice", "🥟", "fast", "pc", 30, 0, 0, "", "nashta", "5022", 30],
- ["p0098", "Amul Gold Milk 500ml", "🥛", "kirana", "pc", 36, 34.5, 0, "8901262260107", "dairy", "5023", 36],
- ["p0609", "Momos", "🥟", "fast", "pl", 25, 0, 0, "", "nashta", "5024", 25],
- ["p0550", "Lassi", "🥛", "kirana", "pc", 50, 0, 0, "", "dairy", "5025", 50],
- ["p0734", "Shahi Samosa", "🥟", "fast", "pl", 20, 0, 0, "", "nashta", "5026", 20],
- ["p0668", "Patties", "🥟", "fast", "pl", 25, 0, 0, "", "nashta", "5027", 25],
- ["p0789", "Sprite ₹20", "🥤", "kirana", "pc", 20, 17.35, 0, "8901764032912", "drinks", "5028", 20],
- ["p0406", "Fresh Paneer", "🥛", "mithai", "kg", 340, 0, 0, "", "mithai", "5029", 340],
- ["p0768", "Sing Dana 500g", "🥨", "kirana", "pc", 100, 70, 0, "", "namkeen", "5030", 100],
- ["p0530", "Khaman", "🥟", "fast", "pl", 300, 7040, 0, "", "nashta", "5031", 300],
- ["p0108", "Amul Masti Dahi Cup 200g", "🥛", "kirana", "pc", 24, 22, 0, "8901262200028", "dairy", "5032", 24],
- ["p0856", "Thums Up ₹20", "🥤", "kirana", "pc", 20, 17.35, 0, "8901764042911", "drinks", "5033", 20],
- ["p0304", "Coca-Cola ₹20", "🥤", "kirana", "pc", 20, 17.35, 0, "8901764012914", "drinks", "5034", 20],
- ["p0067", "Amul Chaas", "🥛", "kirana", "pc", 15, 14.5, 0, "8901262200004", "dairy", "5035", 15],
- ["p0704", "Real Guava ₹20", "🥤", "kirana", "pc", 20, 18, 0, "8901207032103", "drinks", "5036", 20],
- ["p0514", "Kala Chana", "🌾", "kirana", "pc", 45, 0, 0, "", "rashan", "5037", 45],
- ["p0279", "Chips ₹10", "🥨", "kirana", "pc", 10, 0, 0, "", "namkeen", "5038", 10],
- ["p0133", "Amul Taaza Milk 500ml", "🥛", "kirana", "pc", 28, 27.5, 0, "8901262260121", "dairy", "5039", 28],
- ["p0680", "Amul Rajbhog Kulfi", "🍦", "kirana", "pc", 30, 29, 0, "8901262176521", "ice", "5040", 30],
- ["p0557", "Limca ₹20", "🥤", "kirana", "pc", 20, 17.35, 0, "8901764052910", "drinks", "5041", 20],
- ["p0106", "Amul Masti Dahi 1kg", "🥛", "kirana", "pc", 77, 75, 0, "8901262200677", "dairy", "5042", 77],
- ["p0396", "Fanta ₹20", "🥤", "kirana", "pc", 20, 18, 0, "8901764022609", "drinks", "5043", 20],
- ["p0670", "Amul Pista Malai", "🍦", "kirana", "pc", 25, 22, 0, "8901262176446", "ice", "5044", 25],
- ["p0827", "Tapariya Aata 5kg", "🌾", "kirana", "pc", 170, 165, 0, "8908004942529", "rashan", "5045", 170],
- ["p0088", "Amul Malai Paneer 200g", "🥛", "kirana", "pc", 92, 82, 0, "8901262180115", "dairy", "5046", 92],
- ["p0581", "Matar", "🧺", "kirana", "pc", 130, 0, 0, "", "clean", "5047", 130],
- ["p0139", "Amul Dahi 850g", "🥛", "kirana", "pc", 50, 48, 0, "8901262202381", "dairy", "5048", 50],
- ["p0008", "20-20 Almonds Premium 250g", "🥜", "kirana", "pc", 270, 0, 0, "8906079511121", "dryfruit", "5049", 270],
- ["p0229", "Cake Pastry", "🛒", "kirana", "pc", 40, 0, 0, "", "rashan", "5050", 40],
- ["p0107", "Amul Masti Dahi 390g", "🥛", "kirana", "pc", 35, 33, 0, "8901262200622", "dairy", "5051", 35],
- ["p0828", "Tapariya Besan 500g", "🌾", "kirana", "pc", 55, 50, 0, "8908004942581", "rashan", "5052", 55],
- ["p0155", "Bakery Biscuit", "🍪", "kirana", "pc", 120, 115, 0, "", "sweet", "5053", 120],
- ["p0073", "Amul Choco Crunch", "🍦", "kirana", "pc", 35, 32, 0, "8901262177139", "ice", "5054", 35],
- ["p0674", "Potato Chips 200g", "🥨", "kirana", "pc", 80, 70, 0, "", "namkeen", "5055", 80],
- ["p0296", "Chhoti Elaichi", "🌶️", "kirana", "pc", 175, 0, 0, "", "rashan", "5056", 175],
- ["p0010", "20-20 Black Raisins 250g", "🥜", "kirana", "pc", 189, 185, 0, "8906079510247", "dryfruit", "5057", 189],
- ["p0153", "Gud (Jaggery)", "🌾", "kirana", "pc", 35, 28, 0, "", "rashan", "5058", 35],
- ["p0540", "Kinley Soda 750ml", "🥤", "kirana", "pc", 18, 14.58, 0, "8901764072277", "drinks", "5059", 18],
- ["p0314", "Cream Roll", "🍪", "kirana", "pc", 12, 0, 0, "", "sweet", "5060", 12],
- ["p0541", "KitKat ₹10", "🍫", "kirana", "pc", 10, 9, 0, "8901058005233", "sweet", "5061", 10],
- ["p0006", "20-20 Kaju 250g", "🥜", "kirana", "pc", 290, 0, 0, "8906079510261", "dryfruit", "5062", 290]
+ ["p0162", "Barfi", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5001", 0, 440],
+ ["p0168", "Besan Barfi", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5002", 0, 340],
+ ["p0169", "Besan Laddu", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5003", 0, 400],
+ ["p0224", "Boondi Laddu", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5004", 0, 420],
+ ["p0265", "Cham Cham", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5005", 0, 400],
+ ["p0446", "Gond Laddu", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5006", 0, 480],
+ ["p0455", "Gulab Jamun", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5007", 0, 380],
+ ["p0456", "Gulab Jamun 1pc", "🍬", "mithai", "pc", 0, 0, 0, "", "mithai", "5008", 0, 25],
+ ["p0480", "Imarti", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5009", 0, 400],
+ ["p0494", "Jalebi", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5010", 0, 200],
+ ["p0509", "Kaju Katli", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5011", 0, 720],
+ ["p0510", "Kaju Katli Peda", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5012", 0, 720],
+ ["p0524", "Kesar Peda", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5013", 0, 480],
+ ["p0543", "Laddu", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5014", 0, 380],
+ ["p0590", "Meetha Mawa", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5015", 0, 420],
+ ["p0597", "Milk Cake", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5016", 0, 365],
+ ["p0603", "Mithai (mix)", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5017", 0, 400],
+ ["p0612", "Motichoor Laddu", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5018", 0, 380],
+ ["p0665", "Peda", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5019", 0, 420],
+ ["p0687", "Rasmalai (kg)", "🍬", "mithai", "kg", 0, 0, 0, "", "mithai", "5020", 0, 480],
+ ["p0693", "Rasmalai ₹110", "🍬", "mithai", "pc", 0, 0, 0, "", "mithai", "5021", 0, 110],
+ ["p0425v0", "Ganna Juice Chhota", "🥟", "fast", "pc", 0, 0, 0, "", "nashta", "5091", 0, 30],
+ ["p0425v1", "Ganna Juice Bada", "🥟", "fast", "pc", 0, 0, 0, "", "nashta", "5092", 0, 40],
+ ["p0098", "Amul Gold Milk 500ml", "🥛", "kirana", "pc", 0, 34.5, 0, "8901262260107", "dairy", "5023", 36, 36],
+ ["p0609v0", "Momos Half", "🥟", "fast", "pl", 0, 0, 0, "", "nashta", "5093", 0, 25],
+ ["p0609v1", "Momos Full", "🥟", "fast", "pl", 0, 0, 0, "", "nashta", "5094", 0, 50],
+ ["p0550", "Lassi", "🥛", "kirana", "pc", 0, 0, 0, "", "dairy", "5025", 50, 50],
+ ["p0734", "Shahi Samosa", "🥟", "fast", "pl", 0, 0, 0, "", "nashta", "5026", 0, 20],
+ ["p0668", "Patties", "🥟", "fast", "pl", 0, 0, 0, "", "nashta", "5027", 0, 25],
+ ["p0789", "Sprite ₹20", "🥤", "kirana", "pc", 0, 17.35, 0, "8901764032912", "drinks", "5028", 20, 20],
+ ["p0406", "Fresh Paneer", "🥛", "mithai", "kg", 0, 0, 0, "", "mithai", "5029", 0, 340],
+ ["p0768", "Sing Dana 500g", "🥨", "kirana", "pc", 0, 70, 0, "", "namkeen", "5030", 100, 100],
+ ["p0530", "Khaman", "🥟", "fast", "pl", 0, 7040, 0, "", "nashta", "5031", 0, 300],
+ ["p0108", "Amul Masti Dahi Cup 200g", "🥛", "kirana", "pc", 0, 22, 0, "8901262200028", "dairy", "5032", 24, 24],
+ ["p0856", "Thums Up ₹20", "🥤", "kirana", "pc", 0, 17.35, 0, "8901764042911", "drinks", "5033", 20, 20],
+ ["p0304", "Coca-Cola ₹20", "🥤", "kirana", "pc", 0, 17.35, 0, "8901764012914", "drinks", "5034", 20, 20],
+ ["p0067", "Amul Chaas", "🥛", "kirana", "pc", 0, 14.5, 0, "8901262200004", "dairy", "5035", 15, 15],
+ ["p0704", "Real Guava ₹20", "🥤", "kirana", "pc", 0, 18, 0, "8901207032103", "drinks", "5036", 20, 20],
+ ["p0514", "Kala Chana", "🌾", "kirana", "pc", 0, 0, 0, "", "rashan", "5037", 45, 45],
+ ["p0279", "Chips ₹10", "🥨", "kirana", "pc", 0, 0, 0, "", "namkeen", "5038", 10, 10],
+ ["p0133", "Amul Taaza Milk 500ml", "🥛", "kirana", "pc", 0, 27.5, 0, "8901262260121", "dairy", "5039", 28, 28],
+ ["p0680", "Amul Rajbhog Kulfi", "🍦", "kirana", "pc", 0, 29, 0, "8901262176521", "ice", "5040", 30, 30],
+ ["p0557", "Limca ₹20", "🥤", "kirana", "pc", 0, 17.35, 0, "8901764052910", "drinks", "5041", 20, 20],
+ ["p0106", "Amul Masti Dahi 1kg", "🥛", "kirana", "pc", 0, 75, 0, "8901262200677", "dairy", "5042", 77, 77],
+ ["p0396", "Fanta ₹20", "🥤", "kirana", "pc", 0, 18, 0, "8901764022609", "drinks", "5043", 20, 20],
+ ["p0670", "Amul Pista Malai", "🍦", "kirana", "pc", 0, 22, 0, "8901262176446", "ice", "5044", 25, 25],
+ ["p0827", "Tapariya Aata 5kg", "🌾", "kirana", "pc", 0, 165, 0, "8908004942529", "rashan", "5045", 170, 170],
+ ["p0088", "Amul Malai Paneer 200g", "🥛", "kirana", "pc", 0, 82, 0, "8901262180115", "dairy", "5046", 92, 92],
+ ["p0581", "Matar", "🧺", "kirana", "pc", 0, 0, 0, "", "clean", "5047", 130, 130],
+ ["p0139", "Amul Dahi 850g", "🥛", "kirana", "pc", 0, 48, 0, "8901262202381", "dairy", "5048", 50, 50],
+ ["p0008", "20-20 Almonds Premium 250g", "🥜", "kirana", "pc", 0, 0, 0, "8906079511121", "dryfruit", "5049", 270, 270],
+ ["p0229", "Cake Pastry", "🛒", "kirana", "pc", 0, 0, 0, "", "rashan", "5050", 40, 40],
+ ["p0107", "Amul Masti Dahi 390g", "🥛", "kirana", "pc", 0, 33, 0, "8901262200622", "dairy", "5051", 35, 35],
+ ["p0828", "Tapariya Besan 500g", "🌾", "kirana", "pc", 0, 50, 0, "8908004942581", "rashan", "5052", 55, 55],
+ ["p0155", "Bakery Biscuit", "🍪", "kirana", "pc", 0, 115, 0, "", "sweet", "5053", 120, 120],
+ ["p0073", "Amul Choco Crunch", "🍦", "kirana", "pc", 0, 32, 0, "8901262177139", "ice", "5054", 35, 35],
+ ["p0674", "Potato Chips 200g", "🥨", "kirana", "pc", 0, 70, 0, "", "namkeen", "5055", 80, 80],
+ ["p0296", "Chhoti Elaichi", "🌶️", "kirana", "pc", 0, 0, 0, "", "rashan", "5056", 175, 175],
+ ["p0010", "20-20 Black Raisins 250g", "🥜", "kirana", "pc", 0, 185, 0, "8906079510247", "dryfruit", "5057", 189, 189],
+ ["p0153", "Gud (Jaggery)", "🌾", "kirana", "pc", 0, 28, 0, "", "rashan", "5058", 35, 35],
+ ["p0540", "Kinley Soda 750ml", "🥤", "kirana", "pc", 0, 14.58, 0, "8901764072277", "drinks", "5059", 18, 18],
+ ["p0314", "Cream Roll", "🍪", "kirana", "pc", 0, 0, 0, "", "sweet", "5060", 12, 12],
+ ["p0541", "KitKat ₹10", "🍫", "kirana", "pc", 0, 9, 0, "8901058005233", "sweet", "5061", 10, 10],
+ ["p0006", "20-20 Kaju 250g", "🥜", "kirana", "pc", 0, 0, 0, "8906079510261", "dryfruit", "5062", 290, 290]
 ];
 const UPI_FIXED={upi:"6367183480@okbizaxis",payee:"177 MH WET CANTEEN"};
 function upiId(){return UPI_FIXED.upi}
@@ -903,6 +905,17 @@ function billList(){
   return {raw,q,qq,list};
 }
 function clearSearch(){if(S.q){S.q="";$("#q").value="";S.qq=0}}
+/* 💲 नया भाव: पुराना भाव सिर्फ़ सहारा (secondary) — मालिक एक दबाव में "वही रखें" या नया लिखें */
+function priceAsk(it){const o=+it.oldSale||0;
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="भाव पक्का करें"><div class="grab"></div>
+  <div class="sh-head"><div><h3>💲 ${esc(it.name)} — भाव पक्का करें</h3><span class="note">${o?`पहले (पुराने ऐप में) ${rs(o)}${it.unit==="kg"?"/किलो":""} में बिका`:"पहले का भाव नहीं मिला"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  <label class="fld">अब का भाव ₹${it.unit==="kg"?" / किलो":""}<input class="inp" id="paV" inputmode="decimal" placeholder="${o||""}" style="font-size:22px"></label>
+  <div class="row2" style="margin-top:10px">${o?`<button class="big ghost" data-pakeep>✓ ${rs(o)} ही रखें</button>`:""}<button class="big" data-paok>नया भाव लगाएँ</button></div></div></div>`;
+  const done=async v=>{if(!(v>0)){toast("भाव लिखें");return}const old=+it.sale||0;it.sale=v;if(it.cat!=="kirana"||!+it.mrp)it.mrp=v;
+    try{if(!S.demo){await S.db.collection("items").doc(it.id).update({sale:v,mrp:it.mrp});logPrice(it.id,"sale",old,v)}}catch(e){toast("सेव नहीं हुआ — "+(e.code||e.message||""));return}
+    closeSheet();toast("✓ "+it.name+" · "+rs(v));renderBill()};
+  $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}if(e.target.closest("[data-pakeep]"))done(o);if(e.target.closest("[data-paok]"))done(parseFloat($("#paV").value)||0)};
+  setTimeout(()=>{try{$("#paV").focus()}catch(e){}},50)}
 function renderBill(){
   $("#demo").hidden=!S.demo;syncTab();renderBillTabs();
   $("#modes").innerHTML=[["walk","⭐ VIP ग्राहक",""],["udhar","उधार / क्रेडिट","ud"],["inst","अपनी संस्था","inst"]]
@@ -938,7 +951,7 @@ function renderBill(){
     const id=esc(it.id),pc=isPc(it.unit),xp=expInfo(it),low=left!=null&&(it.track?left<=lowOf(it):left<=0.5);
     const mrp=+it.mrp||0,off=S.mode!=="inst"&&p>0&&mrp>p?Math.round((mrp-p)/mrp*100):0;
     const sz=[it.size,it.code?"#"+it.code:""].filter(Boolean).join(" · ");
-    return `<div class="card ${p>0?"":"off"}" role="button" tabindex="0" data-item="${id}">${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${xp?`<span class="xp ${xp.k}">${xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(it.name)}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:"रेट बाकी"}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(it.name)} एक कम">−</button><b data-qo="${id}">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(it.name)} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
+    return `<div class="card ${p>0?"":"off"}" role="button" tabindex="0" data-item="${id}">${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${xp?`<span class="xp ${xp.k}">${xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(it.name)}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(it.name)} एक कम">−</button><b data-qo="${id}">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(it.name)} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
   }).join("")+(window.SR?SR.addCardHTML():"");
 }
 $("#p-bill").addEventListener("click",e=>{
@@ -957,7 +970,7 @@ $("#p-bill").addEventListener("click",e=>{
   if(e.target.closest("[data-custtoggle]")){S.showCust=!S.showCust;renderBill();if(S.showCust){const f=$("#custPh");if(f)f.focus()}return}
   if(e.target.closest("[data-repeat]")){repeatLast();return}
 
-  const it=e.target.closest("[data-item]");if(it){const x=item(it.dataset.item);if(priceOf(x)>0){if(S.qq>0)quickAdd(x,S.qq);else if(isPc(x.unit))quickAdd(x,1);else openQty(x)}else toast(S.mode==="inst"?"इसका खरीद रेट नहीं डाला गया":"इसका बिक्री रेट नहीं डाला गया — मालिक से पूछें");}
+  const it=e.target.closest("[data-item]");if(it){const x=item(it.dataset.item);if(priceOf(x)>0){if(S.qq>0)quickAdd(x,S.qq);else if(isPc(x.unit))quickAdd(x,1);else openQty(x)}else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast(S.mode==="inst"?"इसका खरीद रेट नहीं डाला गया":"इसका बिक्री रेट नहीं डाला गया — मालिक से पूछें");}
 });
 $("#p-bill").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("[data-item]")){e.preventDefault();e.target.click()}});
 function decItem(id){let i=-1;S.cart.forEach((l,k)=>{if(l.id===id&&!l.changed&&!l.free)i=k});if(i<0)i=S.cart.map(l=>l.id).lastIndexOf(id);if(i<0)return;const l=S.cart[i];if(l.qty>1){l.qty=r2(l.qty-1);l.amt=r2(l.qty*l.rate)}else S.cart.splice(i,1);refreshAfterCart()}
@@ -1663,15 +1676,24 @@ function liveData(){const bl=(S.dayBills||[]).filter(b=>!b.cancelled&&!b.pending
     for(const l of b.lines||[]){const it=S.items.find(x=>x.id===l.id)||{};const k=inst?"inst":it.cat==="mithai"?"mithai":it.cat==="fast"?"fast":it.cat==="sabzi"?"sabzi":(["tob","dairy","ice","drinks"].includes(it.sub)?it.sub:"kirana");
       cat[k]=(cat[k]||0)+(+l.amt||0);if(!inst)profit+=(+l.amt||0)-(+l.cost||0)*(+l.qty||0);
       const nm=it.name||l.realName||l.name;const t=top[nm]=top[nm]||{q:0,a:0,u:l.unit};t.q+=+l.qty||0;t.a+=+l.amt||0}}
-  return {n:bl.length,tot:r2(tot),cash:r2(cash),upi:r2(upi),ud:r2(ud),profit:Math.round(profit),cat:Object.entries(cat).sort((a,b)=>b[1]-a[1]),top:Object.entries(top).sort((a,b)=>b[1].a-a[1].a).slice(0,10),warns}}
-function liveText(){const L=liveData();return `177 MH कैंटीन · ${fdate(S.billsDate)} · ${ftime(Date.now())} तक\nबिक्री ${rs(L.tot)} (${L.n} बिल) · नकद ${rs(L.cash)} · UPI ${rs(L.upi)} · उधार ${rs(L.ud)} · मुनाफ़ा लगभग ${rs(L.profit)}\nश्रेणी: ${L.cat.map(([k,v])=>`${LIVE_CAT[k]||k} ${rs(r2(v))}`).join(" · ")}\nटॉप: ${L.top.map(([n,t])=>`${n} ${fq(t.q,t.u)} ${rs(r2(t.a))}`).join(" · ")}\nचेतावनियाँ (${L.warns.length}): ${L.warns.join(" | ")||"कोई नहीं"}`}
+  const last=bl.reduce((m,b)=>Math.max(m,+b.ts||0),0),hr=new Date().getHours(),idle=S.billsDate===today()&&hr>=8&&hr<22&&(!last||Date.now()-last>2*3600e3)?(last?Math.round((Date.now()-last)/36e5*10)/10:null):0;
+  if(idle!==0)warns.unshift(idle?`⏰ ${idle} घंटे से कोई बिल नहीं बना — दुकान खुली है तो बिक्री बिना बिल तो नहीं?`:"⏰ आज अभी तक एक भी बिल नहीं बना");
+  const noCost=[...new Set(bl.flatMap(b=>(b.lines||[]).filter(l=>!(+l.cost>0)).map(l=>(S.items.find(x=>x.id===l.id)||{}).name||l.name)))];
+  let gp=null;try{gp=parseFloat(localStorage.getItem("mh_gpay_"+S.billsDate))}catch(e){}
+  return {noCost,gp:isFinite(gp)?gp:null,n:bl.length,tot:r2(tot),cash:r2(cash),upi:r2(upi),ud:r2(ud),profit:Math.round(profit),cat:Object.entries(cat).sort((a,b)=>b[1]-a[1]),top:Object.entries(top).sort((a,b)=>b[1].a-a[1].a).slice(0,10),warns}}
+function liveText(){const L=liveData();return `177 MH कैंटीन · ${fdate(S.billsDate)} · ${ftime(Date.now())} तक\nबिक्री ${rs(L.tot)} (${L.n} बिल) · नकद ${rs(L.cash)} · UPI ${rs(L.upi)} · उधार ${rs(L.ud)} · मुनाफ़ा लगभग ${rs(L.profit)}${L.gp!=null?` · Google Pay में आया ${rs(L.gp)} (फर्क ${rs(r2(L.gp-L.upi))})`:""}${L.noCost.length?` · लागत बाकी: ${L.noCost.length} सामान`:""}\nश्रेणी: ${L.cat.map(([k,v])=>`${LIVE_CAT[k]||k} ${rs(r2(v))}`).join(" · ")}\nटॉप: ${L.top.map(([n,t])=>`${n} ${fq(t.q,t.u)} ${rs(r2(t.a))}`).join(" · ")}\nचेतावनियाँ (${L.warns.length}): ${L.warns.join(" | ")||"कोई नहीं"}`}
 function ownerLiveHTML(){const L=liveData(),mx=Math.max(1,...L.cat.map(c=>c[1]));
   return `<div class="card2"><h3>📊 आज की बिक्री — श्रेणी-वार</h3>
   <div class="stkmeta"><span>कुल ${L.n} बिल · मुनाफ़ा लगभग</span><b>${rs(L.tot)} · ${rs(L.profit)}</b></div>
   ${L.cat.map(([k,v])=>`<div style="margin:6px 0"><div class="stkmeta" style="margin:0"><span>${LIVE_CAT[k]||k}</span><b>${rs(r2(v))}</b></div><div style="height:6px;border-radius:4px;background:var(--line,#e5e7f0)"><div style="height:6px;border-radius:4px;width:${Math.round(v/mx*100)}%;background:var(--brand,#5b3df5)"></div></div></div>`).join("")||'<p class="note">आज अभी कोई बिक्री नहीं।</p>'}
   ${L.top.length?`<h4 style="margin:12px 0 4px">🏆 सबसे ज़्यादा बिके</h4>${L.top.map(([n,t],i)=>`<div class="stkmeta"><span>${i+1}. ${esc(n)} · ${fq(t.q,t.u)}</span><b>${rs(r2(t.a))}</b></div>`).join("")}`:""}
+  <h4 style="margin:12px 0 4px">📲 Google Pay मिलान</h4>
+  <div class="row2" style="margin:0;align-items:center"><label class="fld">Google Pay ऐप में आज आया ₹<input class="inp" id="gpIn" inputmode="decimal" value="${L.gp??""}" placeholder="जैसे 15097"></label><div class="stkmeta" style="margin:0"><span>ऐप के बिलों में UPI</span><b>${rs(L.upi)}</b></div></div>
+  ${L.gp!=null?(Math.abs(L.gp-L.upi)<1?'<p class="note" style="color:var(--ok,#1a7f4b)">✓ UPI पूरा मिल गया</p>':`<p class="note" style="color:var(--chili,#d33)">${L.gp>L.upi?`⚠️ ${rs(r2(L.gp-L.upi))} Google Pay में आया पर बिल नहीं बना`:`⚠️ बिलों में ${rs(r2(L.upi-L.gp))} UPI ज़्यादा लिखा — पैसा आया ही नहीं?`}</p>`):""}
+  ${L.noCost.length?`<p class="note" style="margin-top:8px">ℹ️ मुनाफ़ा अधूरा — ${L.noCost.length} सामान की लागत नहीं डली: ${L.noCost.slice(0,6).map(esc).join(", ")}${L.noCost.length>6?"…":""}</p>`:""}
   <h4 style="margin:12px 0 4px">⚠️ आज की चेतावनियाँ (${L.warns.length})</h4>${L.warns.length?L.warns.map(w=>`<p class="note" style="margin:2px 0">• ${esc(w)}</p>`).join(""):'<p class="note">कोई नहीं ✓</p>'}
   <button class="big ghost" style="margin-top:10px" data-livecopy>🤖 AI के लिए हिसाब कॉपी करें</button></div>`}
+document.addEventListener("change",e=>{if(e.target.id==="gpIn"){try{localStorage.setItem("mh_gpay_"+S.billsDate,String(parseFloat(e.target.value)||""))}catch(_){}renderDay()}});
 document.addEventListener("click",async e=>{if(!e.target.closest("[data-livecopy]"))return;const t=liveText();try{await navigator.clipboard.writeText(t);toast("✓ कॉपी हो गया — Claude को चिपका दें")}catch(_){toast("कॉपी नहीं हुआ")}});
 function renderDay(){
   const d=S.billsDate,c=cashCalc(d),rows=stockRows();
@@ -1979,7 +2001,7 @@ function subBills(){
 }
 function loadDemo(){
   S.demo=true;S.isOwner=true;
-  S.items=DEMO_ITEMS.map(([id,name,emoji,cat,unit,sale,cost,hue,barcode,sub,code,mrp],i)=>({id,name,emoji,cat,unit,sale,cost,hue,sub,code,mrp,alias:ALIAS[id]||"",barcode:barcode||"",track:!!barcode,min:5,order:i,active:true,photo:SE.bundled.has(id)?"b":""}));
+  S.items=DEMO_ITEMS.map(([id,name,emoji,cat,unit,sale,cost,hue,barcode,sub,code,mrp,oldSale],i)=>({id,name,emoji,cat,unit,sale,cost,hue,sub,code,mrp,oldSale:oldSale||0,alias:ALIAS[id]||"",barcode:barcode||"",track:!!barcode,min:5,order:i,active:true,photo:SE.bundled.has(id)?"b":""}));
   S.pstock={};
   S.parties=[{id:"jco",name:"JCO मेस",phone:""},{id:"officers",name:"अफसर मेस",phone:""}];
   S.settings={upi:"",payee:"177 MH Canteen",insts:["15 भैरव कैंटीन","मारवाड़ रसोई (होटल)","अमूल स्टोर"]};
