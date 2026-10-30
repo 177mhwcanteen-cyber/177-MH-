@@ -23,7 +23,7 @@ await build({ entryPoints: [path.join(W, "src/vendor.js")], bundle: true, minify
 // 2) बाकी फ़ाइलें
 for (const f of ["index.html", "pehchan.json", "se-platform.js", "se-features.js", "se-nutri.js", "se-route.js", "se-pay.js", "se-bill.js", "se-stock.js", "se-intake.js", "config.js", "manifest.webmanifest", "migrate.json", "icon.png"])
   if (fs.existsSync(path.join(W, f))) cp(path.join(W, f), path.join(OUT, f));
-cp(path.join(W, "img"), path.join(OUT, "img"));
+if (fs.existsSync(path.join(W, "img"))) cp(path.join(W, "img"), path.join(OUT, "img")); else fs.mkdirSync(path.join(OUT, "img"), { recursive: true });
 cp(path.join(R, "node_modules/qrcodejs/qrcode.min.js"), path.join(OUT, "lib/qrcode.min.js"));
 cp(path.join(R, "node_modules/@zxing/library/umd/index.min.js"), path.join(OUT, "lib/zxing.min.js"));
 cp(path.join(R, "node_modules/jspdf/dist/jspdf.umd.min.js"), path.join(OUT, "lib/jspdf.min.js"));
