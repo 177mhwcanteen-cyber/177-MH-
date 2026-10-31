@@ -715,6 +715,13 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .updbox .big.upd{background:linear-gradient(120deg,var(--leaf),var(--hdr3,#4f46e5));color:#fff;font-weight:800}
 .updbox .big.upd:disabled{opacity:.6}
 .updbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:8px}.updbar i{display:block;height:100%;width:0;background:var(--leaf);transition:width .25s}
+
+/* 🎪 मेला */
+.chip.melac{background:linear-gradient(120deg,#f97316,#db2777);color:#fff;border-color:transparent;font-weight:800}.chip.melac[aria-pressed="true"]{box-shadow:0 0 0 3px rgba(249,115,22,.4)}
+.tokbox{margin:4px 0 10px;padding:10px;border-radius:16px;background:linear-gradient(135deg,#fff7ed,#ffe4e6);border:1.5px dashed #fb923c}
+.tokh{display:flex;align-items:center;gap:8px;margin-bottom:8px}.tokh b{flex:1;font-size:17px;color:#9a3412}.tokh .big{width:auto;padding:8px 14px;font-size:14px;margin:0}
+.tokg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}
+.tok{display:grid;justify-items:center;padding:8px 4px;border-radius:12px;background:#fff;border:1.5px solid #fdba74;text-align:center}.tok i{font-style:normal;font-family:var(--f-display);font-weight:900;font-size:22px;color:#c2410c;line-height:1}.tok b{font-size:13px;color:#111;line-height:1.15;margin-top:3px}.tok span{font-size:11px;color:#9a3412}
 </style>
 
 <header class="px">
@@ -832,7 +839,7 @@ const DEMO_ITEMS=[
 ];
 const UPI_FIXED={upi:"6367183480@okbizaxis",payee:"177 MH WET CANTEEN"};
 function upiId(){return UPI_FIXED.upi}
-const CATS=[["all","सब"],["mithai","🍬 मिठाई-पनीर"],["fast","🥟 नाश्ता"],["kirana","🛒 किराना"],["sabzi","🥬 सब्ज़ी-फल"]];
+const CATS=[["mela","🎪 मेला स्पेशल"],["all","सब"],["mithai","🍬 मिठाई-पनीर"],["fast","🥟 नाश्ता"],["kirana","🛒 किराना"],["sabzi","🥬 सब्ज़ी-फल"]];
 const SUBS={mithai:[["mithai","🍬 मिठाई"]],kirana:[["dairy","🥛 दूध-दही"],["ice","🍦 आइसक्रीम"],["tob","📦 कोड वाले"],["namkeen","🥨 नमकीन-चिप्स"],["dryfruit","🥜 ड्राई फ्रूट"],["achar","🌶️ अचार-चटनी"],["rashan","🌾 आटा-दाल-राशन"],["drinks","🥤 कोल्ड ड्रिंक-पेय"],["sweet","🍫 बिस्किट-मिठाई"],["clean","🧼 साबुन-सफाई"]],fast:[["nashta","🍳 नाश्ता"],["meal","🍛 खाना-थाली"],["chai","☕ चाय-कॉफी"]],sabzi:[["sabzi","🥬 सब्ज़ी"],["fruit","🍎 फल"]]};
 const OLDCAT={packed:"kirana",patta:"sabzi",fal:"sabzi",biryani:"fast",nonveg:"fast",veg:"fast",chinese:"fast",drinks:"fast"};
 const UNITS={pc:"पीस",pk:"पैकेट",kg:"कि.ग्रा",pl:"प्लेट",dz:"दर्जन",gd:"गड्डी"};
@@ -877,7 +884,7 @@ function item(id){return S.items.find(i=>i.id===id)}
 function priceOf(it){return S.mode==="inst"?(window.SF?SF.costOf(it):(+it.cost||0)):(+it.sale||0)}
 /* 🎨 हर सामान की अपने-आप सुंदर टाइल — नया सामान जुड़ते ही बिना फोटो के भी रंग, चिह्न और ब्रांड नाम (art() नाम से तय, हर अपडेट में अपने-आप) */
 const BRAND_ART=[[/vimal|विमल/i,4,"🌿","विमल"],[/rajni|रजनी/i,198,"🌸","रजनीगंधा"],[/tansen|तानसेन/i,228,"🎵","तानसेन"],[/sigg|signature|सिग्नेचर/i,200,"✒️","Siggnature"],[/nevla|नेवला/i,288,"🍂","नेवला"],[/ganesh|गणेश/i,42,"🍂","गणेश 701"],[/\b502\b|pataka|पटाका/i,262,"🎆","502 पटाका"],[/gold flake|गोल्ड फ्लेक/i,38,"🚬","Gold Flake"],[/classic|क्लासिक/i,214,"🚬","Classic"],[/amul|अमूल/i,212,"🥛","Amul"],[/haldiram|हल्दीराम/i,352,"🥨","Haldiram"],[/bikaji|बीकाजी/i,18,"🥨","Bikaji"],[/cadbury|dairy milk|5 star|perk/i,280,"🍫","Cadbury"],[/parle/i,48,"🍪","Parle"],[/britannia/i,356,"🍪","Britannia"],[/pepsi|coca|coke|thums|sprite|fanta|7up|mirinda|limca|maaza|frooti|slice/i,0,"🥤",""],[/lays|kurkure|bingo|uncle chips/i,30,"🍟",""],[/maggi|yippee|noodle/i,50,"🍜",""]];
-const KW_ART=[[/mithai|barfi|बर्फी|ladd?u|लड्डू|peda|पेड़ा|rasgull|रसगुल्ल|gulab|गुलाब जामुन|kaju|काजू|jalebi|जलेबी|ghevar|घेवर|sweet|मिठाई/i,"🍬"],[/paneer|पनीर/i,"🧀"],[/samosa|समोसा|kachori|कचौरी/i,"🥟"],[/momo/i,"🥟"],[/ganna|गन्ना|juice|जूस/i,"🧃"],[/tea|chai|चाय/i,"🍵"],[/coffee|कॉफी/i,"☕"],[/ice ?cream|kulfi|कुल्फी|cone/i,"🍦"],[/milk|doodh|दूध|lassi|लस्सी|chaach|छाछ|dahi|दही/i,"🥛"],[/water|पानी|bisleri|kinley/i,"💧"],[/cold ?drink|soda|सोडा/i,"🥤"],[/chocolate|चॉकलेट|choco/i,"🍫"],[/biscuit|बिस्कुट|cookie/i,"🍪"],[/namkeen|नमकीन|bhujia|भुजिया|mixture|sev|सेव/i,"🥨"],[/chips|चिप्स/i,"🍟"],[/cake|केक|pastry/i,"🍰"],[/bread|ब्रेड|pav|bun/i,"🍞"],[/soap|साबुन|lux|lifebuoy|dettol/i,"🧼"],[/shampoo|शैम्पू|oil|तेल|lotion|cream/i,"🧴"],[/paste|colgate|brush|ब्रश/i,"🪥"],[/atta|आटा|maida|सूजी|besan/i,"🌾"],[/rice|chawal|चावल/i,"🍚"],[/dal|दाल|chana|चना|rajma/i,"🫘"],[/masala|मसाला|haldi|हल्दी|mirch|मिर्च|jeera/i,"🌶️"],[/sugar|cheeni|चीनी|shakkar/i,"🍚"],[/ghee|घी/i,"🫙"],[/surf|detergent|vim|wheel|ariel|tide|rin/i,"🫧"],[/battery|cell/i,"🔋"],[/egg|अंडा/i,"🥚"],[/onion|प्याज|potato|आलू|tomato|टमाटर|sabzi|सब्ज़ी/i,"🥬"],[/fruit|apple|सेब|banana|केला/i,"🍎"],[/gutk|gutkh|गुटखा|zarda|ज़र्दा|जर्दा|pan masala|पान मसाला|supari|सुपारी/i,"🌿"],[/tambak|tobacco|तम्बाकू|khaini|खैनी/i,"🍂"],[/cigar|sigret|सिगरेट|bidi|biri|बीड़ी/i,"🚬"]];
+const KW_ART=[[/mithai|barfi|बर्फी|ladd?u|लड्डू|peda|पेड़ा|rasgull|रसगुल्ल|gulab|गुलाब जामुन|kaju|काजू|jalebi|जलेबी|ghevar|घेवर|sweet|मिठाई/i,"🍬"],[/paneer|पनीर/i,"🧀"],[/kadh?ai|कड़ाही|कढ़ाई/i,"🍲"],[/dosa|डोसा/i,"🫓"],[/roti|रोटी|naan|नान/i,"🫓"],[/bhaji|भाजी/i,"🍛"],[/burger|बर्गर/i,"🍔"],[/chowmein|चाउमीन/i,"🍜"],[/manchurian|मंचूरियन/i,"🥡"],[/samosa|समोसा|kachori|कचौरी/i,"🥟"],[/momo/i,"🥟"],[/ganna|गन्ना|juice|जूस/i,"🧃"],[/tea|chai|चाय/i,"🍵"],[/coffee|कॉफी/i,"☕"],[/ice ?cream|kulfi|कुल्फी|cone/i,"🍦"],[/milk|doodh|दूध|lassi|लस्सी|chaach|छाछ|dahi|दही/i,"🥛"],[/water|पानी|bisleri|kinley/i,"💧"],[/cold ?drink|soda|सोडा/i,"🥤"],[/chocolate|चॉकलेट|choco/i,"🍫"],[/biscuit|बिस्कुट|cookie/i,"🍪"],[/namkeen|नमकीन|bhujia|भुजिया|mixture|sev|सेव/i,"🥨"],[/chips|चिप्स/i,"🍟"],[/cake|केक|pastry/i,"🍰"],[/bread|ब्रेड|pav|bun/i,"🍞"],[/soap|साबुन|lux|lifebuoy|dettol/i,"🧼"],[/shampoo|शैम्पू|oil|तेल|lotion|cream/i,"🧴"],[/paste|colgate|brush|ब्रश/i,"🪥"],[/atta|आटा|maida|सूजी|besan/i,"🌾"],[/rice|chawal|चावल/i,"🍚"],[/dal|दाल|chana|चना|rajma/i,"🫘"],[/masala|मसाला|haldi|हल्दी|mirch|मिर्च|jeera/i,"🌶️"],[/sugar|cheeni|चीनी|shakkar/i,"🍚"],[/ghee|घी/i,"🫙"],[/surf|detergent|vim|wheel|ariel|tide|rin/i,"🫧"],[/battery|cell/i,"🔋"],[/egg|अंडा/i,"🥚"],[/onion|प्याज|potato|आलू|tomato|टमाटर|sabzi|सब्ज़ी/i,"🥬"],[/fruit|apple|सेब|banana|केला/i,"🍎"],[/gutk|gutkh|गुटखा|zarda|ज़र्दा|जर्दा|pan masala|पान मसाला|supari|सुपारी/i,"🌿"],[/tambak|tobacco|तम्बाकू|khaini|खैनी/i,"🍂"],[/cigar|sigret|सिगरेट|bidi|biri|बीड़ी/i,"🚬"]];
 function hhash(x){let h=7;for(const c of String(x))h=(h*31+c.codePointAt(0))>>>0;return h}
 function art(it){const k=(it.name||"")+" "+(it.hi||"")+" "+(it.alias||"");const b=BRAND_ART.find(r=>r[0].test(k));
   const generic=!it.emoji||it.emoji==="🛒"||it.emoji==="📦";const kw=generic&&KW_ART.find(r=>r[0].test(k));
@@ -1006,9 +1013,9 @@ function renderBill(){
   ["#modes","#custbox","#cats","#cats2"].forEach(x=>$(x).hidden=searching);if(S.demo)$("#demo").hidden=searching||!S.demo;
   const tip=$("#qtip");tip.hidden=!searching;S.qq=bl.qq;
   if(searching){tip.className="qtip"+(bl.list.length===1||bl.qq?" go":"");tip.textContent=bl.list.length?(bl.qq?`टैप करें → ${bl.qq} ${bl.list.length===1&&bl.list[0].unit!=="kg"?"पीस":"कि.ग्रा"} सीधा बिल में`:`${bl.list.length} मिलीं · टैप करके मात्रा चुनें`)+(bl.list.length===1?" · या ✓/Enter दबाएँ":""):""}
-  const act=S.items.filter(i=>i.active!==false),nLow=act.filter(isLow).length,nExp=act.filter(i=>expInfo(i)).length;
+  const act=S.items.filter(i=>i.active!==false);if(!S._melaInit&&act.some(i=>i.cat==="mela")){S._melaInit=1;if(S.cat==="all")S.cat="mela"}const nLow=act.filter(isLow).length,nExp=act.filter(i=>expInfo(i)).length;
   $("#greet").hidden=searching;if(!searching)$("#greet").innerHTML=greetHTML();
-  $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+CATS.map(([k,v])=>`<button class="chip" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>`;
+  $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+CATS.filter(([k])=>k!=="mela"||act.some(i=>i.cat==="mela")).map(([k,v])=>`<button class="chip ${k==="mela"?"melac":""}" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>`;
   const subs=!S.flt&&SUBS[S.cat]?SUBS[S.cat].filter(([k])=>act.some(i=>mcat(i)===S.cat&&i.sub===k)):[];
   $("#cats2").hidden=searching||!subs.length;
   $("#cats2").innerHTML=subs.length?`<button class="chip" aria-pressed="${S.sub==="all"}" data-sub="all">सब</button>`+subs.map(([k,v])=>`<button class="chip" aria-pressed="${S.sub===k}" data-sub="${k}">${v}</button>`).join(""):"";
@@ -1310,11 +1317,18 @@ function waLink(text,phone){const p=String(phone||"").replace(/\D/g,"").slice(-1
 async function loadBillPhoto(no){const box=()=>$("#bphoto");S.billPhotos=S.billPhotos||{};let d=S.billPhotos[no];
   if(!d&&!S.demo){try{const x=await S.db.doc("billPhotos/"+no).get();d=x.exists?x.data().d:"";S.billPhotos[no]=d}catch(e){}}
   const b=box();if(b)b.innerHTML=d?`<img src="${d}" alt="बिल के सामान की फोटो">`:"📷 फोटो अभी नहीं मिली (शायद उस फोन से जानी बाकी है)"}
+/* 🎟️ मेला टोकन — हर नग का एक टोकन (2 पनीर कड़ाही = 2 टोकन) */
+function tokensOf(b){const out=[];let k=0;const short=String(b.no||"").split("-").pop();(b.lines||[]).forEach(l=>{const it=item(l.id);if(!it||!(it.cat==="mela"||it.token))return;const n=Math.max(1,Math.round(+l.qty||1));for(let j=0;j<n;j++){k++;out.push({code:short+"-"+k,name:(it.hi||it.name),en:it.name,rate:l.rate})}});return out}
+function tokenHTML(b){const t=tokensOf(b);if(!t.length)return "";window._tokBill=b;
+  return `<div class="tokbox"><div class="tokh"><b>🎟️ ${t.length} टोकन</b><button class="big haldi" data-tokprint>🖨️ टोकन छापें</button></div><div class="tokg">${t.map(x=>`<div class="tok"><i>${esc(x.code)}</i><b>${esc(x.name)}</b><span>${rs(x.rate)}</span></div>`).join("")}</div></div>`}
+document.addEventListener("click",async e=>{if(!e.target.closest("[data-tokprint]"))return;const b=window._tokBill;if(!b)return;const t=tokensOf(b);
+  try{for(const x of t){await SE.printReceipt({...b,no:"टोकन "+x.code,lines:[{id:"",name:x.name+" ("+x.en+")",qty:1,unit:"pc",rate:x.rate,amt:x.rate}],sub:x.rate,total:x.rate,disc:0,pay:{cash:0,upi:0,udhar:0}},{tokens:true})}toast("🖨️ "+t.length+" टोकन छपे")}
+  catch(err){toast(err&&err.msg?err.msg:"प्रिंट नहीं हुआ — प्रिंटर देखें")}});
 function showReceipt(b,fresh,offline){
   const party=S.parties.find(p=>p.id===b.partyId);
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="बिल रसीद"><div class="grab"></div>
     ${fresh?`<div class="done"><div class="confetti" aria-hidden="true">${Array.from({length:22},(_,i)=>`<i style="--i:${i}"></i>`).join("")}</div><div class="tick">✓</div><h3 style="margin:0;font-family:var(--f-display);font-size:24px">बिल सेव हो गया</h3>${offline||b.pending?'<p class="note" style="margin:4px 0 0;color:var(--chili);font-weight:700">📴 फोन में सेव है — इंटरनेट मिलते ही अपने-आप भेज दिया जाएगा</p>':""}</div>`:`<div class="sh-head"><h3>बिल ${esc(b.no)}</h3><button class="x" data-close aria-label="बंद करें">✕</button></div>`}
-    ${receiptHTML(b)}
+    ${tokenHTML(b)}${receiptHTML(b)}
     ${b.photo?`<div class="bphoto" id="bphoto">📷 फोटो लोड हो रही है…</div>`:""}
     ${window.SB?SB.receiptActionsHTML(b):""}
     ${S.isOwner&&window.SF&&SF.billLabel(b.no)?`<p class="note" style="margin:6px 0 0;text-align:center">🔐 ${esc(SF.billLabel(b.no))} (यह सिर्फ़ आपको दिखता है)</p>`:""}
@@ -1761,11 +1775,11 @@ function cashCalc(d){
 }
 function diffPill(diff){if(diff==null)return '<span class="pill blue">अभी गिना नहीं</span>';if(Math.abs(diff)<=5)return '<span class="pill green">✓ पूरा मिला</span>';return diff<0?`<span class="pill red">${rs(-diff)} कम है</span>`:`<span class="pill blue">${rs(diff)} ज़्यादा है</span>`}
 /* 📊 मालिक की लाइव रिपोर्ट: श्रेणी-वार बिक्री, टॉप सामान, चेतावनियाँ — और AI के लिए एक लाइन वाला हिसाब */
-const LIVE_CAT={mithai:"🍬 मिठाई-पनीर",fast:"🥟 नाश्ता",tob:"📦 कोड वाले",dairy:"🥛 दूध-दही",ice:"🍦 आइसक्रीम",drinks:"🥤 ड्रिंक",kirana:"🛒 किराना",sabzi:"🥬 सब्ज़ी-फल",inst:"🏢 संस्था/ट्रांसफर"};
+const LIVE_CAT={mela:"🎪 मेला",mithai:"🍬 मिठाई-पनीर",fast:"🥟 नाश्ता",tob:"📦 कोड वाले",dairy:"🥛 दूध-दही",ice:"🍦 आइसक्रीम",drinks:"🥤 ड्रिंक",kirana:"🛒 किराना",sabzi:"🥬 सब्ज़ी-फल",inst:"🏢 संस्था/ट्रांसफर"};
 function liveData(){const bl=(S.dayBills||[]).filter(b=>!b.cancelled&&!b.pending);const cat={},top={},warns=[];let tot=0,cash=0,upi=0,ud=0,profit=0;
   for(const b of bl){const inst=b.mode==="inst";if(!inst){tot+=+b.total||0;cash+=+(b.pay&&b.pay.cash)||0;upi+=+(b.pay&&b.pay.upi)||0;ud+=+(b.pay&&b.pay.udhar)||0}
     (b.warn||[]).forEach(w=>warns.push(`बिल ${b.no} (${b.byName||""}): ${w}`));if(b.rateChanged)warns.push(`बिल ${b.no} (${b.byName||""}): भाव बदला गया`);
-    for(const l of b.lines||[]){const it=S.items.find(x=>x.id===l.id)||{};const k=inst?"inst":it.cat==="mithai"?"mithai":it.cat==="fast"?"fast":it.cat==="sabzi"?"sabzi":(["tob","dairy","ice","drinks"].includes(it.sub)?it.sub:"kirana");
+    for(const l of b.lines||[]){const it=S.items.find(x=>x.id===l.id)||{};const k=inst?"inst":it.cat==="mela"?"mela":it.cat==="mithai"?"mithai":it.cat==="fast"?"fast":it.cat==="sabzi"?"sabzi":(["tob","dairy","ice","drinks"].includes(it.sub)?it.sub:"kirana");
       cat[k]=(cat[k]||0)+(+l.amt||0);if(!inst)profit+=(+l.amt||0)-(+l.cost||0)*(+l.qty||0);
       const nm=it.name||l.realName||l.name;const t=top[nm]=top[nm]||{q:0,a:0,u:l.unit};t.q+=+l.qty||0;t.a+=+l.amt||0}}
   const last=bl.reduce((m,b)=>Math.max(m,+b.ts||0),0),hr=new Date().getHours(),idle=S.billsDate===today()&&hr>=8&&hr<22&&(!last||Date.now()-last>2*3600e3)?(last?Math.round((Date.now()-last)/36e5*10)/10:null):0;

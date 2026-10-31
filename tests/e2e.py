@@ -235,6 +235,15 @@ async def main():
         await pg.evaluate("localStorage.removeItem('mh_mkt_draft')"); await pg.click("[data-mkback]") if await pg.is_visible("[data-mkback]") else None
         await pg.click('[data-tab="bill"]'); await pg.wait_for_timeout(150)
         print("web lookup ok")
+        # 🎪 मेला स्पेशल + टोकन
+        mig = json.load(open(os.path.join(WWW, "migrate.json"), encoding="utf-8")); mel = [dict(v, id=k) for k, v in mig["items"].items() if v.get("cat") == "mela"]
+        await pg.evaluate("x=>{S.items.push(...x);S.cat='mela';S.cart=[];renderCart();renderBill()}", mel); await pg.wait_for_timeout(200)
+        await pg.click('#grid [data-item="m-pnr-kadhai"] .tile'); await pg.click('#grid [data-item="m-pnr-kadhai"] .tile'); await pg.click('#grid [data-item="m-btr-roti"] .tile')
+        await pg.wait_for_timeout(300); await pg.screenshot(path=f"{SHOTS}/8a-mela.png")
+        await pg.evaluate("showReceipt({no:'MH-31-7',date:today(),ts:Date.now(),byName:'दिनेश जी',partyName:'VIP',mode:'walk',lines:S.cart.map(l=>({...l})),total:395,disc:0,pay:{cash:395,upi:0,udhar:0}},true)"); await pg.wait_for_timeout(400)
+        assert await pg.locator(".tok").count() == 3
+        await pg.screenshot(path=f"{SHOTS}/8b-tokens.png"); await pg.evaluate("closeSheet();S.cart=[];S.items=S.items.filter(i=>i.cat!=='mela');S.cat='all';renderCart();renderBill()")
+        print("mela ok")
         await pg.click('[data-tab="bill"]'); await pg.wait_for_timeout(200)
         print("market buy ok", mb[0]["no"], mb[0]["total"])
         # झलक: तम्बाकू टाइलें + मिठाई का छोटा पॉपअप (सिर्फ़ स्क्रीनशॉट)
