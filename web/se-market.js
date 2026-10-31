@@ -74,7 +74,7 @@ const TRIED={};
 SM.lookup=async function(code){code=String(code||"").replace(/\D/g,"");if(code.length<8)return null;
   try{if(!S.demo&&S.db){const g=await S.db.doc("bcache/"+code).get();if(g.exists){const d=g.data();return d.found===false?null:d}}}catch(e){}
   if(TRIED[code])return null;TRIED[code]=1;if(!SE.aiReady())return null;
-  const r=await SE.ai({mode:"code",code});if(!r||!r.ok){if(r&&r.error==="quota")toast("🌐 आज की मुफ़्त AI खोज पूरी — कल फिर चलेगी");return null}
+  const r=await SE.ai({mode:"code",code});if(!r||!r.ok){if(r&&r.error==="quota")toast("🌐 आज की मुफ़्त AI खोज पूरी — कल फिर चलेगी");if(r&&r.error==="busy"){delete TRIED[code];toast("🌐 Google अभी व्यस्त — थोड़ी देर में फिर स्कैन करें")}return null}
   const d={found:!!(r.found&&r.name),name:String(r.name||"").slice(0,60),hi:String(r.hi||"").slice(0,60),brand:String(r.brand||""),size:String(r.size||""),mrp:num(r.mrp),cat:String(r.category||""),src:String(r.source||"web").slice(0,60),ts:Date.now(),by:S.uid||"",byName:biller()};
   try{if(!S.demo&&S.db)await S.db.doc("bcache/"+code).set(d)}catch(e){}
   return d.found?d:null};

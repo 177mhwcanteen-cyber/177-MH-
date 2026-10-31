@@ -446,7 +446,7 @@ async function geminiDirect(p,key){
   if(p.mode==="ping")parts=[{text:"Reply with exactly: OK"}];
   else if(p.mode==="code"){const c=String(p.code||"").replace(/\D/g,"").slice(0,14);if(c.length<8)return {ok:false,error:"bad-code"};parts=[{text:AI_P.code(c)}];tools=[{google_search:{}}]}
   else if(p.mode==="img")parts=[{inline_data:{mime_type:"image/jpeg",data:String(p.b64||"")}},{text:AI_P.img}];else return {ok:false,error:"mode"};
-  const own=_set().gmodel;const list=[...(own?[own]:[]),...GM[p.mode]];let last="",quota=false;const tries=[];
+  const own=_set().gmodel;const list=[...(own?[own]:[]),...GM[p.mode]];let last="",quota=false,busy=false;const tries=[];
   for(const m of list){
     const body={contents:[{role:"user",parts}],generationConfig:{temperature:0.1}};if(tools)body.tools=tools;
     if(p.onStep)try{p.onStep(m)}catch(e){}
@@ -458,9 +458,11 @@ async function geminiDirect(p,key){
     const t=await r.text().catch(()=>"");let msg=t;try{const e=JSON.parse(t).error;msg=(e.status||"")+" "+(e.message||"")}catch(e){}
     if(r.status===404){last="model "+m;continue}
     if(r.status===429){quota=true;last=msg;continue}
+    if(r.status===503||r.status===500){busy=true;last=msg;if(!p._re){p._re=1;await new Promise(z=>setTimeout(z,2500));const rr=await geminiDirect(p,key);if(rr.ok)return rr}continue}
     if([400,401,403].includes(r.status)&&/API[_ ]?key|PERMISSION|UNAUTHENTICATED|credential|ACCESS_TOKEN|not valid/i.test(msg))return {ok:false,error:"bad-key",detail:msg.slice(0,200)};
     last=r.status+" "+msg.slice(0,160)}
-  return {ok:false,error:quota?"quota":"ai",detail:(tries.length?tries.join(" · "):String(last)).slice(0,240)}}
+  if(p.mode==="ping"&&(busy||quota))return {ok:true,pong:true,busy:true,model:"Google व्यस्त"};
+  return {ok:false,error:quota?"quota":busy?"busy":"ai",detail:(tries.length?tries.join(" · "):String(last)).slice(0,240)}}
 SE.ai=async function(p){if(navigator.onLine===false)return {ok:false,error:"offline",detail:"फ़ोन का इंटरनेट बंद है"};
   const k=SE.gk();if(k){try{return await geminiDirect(p,k)}catch(e){return {ok:false,error:String(e.message||e)}}}
   const u=SE.scriptUrl();if(!u)return {ok:false,error:"no-url"};if(navigator.onLine===false)return {ok:false,error:"offline"};
