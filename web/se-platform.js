@@ -439,7 +439,11 @@ async function geminiDirect(p,key){
   const own=_set().gmodel;const list=[...(own?[own]:[]),...GM[p.mode]];let last="",quota=false;
   for(const m of list){
     const body={contents:[{role:"user",parts}],generationConfig:{temperature:0.1}};if(tools)body.tools=tools;
-    let r;try{r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)})}catch(e){return {ok:false,error:"net",detail:String(e.message||e)}}
+    if(p.onStep)try{p.onStep(m)}catch(e){}
+    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),p.mode==="ping"?20000:45000);
+    let r;try{r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent",{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)})}
+    catch(e){clearTimeout(tm);if(e.name==="AbortError"){last="समय खत्म ("+m+")";continue}return {ok:false,error:"net",detail:"इंटरनेट/Google तक नहीं पहुँचे: "+String(e.message||e)}}
+    clearTimeout(tm);
     if(r.ok){const j=await r.json();SE.aiLast=m;const t=((((j.candidates||[])[0]||{}).content||{}).parts||[]).map(x=>x.text||"").join("");
       if(p.mode==="ping")return {ok:true,pong:true,model:m};const a=t.indexOf("{"),z=t.lastIndexOf("}");
       if(a<0||z<a)return {ok:true,found:false,model:m};try{return {...JSON.parse(t.slice(a,z+1)),ok:true,model:m}}catch(e){return {ok:true,found:false,model:m}}}
@@ -449,7 +453,7 @@ async function geminiDirect(p,key){
     if([400,401,403].includes(r.status)&&/API[_ ]?key|PERMISSION|UNAUTHENTICATED|credential|ACCESS_TOKEN|not valid/i.test(msg))return {ok:false,error:"bad-key",detail:msg.slice(0,200)};
     last=r.status+" "+msg.slice(0,160)}
   return {ok:false,error:quota?"quota":"ai",detail:String(last).slice(0,200)}}
-SE.ai=async function(p){if(navigator.onLine===false)return {ok:false,error:"offline"};
+SE.ai=async function(p){if(navigator.onLine===false)return {ok:false,error:"offline",detail:"फ़ोन का इंटरनेट बंद है"};
   const k=SE.gk();if(k){try{return await geminiDirect(p,k)}catch(e){return {ok:false,error:String(e.message||e)}}}
   const u=SE.scriptUrl();if(!u)return {ok:false,error:"no-url"};if(navigator.onLine===false)return {ok:false,error:"offline"};
   try{const tok=await firebase.auth().currentUser.getIdToken();const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),25000);
