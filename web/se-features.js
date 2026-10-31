@@ -1013,14 +1013,26 @@ SF.drawCheckout=function(){
   const st=c.stage||"bill";
   let body="";
   if(st==="bill"){
+    /* ⚡ एक टैप: भुगतान चिप + सेव·सेटल एक ही शीट में (31-10-2026) */
+    if(!c.payPicked&&!c.udPick)c.pay=S.mode==="inst"?"inst":(S.mode==="udhar"&&S.partyId)?"udhar":"upi";
+    const pays=S.mode==="inst"?[["inst","🏠 संस्था"]]:[["upi","📱 UPI"],["cash","💵 नकद"],["udhar","📒 उधार"],["split","🔀 नकद+उधार"]];
+    let mini="";
+    if(c.pay==="cash"&&!c.udPick){const g=parseFloat(c.given)||0;mini=`<div class="ck-mini"><input class="inp" id="givenIn" inputmode="decimal" value="${esc(c.given)}" placeholder="ग्राहक ने दिए ₹ (ज़रूरी नहीं)" aria-label="ग्राहक ने कितने दिए">${g>0?`<b style="color:${g>=tot?"var(--leaf)":"var(--chili)"}">${g>=tot?"लौटाएँ "+rs(g-tot):"₹"+(tot-g)+" कम"}</b>`:""}</div>`}
+    if(c.pay==="split"&&!c.udPick){const cp=parseFloat(c.cashPart)||0;mini=`<div class="ck-mini"><input class="inp" id="cashIn" inputmode="decimal" value="${esc(c.cashPart)}" placeholder="अभी नकद मिला ₹" aria-label="अभी कितना नकद मिला"><b style="color:var(--chili)">उधार ${rs(Math.max(0,tot-cp))}</b></div>`}
+    if((c.pay==="udhar"||c.pay==="split")&&!c.udPick&&party)mini+=`<p class="note ck-who">📒 ${esc(party.name)} के खाते में · अभी बाकी ${rs(bal(party.id))}</p>`;
+    const needUpi=c.pay==="upi"&&!upiId();
+    const dis=c.udPick||S.saving||needUpi||(tot<=0&&S.mode!=="inst")||c.no==="…";
+    const lbl=S.saving?"⏳ सेव हो रहा है…":c.pay==="upi"?"✓ पैसा आ गया · सेव "+rs(tot):c.pay==="inst"?"✓ संस्था बिल सेव "+rs(tot):"✓ सेव + सेटल "+rs(tot);
     body=`${anyChg?`<div class="warn" style="padding:6px 10px;margin-bottom:6px">⚠ इस बिल में किसी सामान का भाव बदला गया है</div>`:""}
     ${overLim?`<div class="warn">⚠ ${esc(party.name)} की उधार सीमा ${rs(party.limit)} है। इस बिल के बाद बाकी ${rs(bal(party.id)+tot)} हो जाएगा।</div>`:""}
     ${SF.compactPaperHTML(b,{editable:true,qr:S.mode!=="inst",anim:!c.shown})}
-    <p class="note" style="text-align:center;margin:0 0 10px">सामान पर टैप करके मात्रा बदलें · ✕ से हटाएँ</p>
-    <div class="pp-actions pa4"><button data-ckedit>✏️<span>एडिट</span></button><button data-ckphoto class="${c.photo?"done":S.mode==="udhar"||c.pay==="udhar"?"nudge":""}">📷<span>${c.photo?"फोटो ✓":"फोटो"}</span></button><button data-ckshare>📤<span>शेयर (PDF)</span></button><button data-ckprint>🖨️<span>प्रिंट</span></button></div>
-    ${(S.mode==="udhar"||c.pay==="udhar")&&!c.photo?`<p class="note" style="margin:4px 0 0;text-align:center">📷 उधार बिल है — सामान की एक फोटो ले लें, बाद में हिसाब साफ़ रहेगा</p>`:""}
-    <button class="big" data-billsave ${(tot<=0&&S.mode!=="inst")||S.saving||c.no==="…"?"disabled":""}>${S.saving?"⏳ सेव हो रहा है…":S.mode==="inst"?"💾 संस्था बिल सेव करें · "+rs(tot):"💾 बिल सेव करें · "+rs(tot)}</button>
-    <button class="big ghost" data-hold style="margin-top:8px">+ दूसरा ग्राहक (यह बिल ऊपर टैब में खुला रहेगा)</button>`;
+    <p class="note" style="text-align:center;margin:0 0 6px">सामान पर टैप करके मात्रा बदलें · ✕ से हटाएँ</p>
+    <div class="paym ck-chips${pays.length===1?" one":""}" role="group" aria-label="पैसा कैसे मिला">${pays.map(([k,v])=>`<button data-pay="${k}" aria-pressed="${c.udPick?c.udPick===k:c.pay===k}">${v}</button>`).join("")}</div>
+    ${c.udPick?udBoxHTML():mini}
+    ${needUpi?`<div class="warn" style="padding:6px 10px">UPI ID सेटिंग में नहीं है — नकद चुनें</div>`:""}
+    <div class="pp-actions pa4"><button data-ckedit>✏️<span>एडिट</span></button><button data-ckphoto class="${c.photo?"done":S.mode==="udhar"||c.pay==="udhar"||c.pay==="split"?"nudge":""}">📷<span>${c.photo?"फोटो ✓":"फोटो"}</span></button><button data-ckshare>📤<span>शेयर (PDF)</span></button><button data-ckprint>🖨️<span>प्रिंट</span></button></div>
+    <div class="ck-foot"><button class="big ghost" data-hold aria-label="नया ग्राहक — यह बिल ऊपर टैब में खुला रहेगा">➕<span>नया ग्राहक</span></button>
+    <button class="big ${c.pay==="upi"?"haldi":""}" data-save ${dis?"disabled":""}>${lbl}</button></div>`;
   }else{
     const pays=S.mode==="inst"?[["inst","🏠 संस्था खाते में"]]:[["upi","📱 UPI / QR"],["cash","💵 नकद"],["udhar","📒 पूरा उधार"],["split","🔀 नकद + बाकी उधार"]];
     let payUI="";
@@ -1061,7 +1073,7 @@ SF.drawCheckout=function(){
     const edr=e.target.closest("[data-edit]");if(edr){const l=S.cart[+edr.dataset.edit];const it=item(l.id);if(it)openQty(it,+edr.dataset.edit);return}
     if(e.target.closest("[data-billsave]")){if(c.no==="…"){toast("बिल नंबर बन रहा है, एक पल…");return}c.pay=S.mode==="inst"?"inst":"pending";c.udPick=null;saveBill();return}
     if(e.target.closest("[data-hold]")){holdCurrent();return}
-    if(e.target.closest("[data-save]"))saveBill();
+    if(e.target.closest("[data-save]")){if(c.no==="…"){toast("बिल नंबर बन रहा है, एक पल…");return}S.quickDone=true;saveBill()}
   };
   sh.onchange=e=>{
     if(e.target.id==="discIn"){c.disc=Math.max(0,parseFloat(e.target.value)||0);SF.drawCheckout()}

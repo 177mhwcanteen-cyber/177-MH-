@@ -117,9 +117,16 @@ async def main():
         assert await pg.locator("#grid .margin, #grid .mg").count() == 0
         await pg.click("#cartbtn"); await pg.wait_for_timeout(400)
         await pg.screenshot(path=f"{SHOTS}/4-checkout.png")
-        await pg.click("[data-billsave]"); await pg.wait_for_selector("[data-sbok]"); await pg.wait_for_timeout(500)
-        await pg.click('[data-sbpay="cash"]'); await pg.wait_for_timeout(150); await pg.click("[data-sbok]"); await pg.wait_for_timeout(1200)
-        await pg.screenshot(path=f"{SHOTS}/5-receipt.png")
+        # ⚡ एक टैप: UPI पहले से चुना; नकद चिप दबाएँ → सेव+सेटल → सीधे बिलिंग स्क्रीन
+        assert await pg.get_attribute('[data-pay="upi"]', "aria-pressed") == "true", "UPI default"
+        assert await pg.locator(".ck-foot [data-hold]").count() == 1 and await pg.locator("[data-billsave]").count() == 0
+        await pg.click('[data-pay="cash"]'); await pg.wait_for_timeout(150)
+        assert await pg.get_attribute('[data-pay="cash"]', "aria-pressed") == "true"
+        await pg.screenshot(path=f"{SHOTS}/4b-checkout-cash.png")
+        await pg.click("[data-save]"); await pg.wait_for_timeout(1200)
+        assert await pg.evaluate("!document.querySelector('#sheet .scrim')"), "sheet should close after save+settle"
+        assert "सेव" in (await pg.text_content("#toast") or "")
+        await pg.screenshot(path=f"{SHOTS}/5-after-save.png")
         bl = bills_of(await pg.evaluate("window.__MOCK__"))
         assert bl and bl[0]["byName"] == "दिनेश जी" and bl[0]["settled"] is True and bl[0]["pay"]["cash"] == bl[0]["total"], bl[:1]
         assert bl[0]["no"].startswith("BW-"), bl[0]["no"]
@@ -241,7 +248,7 @@ async def main():
         await pg.click('#grid [data-item="m-pnr-kadhai"] .tile'); await pg.click('#grid [data-item="m-pnr-kadhai"] .tile'); await pg.click('#grid [data-item="m-btr-roti"] .tile')
         await pg.wait_for_timeout(300); await pg.screenshot(path=f"{SHOTS}/8a-mela.png")
         await pg.evaluate("showReceipt({no:'MH-31-7',date:today(),ts:Date.now(),byName:'दिनेश जी',partyName:'VIP',mode:'walk',lines:S.cart.map(l=>({...l})),total:395,disc:0,pay:{cash:395,upi:0,udhar:0}},true)"); await pg.wait_for_timeout(400)
-        assert await pg.locator(".tok").count() == 3
+        assert await pg.locator(".tok").count() == 0, "token box must be off"
         await pg.screenshot(path=f"{SHOTS}/8b-tokens.png"); await pg.evaluate("closeSheet();S.cart=[];S.items=S.items.filter(i=>i.cat!=='mela');S.cat='all';renderCart();renderBill()")
         print("mela ok")
         await pg.click('[data-tab="bill"]'); await pg.wait_for_timeout(200)

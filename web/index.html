@@ -747,6 +747,18 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .grid.mela .card .nm{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;line-height:1.15;padding:5px 7px 1px;min-height:2.3em}
 .grid.mela .card .nm .en{display:none}
 .grid.mela .card .pr{padding:0 7px 5px}.grid.mela .card .pr b{font-size:16px;color:#ea580c}
+
+/* ⚡ एक टैप बिल (31-10-2026) */
+.paym.ck-chips{grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0 8px}
+.paym.ck-chips.one{grid-template-columns:1fr}
+.paym.ck-chips button{padding:9px 2px;font-size:14px;border-radius:12px;line-height:1.15}
+.paym.ck-chips button[aria-pressed="true"]{border-color:var(--leaf);background:var(--ok-bg);box-shadow:0 0 0 2px var(--leaf) inset}
+.ck-mini{display:flex;align-items:center;gap:8px;margin:0 0 8px}.ck-mini .inp{flex:1;padding:9px 12px;font-size:16px}.ck-mini b{white-space:nowrap;font-size:15px}
+.ck-who{margin:-2px 0 8px;font-weight:700}
+.ck-foot{display:grid;grid-template-columns:1fr 2.3fr;gap:8px;margin-top:2px}
+.ck-foot .big{margin:0;padding:14px 8px}
+.ck-foot [data-hold]{display:grid;justify-items:center;gap:0;font-size:20px;line-height:1.1;padding:8px 4px}.ck-foot [data-hold] span{font-size:12.5px;font-weight:800}
+.ck-foot [data-save]{font-size:18px}
 </style>
 
 <header class="px">
@@ -1307,7 +1319,7 @@ async function saveBill(){
     rateChanged:lines.some(l=>l.changed),cancelled:false,...(warn.length?{warn}:{}),settled:c.pay!=="pending",...(c.photo?{photo:true}:{})};if(window.SR)SR.stamp(bill);
   if(c.photo){const ph={d:c.photo,no:c.no,date,ts:now,by:S.uid||"",byName:biller()};S.billPhotos=S.billPhotos||{};S.billPhotos[c.no]=c.photo;if(!S.demo)S.db.collection("billPhotos").doc(c.no).set(ph).catch(()=>{})}
   S.saving=true;drawCheckout();
-  if(S.demo){S.dayBills=[bill,...S.dayBills];if(pay.udhar>0)S.ledger.push({id:c.no,ts:now,date,partyId:bill.partyId,partyName:bill.partyName,type:"udhar",amt:pay.udhar,billNo:c.no,byName:biller()});await adjStock(trackedPairs(lines,-1),"बिल "+c.no);S.saving=false;closeCurTab();refreshAfterCart();if(bill.settled===false&&window.SB)SB.settleSheet(bill);else showReceipt(bill,true);return}
+  if(S.demo){S.dayBills=[bill,...S.dayBills];if(pay.udhar>0)S.ledger.push({id:c.no,ts:now,date,partyId:bill.partyId,partyName:bill.partyName,type:"udhar",amt:pay.udhar,billNo:c.no,byName:biller()});await adjStock(trackedPairs(lines,-1),"बिल "+c.no);S.saving=false;closeCurTab();refreshAfterCart();if(bill.settled===false&&window.SB)SB.settleSheet(bill);else quickDone(bill,false);return}
   const item={bill,done:{}};let offline=false;
   try{if(navigator.onLine===false)throw {code:"offline"};await commitBill(item)}
   catch(err){
@@ -1318,7 +1330,16 @@ async function saveBill(){
     if(pay.udhar>0)S.ledger.push({id:c.no,ts:now,date,partyId:bill.partyId,partyName:bill.partyName,type:"udhar",amt:pay.udhar,billNo:c.no,byName:biller()});
     if(!S.dayBills.find(x=>x.no===bill.no))S.dayBills=[bill,...S.dayBills];
   }
-  if(window.SR&&bill.custPhone)SR.custHist(bill,bill.custPhone);S.saving=false;closeCurTab();refreshAfterCart();if(bill.settled===false&&window.SB)SB.settleSheet(bill,offline);else showReceipt(bill,true,offline);netbar();beat();
+  if(window.SR&&bill.custPhone)SR.custHist(bill,bill.custPhone);S.saving=false;closeCurTab();refreshAfterCart();if(bill.settled===false&&window.SB)SB.settleSheet(bill,offline);else quickDone(bill,offline);netbar();beat();
+}
+/* ⚡ एक टैप वाला बिल: सेव+सेटल के बाद सीधे बिलिंग स्क्रीन (रसीद स्क्रीन नहीं) */
+function quickDone(bill,offline){
+  const q=S.quickDone;S.quickDone=false;
+  if(!q){showReceipt(bill,true,offline);return}
+  const p=bill.pay||{};const how=bill.mode==="inst"?"संस्था":[p.upi?"UPI "+rs(p.upi):"",p.cash?"नकद "+rs(p.cash):"",p.udhar?"उधार "+rs(p.udhar):""].filter(Boolean).join(" + ");
+  closeSheet();try{beep(true)}catch(e){}
+  toast("✓ बिल "+bill.no+" सेव · "+how+(offline||bill.pending?" · 📴 नेट आते ही जाएगा":""));
+  try{S.tab="bill";showTab()}catch(e){}
 }
 function receiptText(b){
   b={...b,pay:b.pay||{}};
@@ -1349,7 +1370,7 @@ async function loadBillPhoto(no){const box=()=>$("#bphoto");S.billPhotos=S.billP
   const b=box();if(b)b.innerHTML=d?`<img src="${d}" alt="बिल के सामान की फोटो">`:"📷 फोटो अभी नहीं मिली (शायद उस फोन से जानी बाकी है)"}
 /* 🎟️ मेला टोकन — हर नग का एक टोकन (2 पनीर कड़ाही = 2 टोकन) */
 function tokensOf(b){const out=[];let k=0;const short=String(b.no||"").split("-").pop();(b.lines||[]).forEach(l=>{const it=item(l.id);if(!it||!(it.cat==="mela"||it.token))return;const n=Math.max(1,Math.round(+l.qty||1));for(let j=0;j<n;j++){k++;out.push({code:short+"-"+k,name:(it.hi||it.name),en:it.name,rate:l.rate})}});return out}
-function tokenHTML(b){const t=tokensOf(b);if(!t.length)return "";window._tokBill=b;
+function tokenHTML(b){return ""; /* 🎟️ टोकन बंद (31-10-2026) — टोकन हाथ से छपे रखे हैं */ const t=tokensOf(b);if(!t.length)return "";window._tokBill=b;
   return `<div class="tokbox"><div class="tokh"><b>🎟️ ${t.length} टोकन</b><button class="big haldi" data-tokprint>🖨️ टोकन छापें</button></div><div class="tokg">${t.map(x=>`<div class="tok"><i>${esc(x.code)}</i><b>${esc(x.name)}</b><span>${rs(x.rate)}</span></div>`).join("")}</div></div>`}
 document.addEventListener("click",async e=>{if(!e.target.closest("[data-tokprint]"))return;const b=window._tokBill;if(!b)return;const t=tokensOf(b);
   try{for(const x of t){await SE.printReceipt({...b,no:"टोकन "+x.code,lines:[{id:"",name:x.name+" ("+x.en+")",qty:1,unit:"pc",rate:x.rate,amt:x.rate}],sub:x.rate,total:x.rate,disc:0,pay:{cash:0,upi:0,udhar:0}},{tokens:true})}toast("🖨️ "+t.length+" टोकन छपे")}
