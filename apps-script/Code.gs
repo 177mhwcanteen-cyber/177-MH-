@@ -1,19 +1,18 @@
-/**
- * 177 MH कैंटीन → Google Sheet (रोज़ का दूसरा बैकअप + Claude के लिए हिसाब)
- *
- * लगाने का तरीका (एक बार):
- * 1. sheets.new खोलें, नाम रखें "177 MH कैंटीन हिसाब"
- * 2. Extensions → Apps Script → यह पूरा कोड चिपकाएँ → Save
- * 3. बाईं ओर ⚙ Project Settings → "Show appsscript.json" चालू करें, फिर appsscript.json में
- *    इसी फ़ोल्डर की appsscript.json वाली चीज़ें चिपकाएँ
- * 4. ऊपर फ़ंक्शन "setup" चुनकर ▶ Run दबाएँ → अनुमति दें (Allow)
- * 5. ऊपर Deploy → New deployment → प्रकार "Web app" → Execute as: Me, Who has access: Anyone → Deploy
- *    जो URL मिले (…/exec) वह Claude को भेजें — ऐप की खरीद वाली फोटो इसी से Drive में जाएँगी
- * बस। अब हर घंटे पिछले 3 दिन का हिसाब Sheet में अपने-आप उतरता रहेगा,
- * और दिन में 2 बार (सुबह ~7 और रात ~10 बजे) पूरा डेटा JSON फाइल बनकर Drive के
- * "177 MH कैंटीन बैकअप" फ़ोल्डर में जाएगा (पिछले 60 बैकअप रखे जाते हैं, पुराने अपने-आप हटते हैं)।
- * Sheet में कुछ भी हाथ से बदलने से ऐप का डेटा नहीं बदलता (सिर्फ़ पढ़ने की कॉपी है)।
- */
+// 177 MH कैंटीन → Google Sheet (रोज़ का दूसरा बैकअप + Claude के लिए हिसाब)
+//
+// लगाने का तरीका (एक बार):
+// 1. sheets.new खोलें, नाम रखें "177 MH कैंटीन हिसाब"
+// 2. Extensions → Apps Script → यह पूरा कोड चिपकाएँ → Save
+// 3. बाईं ओर ⚙ Project Settings → "Show appsscript.json" चालू करें, फिर appsscript.json में
+//    इसी फ़ोल्डर की appsscript.json वाली चीज़ें चिपकाएँ
+// 4. ऊपर फ़ंक्शन "setup" चुनकर ▶ Run दबाएँ → अनुमति दें (Allow)
+// 5. ऊपर Deploy → New deployment → प्रकार "Web app" → Execute as: Me, Who has access: Anyone → Deploy
+//    जो URL मिले (…/exec) वह Claude को भेजें — ऐप की खरीद वाली फोटो इसी से Drive में जाएँगी
+// बस। अब हर घंटे पिछले 3 दिन का हिसाब Sheet में अपने-आप उतरता रहेगा,
+// और दिन में 2 बार (सुबह ~7 और रात ~10 बजे) पूरा डेटा JSON फाइल बनकर Drive के
+// "177 MH कैंटीन बैकअप" फ़ोल्डर में जाएगा (पिछले 60 बैकअप रखे जाते हैं, पुराने अपने-आप हटते हैं)।
+// Sheet में कुछ भी हाथ से बदलने से ऐप का डेटा नहीं बदलता (सिर्फ़ पढ़ने की कॉपी है)।
+//
 const PROJECT_ID = 'mh177-canteen'; // 177 MH का Firebase प्रोजेक्ट ID (Claude भरेगा, जैसे bhairav-canteen-1a2b3)
 const DAYS_BACK = 3;
 const OWNER_EMAILS = ['mhwetcanteen@gmail.com']; // मालिक की लॉगिन ईमेल (कर्मचारी staff सूची से जाँचे जाते हैं)
@@ -38,7 +37,7 @@ function syncAll() {
   sheet_(ss, 'जानकारी', ['आखिरी अपडेट']).getRange(2, 1).setValue(new Date());
 }
 
-/* ---------- दिन में 2 बार पूरा बैकअप (Drive → "177 MH कैंटीन बैकअप") ---------- */
+//  ---------- दिन में 2 बार पूरा बैकअप (Drive → "177 MH कैंटीन बैकअप") ----------
 const BK_COLS = ['items', 'pstock', 'batches', 'parties', 'ledger', 'customers', 'purchases', 'suppliers', 'supPay', 'counts', 'settings', 'priceLog', 'staff', 'staffIndex', 'cancelReq'];
 function backupJson() {
   const out = { app: '177 MH कैंटीन', project: PROJECT_ID, at: new Date().toISOString(), collections: {}, days: {} };
@@ -55,7 +54,7 @@ function backupJson() {
 }
 function daysBack_(n) { const out = []; for (let i = 0; i < n; i++) out.push(Utilities.formatDate(new Date(Date.now() - i * 864e5), 'Asia/Kolkata', 'yyyy-MM-dd')); return out; }
 
-/* ---------- Firestore REST (आपके Google खाते की अनुमति से) ---------- */
+//  ---------- Firestore REST (आपके Google खाते की अनुमति से) ----------
 function fsList_(path) {
   const out = [];
   let token = '';
@@ -93,7 +92,7 @@ function sheet_(ss, name, head) {
   if (!sh) { sh = ss.insertSheet(name); sh.appendRow(head); sh.setFrozenRows(1); sh.getRange(1, 1, 1, head.length).setFontWeight('bold').setBackground('#e6f2e6'); }
   return sh;
 }
-/* key वाली पंक्तियाँ बदलो/जोड़ो — पुरानी तारीखों की पंक्तियाँ कभी नहीं मिटतीं */
+//  key वाली पंक्तियाँ बदलो/जोड़ो — पुरानी तारीखों की पंक्तियाँ कभी नहीं मिटतीं
 function upsert_(sh, keyCol, rows) {
   const n = sh.getLastRow();
   const keys = n > 1 ? sh.getRange(2, keyCol, n - 1, 1).getValues().map(r => String(r[0])) : [];
@@ -144,7 +143,7 @@ function syncDayMeta_(ss) {
   if (gr.length) upsert_(G, 1, gr);
 }
 
-/* ---------- मंडी खरीद ---------- */
+//  ---------- मंडी खरीद ----------
 function syncPurchases_(ss) {
   const P = sheet_(ss, 'खरीद', ['चाबी', 'तारीख', 'समय', 'दुकान', 'मोबाइल', 'किसने', 'कुल', 'भुगतान', 'दिया', 'बाकी', 'फोटो', 'नोट']);
   const L = sheet_(ss, 'खरीद की लाइनें', ['चाबी', 'तारीख', 'दुकान', 'सामान', 'मात्रा', 'इकाई', 'भाव', 'रकम', 'पिछला भाव', 'बदलाव %']);
@@ -170,7 +169,7 @@ function syncPurchases_(ss) {
   if (lr.length) upsert_(L, 1, lr);
 }
 
-/* ---------- ऐप से बिल की फोटो → Google Drive ---------- */
+//  ---------- ऐप से बिल की फोटो → Google Drive ----------
 function doPost(e) {
   try {
     const b = JSON.parse(e.postData.contents);
@@ -196,9 +195,9 @@ function doPost(e) {
     return out_({ ok: false, error: String(err).slice(0, 200) });
   }
 }
-/* ---------- 🤖 Google Gemini ----------
-   चाबी: aistudio.google.com → Get API key (मुफ़्त) → यहाँ ⚙ Project Settings → Script Properties → GEMINI_KEY
-   (चाबी कभी ऐप/GitHub में नहीं जाती — सिर्फ़ इस Script में) */
+//  ---------- 🤖 Google Gemini ----------
+//    चाबी: aistudio.google.com → Get API key (मुफ़्त) → यहाँ ⚙ Project Settings → Script Properties → GEMINI_KEY
+//    (चाबी कभी ऐप/GitHub में नहीं जाती — सिर्फ़ इस Script में)
 function ai_(b) {
   const P = PropertiesService.getScriptProperties();
   const key = P.getProperty('GEMINI_KEY');
@@ -246,8 +245,8 @@ function fsGet_(path) {
 function folder_(parent, name) { const it = parent.getFoldersByName(name); return it.hasNext() ? it.next() : parent.createFolder(name); }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
-/* 🤖 Claude के लिए लाइव हिसाब — हर 15 मिनट Drive में "177 MH कैंटीन बैकअप/mh177-live.json" (एक ही फाइल, ऊपर से नई)
-   विक्रम जी Claude से पूछें "अभी तक कितनी मिठाई बिकी?" → Claude यही फाइल पढ़कर बताए। */
+//  🤖 Claude के लिए लाइव हिसाब — हर 15 मिनट Drive में "177 MH कैंटीन बैकअप/mh177-live.json" (एक ही फाइल, ऊपर से नई)
+//    विक्रम जी Claude से पूछें "अभी तक कितनी मिठाई बिकी?" → Claude यही फाइल पढ़कर बताए।
 function liveJson() {
   const items = {}; fsList_('items').forEach(i => items[i._id] = i);
   const CAT = it => it.cat === 'mithai' ? 'मिठाई-पनीर' : it.cat === 'fast' ? 'नाश्ता' : it.cat === 'sabzi' ? 'सब्ज़ी-फल' :
@@ -279,3 +278,4 @@ function liveJson() {
   const it = root.getFilesByName('mh177-live.json');
   if (it.hasNext()) it.next().setContent(JSON.stringify(out, null, 1)); else root.createFile('mh177-live.json', JSON.stringify(out, null, 1), 'application/json');
 }
+// ===== कोड यहीं खत्म — इसके नीचे कुछ नहीं होना चाहिए =====
