@@ -738,6 +738,15 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .grid .card .cstep{height:32px;margin:2px 5px 5px;border-radius:10px}.grid .card .cstep button{height:32px;width:34px;font-size:19px}.grid .card .cstep b{height:26px;line-height:26px;font-size:15px}
 .grid .card .stk,.grid .card .xp{font-size:9.5px;padding:1px 5px}
 .grid.rows .card:not(.in) .tile::before{display:none}
+
+/* 🎪 मेला: बड़ा साफ़ नाम, छोटी फोटो, तीन हिस्से */
+.mgh{grid-column:1/-1;margin:4px 2px -2px;font-family:var(--f-display);font-weight:900;font-size:15px;color:#f97316;display:flex;align-items:center;gap:6px}
+.mgh::after{content:"";flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,#f97316,transparent)}
+.grid.mela .tile{aspect-ratio:2/1}.grid.mela .tile .em{font-size:26px;transform:none!important}
+.grid.mela .tile .tbr,.grid.mela .card .sz,.grid.mela .card .mg,.grid.mela .card .stk{display:none!important}
+.grid.mela .card .nm{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;line-height:1.15;padding:5px 7px 1px;min-height:2.3em}
+.grid.mela .card .nm .en{display:none}
+.grid.mela .card .pr{padding:0 7px 5px}.grid.mela .card .pr b{font-size:16px;color:#ea580c}
 </style>
 
 <header class="px">
@@ -856,6 +865,9 @@ const DEMO_ITEMS=[
 const UPI_FIXED={upi:"6367183480@okbizaxis",payee:"177 MH WET CANTEEN"};
 function upiId(){return UPI_FIXED.upi}
 const CATS=[["mela","🎪 मेला स्पेशल"],["all","सब"],["mithai","🍬 मिठाई-पनीर"],["fast","🥟 नाश्ता"],["kirana","🛒 किराना"],["sabzi","🥬 सब्ज़ी-फल"]];
+/* 🎪 मेला: तीन वैरायटी (पुराने सेव सामान पर भी — नाम/ID से तय) */
+const MELA_G=[["kadhai","🍲 कड़ाही-रोटी"],["fast","🍔 फास्ट फूड"],["dosa","🫓 डोसा"]];
+function melaSub(it){if(it.msub)return it.msub;const k=(it.name+" "+(it.hi||"")).toLowerCase();return /dosa|डोसा/.test(k)?"dosa":/kad?h?ai|कड़ाही|कढ़ाई|roti|रोटी|naan|नान|chicken|चिकन/.test(k)?"kadhai":"fast"}
 const SUBS={mithai:[["mithai","🍬 मिठाई"]],kirana:[["dairy","🥛 दूध-दही"],["ice","🍦 आइसक्रीम"],["tob","📦 कोड वाले"],["namkeen","🥨 नमकीन-चिप्स"],["dryfruit","🥜 ड्राई फ्रूट"],["achar","🌶️ अचार-चटनी"],["rashan","🌾 आटा-दाल-राशन"],["drinks","🥤 कोल्ड ड्रिंक-पेय"],["sweet","🍫 बिस्किट-मिठाई"],["clean","🧼 साबुन-सफाई"]],fast:[["nashta","🍳 नाश्ता"],["meal","🍛 खाना-थाली"],["chai","☕ चाय-कॉफी"]],sabzi:[["sabzi","🥬 सब्ज़ी"],["fruit","🍎 फल"]]};
 const OLDCAT={packed:"kirana",patta:"sabzi",fal:"sabzi",biryani:"fast",nonveg:"fast",veg:"fast",chinese:"fast",drinks:"fast"};
 const UNITS={pc:"पीस",pk:"पैकेट",kg:"कि.ग्रा",pl:"प्लेट",dz:"दर्जन",gd:"गड्डी"};
@@ -990,7 +1002,7 @@ function billList(){
   const mm=raw.match(/^(.*?[^\d\s.,])\s*(\d+(?:[.,]\d+)?)\s*(kg|किलो|कि\.?ग्रा|कि)?$/i);
   if(mm){q=mm[1].trim();qq=parseFloat(mm[2].replace(",","."))||0}
   const ql=q.toLowerCase();
-  const catOk=i=>S.flt==="low"?isLow(i):S.flt==="exp"?!!expInfo(i):(S.cat==="all"||mcat(i)===S.cat)&&(S.sub==="all"||i.sub===S.sub);
+  const catOk=i=>S.flt==="low"?isLow(i):S.flt==="exp"?!!expInfo(i):(S.cat==="all"||mcat(i)===S.cat)&&(S.sub==="all"||(S.cat==="mela"?melaSub(i):i.sub)===S.sub);
   const hit=i=>String(i.name).toLowerCase().includes(ql)||String(i.hi||"").includes(q)||i.id.includes(ql)||String(i.alias||"").toLowerCase().includes(ql)||SN.en(i).toLowerCase().includes(ql)||String(i.code||"")===q||codes(i).includes(q);
   const exact=q&&S.items.find(i=>i.active!==false&&String(i.code||"")===q);
   const list=exact?[exact]:S.items.filter(i=>i.active!==false&&(q?true:catOk(i))&&(!q||hit(i)));
@@ -1032,14 +1044,16 @@ function renderBill(){
   const act=S.items.filter(i=>i.active!==false);if(!S._melaInit&&act.some(i=>i.cat==="mela")){S._melaInit=1;if(S.cat==="all")S.cat="mela"}const nLow=act.filter(isLow).length,nExp=act.filter(i=>expInfo(i)).length;
   $("#greet").hidden=searching;if(!searching)$("#greet").innerHTML=greetHTML();
   $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+CATS.filter(([k])=>k!=="mela"||act.some(i=>i.cat==="mela")).map(([k,v])=>`<button class="chip ${k==="mela"?"melac":""}" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>`;
-  const subs=!S.flt&&SUBS[S.cat]?SUBS[S.cat].filter(([k])=>act.some(i=>mcat(i)===S.cat&&i.sub===k)):[];
+  const subs=!S.flt&&S.cat==="mela"?MELA_G.filter(([k])=>act.some(i=>mcat(i)==="mela"&&melaSub(i)===k)):!S.flt&&SUBS[S.cat]?SUBS[S.cat].filter(([k])=>act.some(i=>mcat(i)===S.cat&&i.sub===k)):[];
   $("#cats2").hidden=searching||!subs.length;
   $("#cats2").innerHTML=subs.length?`<button class="chip" aria-pressed="${S.sub==="all"}" data-sub="all">सब</button>`+subs.map(([k,v])=>`<button class="chip" aria-pressed="${S.sub===k}" data-sub="${k}">${v}</button>`).join(""):"";
   $("#grid").classList.toggle("rows",S.view==="list");
   const q=bl.q,list=bl.list;
   if(!S.items.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1"><b>सामान की लिस्ट अभी खाली है</b>मालिक "रेट व सेटिंग" में जाकर सामान और उनके भाव डालें, फिर यहाँ फोटो वाले कार्ड दिखेंगे।</div>`;return}
   if(!list.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1"><b>"${esc(q)}" नहीं मिली</b>दूसरा नाम लिखकर देखें।</div>`+(window.SR?SR.addCardHTML(q):"");return}
-  const LL=window.SF&&SF.liveLeftMap?SF.liveLeftMap():null;$("#grid").innerHTML=list.map(it=>cardHTML(it,LL)).join("")+(window.SR?SR.addCardHTML():"");
+  const LL=window.SF&&SF.liveLeftMap?SF.liveLeftMap():null;const melaV=S.cat==="mela"&&!S.flt&&!searching;$("#grid").classList.toggle("mela",melaV);
+  if(melaV&&S.sub==="all"){$("#grid").innerHTML=MELA_G.map(([k,v])=>{const g=list.filter(i=>melaSub(i)===k);return g.length?`<div class="mgh">${v}</div>`+g.map(it=>cardHTML(it,LL)).join(""):""}).join("")+(window.SR?SR.addCardHTML():"");return}
+  $("#grid").innerHTML=list.map(it=>cardHTML(it,LL)).join("")+(window.SR?SR.addCardHTML():"");
 }
 function cardHTML(it,LL){{
     const p=priceOf(it);const inCart=S.cart.filter(l=>l.id===it.id).reduce((a,l)=>a+l.qty,0),pcIn=isPc(it.unit)&&inCart>0;
