@@ -722,6 +722,22 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .tokh{display:flex;align-items:center;gap:8px;margin-bottom:8px}.tokh b{flex:1;font-size:17px;color:#9a3412}.tokh .big{width:auto;padding:8px 14px;font-size:14px;margin:0}
 .tokg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}
 .tok{display:grid;justify-items:center;padding:8px 4px;border-radius:12px;background:#fff;border:1.5px solid #fdba74;text-align:center}.tok i{font-style:normal;font-family:var(--f-display);font-weight:900;font-size:22px;color:#c2410c;line-height:1}.tok b{font-size:13px;color:#111;line-height:1.15;margin-top:3px}.tok span{font-size:11px;color:#9a3412}
+
+/* v11 छोटे कार्ड — एक स्क्रीन में ज़्यादा सामान: टाइल पर टैप = जोड़ें, "+ जोड़ें" पट्टी की जगह कोने में + */
+.grid{gap:7px}
+.grid .tile{aspect-ratio:16/10}
+.grid .tile .em{font-size:28px}
+.grid .tile.art .em{transform:translateY(-5px)}
+.grid .tile.art .tbr{font-size:11px;bottom:4px;left:4px;right:4px;padding:1px 5px}
+.grid .card .nm{font-size:13.5px;padding:4px 7px 0}
+.grid .card .sz{font-size:10.5px;padding:0 7px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid .card .pr{padding:0 7px 5px}
+.card .addb{display:none}
+.grid .card:not(.in):not(.off) .tile::before{content:"+";position:absolute;right:5px;bottom:5px;z-index:3;width:24px;height:24px;border-radius:99px;display:grid;place-items:center;font:900 18px/1 var(--f-display);color:#fff;background:var(--leaf);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.grid .tile.art .tbr{right:32px}
+.grid .card .cstep{height:32px;margin:2px 5px 5px;border-radius:10px}.grid .card .cstep button{height:32px;width:34px;font-size:19px}.grid .card .cstep b{height:26px;line-height:26px;font-size:15px}
+.grid .card .stk,.grid .card .xp{font-size:9.5px;padding:1px 5px}
+.grid.rows .card:not(.in) .tile::before{display:none}
 </style>
 
 <header class="px">
