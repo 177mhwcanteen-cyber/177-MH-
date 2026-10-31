@@ -427,15 +427,15 @@ SE.aiReady=()=>!!(SE.gk()||SE.scriptUrl());
 const AI_P={code:c=>'Search the web (Google) for the retail product with barcode / EAN / GTIN "'+c+'" sold in India. Use only what you actually find for this exact barcode; if nothing reliable is found, set found=false. Reply with ONLY one JSON object, no other words: {"found":true,"name":"Brand Item Size (short, for a shop bill, e.g. Parle-G Biscuit 100g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other","source":"website name"}',
   img:'This is a photo of a retail product pack (front or back label) in an Indian shop. Read it. Reply with ONLY one JSON object: {"found":true,"name":"Brand Item Size (short, e.g. Haldiram Bhujia 200g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"barcode":"digits if visible else empty","exp":"YYYY-MM if expiry/best-before visible else empty","category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other"}. mrp = printed MRP in rupees (number only). If not readable, use 0 / empty. If this is not a product, found=false.'};
 async function geminiDirect(p,key){
-  if(p.mode==="ping"){const r=await fetch("https://generativelanguage.googleapis.com/v1beta/models?key="+encodeURIComponent(key));return r.ok?{ok:true,pong:true}:{ok:false,error:r.status===400||r.status===403?"bad-key":"http "+r.status}}
+  if(p.mode==="ping"){const r=await fetch("https://generativelanguage.googleapis.com/v1beta/models",{headers:{"x-goog-api-key":key}});if(r.ok)return {ok:true,pong:true};const t=await r.text().catch(()=>"");return {ok:false,error:[400,401,403].includes(r.status)?"bad-key":"http "+r.status,detail:t.slice(0,160)}}
   let parts,tools=null;
   if(p.mode==="code"){const c=String(p.code||"").replace(/\D/g,"").slice(0,14);if(c.length<8)return {ok:false,error:"bad-code"};parts=[{text:AI_P.code(c)}];tools=[{google_search:{}}]}
   else if(p.mode==="img")parts=[{inline_data:{mime_type:"image/jpeg",data:String(p.b64||"")}},{text:AI_P.img}];else return {ok:false,error:"mode"};
   let last="";
   for(const m of [(window.S&&S.settings&&S.settings.gmodel)||"gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"]){
     const body={contents:[{role:"user",parts}],generationConfig:{temperature:0.1}};if(tools)body.tools=tools;
-    const r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent?key="+encodeURIComponent(key),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(r.status===404){last="model";continue}if(r.status===429)return {ok:false,error:"quota"};if(r.status===400||r.status===403){const t=await r.text();if(/API key|PERMISSION|API_KEY/i.test(t))return {ok:false,error:"bad-key"};last=r.status+"";continue}
+    const r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)});
+    if(r.status===404){last="model";continue}if(r.status===429)return {ok:false,error:"quota"};if(r.status===400||r.status===401||r.status===403){const t=await r.text();if(/API key|PERMISSION|API_KEY|UNAUTHENTICATED|credential/i.test(t))return {ok:false,error:"bad-key",detail:t.slice(0,160)};last=r.status+"";continue}
     if(!r.ok){last="http "+r.status;continue}
     const j=await r.json();const t=((((j.candidates||[])[0]||{}).content||{}).parts||[]).map(x=>x.text||"").join("");const a=t.indexOf("{"),z=t.lastIndexOf("}");
     if(a<0||z<a)return {ok:true,found:false,model:m};try{return {...JSON.parse(t.slice(a,z+1)),ok:true,model:m}}catch(e){return {ok:true,found:false,model:m}}}
