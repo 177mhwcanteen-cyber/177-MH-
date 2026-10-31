@@ -88,6 +88,8 @@ service cloud.firestore {
       allow delete: if false;
     }
     // एक पक्का बिल (दुकान + बिल नंबर + तारीख) सिर्फ़ एक बार — दोबारा बनाना नामुमकिन
+    // 🌐 इंटरनेट से खोजे बारकोड — एक बार खोजा, सबके फ़ोन में काम आए
+    match /bcache/{code} { allow read, create: if active(); allow update, delete: if isOwner(); }
     match /aikeys/{key} { allow read: if active(); allow create: if active(); allow update, delete: if false; }
     match /purchases/{id} {
       allow read: if active();

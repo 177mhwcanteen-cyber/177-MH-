@@ -67,14 +67,14 @@ const b64=blob=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>re
 let flushing=false;
 SF.pendingPhotos=async()=>{try{return (await IDB.all()).length}catch(e){return 0}};
 SF.flushPhotos=async function(){
-  if(flushing||S.demo||!S.db||!CFG.photoUrl||navigator.onLine===false)return;
+  if(flushing||S.demo||!S.db||!SE.scriptUrl()||navigator.onLine===false)return;
   flushing=true;
   try{
     const list=await IDB.all();
     for(const ph of list){
       try{
         const tok=await firebase.auth().currentUser.getIdToken();
-        const r=await fetch(CFG.photoUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
+        const r=await fetch(SE.scriptUrl(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
           body:JSON.stringify({idToken:tok,apiKey:CFG.firebase.apiKey,pid:ph.pid,date:ph.date,name:ph.name,mime:"image/jpeg",b64:await b64(ph.blob)})});
         const j=await r.json();if(!j.ok)throw new Error(j.error||"upload");
         const F=firebase.firestore.FieldValue;

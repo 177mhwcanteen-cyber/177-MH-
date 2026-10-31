@@ -419,6 +419,12 @@ SE.checkUpdate=async function(toast){
   }catch(e){}
 };
 SE._busy=()=>false;
+/* 🤖 Google Gemini — Apps Script के ज़रिए (चाबी Script में, ऐप में नहीं) */
+SE.scriptUrl=()=>CFG.photoUrl||(window.S&&S.settings&&S.settings.scriptUrl)||"";
+SE.ai=async function(p){const u=SE.scriptUrl();if(!u)return {ok:false,error:"no-url"};if(navigator.onLine===false)return {ok:false,error:"offline"};
+  try{const tok=await firebase.auth().currentUser.getIdToken();const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),25000);
+    const r=await fetch(u,{method:"POST",signal:ctl.signal,headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({idToken:tok,apiKey:CFG.firebase.apiKey,act:"ai",...p})});clearTimeout(tm);
+    return await r.json()}catch(e){return {ok:false,error:e.name==="AbortError"?"timeout":String(e.message||e)}}};
 /* 🔄 "ऐप अपडेट करें" बटन — GitHub (Pages) से नया संस्करण अभी लाकर तुरंत लगाओ।
    Play Store / WhatsApp जैसे ऐप का "Update now" तरीका: जाँचो → डाउनलोड (प्रतिशत दिखाओ) → लगाओ → ऐप अपने-आप दोबारा खुले।
    डेटा Firebase में है, इसलिए अपडेट से कोई बिल/स्टॉक/सामान नहीं मिटता; चालू बिल के टैब फ़ोन में सेव रहते हैं। */

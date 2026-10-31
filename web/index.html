@@ -1492,7 +1492,7 @@ async function handleScan(code){
 /* 🗂️ पहचान सूची (पुराने Vyapar के 657 सामान) — सिर्फ़ नाम/कंपनी/पिछला भाव भरने के लिए; स्टॉक नहीं */
 let PEH=null;async function pehchan(){if(PEH)return PEH;try{const r=await fetch("pehchan.json");const j=await r.json();PEH=new Map();j.items.forEach(x=>x.barcodes.forEach(b=>PEH.set(b.code,x)))}catch(e){PEH=new Map()}return PEH}
 const PEH_SUB={NAM:"namkeen",DRY:"dryfruit",SAU:"achar",RAS:"rashan",MAS:"rashan",BAK:"rashan",BEV:"drinks",BIS:"sweet",CHO:"sweet",DAI:"dairy",ICE:"ice",TOB:"tob",OTH:"clean",POO:"clean"};
-async function pehchanFill(code){const m=await pehchan(),x=m.get(code);window.PEH_HIT=x?{code,x}:null;if(!x||!$("#nbName"))return;
+async function pehchanFill(code){const m=await pehchan(),x=m.get(code);window.PEH_HIT=x?{code,x}:null;if(!x){if($("#nbName")&&window.SM)SM.fillNew(code);return}if(!$("#nbName"))return;
   $("#nbName").value=x.bill;$("#nbHi").value=x.hi||"";if(x.mrp)$("#nbMrp").value=x.mrp;
   const sb=$("#nbSub");if(sb&&PEH_SUB[x.cat]&&[...sb.options].some(o=>o.value===PEH_SUB[x.cat]))sb.value=PEH_SUB[x.cat];
   const n=document.createElement("p");n.className="note";n.style.cssText="background:var(--soft,#eef3ff);padding:8px 10px;border-radius:10px;margin:0 0 10px";
@@ -1963,6 +1963,8 @@ function renderSettings(){
     ${SE.isNative?'<div class="row2" style="margin:0"><button class="big ghost" data-prnpick="58">58mm प्रिंटर चुनें</button><button class="big ghost" data-prnpick="80">80mm प्रिंटर चुनें</button></div><button class="big ghost" data-prnpick="100">4 इंच प्रिंटर (Xprinter XP-D4601B जैसा) चुनें</button><div id="prnList"></div><button class="big ghost" data-prntest>टेस्ट प्रिंट</button>':""}</div>
   ${window.SF?SF.labelSettingsHTML():""}
   <div class="card2"><h3>🔄 ऐप अपडेट</h3>${updBoxHTML()}</div>
+  <div class="card2"><h3>🤖 Google AI (Gemini) — अनजान बारकोड व पैकेट की फोटो</h3><p class="note" style="margin:0 0 6px">Apps Script का Web app लिंक (…/exec)। चाबी (GEMINI_KEY) सिर्फ़ Script में रहती है।</p>
+    <div class="row2" style="margin:0"><input class="inp" id="aiUrl" value="${esc(S.settings.scriptUrl||"")}" placeholder="https://script.google.com/macros/s/…/exec"><button class="big ghost" data-aiurl>सेव + जाँचें</button></div><p class="note" id="aiMsg" style="margin:6px 0 0">${SE.scriptUrl()?"✓ लिंक लगा है":"अभी लिंक नहीं लगा"}</p></div>
   <div class="card2"><h3>📦 पुराने ऐप का डेटा</h3><p class="note" style="margin:0">पुराने (आर्टिफ़ैक्ट) ऐप का सामान, भाव, खरीद इतिहास, उधार खाते और संस्थाएँ यहाँ लाएँ। जो पहले से है वह नहीं बदलेगा।</p><button class="big ghost" data-migrate>पुराना डेटा लाएँ</button></div>
   <h3 style="margin:0 0 4px">सामान और भाव</h3><p class="note" style="margin:0 0 8px">MRP = पैकेट पर छपा · बिक्री = ग्राहक से लेंगे · खरीद = हमें पड़ा। फोटो बदलने के लिए फोटो पर टैप करें। ${(()=>{const n=S.items.filter(i=>!i.photo).length;return n?`<b style="color:var(--chili)">${n} सामान की असली फोटो अभी बाकी है।</b> अच्छी रोशनी में ऊपर से फोटो खींचकर लगाएँ।`:'<b style="color:var(--leaf)">सबकी फोटो लग चुकी है।</b>'})()}</p>
   <div class="list">${S.items.filter(i=>!i.virtual).map(it=>`<div class="setitem" data-sid="${esc(it.id)}">
@@ -2021,6 +2023,9 @@ $("#p-set").addEventListener("click",async e=>{
   if(e.target.closest("[data-prntest]")){printBill({no:"TEST",date:today(),ts:Date.now(),partyName:"टेस्ट",lines:[{name:"आलू",qty:1.5,unit:"kg",rate:20,amt:30}],total:30,pay:{cash:30},byName:biller()});return}
   if(e.target.closest("[data-migrate]")){migrateOld();return}
   if(e.target.closest("[data-updnow]")){runUpdate();return}
+  if(e.target.closest("[data-aiurl]")){const u=$("#aiUrl").value.trim(),m=$("#aiMsg");if(u&&!/^https:\/\/script\.google\.com\/.+\/exec$/.test(u)){m.textContent="लिंक …/exec पर खत्म होना चाहिए";return}
+    S.settings.scriptUrl=u;if(!S.demo)S.db.collection("settings").doc("main").set({scriptUrl:u},{merge:true}).catch(()=>{});m.textContent="⏳ जाँच रहे हैं…";
+    SE.ai({mode:"ping"}).then(r=>{m.textContent=r.ok?"✅ AI तैयार है — अनजान बारकोड अब इंटरनेट से भरेगा":r.error==="no-key"?"⚠ Script में GEMINI_KEY नहीं डाली":r.error==="not-staff"||r.error==="login"?"⚠ लॉगिन जाँच फेल — Script में OWNER_EMAILS देखें":"⚠ नहीं चला: "+(r.error||"")});return}
   const gm=e.target.closest("[data-gem]");if(gm){if(window.SI)SI.copyGemini(gm.dataset.gem);return}
   const ph=e.target.closest("[data-photo]");if(ph){const fi=$("#photoIn");fi.dataset.for=ph.dataset.photo;fi.click();return}
   if(e.target.closest("[data-additem]")){

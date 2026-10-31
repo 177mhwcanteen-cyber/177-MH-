@@ -212,6 +212,19 @@ async def main():
         assert any(p.get("mp") == no for p in (await pg.evaluate("window.__MOCK__.purchases")).values())
         await pg.evaluate(f"S.uid='{uid0}';SM.render()")
         print("market pay+receive ok")
+        # 🌐 अनजान बारकोड → Gemini (नकली जवाब) → नाम/MRP भरे, bcache में याद
+        await pg.evaluate("""()=>{S.settings.scriptUrl='https://script.google.com/macros/s/x/exec';window.__aiN=0;SE.ai=async p=>{__aiN++;return p.mode==='code'?{ok:true,found:true,name:'Bikaji Bhujia 200g',hi:'बीकाजी भुजिया',mrp:55,source:'test'}:{ok:true,pong:true}}}""")
+        await pg.click('[data-tab="mkt"]'); await pg.wait_for_timeout(100)
+        if await pg.is_visible("[data-mkback]"): await pg.click("[data-mkback]")
+        await pg.click("[data-mkresume]" if await pg.is_visible("[data-mkresume]") else "[data-mknew]"); await pg.wait_for_timeout(100)
+        await pg.evaluate("handleScan('8904063200011')"); await pg.wait_for_timeout(600)
+        d = await pg.evaluate("JSON.parse(localStorage.getItem('mh_mkt_draft')).lines[0]")
+        assert d["name"] == "Bikaji Bhujia 200g" and d["mrp"] == 55 and d.get("web"), d
+        assert (await pg.evaluate("window.__MOCK__.bcache||{}")).get("8904063200011", {}).get("name") == "Bikaji Bhujia 200g"
+        await pg.screenshot(path=f"{SHOTS}/7g-market-web.png")
+        await pg.evaluate("localStorage.removeItem('mh_mkt_draft')"); await pg.click("[data-mkback]") if await pg.is_visible("[data-mkback]") else None
+        await pg.click('[data-tab="bill"]'); await pg.wait_for_timeout(150)
+        print("web lookup ok")
         await pg.click('[data-tab="bill"]'); await pg.wait_for_timeout(200)
         print("market buy ok", mb[0]["no"], mb[0]["total"])
         # झलक: तम्बाकू टाइलें + मिठाई का छोटा पॉपअप (सिर्फ़ स्क्रीनशॉट)

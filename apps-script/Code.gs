@@ -16,6 +16,7 @@
  */
 const PROJECT_ID = 'mh177-canteen'; // 177 MH का Firebase प्रोजेक्ट ID (Claude भरेगा, जैसे bhairav-canteen-1a2b3)
 const DAYS_BACK = 3;
+const OWNER_EMAILS = ['mhwetcanteen@gmail.com']; // मालिक की लॉगिन ईमेल (कर्मचारी staff सूची से जाँचे जाते हैं)
 
 function setup() {
   ScriptApp.getProjectTriggers().forEach(t => ScriptApp.deleteTrigger(t));
@@ -179,8 +180,11 @@ function doPost(e) {
     if (lk.getResponseCode() !== 200) return out_({ ok: false, error: 'login' });
     const u = (JSON.parse(lk.getContentText()).users || [])[0];
     if (!u) return out_({ ok: false, error: 'login' });
-    const st = fsGet_('staff/' + u.localId);
+    const isOwner = OWNER_EMAILS.indexOf(String(u.email || '').toLowerCase()) > -1 && u.emailVerified;
+    const st = isOwner ? { name: 'विक्रम जी', active: true } : fsGet_('staff/' + u.localId);
     if (!st || st.active !== true) return out_({ ok: false, error: 'not-staff' });
+    // 🤖 Google Gemini (मुफ़्त चाबी Script Properties में GEMINI_KEY) — बारकोड खोज / पैकेट की फोटो पढ़ना
+    if (b.act === 'ai') return out_(ai_(b));
     // 2) Drive में "177 MH कैंटीन बिल फोटो / 2026-10" फ़ोल्डर
     const root = folder_(DriveApp.getRootFolder(), '177 MH कैंटीन बिल फोटो');
     const month = folder_(root, String(b.date || '').slice(0, 7) || 'बिना तारीख');
@@ -191,6 +195,47 @@ function doPost(e) {
   } catch (err) {
     return out_({ ok: false, error: String(err).slice(0, 200) });
   }
+}
+/* ---------- 🤖 Google Gemini ----------
+   चाबी: aistudio.google.com → Get API key (मुफ़्त) → यहाँ ⚙ Project Settings → Script Properties → GEMINI_KEY
+   (चाबी कभी ऐप/GitHub में नहीं जाती — सिर्फ़ इस Script में) */
+function ai_(b) {
+  const P = PropertiesService.getScriptProperties();
+  const key = P.getProperty('GEMINI_KEY');
+  if (!key) return { ok: false, error: 'no-key' };
+  if (b.mode === 'ping') return { ok: true, pong: true };
+  let parts, tools = null;
+  if (b.mode === 'code') {
+    const code = String(b.code || '').replace(/\D/g, '').slice(0, 14);
+    if (code.length < 8) return { ok: false, error: 'bad-code' };
+    parts = [{ text: 'Search the web (Google) for the retail product with barcode / EAN / GTIN "' + code + '" sold in India. ' +
+      'Use only what you actually find for this exact barcode; if nothing reliable is found, set found=false. ' +
+      'Reply with ONLY one JSON object, no other words: {"found":true,"name":"Brand Item Size (short, for a shop bill, e.g. Parle-G Biscuit 100g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other","source":"website name"}' }];
+    tools = [{ google_search: {} }];
+  } else if (b.mode === 'img') {
+    parts = [{ inline_data: { mime_type: 'image/jpeg', data: String(b.b64 || '') } },
+      { text: 'This is a photo of a retail product pack (front or back label) in an Indian shop. Read it. ' +
+        'Reply with ONLY one JSON object: {"found":true,"name":"Brand Item Size (short, e.g. Haldiram Bhujia 200g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"barcode":"digits if visible else empty","exp":"YYYY-MM if expiry/best-before visible else empty","category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other"}. ' +
+        'mrp = printed MRP in rupees (number only). If not readable, use 0 / empty. If this is not a product, found=false.' }];
+  } else return { ok: false, error: 'mode' };
+  const models = [P.getProperty('GEMINI_MODEL') || 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.0-flash'];
+  let last = '';
+  for (const m of models) {
+    const body = { contents: [{ role: 'user', parts: parts }], generationConfig: { temperature: 0.1 } };
+    if (tools) body.tools = tools;
+    const r = UrlFetchApp.fetch('https://generativelanguage.googleapis.com/v1beta/models/' + m + ':generateContent?key=' + encodeURIComponent(key),
+      { method: 'post', contentType: 'application/json', payload: JSON.stringify(body), muteHttpExceptions: true });
+    const c = r.getResponseCode();
+    if (c === 404) { last = 'model ' + m; continue; }
+    if (c === 429) return { ok: false, error: 'quota' };
+    if (c !== 200) { last = c + ' ' + r.getContentText().slice(0, 160); continue; }
+    const j = JSON.parse(r.getContentText());
+    const t = ((((j.candidates || [])[0] || {}).content || {}).parts || []).map(function (x) { return x.text || ''; }).join('');
+    const a = t.indexOf('{'), z = t.lastIndexOf('}');
+    if (a < 0 || z < a) return { ok: true, found: false, model: m };
+    try { const o = JSON.parse(t.slice(a, z + 1)); o.ok = true; o.model = m; return o; } catch (e) { return { ok: true, found: false, model: m }; }
+  }
+  return { ok: false, error: last || 'ai' };
 }
 function fsGet_(path) {
   const r = UrlFetchApp.fetch('https://firestore.googleapis.com/v1/projects/' + PROJECT_ID + '/databases/(default)/documents/' + path,
