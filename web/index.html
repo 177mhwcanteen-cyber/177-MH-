@@ -759,6 +759,16 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .ck-foot .big{margin:0;padding:14px 8px}
 .ck-foot [data-hold]{display:grid;justify-items:center;gap:0;font-size:20px;line-height:1.1;padding:8px 4px}.ck-foot [data-hold] span{font-size:12.5px;font-weight:800}
 .ck-foot [data-save]{font-size:18px}
+
+/* 🧩 कसे हुए कार्ड (31-10-2026): आधी ऊँचाई की टाइल, कंपनी बड़ी, इमोजी छोटा कोने में, नाम साफ़ */
+.grid .tile{aspect-ratio:2.3/1}
+.grid .tile.art .em{position:absolute;left:5px;top:auto;bottom:3px;font-size:16px;transform:none;filter:none;opacity:.95}
+.grid .tile.art .tbr{display:block;position:absolute;inset:0 30px 0 22px;bottom:auto;top:50%;transform:translateY(-50%);font-size:14.5px;letter-spacing:.2px;white-space:normal;line-height:1.05;max-height:2.2em;overflow:hidden;background:none;backdrop-filter:none;padding:0;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.grid .tile.hasimg{background:#fff}.grid .tile.hasimg img{object-fit:contain}
+.grid .card .nm{white-space:normal;text-overflow:clip;font-size:14px;font-weight:800;line-height:1.15;padding:3px 6px 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.grid .card:not(.in):not(.off) .tile::before{width:21px;height:21px;font-size:16px;right:4px;bottom:4px}
+.grid.mela .tile{aspect-ratio:2.3/1}
+#camZoom{font-weight:800}
 </style>
 
 <header class="px">
@@ -800,7 +810,7 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 </div>
 <div id="camwin" hidden><video id="camvid" playsinline muted></video><div class="cfr"><i></i></div>
   <div class="camlast" id="camlast">बारकोड खिड़की में लाएँ — अपने-आप जुड़ेगा</div>
-  <div class="cambtns"><button type="button" id="camTorch" aria-label="टॉर्च" hidden>🔦</button><button type="button" id="camOff" aria-label="कैमरा बंद करें">✕ बंद</button></div></div>
+  <div class="cambtns"><button type="button" id="camZoom" aria-label="कैमरा ज़ूम" hidden>🔍 2×</button><button type="button" id="camTorch" aria-label="टॉर्च" hidden>🔦</button><button type="button" id="camOff" aria-label="कैमरा बंद करें">✕ बंद</button></div></div>
 <div id="sheet"></div>
 <div id="lock" hidden></div>
 <div id="toast" class="toast" hidden></div>
@@ -1619,8 +1629,9 @@ async function camOn(){
 }
 async function camOff(remember){await SE.cam.stop();camUi(false);if(remember)lsSet("se_cam","0")}
 function camUi(on){document.documentElement.classList.toggle("camon",on);$("#camwin").hidden=!on;$("#scanBtn").setAttribute("aria-pressed",on?"true":"false");
-  const tb=$("#camTorch");tb.hidden=!(on&&SE.cam.canTorch);tb.textContent="🔦";}
+  const tb=$("#camTorch");tb.hidden=!(on&&SE.cam.canTorch);tb.textContent="🔦";const zb=$("#camZoom");if(zb){zb.hidden=!(on&&(SE.cam.zMax||1)>=1.5);zb.textContent="🔍 "+(Math.round((SE.cam.zoom||1)*10)/10)+"×"}}
 $("#camOff").onclick=()=>camOff(true);
+$("#camZoom").onclick=async()=>{const z=await SE.cam.cycleZoom();if(z)toast("🔍 "+z+"× ज़ूम — सामान 15-20 सेमी दूर रखें, फोकस अपने-आप होगा")};
 $("#camTorch").onclick=async()=>{const t=await SE.cam.toggleTorch();$("#camTorch").textContent=t?"🔦 बंद":"🔦"};
 function camAuto(){const want=(S.tab==="bill"||(S.tab==="mkt"&&window.SM&&SM.wantCam())||(S.tab==="kharid"&&!(window.SI&&SI.active()))||(S.tab==="stock"&&window.SK&&SK.counting())||(S.tab==="day"&&S.scanIn));if(!want&&SE.cam.on)camOff(false);else if(want&&!SE.cam.on&&SE.isNative&&lsGet("se_cam")==="1"&&!document.hidden)camOn()}
 document.addEventListener("visibilitychange",()=>{if(document.hidden){if(SE.cam.on){SE.cam.stop();camUi(false);camAuto._resume=true}}else if(camAuto._resume){camAuto._resume=false;camAuto()}});

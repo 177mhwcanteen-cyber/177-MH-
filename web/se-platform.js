@@ -237,17 +237,39 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,
       const pm=await B.checkPermissions().catch(()=>({}));if(pm.camera!=="granted"){const r=await B.requestPermissions().catch(()=>({}));if(r.camera!=="granted")throw {msg:"कैमरे की अनुमति नहीं मिली — फोन की सेटिंग में 177 MH कैंटीन को कैमरा दें"}}
       this._h.push(await B.addListener("barcodesScanned",ev=>{const b=ev&&ev.barcodes&&ev.barcodes[0];if(b&&b.rawValue)this._emit(String(b.rawValue),cb)}));
       document.documentElement.classList.add("camnative");
-      await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.QrCode]});
+      /* 📷 फुल-HD (धुंधलापन कम) — फ़ोन न दे तो सबसे नज़दीकी */
+      try{await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.QrCode],resolution:2})}
+      catch(e){await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.QrCode]})}
       try{this.canTorch=!!(await B.isTorchAvailable()).available}catch(e){this.canTorch=false}
-      this.on=true;return true}
+      try{this.zMax=+(await B.getMaxZoomRatio()).zoomRatio||1;this.zMin=+(await B.getMinZoomRatio()).zoomRatio||1}catch(e){this.zMax=1;this.zMin=1}
+      this.on=true;await this.setZoom(this.zoomPref());return true}
     if(!("BarcodeDetector" in window)||!navigator.mediaDevices)return false;
-    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1280},height:{ideal:720}},audio:false});
+    let st;try{st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:"continuous"}]},audio:false})}
+    catch(e){st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1280},height:{ideal:720}},audio:false})}
     this._stream=st;video.srcObject=st;await video.play().catch(()=>{});
-    const tr=st.getVideoTracks()[0];try{this.canTorch=!!(tr.getCapabilities&&tr.getCapabilities().torch)}catch(e){this.canTorch=false}
+    const tr=st.getVideoTracks()[0];let cap={};try{cap=(tr.getCapabilities&&tr.getCapabilities())||{}}catch(e){}
+    this.canTorch=!!cap.torch;
+    try{if((cap.focusMode||[]).includes("continuous"))await tr.applyConstraints({advanced:[{focusMode:"continuous"}]})}catch(e){}
+    this.zMax=cap.zoom&&cap.zoom.max?+cap.zoom.max:1;this.zMin=cap.zoom&&cap.zoom.min?+cap.zoom.min:1;
+    this.on=true;await this.setZoom(this.zoomPref());
     const bd=new BarcodeDetector({formats:["ean_13","ean_8","upc_a","upc_e","code_128","code_39","itf","qr_code"]});
-    this.on=true;let busy=false;
-    const tick=async()=>{if(!this.on)return;if(!busy&&!document.hidden&&video.readyState>=2){busy=true;try{const r=await bd.detect(video);if(r&&r[0])this._emit(String(r[0].rawValue),cb)}catch(e){}busy=false}this._t=setTimeout(tick,140)};tick();
+    /* सिर्फ़ बीच का हिस्सा (खिड़की) पढ़ो — तेज़ और साफ़; न मिले तो पूरा फ्रेम */
+    const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});let busy=false,n=0;
+    const tick=async()=>{if(!this.on)return;if(!busy&&!document.hidden&&video.readyState>=2){busy=true;try{
+        const W=video.videoWidth,H=video.videoHeight;let r=null;
+        if(W&&H&&(n++%3)){const cw=Math.round(W*.86),ch=Math.round(H*.5);cv.width=cw;cv.height=ch;cx.drawImage(video,(W-cw)/2,(H-ch)/2,cw,ch,0,0,cw,ch);r=await bd.detect(cv)}
+        else r=await bd.detect(video);
+        if(r&&r[0])this._emit(String(r[0].rawValue),cb)}catch(e){}busy=false}this._t=setTimeout(tick,110)};tick();
     return true},
+  zMin:1,zMax:1,zoom:1,
+  zoomPref(){let z=2;try{const v=parseFloat(localStorage.getItem("se_zoom"));if(v>0)z=v}catch(e){}return z},
+  zoomSteps(){const mx=Math.max(1,Math.min(this.zMax||1,4));return [1,2,3].filter(z=>z<=mx+0.01)},
+  async setZoom(z){const mx=this.zMax||1,mn=this.zMin||1;z=Math.max(mn,Math.min(mx,+z||1));this.zoom=z;
+    try{if(SE.isNative)await N.BarcodeScanner.setZoomRatio({zoomRatio:z});else if(this._stream&&mx>1)await this._stream.getVideoTracks()[0].applyConstraints({advanced:[{zoom:z}]})}catch(e){}
+    try{const b=document.getElementById("camZoom");if(b){b.hidden=mx<1.5;b.textContent="🔍 "+(Math.round(z*10)/10)+"×"}}catch(e){}
+    return z},
+  async cycleZoom(){const st=this.zoomSteps();if(st.length<2){toast&&toast("इस फ़ोन में ज़ूम नहीं");return}const i=st.findIndex(x=>Math.abs(x-this.zoom)<0.3);const z=st[(i+1)%st.length];
+    try{localStorage.setItem("se_zoom",String(z))}catch(e){}await this.setZoom(z);return z},
   async stop(){if(!this.on&&!this._stream)return;this.on=false;this.torch=false;clearTimeout(this._t);
     if(SE.isNative){try{await N.BarcodeScanner.stopScan()}catch(e){}for(const h of this._h)try{h.remove()}catch(e){}this._h=[];document.documentElement.classList.remove("camnative")}
     if(this._stream){try{this._stream.getTracks().forEach(t=>t.stop())}catch(e){}this._stream=null}},
@@ -429,7 +451,7 @@ SE.aiReady=()=>!!(SE.gk()||SE.scriptUrl());
 const AI_P={code:c=>'Search the web (Google) for the retail product with barcode / EAN / GTIN "'+c+'" sold in India. Use only what you actually find for this exact barcode; if nothing reliable is found, set found=false. Reply with ONLY one JSON object, no other words: {"found":true,"name":"Brand Item Size (short, for a shop bill, e.g. Parle-G Biscuit 100g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other","source":"website name"}',
   img:'This is a photo of a retail product pack (front or back label) in an Indian shop. Read it. Reply with ONLY one JSON object: {"found":true,"name":"Brand Item Size (short, e.g. Haldiram Bhujia 200g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"barcode":"digits if visible else empty","exp":"YYYY-MM if expiry/best-before visible else empty","category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other"}. mrp = printed MRP in rupees (number only). If not readable, use 0 / empty. If this is not a product, found=false.'};
 /* मॉडल: फोटो पढ़ने के लिए सबसे समझदार (Pro) पहले, सीमा खत्म हो तो तेज़ वाला (Flash) — बारकोड खोज के लिए Flash (Google खोज के साथ) */
-const GM={img:["gemini-pro-latest","gemini-2.5-pro","gemini-flash-latest","gemini-2.5-flash"],code:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"],ping:["gemini-2.5-flash-lite","gemini-2.0-flash","gemini-flash-latest"]};
+const GM={img:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash","gemini-2.5-pro"],code:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"],ping:["gemini-2.5-flash-lite","gemini-2.0-flash","gemini-flash-latest"]};
 SE.aiLast="";
 /* Android ऐप में Google को सीधा (फ़ोन की मशीनी नेटवर्क से — ब्राउज़र की CORS रोक नहीं); वेब में सामान्य fetch */
 async function gfetch(url,opt,ms){
