@@ -68,25 +68,25 @@ async function addByCode(code,ai){
   if(D.lines.length>=MAXL){toast("एक खरीद में "+MAXL+" सामान तक");return}
   D.lines.unshift(ln);FLASH=ln.lid;save();draw();beep(true);
   toast(it?"✓ "+it.name+(ln.rate?" · पिछला भाव "+rs(ln.rate):" · भाव लिखें"):ln.name?"🗂️ "+ln.name+" (पुरानी सूची) · भाव लिखें":"🆕 नया बारकोड — नाम और भाव लिखें");
-  if(!ln.name){if(SE.scriptUrl()&&!S.demo)webFill(ln);else setTimeout(()=>{const n=document.querySelector(`[data-lid="${ln.lid}"] [data-f="name"]`);if(n)n.focus()},80)}}
+  if(!ln.name){if(SE.aiReady()&&!S.demo)webFill(ln);else setTimeout(()=>{const n=document.querySelector(`[data-lid="${ln.lid}"] [data-f="name"]`);if(n)n.focus()},80)}}
 /* 🌐 अनजान बारकोड → (1) पहले खोजा हुआ (bcache) (2) Google Gemini खोज — एक बारकोड पर एक ही बार */
 const TRIED={};
 SM.lookup=async function(code){code=String(code||"").replace(/\D/g,"");if(code.length<8)return null;
   try{if(!S.demo&&S.db){const g=await S.db.doc("bcache/"+code).get();if(g.exists){const d=g.data();return d.found===false?null:d}}}catch(e){}
-  if(TRIED[code])return null;TRIED[code]=1;if(!SE.scriptUrl())return null;
+  if(TRIED[code])return null;TRIED[code]=1;if(!SE.aiReady())return null;
   const r=await SE.ai({mode:"code",code});if(!r||!r.ok){if(r&&r.error==="quota")toast("🌐 आज की मुफ़्त AI खोज पूरी — कल फिर चलेगी");return null}
   const d={found:!!(r.found&&r.name),name:String(r.name||"").slice(0,60),hi:String(r.hi||"").slice(0,60),brand:String(r.brand||""),size:String(r.size||""),mrp:num(r.mrp),cat:String(r.category||""),src:String(r.source||"web").slice(0,60),ts:Date.now(),by:S.uid||"",byName:biller()};
   try{if(!S.demo&&S.db)await S.db.doc("bcache/"+code).set(d)}catch(e){}
   return d.found?d:null};
-SM.readImg=async function(dataUrl){if(!SE.scriptUrl())return null;const r=await SE.ai({mode:"img",b64:String(dataUrl).split(",")[1]||""});return r&&r.ok&&r.found&&r.name?r:null};
+SM.readImg=async function(dataUrl){if(!SE.aiReady())return null;const r=await SE.ai({mode:"img",b64:String(dataUrl).split(",")[1]||""});return r&&r.ok&&r.found&&r.name?r:null};
 /* बिलिंग का "नया बारकोड" फॉर्म: पहचान सूची में न मिले तो इंटरनेट से भरो */
-SM.fillNew=async function(code){const n0=$("#nbName");if(!n0)return;const tip=document.createElement("p");tip.className="note";tip.style.cssText="background:#eef2ff;padding:8px 10px;border-radius:10px;margin:0 0 10px";tip.textContent="🌐 इंटरनेट पर ढूँढ रहे हैं…";if(!SE.scriptUrl())return;n0.closest("label")?.before(tip);
+SM.fillNew=async function(code){const n0=$("#nbName");if(!n0)return;const tip=document.createElement("p");tip.className="note";tip.style.cssText="background:#eef2ff;padding:8px 10px;border-radius:10px;margin:0 0 10px";tip.textContent="🌐 इंटरनेट पर ढूँढ रहे हैं…";if(!SE.aiReady())return;n0.closest("label")?.before(tip);
   const d=await SM.lookup(code);const n=$("#nbName");if(!n){return}if(!d){tip.textContent="🌐 इंटरनेट पर नहीं मिला — नाम खुद लिखें";return}
   if(!n.value.trim())n.value=d.name;const h=$("#nbHi");if(h&&!h.value.trim()&&d.hi)h.value=d.hi;const m=$("#nbMrp");if(m&&!(+m.value)&&d.mrp)m.value=d.mrp;
   tip.textContent=`🌐 इंटरनेट से भरा: ${d.name}${d.mrp?" · MRP ₹"+d.mrp:""} — पैकेट से मिलाकर ही सेव करें`};
 async function webFill(ln){ln.webQ=1;draw();const d=await SM.lookup(ln.bar);ln.webQ=0;const L=D&&D.lines.find(x=>x.lid===ln.lid);if(!L){return}
   if(d){if(!L.nmEdit||!String(L.name).trim())L.name=d.name;if(!L.hi)L.hi=d.hi;if(!num(L.mrp)&&d.mrp)L.mrp=d.mrp;L.web=1;toast("🌐 इंटरनेट से: "+d.name+(d.mrp?" · MRP ₹"+d.mrp:"")+" — पैकेट से मिलाएँ")}
-  else if(SE.scriptUrl())toast("🌐 इंटरनेट पर नहीं मिला — 📦 फोटो लें, AI पैकेट पढ़ लेगा");
+  else if(SE.aiReady())toast("🌐 इंटरनेट पर नहीं मिला — 📦 फोटो लें, AI पैकेट पढ़ लेगा");
   save();draw()}
 async function imgFill(L,big){L.imgQ=1;draw();const r=await SM.readImg(big);L.imgQ=0;const l=D&&D.lines.find(x=>x.lid===L.lid);if(!l)return;
   if(r){if(!String(l.name).trim()||l.web||(!l.itemId&&!l.nmEdit))l.name=r.name;if(!l.hi&&r.hi)l.hi=r.hi;if(r.mrp&&(!num(l.mrp)||l.web))l.mrp=num(r.mrp);if(!l.bar&&/^\d{8,14}$/.test(String(r.barcode||"")))l.bar=String(r.barcode);if(r.exp)l.exp=String(r.exp);l.web=0;l.pic=1;toast("📸 फोटो से पढ़ा: "+r.name+(r.mrp?" · MRP ₹"+r.mrp:""))}
@@ -348,7 +348,7 @@ SM.bind=function(){const el=$("#p-mkt");if(!el)return;
     const ln=t.closest("[data-lid]");
     if(ln&&D&&VIEW==="draft"){const l=D.lines.find(x=>x.lid===ln.dataset.lid);if(!l)return;
       const ph=t.closest("[data-ph]");if(ph){const k=t.closest("em[data-ph]")?"m":"f";pick(async f=>{try{l[k]=await shrink(f,k==="m"?240:200,.6);save();draw();
-        if(SE.scriptUrl()&&!S.demo&&(!String(l.name).trim()||l.web||!l.itemId&&!num(l.mrp)||k==="m"&&!num(l.mrp)))imgFill(l,await shrink(f,1100,.75))}catch(x){toast("फोटो नहीं बनी")}});return}
+        if(SE.aiReady()&&!S.demo&&(!String(l.name).trim()||l.web||!l.itemId&&!num(l.mrp)||k==="m"&&!num(l.mrp)))imgFill(l,await shrink(f,1100,.75))}catch(x){toast("फोटो नहीं बनी")}});return}
       const q=t.closest("[data-q]");if(q){const n=r2(num(l.qty)+(+q.dataset.q));if(n<=0){if(q.dataset.sure!=="1"){q.dataset.sure="1";toast("एक और बार − दबाएँ तो हट जाएगा");setTimeout(()=>{q.dataset.sure=""},2000);return}D.lines=D.lines.filter(x=>x!==l)}else l.qty=n;save();draw();beep(true);return}
       const dl=t.closest("[data-del]");if(dl){if(dl.dataset.sure!=="1"){dl.dataset.sure="1";dl.textContent="पक्का?";setTimeout(()=>{if(dl.isConnected){dl.dataset.sure="";dl.textContent="✕"}},2500);return}D.lines=D.lines.filter(x=>x!==l);save();draw();return}
       return}
