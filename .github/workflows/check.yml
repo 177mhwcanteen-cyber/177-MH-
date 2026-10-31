@@ -29,6 +29,14 @@ jobs:
           curl -s -o /dev/null -w "index %{http_code}\n" https://177mhwcanteen-cyber.github.io/177-MH-/ >> $R
           curl -s https://177mhwcanteen-cyber.github.io/177-MH-/config.js | grep -o 'projectId: "[^"]*"' >> $R || true
           curl -s https://177mhwcanteen-cyber.github.io/177-MH-/build.js >> $R; echo >> $R
+          echo "== update ==" >> $R
+          V=$(curl -s "https://177mhwcanteen-cyber.github.io/177-MH-/update/version.json?t=$RANDOM"); echo "$V" >> $R
+          U=$(echo "$V" | python3 -c 'import sys,json;print(json.load(sys.stdin)["url"])')
+          curl -s -o /tmp/b.zip -w "zip %{http_code} %{size_download} bytes %{content_type}\n" "https://177mhwcanteen-cyber.github.io/177-MH-/$U" >> $R
+          curl -sI "https://177mhwcanteen-cyber.github.io/177-MH-/$U" | head -12 >> $R
+          unzip -l /tmp/b.zip | tail -3 >> $R || echo "unzip fail" >> $R
+          echo "== gemini reachability (no key, expect 403/400 quickly) ==" >> $R
+          curl -s -m 20 -o /dev/null -w "models %{http_code} %{time_total}s\n" https://generativelanguage.googleapis.com/v1beta/models >> $R
           ls >> /dev/null
           git config user.name "check-bot"; git config user.email "check-bot@users.noreply.github.com"
           git add checks/report.txt; git commit -m "जाँच का नतीजा [skip ci]" && git push
