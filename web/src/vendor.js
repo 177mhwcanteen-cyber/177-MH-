@@ -2,7 +2,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import { Capacitor, registerPlugin } from "@capacitor/core";
+import { Capacitor, registerPlugin, CapacitorHttp } from "@capacitor/core";
 import { App } from "@capacitor/app";
 import { BarcodeScanner, BarcodeFormat } from "@capacitor-mlkit/barcode-scanning";
 import { CapacitorUpdater } from "@capgo/capacitor-updater";
@@ -14,5 +14,5 @@ const BtPrinter = registerPlugin("BtPrinter");
 window.SENative = {
   isNative: Capacitor.isNativePlatform(),
   platform: Capacitor.getPlatform(),
-  App, BarcodeScanner, BarcodeFormat, CapacitorUpdater, BtPrinter,
+  App, BarcodeScanner, BarcodeFormat, CapacitorUpdater, BtPrinter, CapacitorHttp,
 };

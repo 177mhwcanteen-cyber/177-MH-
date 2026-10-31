@@ -431,6 +431,16 @@ const AI_P={code:c=>'Search the web (Google) for the retail product with barcode
 /* मॉडल: फोटो पढ़ने के लिए सबसे समझदार (Pro) पहले, सीमा खत्म हो तो तेज़ वाला (Flash) — बारकोड खोज के लिए Flash (Google खोज के साथ) */
 const GM={img:["gemini-pro-latest","gemini-2.5-pro","gemini-flash-latest","gemini-2.5-flash"],code:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"],ping:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"]};
 SE.aiLast="";
+/* Android ऐप में Google को सीधा (फ़ोन की मशीनी नेटवर्क से — ब्राउज़र की CORS रोक नहीं); वेब में सामान्य fetch */
+async function gfetch(url,opt,ms){
+  const H=N.CapacitorHttp;
+  if(SE.isNative&&H&&H.request){
+    const r=await Promise.race([H.request({url,method:opt.method||"GET",headers:opt.headers||{},data:opt.body?JSON.parse(opt.body):undefined,connectTimeout:ms,readTimeout:ms}),
+      new Promise((_,rej)=>setTimeout(()=>{const e=new Error("timeout");e.name="AbortError";rej(e)},ms+2000))]);
+    const txt=typeof r.data==="string"?r.data:JSON.stringify(r.data);
+    return {ok:r.status>=200&&r.status<300,status:r.status,text:async()=>txt,json:async()=>typeof r.data==="string"?JSON.parse(r.data):r.data}}
+  const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),ms);
+  try{return await fetch(url,{...opt,signal:ctl.signal})}finally{clearTimeout(tm)}}
 async function geminiDirect(p,key){
   let parts,tools=null;
   if(p.mode==="ping")parts=[{text:"Reply with exactly: OK"}];
@@ -440,10 +450,8 @@ async function geminiDirect(p,key){
   for(const m of list){
     const body={contents:[{role:"user",parts}],generationConfig:{temperature:0.1}};if(tools)body.tools=tools;
     if(p.onStep)try{p.onStep(m)}catch(e){}
-    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),p.mode==="ping"?20000:45000);
-    let r;try{r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent",{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)})}
-    catch(e){clearTimeout(tm);if(e.name==="AbortError"){last="समय खत्म ("+m+")";continue}return {ok:false,error:"net",detail:"इंटरनेट/Google तक नहीं पहुँचे: "+String(e.message||e)}}
-    clearTimeout(tm);
+    let r;try{r=await gfetch("https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)},p.mode==="ping"?20000:45000)}
+    catch(e){if(e.name==="AbortError"){last="समय खत्म ("+m+")";continue}return {ok:false,error:"net",detail:"Google तक नहीं पहुँचे: "+String(e.message||e)}}
     if(r.ok){const j=await r.json();SE.aiLast=m;const t=((((j.candidates||[])[0]||{}).content||{}).parts||[]).map(x=>x.text||"").join("");
       if(p.mode==="ping")return {ok:true,pong:true,model:m};const a=t.indexOf("{"),z=t.lastIndexOf("}");
       if(a<0||z<a)return {ok:true,found:false,model:m};try{return {...JSON.parse(t.slice(a,z+1)),ok:true,model:m}}catch(e){return {ok:true,found:false,model:m}}}
