@@ -46,7 +46,7 @@ import java.util.UUID;
 @CapacitorPlugin(
     name = "BtPrinter",
     permissions = {
-        @Permission(alias = "bt", strings = { Manifest.permission.BLUETOOTH_CONNECT }),
+        @Permission(alias = "bt", strings = { Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN }),
         @Permission(alias = "loc", strings = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION }),
         @Permission(alias = "notif", strings = { Manifest.permission.POST_NOTIFICATIONS })
     }
