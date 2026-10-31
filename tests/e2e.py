@@ -212,6 +212,16 @@ async def main():
         assert any(p.get("mp") == no for p in (await pg.evaluate("window.__MOCK__.purchases")).values())
         await pg.evaluate(f"S.uid='{uid0}';SM.render()")
         print("market pay+receive ok")
+        # 🤖 सीधा Gemini (AQ. चाबी, header में) — नकली fetch
+        res = await pg.evaluate("""async()=>{S.settings.gk='AQ.Ab8RN6Ltest_key-123456789';const of=window.fetch;const seen=[];
+          window.fetch=async(u,o)=>{if(String(u).includes('generativelanguage')){seen.push([u,o.headers['x-goog-api-key']]);
+            if(u.includes('gemini-pro-latest'))return new Response(JSON.stringify({error:{status:'RESOURCE_EXHAUSTED',message:'quota'}}),{status:429});
+            const isImg=JSON.parse(o.body).contents[0].parts[0].inline_data;
+            return new Response(JSON.stringify({candidates:[{content:{parts:[{text:isImg?'```json {"found":true,"name":"Haldiram Bhujia 200g","mrp":60} ```':'OK'}]}}]}),{status:200})}return of(u,o)};
+          const a=await SE.ai({mode:'ping'});const b=await SE.ai({mode:'img',b64:'xx'});window.fetch=of;S.settings.gk='';return {a,b,seen}}""")
+        assert res["a"]["ok"] and res["b"]["name"] == "Haldiram Bhujia 200g" and res["b"]["model"] != "gemini-pro-latest", res
+        assert all(x[1].startswith("AQ.") and "key=" not in x[0] for x in res["seen"]), res["seen"]
+        print("gemini direct ok", res["a"]["model"], res["b"]["model"])
         # 🌐 अनजान बारकोड → Gemini (नकली जवाब) → नाम/MRP भरे, bcache में याद
         await pg.evaluate("""()=>{S.settings.scriptUrl='https://script.google.com/macros/s/x/exec';window.__aiN=0;SE.ai=async p=>{__aiN++;return p.mode==='code'?{ok:true,found:true,name:'Bikaji Bhujia 200g',hi:'बीकाजी भुजिया',mrp:55,source:'test'}:{ok:true,pong:true}}}""")
         await pg.click('[data-tab="mkt"]'); await pg.wait_for_timeout(100)
