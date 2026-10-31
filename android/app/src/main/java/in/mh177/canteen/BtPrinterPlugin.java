@@ -116,7 +116,8 @@ public class BtPrinterPlugin extends Plugin {
             try {
                 BluetoothAdapter a = adapter();
                 if (a == null || !a.isEnabled()) throw new Exception("फोन का Bluetooth चालू करें");
-                a.cancelDiscovery();
+                // Android 12+ पर cancelDiscovery को BLUETOOTH_SCAN चाहिए — हम खोज करते ही नहीं, इसलिए न मिले तो छोड़ दो
+                try { a.cancelDiscovery(); } catch (SecurityException ignore) {}
                 BluetoothDevice dev = a.getRemoteDevice(address);
                 byte[] bytes = Base64.decode(data, Base64.DEFAULT);
                 try {
