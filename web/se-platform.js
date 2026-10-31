@@ -429,7 +429,7 @@ SE.aiReady=()=>!!(SE.gk()||SE.scriptUrl());
 const AI_P={code:c=>'Search the web (Google) for the retail product with barcode / EAN / GTIN "'+c+'" sold in India. Use only what you actually find for this exact barcode; if nothing reliable is found, set found=false. Reply with ONLY one JSON object, no other words: {"found":true,"name":"Brand Item Size (short, for a shop bill, e.g. Parle-G Biscuit 100g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other","source":"website name"}',
   img:'This is a photo of a retail product pack (front or back label) in an Indian shop. Read it. Reply with ONLY one JSON object: {"found":true,"name":"Brand Item Size (short, e.g. Haldiram Bhujia 200g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"barcode":"digits if visible else empty","exp":"YYYY-MM if expiry/best-before visible else empty","category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other"}. mrp = printed MRP in rupees (number only). If not readable, use 0 / empty. If this is not a product, found=false.'};
 /* मॉडल: फोटो पढ़ने के लिए सबसे समझदार (Pro) पहले, सीमा खत्म हो तो तेज़ वाला (Flash) — बारकोड खोज के लिए Flash (Google खोज के साथ) */
-const GM={img:["gemini-pro-latest","gemini-2.5-pro","gemini-flash-latest","gemini-2.5-flash"],code:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"],ping:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"]};
+const GM={img:["gemini-pro-latest","gemini-2.5-pro","gemini-flash-latest","gemini-2.5-flash"],code:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"],ping:["gemini-2.5-flash-lite","gemini-2.0-flash","gemini-flash-latest"]};
 SE.aiLast="";
 /* Android ऐप में Google को सीधा (फ़ोन की मशीनी नेटवर्क से — ब्राउज़र की CORS रोक नहीं); वेब में सामान्य fetch */
 async function gfetch(url,opt,ms){
@@ -446,12 +446,12 @@ async function geminiDirect(p,key){
   if(p.mode==="ping")parts=[{text:"Reply with exactly: OK"}];
   else if(p.mode==="code"){const c=String(p.code||"").replace(/\D/g,"").slice(0,14);if(c.length<8)return {ok:false,error:"bad-code"};parts=[{text:AI_P.code(c)}];tools=[{google_search:{}}]}
   else if(p.mode==="img")parts=[{inline_data:{mime_type:"image/jpeg",data:String(p.b64||"")}},{text:AI_P.img}];else return {ok:false,error:"mode"};
-  const own=_set().gmodel;const list=[...(own?[own]:[]),...GM[p.mode]];let last="",quota=false;
+  const own=_set().gmodel;const list=[...(own?[own]:[]),...GM[p.mode]];let last="",quota=false;const tries=[];
   for(const m of list){
     const body={contents:[{role:"user",parts}],generationConfig:{temperature:0.1}};if(tools)body.tools=tools;
     if(p.onStep)try{p.onStep(m)}catch(e){}
-    let r;try{r=await gfetch("https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)},p.mode==="ping"?20000:45000)}
-    catch(e){if(e.name==="AbortError"){last="समय खत्म ("+m+")";continue}return {ok:false,error:"net",detail:"Google तक नहीं पहुँचे: "+String(e.message||e)}}
+    let r;try{r=await gfetch("https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)},p.mode==="ping"?30000:60000)}
+    catch(e){const em=String(e.message||e);if(e.name==="AbortError"||/time ?out/i.test(em)){last="समय खत्म ("+m+")";tries.push(m+": समय खत्म");continue}tries.push(m+": "+em.slice(0,60));last=em;continue}
     if(r.ok){const j=await r.json();SE.aiLast=m;const t=((((j.candidates||[])[0]||{}).content||{}).parts||[]).map(x=>x.text||"").join("");
       if(p.mode==="ping")return {ok:true,pong:true,model:m};const a=t.indexOf("{"),z=t.lastIndexOf("}");
       if(a<0||z<a)return {ok:true,found:false,model:m};try{return {...JSON.parse(t.slice(a,z+1)),ok:true,model:m}}catch(e){return {ok:true,found:false,model:m}}}
@@ -460,7 +460,7 @@ async function geminiDirect(p,key){
     if(r.status===429){quota=true;last=msg;continue}
     if([400,401,403].includes(r.status)&&/API[_ ]?key|PERMISSION|UNAUTHENTICATED|credential|ACCESS_TOKEN|not valid/i.test(msg))return {ok:false,error:"bad-key",detail:msg.slice(0,200)};
     last=r.status+" "+msg.slice(0,160)}
-  return {ok:false,error:quota?"quota":"ai",detail:String(last).slice(0,200)}}
+  return {ok:false,error:quota?"quota":"ai",detail:(tries.length?tries.join(" · "):String(last)).slice(0,240)}}
 SE.ai=async function(p){if(navigator.onLine===false)return {ok:false,error:"offline",detail:"फ़ोन का इंटरनेट बंद है"};
   const k=SE.gk();if(k){try{return await geminiDirect(p,k)}catch(e){return {ok:false,error:String(e.message||e)}}}
   const u=SE.scriptUrl();if(!u)return {ok:false,error:"no-url"};if(navigator.onLine===false)return {ok:false,error:"offline"};
