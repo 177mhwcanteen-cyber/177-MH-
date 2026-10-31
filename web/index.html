@@ -889,7 +889,7 @@ function hhash(x){let h=7;for(const c of String(x))h=(h*31+c.codePointAt(0))>>>0
 function art(it){const k=(it.name||"")+" "+(it.hi||"")+" "+(it.alias||"");const b=BRAND_ART.find(r=>r[0].test(k));
   const generic=!it.emoji||it.emoji==="🛒"||it.emoji==="📦";const kw=generic&&KW_ART.find(r=>r[0].test(k));
   const em=b&&generic?b[2]:kw?kw[1]:(it.emoji||"🛒");
-  const brand=(b&&b[3])||String(it.name||"").split(/\s*[·|]\s*|\s+/)[0].slice(0,14);
+  const brand=it.cat==="mela"&&it.hi?String(it.hi).slice(0,16):(b&&b[3])||String(it.name||"").split(/\s*[·|]\s*|\s+/)[0].slice(0,14);
   const h=b?b[1]:(it.hue!=null&&!(generic&&+it.hue===30)?+it.hue:hhash(brand)%360);return {em,h,brand}}
 function tileHTML(it,cls=""){
   const a=art(it);
