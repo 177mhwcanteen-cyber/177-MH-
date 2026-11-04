@@ -224,15 +224,17 @@ function homeHTML(){const A=all();
   <div class="mk-list">${mine.length?mine.slice(0,60).map(rowHTML).join(""):`<div class="empty">अभी कोई खरीद नहीं</div>`}</div>`}
 
 /* ---------- स्क्रीन: खरीद बनाना (बिलिंग जैसा) ---------- */
+/* 🥛 क्रेट/डिब्बा/कार्टन: 1 क्रेट में कितने पीस — एक बार लिखो, अगली बार अपने-आप (उसी फोन में) */
+function perOf(l){if(num(l.per)>0)return num(l.per);const it=l.itemId&&item(l.itemId);if(it&&!it.packOf&&+it.perPack>1)return +it.perPack;try{return +localStorage.getItem("mk_per_"+(l.itemId||l.bar||""))||0}catch(e){return 0}}
 function lineHTML(l){const g=gain(l.rate,l.mrp),dear=l.last&&num(l.rate)>l.last*1.05,amt=r2(num(l.qty)*num(l.rate));
   const tag=l.webQ?`<i class="t new">🌐 इंटरनेट पर ढूँढ रहे…</i>`:l.imgQ?`<i class="t new">📸 AI फोटो पढ़ रहा…</i>`:l.web?`<i class="t bad">🌐 इंटरनेट से — पैकेट से मिलाएँ</i>`:l.pic?`<i class="t ok">📸 फोटो से पढ़ा</i>`:l.ai?(l.bar?(+l.seen>=num(l.qty)?`<i class="t ok">✓ गिना ${l.seen}/${l.qty}</i>`:`<i class="t">📟 गिनें ${+l.seen||0}/${l.qty}</i>`):`<i class="t bad">📟 बारकोड मिलाएँ</i>`):l.itemId?`<i class="t ok">♻️</i>`:`<i class="t new">🆕</i>`;
   const aiBtn=(!l.itemId&&!l.pic&&!l.imgQ&&!l.webQ&&(l.aiNo||!String(l.name).trim()||l.web))?`<button type="button" class="t aiph" data-ph="f">📸 फोटो लें — AI नाम भरेगा</button>`:"";
   return `<div class="mk-ln ${FLASH===l.lid?"fl":""} ${g&&g.low?"low":""}" data-lid="${esc(l.lid)}">
     <button type="button" class="mk-th" data-ph="f" aria-label="आगे की फोटो">${l.f?`<img src="${l.f}" alt="">`:(l.itemId&&SE.photoSrc(item(l.itemId))?`<img src="${esc(SE.photoSrc(item(l.itemId)))}" alt="">`:"📦")}<em class="${l.m?"on":""}" data-ph="m" title="MRP की फोटो">🏷️</em></button>
-    <div class="mk-mid"><input class="mk-nm" data-f="name" value="${esc(l.name)}" placeholder="सामान का नाम" autocomplete="off"><div class="mk-tags">${tag}${aiBtn}${l.gst?`<i class="t">GST ${l.gst}%</i>`:""}${l.free?`<i class="t ok">+${l.free} मुफ़्त</i>`:""}${g?`<i class="t ${g.low?"bad":"ok"}">${g.per<0?"⛔ घाटा":g.low?"🔴":"🟢"} ${g.pct}% · ${rs(g.per)}</i>`:`<i class="t">MRP डालें</i>`}${dear?`<i class="t bad">⚠ पिछली बार ${rs(l.last)}</i>`:""}</div>
+    <div class="mk-mid"><input class="mk-nm" data-f="name" value="${esc(l.name)}" placeholder="सामान का नाम" autocomplete="off"><div class="mk-tags">${tag}${aiBtn}${(()=>{const n=perOf(l);return `<button type="button" class="t crt" data-crate data-q="${n||0}" title="पूरा क्रेट/डिब्बा/कार्टन जोड़ें">🧺${n?" +1 क्रेट ("+n+")":" क्रेट?"}</button>`})()}${l.gst?`<i class="t">GST ${l.gst}%</i>`:""}${l.free?`<i class="t ok">+${l.free} मुफ़्त</i>`:""}${g?`<i class="t ${g.low?"bad":"ok"}">${g.per<0?"⛔ घाटा":g.low?"🔴":"🟢"} ${g.pct}% · ${rs(g.per)}</i>`:`<i class="t">MRP डालें</i>`}${dear?`<i class="t bad">⚠ पिछली बार ${rs(l.last)}</i>`:""}</div>
       <div class="mk-nums"><span class="mk-q"><button type="button" data-q="-1" aria-label="एक कम">−</button><input data-f="qty" inputmode="decimal" value="${esc(l.qty)}" aria-label="गिनती"><button type="button" data-q="1" aria-label="एक और">+</button></span>
         <label class="mk-in"><span>₹ एक</span><input data-f="rate" inputmode="decimal" value="${esc(l.rate)}" placeholder="${l.last||"भाव"}" aria-label="एक का खरीद भाव"></label>
-        <label class="mk-in mrp"><span>MRP</span><input data-f="mrp" inputmode="decimal" value="${esc(l.mrp)}" placeholder="0" aria-label="MRP"></label></div></div>
+        <label class="mk-in mrp"><span>MRP</span><input data-f="mrp" inputmode="decimal" value="${esc(l.mrp)}" placeholder="0" aria-label="MRP"></label></div>${l.perOpen?`<label class="mk-cr">🧺 1 क्रेट/डिब्बे/कार्टन में <input data-f="per" inputmode="numeric" value="${perOf(l)||""}" placeholder="पीस"> पीस</label>`:""}</div>
     <div class="mk-am"><b>${rs(amt)}</b><button type="button" class="mk-x" data-del aria-label="${esc(l.name)} हटाएँ">✕</button></div></div>`}
 function searchHits(){const q=String(D.q||"").trim().toLowerCase();if(q.length<2)return "";
   const hits=S.items.filter(i=>i.active!==false&&!i.virtual&&(i.name.toLowerCase().includes(q)||String(i.hi||"").includes(D.q.trim())||String(i.code||"")===q||String(i.barcode||"")===q)).slice(0,6);
@@ -354,7 +356,7 @@ SM.bind=function(){const el=$("#p-mkt");if(!el)return;
     if(ln&&D&&VIEW==="draft"){const l=D.lines.find(x=>x.lid===ln.dataset.lid);if(!l)return;
       const ph=t.closest("[data-ph]");if(ph){const k=t.closest("em[data-ph]")?"m":"f";pick(async f=>{try{l[k]=await shrink(f,k==="m"?240:200,.6);save();draw();
         if(!S.demo&&(l.aiNo||!String(l.name).trim()||l.web||!l.itemId&&!num(l.mrp)||k==="m"&&!num(l.mrp))){if(SE.aiReady())imgFill(l,await shrink(f,1100,.75));else toast("🔑 AI चाबी सेटिंग में नहीं है — मालिक ⚙ सेटिंग में Gemini चाबी डालें")}}catch(x){toast("फोटो नहीं बनी")}});return}
-      const q=t.closest("[data-q]");if(q){const n=r2(num(l.qty)+(+q.dataset.q));if(n<=0){if(q.dataset.sure!=="1"){q.dataset.sure="1";toast("एक और बार − दबाएँ तो हट जाएगा");setTimeout(()=>{q.dataset.sure=""},2000);return}D.lines=D.lines.filter(x=>x!==l)}else l.qty=n;save();draw();beep(true);return}
+      const q=t.closest("[data-q]");if(q&&q.hasAttribute("data-crate")&&!(+q.dataset.q>0)){l.perOpen=1;save();draw();setTimeout(()=>{const pi=document.querySelector(`[data-lid="${l.lid}"] [data-f=per]`);if(pi)pi.focus()},50);return}if(q){const n=r2(num(l.qty)+(+q.dataset.q));if(n<=0){if(q.dataset.sure!=="1"){q.dataset.sure="1";toast("एक और बार − दबाएँ तो हट जाएगा");setTimeout(()=>{q.dataset.sure=""},2000);return}D.lines=D.lines.filter(x=>x!==l)}else l.qty=n;save();draw();beep(true);return}
       const dl=t.closest("[data-del]");if(dl){if(dl.dataset.sure!=="1"){dl.dataset.sure="1";dl.textContent="पक्का?";setTimeout(()=>{if(dl.isConnected){dl.dataset.sure="";dl.textContent="✕"}},2500);return}D.lines=D.lines.filter(x=>x!==l);save();draw();return}
       return}
     const b=VIEW==="detail"&&OPEN?all().find(x=>x.id===OPEN):null;if(!b)return;
@@ -371,7 +373,7 @@ SM.bind=function(){const el=$("#p-mkt");if(!el)return;
     if(t.id==="mkQ"){D.q=t.value;const h=$("#mkHits");if(h)h.innerHTML=searchHits();return}
     if(t.id==="mkPaste"){D.paste=t.value;save();return}
     const ln=t.closest("[data-lid]");if(!ln||!t.dataset.f)return;const l=D.lines.find(x=>x.lid===ln.dataset.lid);if(!l)return;
-    l[t.dataset.f]=t.value;if(t.dataset.f==="name")l.nmEdit=1;save();
+    l[t.dataset.f]=t.value;if(t.dataset.f==="name")l.nmEdit=1;save();if(t.dataset.f==="per"){const n=parseInt(t.value)||0;try{localStorage.setItem("mk_per_"+(l.itemId||l.bar||""),n)}catch(e){}}
     const am=ln.querySelector(".mk-am b");if(am)am.textContent=rs(r2(num(l.qty)*num(l.rate)));cartBar();
     if(t.dataset.f!=="name"){const g=gain(l.rate,l.mrp);ln.classList.toggle("low",!!(g&&g.low));const tmp=document.createElement("div");tmp.innerHTML=lineHTML(l);const nt=tmp.querySelector(".mk-tags"),ot=ln.querySelector(".mk-tags");if(nt&&ot)ot.innerHTML=nt.innerHTML}
   });
@@ -418,7 +420,7 @@ SM.bind=function(){const el=$("#p-mkt");if(!el)return;
 .mk-mid{flex:1;min-width:0;display:grid;gap:4px}
 .mk-nm{width:100%;border:0;outline:0;background:transparent;font-family:var(--f-display);font-weight:800;font-size:15.5px;color:var(--ink);padding:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}input.mk-nm:focus{background:var(--bg);border-radius:6px}
 .mk-tags{display:flex;flex-wrap:wrap;gap:4px}.mk-tags .t{font-style:normal;font-size:11px;font-weight:700;padding:1px 6px;border-radius:99px;background:var(--bg);color:var(--muted)}.mk-tags .t.ok{background:#dcfce7;color:#166534}.mk-tags .t.bad{background:#fee2e2;color:#b42318}.mk-tags .t.new{background:#dbeafe;color:#1e40af}.mk-tags .t.aiph{border:0;font-size:12.5px;padding:4px 10px;background:linear-gradient(120deg,#7c3aed,#db2777);color:#fff;box-shadow:0 2px 6px rgba(124,58,237,.4)}
-.mk-nums{display:flex;gap:5px;align-items:center}
+.mk-nums{display:flex;gap:5px;align-items:center}.mk-cr{display:flex;align-items:center;gap:4px;font-size:12px;margin-top:4px}.mk-cr input{width:56px;font-size:14px;padding:3px 5px;border:1px solid #cbd5e1;border-radius:8px}.t.crt{border:1px dashed #16a34a;background:#f0fdf4;color:#166534;font:inherit;font-size:11px;cursor:pointer}
 .mk-q{display:flex;align-items:center;height:34px;border-radius:10px;background:#16a34a;overflow:hidden;flex:none}.mk-q button{width:30px;height:34px;border:0;background:transparent;color:#fff;font-size:19px;font-weight:800}.mk-q input{width:38px;height:28px;border:0;border-radius:7px;text-align:center;font-weight:900;font-size:15px;background:rgba(255,255,255,.95);color:#111;outline:0}
 .mk-in{display:flex;align-items:center;gap:3px;height:34px;min-width:0;flex:1;border-radius:10px;background:var(--bg);border:1.5px solid var(--line);padding:0 7px}.mk-in:focus-within{border-color:#16a34a}.mk-in span{font-size:11px;font-weight:800;color:var(--muted);flex:none}
 .mk-in input{flex:1;min-width:0;width:100%;border:0;outline:0;background:transparent;font-weight:800;font-size:15px;color:var(--ink);padding:0}.mk-in.mrp{flex:1}.mk-in.w{height:42px;flex:1}.mk-in.w input{font-weight:600}

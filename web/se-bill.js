@@ -112,7 +112,7 @@ SB.editSheet=function(b){
     const m=e.target.closest("[data-sbm]");if(m){const i=+m.dataset.sbm;setQ(i,E[i].qty-step(E[i]));draw();return}
     const p=e.target.closest("[data-sbp2]");if(p){const i=+p.dataset.sbp2;setQ(i,E[i].qty+step(E[i]));draw();return}
     const a=e.target.closest("[data-sbadd]");if(a){const it=item(a.dataset.sbadd);if(!it)return;const ex=E.findIndex(l=>l.id===it.id&&!l.changed&&!l.free);
-      if(ex>-1)setQ(ex,E[ex].qty+(it.unit==="kg"?0.5:1));else{const r=+it.sale||0,qty=it.unit==="kg"?0.5:1;E.push({id:it.id,name:(it.secret?"Misc Item "+it.secret:it.name),realName:it.name,emoji:it.emoji||"",unit:it.unit,qty,rate:r,board:r,cost:(window.SF?SF.costOf(it):(+it.cost||0)),amt:r2(qty*r),changed:false,free:false,added:true})}
+      if(ex>-1)setQ(ex,E[ex].qty+(it.unit==="kg"?0.5:1));else{const r=+it.sale||0,qty=it.unit==="kg"?0.5:1;E.push({id:it.id,name:(typeof billNm==="function"?billNm(it):(it.secret?"Misc Item "+it.secret:it.name)),realName:it.name,emoji:it.emoji||"",unit:it.unit,qty,rate:r,board:r,cost:(window.SF?SF.costOf(it):(+it.cost||0)),amt:r2(qty*r),changed:false,free:false,added:true})}
       q="";draw();toast("➕ "+it.name+" जुड़ा — मात्रा ठीक कर लें");return}
     if(e.target.closest("[data-sbsave]"))await saveEdit(b,E);
   };
