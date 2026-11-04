@@ -10,6 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script src="config.js"></script>
 <script src="build.js"></script>
+<script src="se-watch.js"></script>
 <script src="lib/qrcode.min.js"></script>
 <script src="lib/vendor.js"></script>
 <script src="se-platform.js"></script>
@@ -961,7 +962,7 @@ function isPc(u){return u==="pc"||u==="pk"||u==="pl"}
 const S={db:null,user:null,assets:null,demo:false,isOwner:false,uid:null,meName:"",staff:"",staffDocs:[],
   items:[],settings:{},parties:[],ledger:[],dayBills:[],billsDate:today(),repDate:today(),
   tab:"bill",mode:"walk",partyId:"",inst:"",cat:"all",sub:"all",flt:"",q:"",cart:[],chk:null,saving:false,unsubBills:null,
-  bt:[],ai:0,qq:0,view:"grid",pstock:{},scanIn:false,held:[],stock:{},kharch:[],close:null,cust:{phone:"",name:""},customers:[],sortTop:false,range:null,priceLog:[],unsubDay:[]};
+  bt:[],ai:0,qq:0,view:"grid",pstock:{},scanIn:false,held:[],stock:{},kharch:[],close:null,cust:{phone:"",name:""},customers:[],sortTop:false,range:null,priceLog:[],unsubDay:[]};window.__S__=S;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const r2=n=>Math.round((+n||0)*100)/100;

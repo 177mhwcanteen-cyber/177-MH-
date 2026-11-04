@@ -37,6 +37,10 @@ jobs:
           unzip -l /tmp/b.zip | tail -3 >> $R || echo "unzip fail" >> $R
           echo "== gemini reachability (no key, expect 403/400 quickly) ==" >> $R
           curl -s -m 20 -o /dev/null -w "models %{http_code} %{time_total}s\n" https://generativelanguage.googleapis.com/v1beta/models >> $R
+          echo "== sentry test event ==" >> $R
+          ID=$(python3 -c "import uuid;print(uuid.uuid4().hex)")
+          printf '{"event_id":"%s"}\n{"type":"event"}\n{"event_id":"%s","platform":"javascript","level":"info","message":"177 MH app-watch setup test","release":"mh177@setup","environment":"setup"}\n' $ID $ID > /tmp/env.txt
+          curl -s -m 20 -w " sentry %{http_code}\n" -X POST "https://o4512374822797312.ingest.us.sentry.io/api/4512374836559872/envelope/?sentry_key=43706bc0b739a0a6488a0f0f4b609736&sentry_version=7" -H "Content-Type: text/plain" --data-binary @/tmp/env.txt >> $R
           ls >> /dev/null
           git config user.name "check-bot"; git config user.email "check-bot@users.noreply.github.com"
           git add checks/report.txt; git commit -m "जाँच का नतीजा [skip ci]" && git push
