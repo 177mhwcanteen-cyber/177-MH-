@@ -695,7 +695,7 @@ function labelSpec(){
   return specOf(it,kir,{price:num(L.price),pack:L.pack,exp:L.exp,mfg:L.mfg});
 }
 function specOf(it,kir,o){o=o||{};const ex=o.exp!=null&&o.exp!==""?o.exp:(it.exp||"");
-  return {it,kir,code:itemCode(it),name:it.name,
+  return {it,kir,code:itemCode(it),name:(typeof shortNm==="function"?shortNm(it):it.name),
     price:kir?(o.price||+it.sale||0):(+it.sale||0),mrp:+it.mrp||0,icode:it.code||"",unit:it.unit,
     pack:kir?(String(o.pack||it.size||it.pack||"").trim()):"",
     exp:kir&&ex?fdate(ex):"",mfg:kir&&o.mfg?fdate(o.mfg):""};

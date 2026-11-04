@@ -1583,7 +1583,21 @@ async function pehchanFill(code){const m=await pehchan(),x=m.get(code);window.PE
   n.textContent=`🗂️ पहचान सूची से भरा: ${x.brand?x.brand+" · ":""}${x.bill}`+(x.lastSale?` — पिछली बार ₹${x.lastSale} में बिका`:"")+(S.isOwner&&x.lastPur?`, खरीद ₹${x.lastPur}`:"")+`। आज का MRP पैकेट पर देखकर भाव लिखें।`;
   const c=$("#sheet .card2");if(c)c.parentNode.insertBefore(n,c)}
 /* 🔒 गुप्त कोड वाले सामान (गुटखा/ज़र्दा/सिगरेट): बिल/प्रिंट/WhatsApp पर असली नाम नहीं छपता */
-function billNm(it){return it&&it.secret?"Misc Item "+it.secret:(it?it.name:"")}
+/* ✂️ स्थायी नियम: बिल व लेबल पर छोटा नाम (24 अक्षर तक) — "कंपनी + सामान + साइज़"। it.short हो तो वही, नहीं तो अपने-आप छोटा */
+const SHORT_MAX=24;
+const SH_AB=[[/\bMasala\b/gi,"Msl"],[/\bBiscuits?\b/gi,"Bisc"],[/\bChocolate\b/gi,"Choc"],[/\bPowder\b/gi,"Pwd"],[/\bPacket\b/gi,"Pkt"],[/\bCream\b/gi,"Crm"],[/\bSpecial\b/gi,"Spl"],[/\bPremium\b/gi,"Prm"],[/\bOriginal\b/gi,"Orig"],[/\bFlavou?r(ed)?\b/gi,"Flv"],[/\bChicken\b/gi,"Chkn"],[/\bPaneer\b/gi,"Pnr"],[/\bTandoori\b/gi,"Tndr"],[/\bButter\b/gi,"Btr"],[/\bVegetable\b/gi,"Veg"],[/\bDetergent\b/gi,"Det"],[/\bShampoo\b/gi,"Shmp"],[/\bToothpaste\b/gi,"T.Paste"],[/\bChips\b/gi,"Chps"],[/\bNamkeen\b/gi,"Nmkn"],[/\bCookies\b/gi,"Cooki"],[/\bJuice\b/gi,"Jc"],[/\bBottle\b/gi,"Btl"]];
+const SH_DROP=/^(shahi|super|new|fresh|pure|classic|delicious|tasty|best|the|and|with|mix(ed)?)$/i;
+function autoShort(n){let s=String(n||"").replace(/\s+/g," ").trim()
+  .replace(/(\d)\s*(g|gms?|grams?|gm)\b/gi,"$1g").replace(/(\d)\s*kgs?\b/gi,"$1kg").replace(/(\d)\s*ml\b/gi,"$1ml").replace(/(\d)\s*(ltrs?|litres?|liters?)\b/gi,"$1L");
+  if(s.length<=SHORT_MAX)return s;
+  s=s.replace(/\s*\(([^)]*)\)/g,(m,x)=>/\d/.test(x)?" "+x.replace(/\s+/g,"").replace(/पीस|pcs?/i,"pc"):"").trim();
+  s=s.replace(/\s+(namkeen|snacks?)\b/gi,"");
+  for(const [r,v] of SH_AB){if(s.length<=SHORT_MAX)break;s=s.replace(r,v)}
+  if(s.length>SHORT_MAX){const w=s.split(" ");for(let i=w.length-2;i>0&&w.join(" ").length>SHORT_MAX;i--)if(SH_DROP.test(w[i]))w.splice(i,1);s=w.join(" ")}
+  if(s.length>SHORT_MAX){const m=s.match(/\s(\S*\d\S*)$/),tail=m?" "+m[1]:"";s=s.slice(0,SHORT_MAX-tail.length).trim()+tail}
+  return s}
+function shortNm(it){return it?(it.short?String(it.short).slice(0,30):autoShort(it.name)):""}
+function billNm(it){return it&&it.secret?"Misc Item "+it.secret:shortNm(it)}
 function unknownCode(code){
   const own=S.isOwner,subs=SUBS.kirana;
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="नया बारकोड"><div class="grab"></div>
