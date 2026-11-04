@@ -1,4 +1,8 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.pks .pkg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:4px}
+.pkb{display:flex;flex-direction:column;align-items:center;gap:1px;padding:12px 6px;border-radius:14px;border:2px solid var(--line,#e5e7eb);background:var(--card,#fff);font:inherit;color:inherit;position:relative}
+.pkb b{font-size:16px}.pkb small{font-size:12px;opacity:.75}.pkb i{font-style:normal;font-size:20px;font-weight:800;color:var(--leaf,#15803d)}.pkb em{font-style:normal;font-size:11px;background:#fef3c7;color:#92400e;border-radius:8px;padding:1px 6px}
+.pkb:active{transform:scale(.97)}.pkb.off i{color:var(--chili,#b91c1c);font-size:14px}
+</style></head><body>
 <title>177 MH कैंटीन</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="fonts/fonts.css">
@@ -897,7 +901,7 @@ const CATS=[["mela","🎪 मेला स्पेशल"],["all","सब"],["m
 /* 🎪 मेला: तीन वैरायटी (पुराने सेव सामान पर भी — नाम/ID से तय) */
 const MELA_G=[["kadhai","🍲 कड़ाही-रोटी"],["fast","🍔 फास्ट फूड"],["dosa","🫓 डोसा"]];
 function melaSub(it){if(it.msub)return it.msub;const k=(it.name+" "+(it.hi||"")).toLowerCase();return /dosa|डोसा/.test(k)?"dosa":/kad?h?ai|कड़ाही|कढ़ाई|roti|रोटी|naan|नान|chicken|चिकन/.test(k)?"kadhai":"fast"}
-const SUBS={mithai:[["mithai","🍬 मिठाई"],["bakery","🍰 बेकरी-केक"]],kirana:[["dairy","🥛 दूध-दही"],["ice","🍦 आइसक्रीम"],["tob","📦 कोड वाले"],["namkeen","🥨 नमकीन-चिप्स"],["dryfruit","🥜 ड्राई फ्रूट"],["achar","🌶️ अचार-सॉस"],["rashan","🌾 आटा-दाल-चावल"],["oil","🫗 तेल-घी"],["masala","🌶️ मसाले"],["drinks","🥤 कोल्ड ड्रिंक-पेय"],["sweet","🍫 बिस्किट-चॉकलेट"],["clean","🧼 साबुन-सफाई"],["personal","🪥 पर्सनल केयर"],["pooja","🪔 पूजा"],["disposal","🥤 डिस्पोज़ल"],["party","🎁 पार्टी-गिफ्ट"]],fast:[["nashta","🍳 नाश्ता"],["meal","🍛 खाना-थाली"],["chai","☕ चाय-कॉफी"]],sabzi:[["sabzi","🥬 सब्ज़ी"],["fruit","🍎 फल"]]};
+const SUBS={mithai:[["mithai","🍬 मिठाई"],["bakery","🍰 बेकरी-केक"]],kirana:[["dairy","🥛 दूध-दही"],["ice","🍦 आइसक्रीम"],["tob","📦 कोड वाले"],["namkeen","🥨 नमकीन-चिप्स"],["dryfruit","🥜 ड्राई फ्रूट"],["achar","🌶️ अचार-सॉस"],["rashan","🌾 आटा-दाल-चावल"],["oil","🫗 तेल-घी"],["masala","🌶️ मसाले"],["drinks","🥤 कोल्ड ड्रिंक-पेय"],["sweet","🍫 बिस्किट-चॉकलेट"],["clean","🧼 साबुन-सफाई"],["personal","🪥 पर्सनल केयर"],["pooja","🪔 पूजा"],["disposal","🥤 डिस्पोज़ल"],["party","🎁 पार्टी-गिफ्ट"]],fast:[["nashta","🍳 नाश्ता"],["dosa","🫓 डोसा"],["pizza","🍕 पिज़्ज़ा"],["chinese","🥢 चाइनीज़"],["meal","🍛 खाना-थाली"],["chai","☕ चाय-कॉफी"]],sabzi:[["sabzi","🥬 सब्ज़ी"],["fruit","🍎 फल"]]};
 const OLDCAT={packed:"kirana",patta:"sabzi",fal:"sabzi",biryani:"fast",nonveg:"fast",veg:"fast",chinese:"fast",drinks:"fast"};
 const UNITS={pc:"पीस",pk:"पैकेट",kg:"कि.ग्रा",pl:"प्लेट",dz:"दर्जन",gd:"गड्डी"};
 function mcat(it){return OLDCAT[it.cat]||it.cat||"kirana"}
@@ -1028,6 +1032,17 @@ function renderPane(force){
 }
 
 /* ---------- billing ---------- */
+/* 📦 खुला / पैकेट (स्थायी नियम): पीस वाला सामान मुख्य टाइल; उसके पैकेट (packOf) टाइल पर अलग नहीं, टैप पर छोटे पॉपअप में */
+function packsOf(it){return it?S.items.filter(p=>p.active!==false&&p.packOf===it.id).sort((a,b)=>(+a.perPack||0)-(+b.perPack||0)):[]}
+function isVariant(i){return !!(i.packOf&&item(i.packOf)&&item(i.packOf).active!==false)}
+function openPack(it){const pk=packsOf(it),p1=priceOf(it);
+  const btn=(x,lbl,sub,pr,extra)=>`<button class="pkb${pr>0?"":" off"}" data-pk="${esc(x.id)}"><b>${lbl}</b><small>${sub}</small><i>${pr>0?rs(pr):"भाव बाकी"}</i>${extra||""}</button>`;
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px pks" role="dialog" aria-label="खुला या पैकेट"><div class="grab"></div>
+  <div class="sh-head"><h3 style="font-size:17px">${esc(shortNm(it))}</h3><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  <div class="pkg">${btn(it,"🔹 खुला","1 "+(UNITS[it.unit]||"पीस"),p1)}${pk.map(x=>{const n=+x.perPack||0,pr=priceOf(x),sv=p1>0&&pr>0&&n?r2(p1*n-pr):0;return btn(x,"📦 पूरा पैकेट",n+" पीस",pr,sv>0?`<em>₹${sv} बचत</em>`:"")}).join("")}</div></div></div>`;
+  $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}const b=e.target.closest("[data-pk]");if(!b)return;const x=item(b.dataset.pk);closeSheet();
+    if(priceOf(x)>0)quickAdd(x,1);else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast("इसका भाव नहीं डाला गया — मालिक से पूछें")};
+}
 function billList(){
   const raw=S.q.trim();let q=raw,qq=0;
   const mm=raw.match(/^(.*?[^\d\s.,])\s*(\d+(?:[.,]\d+)?)\s*(kg|किलो|कि\.?ग्रा|कि)?$/i);
@@ -1036,7 +1051,7 @@ function billList(){
   const catOk=i=>S.flt==="low"?isLow(i):S.flt==="exp"?!!expInfo(i):(S.cat==="all"||mcat(i)===S.cat)&&(S.sub==="all"||(S.cat==="mela"?melaSub(i):i.sub)===S.sub);
   const hit=i=>String(i.name).toLowerCase().includes(ql)||String(i.hi||"").includes(q)||i.id.includes(ql)||String(i.alias||"").toLowerCase().includes(ql)||SN.en(i).toLowerCase().includes(ql)||String(i.code||"")===q||codes(i).includes(q);
   const exact=q&&S.items.find(i=>i.active!==false&&String(i.code||"")===q);
-  const list=exact?[exact]:S.items.filter(i=>i.active!==false&&(q?true:catOk(i))&&(!q||hit(i)));
+  const list=exact?[exact]:S.items.filter(i=>i.active!==false&&(q?true:catOk(i)&&!isVariant(i))&&(!q||hit(i)));
   if(S.sortTop){const sc=S.top7||{};list.sort((a,b)=>(sc[b.id]||0)-(sc[a.id]||0))}
   if(q)list.sort((a,b)=>(b.name.startsWith(q)?1:0)-(a.name.startsWith(q)?1:0));
   return {raw,q,qq,list};
@@ -1091,7 +1106,7 @@ function cardHTML(it,LL){{
     let left=stockLeft(it.id);if(left==null&&LL&&LL[it.id]!=null)left=LL[it.id];
     const id=esc(it.id),pc=isPc(it.unit),xp=expInfo(it),low=left!=null&&(it.track?left<=lowOf(it):left<=0.5);
     const mrp=+it.mrp||0,off=S.mode!=="inst"&&p>0&&mrp>p?Math.round((mrp-p)/mrp*100):0;
-    const sz=[it.size,it.code?"#"+it.code:""].filter(Boolean).join(" · ");
+    const pkN=packsOf(it).map(x=>+x.perPack||0).filter(Boolean);const sz=[pkN.length?"🔹खुला+📦"+pkN.join("/"):"",it.size,it.code?"#"+it.code:""].filter(Boolean).join(" · ");
     return `<div class="card ${p>0?"":"off"} ${inCart>0?"in":""}" role="button" tabindex="0" data-item="${id}">${pcIn?`<span class="qbub" aria-hidden="true">${+inCart.toFixed(2)}</span>`:""}${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${xp?`<span class="xp ${xp.k}">${xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(it.name)}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(it.name)} एक कम">−</button><b data-qo="${id}" role="button" aria-label="${esc(it.name)} की गिनती लिखें">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(it.name)} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
   }}
 /* कार्ट बदला तो सिर्फ़ वही एक कार्ड दोबारा बनाओ — 5000 सामान पर भी झटपट */
@@ -1118,7 +1133,7 @@ $("#p-bill").addEventListener("click",e=>{
   if(e.target.closest("[data-custtoggle]")){S.showCust=!S.showCust;renderBill();if(S.showCust){const f=$("#custPh");if(f)f.focus()}return}
   if(e.target.closest("[data-repeat]")){repeatLast();return}
 
-  const it=e.target.closest("[data-item]");if(it){const x=item(it.dataset.item);if(priceOf(x)>0){if(S.qq>0)quickAdd(x,S.qq);else if(isPc(x.unit))quickAdd(x,1);else openQty(x)}else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast(S.mode==="inst"?"इसका खरीद रेट नहीं डाला गया":"इसका बिक्री रेट नहीं डाला गया — मालिक से पूछें");}
+  const it=e.target.closest("[data-item]");if(it){const x=item(it.dataset.item);if(!S.qq&&!S.q&&packsOf(x).length&&!e.target.closest(".qplus")){openPack(x);return}if(priceOf(x)>0){if(S.qq>0)quickAdd(x,S.qq);else if(isPc(x.unit))quickAdd(x,1);else openQty(x)}else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast(S.mode==="inst"?"इसका खरीद रेट नहीं डाला गया":"इसका बिक्री रेट नहीं डाला गया — मालिक से पूछें");}
 });
 $("#p-bill").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("[data-item]")){e.preventDefault();e.target.click()}});
 /* बीच की गिनती दबाओ → वहीं लिखो (5, 6…) · Enter/बाहर दबाते ही लागू · 0 = हटाओ */
@@ -2094,7 +2109,7 @@ function renderSettings(){
     <div class="row2" style="margin:0"><select class="inp" id="ni-cat">${CATS.slice(1).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select><select class="inp" id="ni-unit">${Object.entries(UNITS).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></div>
     <input class="inp code" id="ni-bar" placeholder="बारकोड (खाली छोड़ें तो अपना बनेगा)">
     <input class="inp" id="ni-alias" placeholder="खोज के दूसरे नाम (जैसे biscuit parle)">
-    <div class="row2" style="margin:8px 0 0"><label class="fld">🔒 गुप्त कोड (गुटखा/सिगरेट)<input class="inp" id="ni-secret" placeholder="जैसे S-05 · खाली = नाम छपेगा"></label><label class="fld">1 बड़े पैकेट में पीस<input class="inp" id="ni-pack" inputmode="numeric" placeholder="जैसे 32"></label></div>
+    <div class="row2" style="margin:8px 0 0"><label class="fld">🔒 गुप्त कोड (गुटखा/सिगरेट)<input class="inp" id="ni-secret" placeholder="जैसे S-05 · खाली = नाम छपेगा"></label><label class="fld">1 बड़े पैकेट में पीस<input class="inp" id="ni-pack" inputmode="numeric" placeholder="जैसे 32"></label></div><div class="row2" style="margin:6px 0 0"><label class="fld">📦 पूरे पैकेट का बिक्री भाव ₹<input class="inp" id="ni-pkrate" inputmode="decimal" placeholder="खाली = खुला ही"></label><label class="fld">पैकेट का बारकोड<input class="inp" id="ni-pkbar" inputmode="numeric" placeholder="ज़रूरी नहीं"></label></div><p class="note" style="margin:2px 0 0">खुला भी बिकता है? ऊपर "बिक्री" में 1 पीस का भाव, यहाँ पूरे पैकेट का — टाइल पर टैप करते ही पूछेगा 🔹खुला या 📦पैकेट। स्टॉक पीस में गिना जाएगा।</p>
     <div class="row2" style="margin:0"><input class="inp" id="ni-mrp" inputmode="decimal" placeholder="MRP ₹"><input class="inp" id="ni-sale" inputmode="decimal" placeholder="बिक्री ₹"></div>
     <div class="row2" style="margin:0"><input class="inp" id="ni-cost" inputmode="decimal" placeholder="खरीद ₹"><input class="inp" id="ni-emoji" placeholder="इमोजी 🛒"></div>
     <button class="big" data-additem>जोड़ें</button></div>
@@ -2133,7 +2148,10 @@ $("#p-set").addEventListener("click",async e=>{
     const code=nextCode($("#ni-cat").value),bar=$("#ni-bar").value.trim().replace(/\s+/g,""),cat=$("#ni-cat").value,unit=$("#ni-unit").value;
     if(bar&&findByCode(bar)){toast("यह बारकोड पहले से "+findByCode(bar).name+" में है");return}
     const it={name,hi:$("#ni-hi").value.trim(),alias:$("#ni-alias").value.trim(),secret:($("#ni-secret").value.trim().toUpperCase()),perPack:(parseInt($("#ni-pack").value)||0),emoji:$("#ni-emoji").value.trim()||"🛒",cat,unit,code,barcode:bar||ean13("2000000"+code+"0"),track:cat==="kirana",min:5,mrp:parseFloat($("#ni-mrp").value)||0,sale:parseFloat($("#ni-sale").value)||0,cost:parseFloat($("#ni-cost").value)||0,hue:Math.floor(Math.random()*360),order:S.items.length+1,active:true};
-    try{if(S.demo)S.items.push({id,...it});else await S.db.collection("items").doc(id).set(it);toast(name+" जुड़ गया · कोड "+code);renderSettings()}catch(err){toast("नहीं जुड़ा — सिर्फ मालिक जोड़ सकते हैं")}
+    const pkR=parseFloat(($("#ni-pkrate")||{}).value)||0,pkB=(($("#ni-pkbar")||{}).value||"").trim();
+    try{if(S.demo)S.items.push({id,...it});else await S.db.collection("items").doc(id).set(it);
+      if(it.perPack>1&&pkR>0){const pid=id+"-pk";let pc=nextCode(cat);if(pc===code)pc=String(+code+1);const pk={...it,name:shortNm(it).replace(/\s*\(?1\s*(pc|पीस)\)?\s*$/i,"")+" "+it.perPack+" पैक",short:"",secret:it.secret?it.secret+"P":"",packOf:id,sale:pkR,mrp:it.mrp?r2(it.mrp*it.perPack):0,cost:it.cost?r2(it.cost*it.perPack):0,code:pc,barcode:pkB||ean13("2000000"+pc+"0"),track:false,min:0,order:it.order+0.5};if(S.demo)S.items.push({id:pid,...pk});else await S.db.collection("items").doc(pid).set(pk)}
+      toast(name+" जुड़ गया · कोड "+code+(it.perPack>1&&pkR>0?" · 📦 पैकेट भी":""));renderSettings()}catch(err){toast("नहीं जुड़ा — सिर्फ मालिक जोड़ सकते हैं")}
   }
 });
 async function logPrice(id,field,old,nw){if(S.demo)return;try{await S.db.collection("priceLog").doc("r"+Date.now().toString(36)).set({itemId:id,name:item(id)?.name||id,field,old,new:nw,ts:Date.now(),by:S.uid||"",byName:biller()})}catch(e){}}
@@ -2175,16 +2193,18 @@ async function runUpdate(){const B=[...document.querySelectorAll("[data-updnow]"
   await SE.updateNow(say);if(S.isOwner&&!S.demo)autoNewData(true)}
 /* मालिक का फ़ोन: नए संस्करण में आया नया सामान/खरीद (migrate.json) अपने-आप जोड़ो — सिर्फ़ जोड़ना, पहले वाला कभी नहीं बदलता/मिटता।
    कर्मचारियों के फ़ोन में वही सामान Firebase से तुरंत आ जाता है। */
+/* नई रेट-लिस्ट वाला सामान पुराने को सिर्फ़ छिपाता है (active:false) — मिटता कुछ नहीं, पुराने बिल वैसे ही */
+async function hideReplaced(col,id,d){if(col!=="items"||!d.replaces)return;try{const o=item(d.replaces);if(o&&o.active===false)return;const r=S.db.collection("items").doc(d.replaces);const g=await r.get();if(g.exists&&g.data().active!==false)await r.update({active:false,replacedBy:id})}catch(e){}}
 async function autoNewData(force){if(!S.isOwner||S.demo||!S.db)return;if(!force&&lsGet("mh_data_ver")===SE.version)return;
   try{const r=await fetch("migrate.json",{cache:"no-store"});if(!r.ok)return;const m=await r.json();let n=0;
     for(const [col,docs] of Object.entries(m)){for(const [id,data] of Object.entries(docs)){
       if(col==="items"&&S.items.some(i=>i.id===id))continue;
-      const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists)continue;const d={...data};if(d.by==="")d.by=S.uid||"";await ref.set(d);n++}}
+      const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists)continue;const d={...data};if(d.by==="")d.by=S.uid||"";await ref.set(d);n++;await hideReplaced(col,id,d)}}
     lsSet("mh_data_ver",SE.version);if(n)toast("📦 GitHub से "+n+" नई चीज़ें जुड़ीं (पुराना कुछ नहीं बदला)")}catch(e){}}
 async function migrateOld(){
   if(!S.isOwner||S.demo){toast("सिर्फ मालिक");return}
   try{toast("पुराना डेटा ला रहे हैं…");const r=await fetch("migrate.json",{cache:"no-store"});const m=await r.json();let n=0,skip=0;
-    for(const [col,docs] of Object.entries(m)){for(const [id,data] of Object.entries(docs)){const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists){skip++;continue}const d={...data};if(d.by==="")d.by=S.uid||"";await ref.set(d);n++}}
+    for(const [col,docs] of Object.entries(m)){for(const [id,data] of Object.entries(docs)){const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists){skip++;continue}const d={...data};if(d.by==="")d.by=S.uid||"";await ref.set(d);n++;await hideReplaced(col,id,d)}}
     toast(`✓ ${n} चीज़ें आईं · ${skip} पहले से थीं (नहीं बदलीं)`)}catch(err){
     if(/permission/i.test(err.code||err.message||"")){const d=await SE.ownerDiag();toast(d.ok?"अनुमति अब ठीक है — दोबारा दबाएँ":"सर्वर ने मना किया: "+d.why);return}
     toast("नहीं आया: "+(err.message||err.code||""))}

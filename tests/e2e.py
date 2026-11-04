@@ -260,7 +260,15 @@ async def main():
         extra.append(dict(id="m-paneer", name="Paneer", hi="पनीर", emoji="", cat="mithai", unit="kg", sale=360, active=True, order=0))
         await pg.evaluate("x=>{S.items.push(...x);S.cat='kirana';S.sub='all';renderBill()}", extra)
         await pg.evaluate("S.q='';$('#q').value='';S.cat='kirana';S.sub='tob';renderBill()"); await pg.wait_for_timeout(200)
-        await pg.click('#grid [data-item="t-vimal"] .tile'); await pg.click('#grid [data-item="t-vimal"] .tile'); await pg.click('#grid [data-item="t-rajni"] .tile')
+        assert await pg.locator('#grid [data-item="t-vimal-pk"]').count() == 0, "pack tile should be hidden"
+        await pg.click('#grid [data-item="t-vimal"] .tile'); await pg.wait_for_timeout(250)
+        await pg.screenshot(path=f"{SHOTS}/3b-pack-popup.png")
+        await pg.click('#sheet [data-pk="t-vimal"]'); await pg.wait_for_timeout(150)
+        await pg.click('#grid [data-item="t-vimal"] .tile'); await pg.click('#sheet [data-pk="t-vimal-pk"]'); await pg.wait_for_timeout(150)
+        await pg.click('#grid [data-item="t-rajni"] .tile')
+        c = await pg.evaluate("S.cart.map(l=>[l.id,l.qty])")
+        assert ["t-vimal",1] in c and ["t-vimal-pk",1] in c and ["t-rajni",1] in c, c
+        print("pack popup ok", c)
         await pg.wait_for_timeout(400); await pg.screenshot(path=f"{SHOTS}/3c-tobacco.png")
         await pg.evaluate("S.cat='mithai';S.sub='all';renderBill()"); await pg.wait_for_timeout(200)
         await pg.screenshot(path=f"{SHOTS}/3d-mithai.png")
