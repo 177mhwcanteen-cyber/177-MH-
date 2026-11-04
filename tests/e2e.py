@@ -73,7 +73,7 @@ async def main():
         assert await pg.evaluate("window.__MOCK__.items.k1001.sale") == 111, "migration overwrote data!"
         print("migrate ok: 32 items, idempotent")
         await pg.click('[data-tab="set"]'); await pg.wait_for_timeout(300)
-        await pg.fill("#stName", "दिनेश जी"); await pg.fill("#stPhone", "+91 82095 93527"); await pg.fill("#stPin", "4321")
+        await pg.fill("#stName", "दिनेश जी"); await pg.fill("#stPhone", "+91 82095 93527"); await pg.fill("#stPin", "482916")
         await pg.click("[data-staffadd]"); await pg.wait_for_timeout(800)
         staff = await pg.evaluate("window.__MOCK__.staff")
         dk = [k for k, v in staff.items() if v.get("phone") == "8209593527"]
@@ -86,10 +86,10 @@ async def main():
         pg = await page(b, mock, users)
         await pg.wait_for_selector("#lock:not([hidden])")
         for d in "8209593527": await pg.click(f'#lock [data-k="{d}"]')
-        for d in "1111": await pg.click(f'#lock [data-k="{d}"]')
+        for d in "111111": await pg.click(f'#lock [data-k="{d}"]')
         await pg.wait_for_timeout(500)
         assert await pg.is_visible(".lgerr"), "wrong pin should show error"
-        for d in "4321": await pg.click(f'#lock [data-k="{d}"]')
+        for d in "482916": await pg.click(f'#lock [data-k="{d}"]')
         await pg.wait_for_selector("#lock", state="hidden"); await pg.wait_for_timeout(800)
         tabs = await pg.eval_on_selector_all("[data-tab]", "e=>e.map(x=>x.dataset.tab)")
         assert "set" not in tabs and "report" not in tabs and "route" not in tabs, tabs
@@ -98,8 +98,8 @@ async def main():
         await pg.evaluate("localStorage.setItem('se_act',String(Date.now()-3*3600e3));pinGate()"); await pg.wait_for_timeout(200)
         assert await pg.locator(".pinlock").count() == 0, "PIN must not be asked after only 3 hours"
         await pg.evaluate("localStorage.setItem('bh_pin_ts',String(Date.now()-13*3600e3));pinGate()"); await pg.wait_for_selector(".pinlock")
-        await pg.fill("#pgIn", "1111"); await pg.wait_for_timeout(300); assert await pg.locator(".pinlock").count() == 1
-        await pg.fill("#pgIn", "4321"); await pg.wait_for_timeout(300); assert await pg.locator(".pinlock").count() == 0
+        await pg.fill("#pgIn", "111111"); await pg.wait_for_timeout(300); assert await pg.locator(".pinlock").count() == 1
+        await pg.fill("#pgIn", "482916"); await pg.wait_for_timeout(300); assert await pg.locator(".pinlock").count() == 0
         print("12h PIN ok")
 
         # ---------- 3) स्कैन से बिल ----------
@@ -117,15 +117,9 @@ async def main():
         assert await pg.locator("#grid .margin, #grid .mg").count() == 0
         await pg.click("#cartbtn"); await pg.wait_for_timeout(400)
         await pg.screenshot(path=f"{SHOTS}/4-checkout.png")
-        # ⚡ एक टैप: UPI पहले से चुना; नकद चिप दबाएँ → सेव+सेटल → सीधे बिलिंग स्क्रीन
-        assert await pg.get_attribute('[data-pay="upi"]', "aria-pressed") == "true", "UPI default"
-        assert await pg.locator(".ck-foot [data-hold]").count() == 1 and await pg.locator("[data-billsave]").count() == 0
-        await pg.click('[data-pay="cash"]'); await pg.wait_for_timeout(150)
-        assert await pg.get_attribute('[data-pay="cash"]', "aria-pressed") == "true"
-        await pg.screenshot(path=f"{SHOTS}/4b-checkout-cash.png")
-        await pg.click("[data-save]"); await pg.wait_for_timeout(1200)
-        assert await pg.evaluate("!document.querySelector('#sheet .scrim')"), "sheet should close after save+settle"
-        assert "सेव" in (await pg.text_content("#toast") or "")
+        # 🧾 सब्ज़ी एक्सप्रेस वाला तरीका: बिल देखें = बिल पक्का सेव; फिर भुगतान चिप → ✓
+        await pg.wait_for_selector("[data-sbok]"); await pg.wait_for_timeout(500)
+        await pg.click('[data-sbpay="cash"]'); await pg.wait_for_timeout(150); await pg.click("[data-sbok]"); await pg.wait_for_timeout(1200)
         await pg.screenshot(path=f"{SHOTS}/5-after-save.png")
         bl = bills_of(await pg.evaluate("window.__MOCK__"))
         assert bl and bl[0]["byName"] == "दिनेश जी" and bl[0]["settled"] is True and bl[0]["pay"]["cash"] == bl[0]["total"], bl[:1]

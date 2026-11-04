@@ -81,10 +81,13 @@ function loginFlow(){
     const tryStaff=async()=>{
       st.busy=true;st.err="";draw();
       try{
-        let v=1;try{const x=await db.doc("staffIndex/"+st.phone).get();if(x.exists)v=+x.data().v||1}catch(e){}
+        let v=1;try{const x=st.idx?{exists:true,data:()=>st.idx}:await db.doc("staffIndex/"+st.phone).get();if(x.exists)v=+x.data().v||1}catch(e){}
         await auth.signInWithEmailAndPassword(staffEmail(st.phone,v),staffPass(st.phone,st.pin));
-        try{const h=await SE.pinHash(st.phone,st.pin);localStorage.setItem("se_pinh",h);localStorage.setItem("se_pinph",st.phone);localStorage.setItem("se_act",String(Date.now()));localStorage.setItem("bh_pin_ts",String(Date.now()))}catch(e){}
-      }catch(e){st.busy=false;st.pin="";st.err=errHi(e);draw()}
+        try{const h=await SE.pinHash(st.phone,st.pin);localStorage.setItem("se_pinh",h);localStorage.setItem("se_pinlen",String(st.pin.length));localStorage.setItem("se_pinph",st.phone);localStorage.setItem("se_act",String(Date.now()));localStorage.setItem("bh_pin_ts",String(Date.now()))}catch(e){}
+      }catch(e){st.busy=false;st.pin="";st.err=errHi(e);st.fails=(st.fails||0)+1;
+        /* 5 बार गलत → 5 मिनट रुकें (इस फोन पर) */
+        if(st.fails>=5){st.until=Date.now()+5*60000;st.fails=0;try{localStorage.setItem("bh_lgwait",String(st.until))}catch(x){}st.err="5 बार गलत PIN — 5 मिनट बाद कोशिश करें"}
+        draw()}
     };
     L.onclick=async e=>{
       const lg=e.target.closest("[data-lg]");
@@ -106,13 +109,17 @@ function loginFlow(){
           if(auth.currentUser&&auth.currentUser.emailVerified){done(auth.currentUser)}else{st.err="अभी पक्का नहीं हुआ — Gmail में लिंक दबाएँ";draw()}return}
         return}
       const k=e.target.closest("[data-k]");if(!k||st.mode!=="staff"||st.busy)return;
+      {const w=Math.max(st.until||0,+(localStorage.getItem("bh_lgwait")||0));if(w>Date.now()){st.err="5 बार गलत PIN — "+Math.ceil((w-Date.now())/60000)+" मिनट बाद कोशिश करें";draw();return}}
       const v=k.dataset.k;st.err="";
       if(st.step==="phone"){
         if(v==="c")st.phone="";else if(v==="b")st.phone=st.phone.slice(0,-1);else if(st.phone.length<10)st.phone+=v;
-        if(st.phone.length===10){st.step="pin";st.pin=""}
+        if(st.phone.length===10){st.step="pin";st.pin="";st.len=4;st.idx=null;
+          /* PIN कितने अंक का — staffIndex में (नए खाते 6, पुराने 4) */
+          db.doc("staffIndex/"+st.phone).get().then(x=>{st.idx=x.exists?x.data():{};st.len=+(st.idx.len)===6?6:4;if(st.step==="pin")draw()}).catch(()=>{})}
         draw();return}
-      if(v==="c")st.pin="";else if(v==="b")st.pin=st.pin.slice(0,-1);else if(st.pin.length<4)st.pin+=v;
-      draw();if(st.pin.length===4)tryStaff();
+      const L2=st.len||4;
+      if(v==="c")st.pin="";else if(v==="b")st.pin=st.pin.slice(0,-1);else if(st.pin.length<L2)st.pin+=v;
+      draw();if(st.pin.length===L2)tryStaff();
     };
     let finished=false;
     const done=u=>{if(finished)return;finished=true;L.onclick=null;resolve(u)};
@@ -168,10 +175,12 @@ SE.ownerDiag=async function(){
 SE.pinHash=async(ph,pin)=>{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("se|"+ph+"|"+pin));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")};
 SE.logout=async()=>{try{localStorage.removeItem("se_pinh")}catch(e){}try{await auth.signOut()}catch(e){}location.reload()};
 
-/* मालिक नया कर्मचारी जोड़े — मोबाइल + 4 अंक PIN */
+/* मालिक नया कर्मचारी जोड़े — मोबाइल + 6 अंक PIN (आसान PIN जैसे 111111 / 123456 नहीं) */
+SE.weakPin=p=>/^(\d)\1+$/.test(p)||"0123456789".includes(p)||"9876543210".includes(p);
 SE.addStaff=async function(name,phone,pin){
   phone=String(phone).replace(/\D/g,"").slice(-10);
-  if(!name||phone.length!==10||!/^\d{4}$/.test(pin))throw {msg:"नाम, 10 अंक का मोबाइल और 4 अंक का PIN डालें"};
+  if(!name||phone.length!==10||!/^\d{6}$/.test(pin))throw {msg:"नाम, 10 अंक का मोबाइल और 6 अंक का PIN डालें"};
+  if(SE.weakPin(pin))throw {msg:"यह PIN बहुत आसान है (जैसे 111111 / 123456) — कोई दूसरा 6 अंक का PIN चुनें"};
   let v=1;try{const x=await db.doc("staffIndex/"+phone).get();if(x.exists)v=(+x.data().v||1)+1}catch(e){}
   const sec=firebase.apps.find(a=>a.name==="sec")||firebase.initializeApp(CFG.firebase,"sec");
   const r=await sec.auth().createUserWithEmailAndPassword(staffEmail(phone,v),staffPass(phone,pin));
@@ -179,7 +188,7 @@ SE.addStaff=async function(name,phone,pin){
   // पुराने खाते (उसी नंबर के) बंद — PIN बदलने पर पुराना PIN काम नहीं करेगा
   try{const old=await db.collection("staff").where("phone","==",phone).get();for(const d of old.docs)if(d.id!==uid&&d.data().active!==false)await d.ref.update({active:false,offTs:Date.now(),offWhy:"नया PIN"})}catch(e){}
   await db.doc("staff/"+uid).set({name,phone,pin,active:true,owner:false,ts:Date.now(),by:auth.currentUser.uid});
-  await db.doc("staffIndex/"+phone).set({v});
+  await db.doc("staffIndex/"+phone).set({v,len:6});
   return uid;
 };
 SE.setStaffActive=(uid,on)=>db.doc("staff/"+uid).update({active:!!on,[on?"onTs":"offTs"]:Date.now()});
@@ -223,9 +232,13 @@ function webLiveScan(){
   });
 }
 /* ---------- लगातार कैमरा (बिलिंग में खुला रहता है) ----------
-   Android: ML Kit startScan — कैमरा WebView के पीछे, ऊपर की खिड़की पारदर्शी
-   Chrome: <video> + BarcodeDetector, ~7 फ्रेम/सेकंड (फोन गरम न हो)
-   एक ही पैकेट कैमरे के सामने रुका रहे तो एक ही बार जुड़ेगा; हटाकर फिर दिखाएँ तो फिर जुड़ेगा */
+   कैमरा-खिड़की स्क्रीन के बीच में — फोन का लेंस बीच में सबसे अच्छा फोकस करता है।
+   Android: ML Kit startScan — कैमरा WebView के पीछे, बीच की खिड़की पारदर्शी; हल्का ज़ूम ताकि 10-15 cm से पढ़े
+   Chrome/लैपटॉप: <video> + BarcodeDetector — सिर्फ़ बीच का हिस्सा (ROI) जाँचता है, ~9 फ्रेम/सेकंड
+   सिर्फ़ दुकान वाले कोड: EAN-13/8, UPC-A/E (1D), Code-128 (लेबल), QR (2D) — कम प्रकार = तेज़
+   EAN/UPC का जाँच-अंक मिलाकर ही मानता है; एक पैकेट सामने रुका रहे तो एक ही बार जुड़ेगा */
+function gtinOk(c){if(!/^\d+$/.test(c)||![8,12,13,14].includes(c.length))return true;let s=0;const d=c.slice(0,-1);
+  for(let i=0;i<d.length;i++)s+=(+d[d.length-1-i])*(i%2?1:3);return (10-s%10)%10===+c[c.length-1]}
 SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,
   canTorch:false,
   _emit(code,cb){const now=Date.now(),last=this._seen[code];this._seen[code]=now;if(last&&now-last<this.GAP)return;
@@ -327,11 +340,25 @@ SE.receiptCanvas=function(b,o,widthPx){
   DASH();
   const sub=r2(b.sub!=null?b.sub:(b.lines||[]).reduce((a,l)=>a+(l.amt||0),0));
   if(b.disc){LR("जोड़",`₹${sub}`,fs(18));LR("छूट",`−₹${b.disc}`,fs(18))}
+  {const ro=window.SF&&SF.roff?SF.roff(b):0;if(ro)LR("जोड़ ₹"+r2(b.sub!=null?b.sub:sub)+" · राउंड ऑफ",(ro>0?"+":"−")+"₹"+Math.abs(ro).toFixed(2),fs(14))}
   LR("कुल रकम",`₹${b.total}`,fs(30),true);
   if(o.saved>0){const h=fs(32);x.lineWidth=Math.max(2,fs(2));x.strokeRect(P,y,W-2*P,h);x.font=`800 ${fs(19)}px ${FB}`;const st="🎉 आपने MRP से ₹"+o.saved+" बचाए",sw=x.measureText(st).width;x.fillText(st,(W-sw)/2,y+fs(5));y+=h+fs(6)}
-  if(b.pay&&o.paid!==false){const p=b.pay;const parts=[p.cash?"नकद ₹"+p.cash:"",p.upi?"UPI ₹"+p.upi:"",p.udhar?"उधार ₹"+p.udhar:""].filter(Boolean);if(parts.length)T("भुगतान: "+parts.join(" · "),fs(16),"l")}
+  if(b.pay&&o.paid!==false&&!o.stampL){const p=b.pay;const parts=[p.cash?"नकद ₹"+p.cash:"",p.upi?"UPI ₹"+p.upi:"",p.udhar?"उधार ₹"+p.udhar:""].filter(Boolean);if(parts.length)T("भुगतान: "+parts.join(" · "),fs(16),"l")}
   if(o.balance!=null)LR("खाते में कुल बाकी",`₹${o.balance}`,fs(18),true);
-  if(o.qr){DASH();T("स्कैन करके भुगतान करें",fs(17),"c",true);const q=o.qr,s=Math.min(W*0.55,q.width*3);x.imageSmoothingEnabled=false;x.drawImage(q,(W-s)/2,y,s,s);y+=s+fs(4);if(o.upi)T(o.upi+(o.payee?" · "+o.payee:""),fs(14),"c")}
+  if(o.qr||o.stampL){DASH();if(o.qr)T(o.qrLabel||"स्कैन करके भुगतान करें",fs(17),"c",true);
+    const s=o.qr?Math.round(W*0.44):0,pad=fs(8),y0=y+pad,sideW=Math.round((W-2*P-s)/2)-fs(12);
+    if(o.qr){x.imageSmoothingEnabled=false;x.drawImage(o.qr,(W-s)/2,y0,s,s);
+      const bx=(W-s)/2-pad,by=y0-pad,bw=s+2*pad,r=fs(12);x.lineWidth=Math.max(3,fs(3.5));x.strokeStyle="#000";x.beginPath();x.moveTo(bx+r,by);x.arcTo(bx+bw,by,bx+bw,by+bw,r);x.arcTo(bx+bw,by+bw,bx,by+bw,r);x.arcTo(bx,by+bw,bx,by,r);x.arcTo(bx,by,bx+bw,by,r);x.closePath();x.stroke();
+      x.font=`800 ${fs(13)}px ${F}`;const tg="UPI · स्कैन करें",tw=x.measureText(tg).width+fs(14);x.fillStyle="#000";x.fillRect((W-tw)/2,by-fs(9),tw,fs(18));x.fillStyle="#fff";x.fillText(tg,(W-tw)/2+fs(7),by-fs(8));x.fillStyle="#000"}
+    const stamp=(st,x0,col)=>{if(!st)return;const L=[[st.l1,fs(19),800],[st.l2,fs(16),700],[st.l3,fs(13),500]].filter(l=>l[0]);
+      const lh=L.map(l=>Math.round(l[1]*1.3));const h=lh.reduce((a,b)=>a+b,0)+fs(16);const by=y0+Math.max(0,((s||h)-h)/2);
+      x.save();x.translate(x0+sideW/2,by+h/2);x.rotate(col==="l"?-0.06:0.06);x.lineWidth=Math.max(2,fs(2.5));x.strokeStyle="#000";
+      const rr=(a,b,w,hh,r)=>{x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+hh,r);x.arcTo(a+w,b+hh,a,b+hh,r);x.arcTo(a,b+hh,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();x.stroke()};
+      rr(-sideW/2,-h/2,sideW,h,fs(10));x.lineWidth=Math.max(1,fs(1));rr(-sideW/2+fs(4),-h/2+fs(4),sideW-fs(8),h-fs(8),fs(7));
+      let yy=-h/2+fs(8);L.forEach((l,k)=>{x.font=`${l[2]} ${l[1]}px ${F}`;for(const ln of wrapLines(x,l[0],sideW-fs(14)).slice(0,2)){const w=x.measureText(ln).width;x.fillStyle="#000";x.fillText(ln,-w/2,yy);yy+=lh[k]}});x.restore();
+      return by+h};
+    const e1=stamp(o.stampL,P,"l")||0,e2=stamp(o.stampR,W-P-sideW,"r")||0;
+    y=Math.max(y0+s+pad,e1,e2)+fs(8);if(o.qr&&o.upi)T("UPI: "+o.upi,fs(14),"c")}
   const t=o.nutri!==false&&window.SN&&SN.ofBill(b);
   if(t){DASH();T("🥗 इस थैले में आपकी सेहत (लगभग)",fs(18),"c",true);
     const cells=SN.cells(t),half=(W-2*P)/2;x.font=`500 ${fs(15)}px ${F}`;
@@ -345,7 +372,7 @@ SE.receiptCanvas=function(b,o,widthPx){
   if(o.phone){const y0=y;y+=fs(8);T("📲 घर बैठे सामान मँगाएँ",fs(18),"c",true);T("WhatsApp या कॉल करें",fs(15),"c");T(o.phone,fs(28),"c",true,FB);y+=fs(4);
     x.lineWidth=Math.max(2,fs(2));x.strokeRect(P,y0,W-2*P,y-y0);y+=fs(8)}
   T("🙏 धन्यवाद! फिर पधारें",fs(19),"c",true);
-  if(b.byName)T("बिलर: "+b.byName,fs(14),"c");
+  if(b.byName&&!o.stampR)T("बिलर: "+b.byName,fs(14),"c");
   y+=fs(24);
   const out=document.createElement("canvas");out.width=W;out.height=Math.ceil(y);out.getContext("2d").drawImage(c,0,0);return out;
 };

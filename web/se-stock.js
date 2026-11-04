@@ -26,6 +26,7 @@ SK.onDb=function(db){
 /* ---------- मुख्य स्क्रीन ---------- */
 SK.render=function(){
   const el=$("#p-stock");if(!el)return;
+  if(window.SO&&SO.active())return SO.render();
   if(C)return renderCount(el);
   if(el.contains(document.activeElement)&&document.activeElement.id==="skq")return drawList();
   const T=tracked(),low=T.filter(isLow),xp=T.filter(it=>qOf(it)>0&&expInfo(it)).sort((a,b)=>(expInfo(a).d??999)-(expInfo(b).d??999));
@@ -37,11 +38,13 @@ SK.render=function(){
   ${S.isOwner&&T.some(it=>qOf(it)>0&&!costOf(it))?`<p class="note" style="margin:-4px 0 6px;color:var(--chili)">⚠ ${T.filter(it=>qOf(it)>0&&!costOf(it)).length} सामान का खरीद भाव नहीं भरा — "रेट व सेटिंग" में "खरीद ₹" भरें, या अगली बार "माल आया" में भाव लिखें</p>`:""}
   ${S.isOwner&&mrpVal>0?`<p class="note" style="margin:-4px 0 10px">इसी माल की MRP कीमत ${rs(mrpVal)} · बिकने पर लगभग फायदा ${rs(r2(T.reduce((a,it)=>a+Math.max(0,qOf(it))*((+it.sale||0)-costOf(it)),0)))}</p>`:""}
   <button class="big" data-skstart>🔢 गिनती शुरू करें</button>
+  ${window.SO?SO.btnHTML():""}
   <div class="row2" style="margin:8px 0 0"><button class="big ghost" data-skwaste>🗑️ खराब / एक्सपायर हटाएँ</button><button class="big ghost" data-skin>📦 माल आया</button></div>
   ${S.isOwner&&S.counts.length?`<div class="card2"><h3>📋 गिनती की रिपोर्ट ${fresh?`<span class="pill red">${fresh} नई</span>`:""}</h3><div class="list" style="margin:0">${S.counts.slice(0,6).map(c=>`<button class="li" data-skview="${esc(c.id)}"><div class="mid"><b>${fdate(c.date)} · ${esc(c.byName||"")}</b><span>${c.n} सामान गिने · ${c.nDiff?c.nDiff+" में फर्क":"सब मिला 👍"}</span></div><div class="rt" style="color:${c.nDiff?"var(--chili)":"var(--leaf)"}">${c.short>0?"−"+rs(c.short):c.nDiff?"फर्क":"✓"}<small>${c.extra>0?"ज़्यादा "+rs(c.extra):""}</small></div></button>`).join("")}</div></div>`:""}
   <div class="card2"><h3>⚠ कम स्टॉक — मँगाना है (${low.length})</h3>
   ${low.length?`<div class="list" style="margin:0">${low.map(it=>`<div class="li"><div class="mid"><b>${esc(it.name)}</b><span>#${esc(it.code||"")}${it.supplier?" · "+esc(it.supplier):""}</span></div><div class="rt" style="color:var(--chili)">${qOf(it)<=0?"खत्म":"बचे "+fq(qOf(it),it.unit)}<small>मँगाएँ ~${need(it)}</small></div></div>`).join("")}</div>
-  <a class="big ghost" style="text-align:center;text-decoration:none;display:block;margin-top:8px" target="_blank" rel="noopener" href="${waLink(orderText(low),ownerPh())}">🟢 ऑर्डर लिस्ट WhatsApp पर</a>`:'<p class="note" style="margin:0">सब सामान पूरा है 👍</p>'}</div>
+  <button class="big" style="margin-top:8px" data-sodopen>🏪 दुकान-वार ऑर्डर — हर दुकान को उसकी सूची</button>
+  <a class="big ghost" style="text-align:center;text-decoration:none;display:block;margin-top:8px" target="_blank" rel="noopener" href="${waLink(orderText(low),ownerPh())}">🟢 पूरी लिस्ट विक्रम जी को</a>`:'<p class="note" style="margin:0">सब सामान पूरा है 👍</p>'}</div>
   <div class="card2"><h3>⏰ एक्सपायरी पास / जाँचना है (${xp.length})</h3>
   ${xp.length?`<div class="list" style="margin:0">${xp.map(it=>{const e=expInfo(it),bl=window.SF&&SF.batchList?SF.batchList(it):[];return `<div class="li"><div class="mid"><b>${esc(it.name)}</b><span>${bl.filter(b=>b.exp).map(b=>fdate(b.exp)+" · "+fq(b.qty,it.unit)).join(" | ")||"तारीख नहीं लिखी"}</span></div><div class="rt"><span class="xpb ${e.k}">${e.t}</span><small><button class="lnk" data-skw="${esc(it.id)}">हटाएँ</button></small></div></div>`}).join("")}</div>`:'<p class="note" style="margin:0">अगले 30 दिन में कुछ एक्सपायर नहीं हो रहा 👍</p>'}</div>
   <h3 style="margin:14px 0 6px">सारा पैकेट वाला माल</h3>
@@ -131,8 +134,9 @@ function viewCount(c){
 function dayNums(){
   const all=S.dayBills||[],bills=all.filter(b=>!b.cancelled),sale=bills.filter(b=>b.mode!=="inst"),inst=bills.filter(b=>b.mode==="inst");
   const sum=(a,f)=>r2(a.reduce((x,b)=>x+(+f(b)||0),0));
-  const cost=sum(sale,b=>(b.lines||[]).reduce((y,l)=>y+(+l.cost||0)*(+l.qty||0),0));
-  const noCost=sum(sale,b=>(b.lines||[]).reduce((y,l)=>y+(+l.cost>0||l.free?0:(+l.amt||0)),0));
+  const lc=(l,b)=>window.SF&&SF.lineCost?SF.lineCost(l,b.date):(+l.cost||0);/* बिल, रिपोर्ट, डैशबोर्ड — सब में एक ही तरीका */
+  const cost=sum(sale,b=>(b.lines||[]).reduce((y,l)=>y+(lc(l,b)>0?lc(l,b)*(+l.qty||0):0),0));
+  const noCost=sum(sale,b=>(b.lines||[]).reduce((y,l)=>y+(lc(l,b)>0||l.free?0:(+l.amt||0)),0));
   const P=(S.purch||[]).filter(p=>!p.cancelled);
   const W=((S.stock&&S.stock.wlog)||[]);
   return {n:sale.length,tot:sum(sale,b=>b.total),cash:sum(sale,b=>b.pay&&b.pay.cash),upi:sum(sale,b=>b.pay&&b.pay.upi),ud:sum(sale,b=>b.pay&&b.pay.udhar),
@@ -146,13 +150,16 @@ function ownerText(){
   const d=dayNums(),T=tracked(),low=T.filter(isLow),xp=T.filter(it=>qOf(it)>0&&expInfo(it)&&expInfo(it).k!=="chk");
   const cnt=(S.counts||[]).filter(c=>c.date===S.billsDate);
   return `🛒 *177 MH कैंटीन — ${fdate(S.billsDate)} का हिसाब*\n────────\n`+
-  `💰 बिक्री: *${rs(d.tot)}* (${d.n} बिल)\n   नकद ${rs(d.cash)} · UPI ${rs(d.upi)} · उधार ${rs(d.ud)}${d.pend?`\n   ⏳ ${d.pend} बिल का भुगतान बाकी`:""}\n`+
+  `💰 बिक्री: *${rs(d.tot)}* (${d.n} बिल)${window.SV&&SV.saleTotal(S.billsDate)>0?" · वापसी घटाकर "+rs(r2(d.tot-SV.saleTotal(S.billsDate))):""}\n   नकद ${rs(d.cash)} · UPI ${rs(d.upi)} · उधार ${rs(d.ud)}${d.pend?`\n   ⏳ ${d.pend} बिल का भुगतान बाकी`:""}\n`+
   (d.nInst?`🏢 संस्था को: ${rs(d.inst)} (${d.nInst} बिल)\n`:"")+
   `📈 लगभग मुनाफ़ा: *${rs(d.gm)}* (लागत ${rs(d.cost)})\n`+(d.noCost>0?`   ⚠ ${rs(d.noCost)} की बिक्री वाले सामान का खरीद भाव नहीं भरा — उसका मुनाफ़ा इसमें नहीं गिना\n`:"")+
   (d.saved>0?`🎉 ग्राहकों की MRP से बचत: ${rs(d.saved)}\n`:"")+
   `🚚 माल आया: ${rs(d.buy)}${d.mh?` · 177 MH से ${rs(d.mh)}${d.mhUnsent?` (⚠ ${d.mhUnsent} पर्ची भेजनी बाकी)`:""}`:""}\n`+
   (d.kh?`💸 खर्चा: ${rs(d.kh)}\n`:"")+
   (d.nWaste?`🗑️ खराब/एक्सपायर हटाया: ${d.nWaste} बार · लगभग ${rs(d.waste)}\n`:"")+
+  (window.SG?SG.ownerLine():"")+
+  (window.SB&&SB.rateLine?SB.rateLine(S.dayBills):"")+
+  (window.SV?SV.dayLine(S.billsDate):"")+
   (cnt.length?`🔢 गिनती: ${cnt.map(c=>c.byName+" · "+(c.nDiff?c.nDiff+" सामान में फर्क"+(c.short>0?", कम "+rs(c.short):""):"सब मिला")).join(", ")}\n`:"")+
   (d.cancel.length?`❌ रद्द बिल: ${d.cancel.map(b=>b.no+" "+rs(b.total)+(b.cancelReason?" ("+b.cancelReason+")":"")).join(", ")}\n`:"")+
   `👤 ${Object.entries(d.byStaff).map(([k,v])=>k+" "+rs(v)).join(" · ")||"—"}\n`+

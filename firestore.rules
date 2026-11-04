@@ -78,6 +78,22 @@ service cloud.firestore {
 
     // मंडी खरीद: कर्मचारी नई डाल सकते हैं, बाद में सिर्फ़ फोटो जुड़ सकती है — बदलना/मिटाना मालिक का
     // 🛍️ बाज़ार खरीद: खरीदार अपनी एंट्री भेजे · मालिक सब देखे/भुगतान करे · दूसरा साथी (बिलर) गिनकर पक्का करे
+    // ── भैरव ऐप से आए: गल्ला, ओपनिंग स्टॉक, घर बैठे ऑर्डर, हिसाब-लिंक, माल वापसी (04-11-2026)
+    match /days/{date}/galla/{id}    { allow read: if active(); allow create: if active() && request.resource.data.by == request.auth.uid && request.resource.data.total is number; allow update, delete: if isOwner(); }
+    match /openings/{id}  { allow read, write: if isOwner(); }
+    match /orders/{id} {
+      allow read, update: if active();
+      allow create: if request.resource.data.keys().hasOnly(['name', 'phone', 'addr', 'note', 'items', 'ts', 'status', 'src'])
+        && request.resource.data.status == 'new'
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 40
+        && request.resource.data.phone is string && request.resource.data.phone.matches('^[0-9]{10}$')
+        && request.resource.data.items is list && request.resource.data.items.size() > 0 && request.resource.data.items.size() <= 40
+        && (!('addr' in request.resource.data) || (request.resource.data.addr is string && request.resource.data.addr.size() <= 80))
+        && (!('note' in request.resource.data) || (request.resource.data.note is string && request.resource.data.note.size() <= 200));
+      allow delete: if isOwner();
+    }
+    match /pub/{id} { allow read: if true; allow write: if active(); }
+    match /returns/{id}   { allow read: if active(); allow create: if active() && request.resource.data.by == request.auth.uid; allow update, delete: if isOwner(); }
     match /mbuys/{id} {
       allow read: if isOwner() || (active() && (resource.data.by == request.auth.uid || resource.data.status == 'sent'));
       allow create: if active() && request.resource.data.by == request.auth.uid && request.resource.data.status == 'sent';
