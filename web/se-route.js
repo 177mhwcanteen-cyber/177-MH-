@@ -469,11 +469,16 @@ SR.renderRoute=function(){
 function loadLeaflet(){return new Promise((res,rej)=>{if(window.L)return res();if(!document.querySelector('link[href="lib/leaflet.css"]')){const l=document.createElement("link");l.rel="stylesheet";l.href="lib/leaflet.css";document.head.appendChild(l)}
   const s=document.createElement("script");s.src="lib/leaflet.js";s.onload=()=>res();s.onerror=rej;document.head.appendChild(s)})}
 const ESRI="https://server.arcgisonline.com/ArcGIS/rest/services/",SATU=ESRI+"World_Imagery/MapServer/tile/{z}/{y}/{x}";
+/* 🛰️ साफ़ सैटेलाइट: Esri "Clarity" (नई, ज़्यादा साफ़ फोटो) + फोन की स्क्रीन के हिसाब से दोगुनी बारीक टाइल (detectRetina);
+   कोई टाइल न मिले तो अपने-आप पुरानी Esri टाइल — नक्शा कभी खाली नहीं */
+const SATC="https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+function satLayer(){const t=L.tileLayer(SATC,{maxZoom:21,maxNativeZoom:19,detectRetina:true,crossOrigin:true,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"});
+  t.on("tileerror",e=>{const im=e.tile;if(im&&!im.dataset.fb){im.dataset.fb=1;const c=e.coords;im.src=SATU.replace("{z}",c.z).replace("{y}",c.y).replace("{x}",c.x)}});return t}
+function lblLayers(m){L.tileLayer(ESRI+"Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,opacity:.55}).addTo(m);
+  L.tileLayer(ESRI+"Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,opacity:.95}).addTo(m)}
 function baseLayers(m,lbl){
-  if(R.sat){L.tileLayer(SATU,{maxZoom:20,maxNativeZoom:18,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"}).addTo(m);
-    if(lbl){L.tileLayer(ESRI+"Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",{maxZoom:20,maxNativeZoom:18,opacity:.5}).addTo(m);
-      L.tileLayer(ESRI+"Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:20,maxNativeZoom:18,opacity:.9}).addTo(m)}}
-  else L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:"© OpenStreetMap"}).addTo(m);
+  if(R.sat){satLayer().addTo(m);if(lbl)lblLayers(m)}
+  else L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:21,maxNativeZoom:20,attribution:"© OpenStreetMap © CARTO"}).addTo(m);
 }
 const pin=(html,cls,w,h)=>L.divIcon({className:cls,html,iconSize:[w,h],iconAnchor:[w/2,h/2]});
 SR.drawMap=async function(){
@@ -481,7 +486,7 @@ SR.drawMap=async function(){
   if(!window.L){try{await loadLeaflet()}catch(e){el.innerHTML='<p class="note" style="padding:12px">नक्शा लोड नहीं हुआ (इंटरनेट देखें)</p>';return}}
   if(R.map){try{R.map.remove()}catch(e){}R.map=null;R.liveLayer=null;R.meLayer=null;R.playLayer=null;R.billLayer=null;R.findLayer=null}
   if(!document.body.contains(el))return;
-  const m=R.map=L.map(el,{zoomControl:true,attributionControl:true,maxZoom:20});
+  const m=R.map=L.map(el,{zoomControl:true,attributionControl:true,maxZoom:21,zoomSnap:.5,wheelPxPerZoomLevel:90});
   baseLayers(m,R.lbl);
   const B=[];
   SR.places.forEach(p=>{const ok=p.src==="gps";const c=L.circle([p.lat,p.lng],{radius:+p.r||150,color:ok?"#38bdf8":"#f59e0b",weight:2,dashArray:ok?null:"6 5",fillOpacity:.07}).addTo(m);
@@ -534,7 +539,7 @@ SR.playToggle=playToggle;
 /* छोटा सैटेलाइट "फोटो" — जगह कैसी दिखती है */
 function thumbInit(id,lat,lng,r){const el=document.getElementById(id);if(!el||!window.L)return;
   const m=L.map(el,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,touchZoom:false}).setView([lat,lng],r>200?17:18);
-  L.tileLayer(SATU,{maxZoom:20,maxNativeZoom:18}).addTo(m);L.circle([lat,lng],{radius:r||80,color:"#38bdf8",weight:2,fillOpacity:.08}).addTo(m);
+  satLayer().addTo(m);lblLayers(m);L.circle([lat,lng],{radius:r||80,color:"#38bdf8",weight:2,fillOpacity:.08}).addTo(m);
   L.circleMarker([lat,lng],{radius:6,color:"#fff",weight:2,fillColor:"#ef4444",fillOpacity:1}).addTo(m);setTimeout(()=>{try{m.invalidateSize()}catch(e){}},200)}
 function billRowsHTML(L0){const L1=L0.slice().sort((a,b)=>b.ts-a.ts);if(!L1.length)return '<p class="note">कोई बिल नहीं</p>';
   return `<div class="rbl">${L1.slice(0,80).map(b=>{const p=b.pay||{};const how=b.mode==="inst"?"🏢 संस्था":b.settled===false?"⏳ बाकी":[p.upi?"UPI":"",p.cash?"नकद":"",p.udhar?"📒 उधार":""].filter(Boolean).join("+");const ph=clean(b.custPhone||"");
@@ -1257,7 +1262,7 @@ SR.miniInit=async function(){const el=document.getElementById("dMini");if(!el||!
     if(t)t.textContent=`${d.stops.length} जगह रुकी · लगभग ${d.km} km · ${d.stops.filter(s=>s.sales>0).length} जगह बिक्री${d.gaps&&d.gaps.length?" · ⚠ "+d.gaps.length+" बार लोकेशन बंद":""}`;
     if(!window.L)await loadLeaflet();const el2=document.getElementById("dMini");if(!el2||el2._lm)return;
     const m=L.map(el2,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,touchZoom:false,tap:false});el2._lm=m;
-    L.tileLayer(SATU,{maxZoom:20,maxNativeZoom:18}).addTo(m);const B=[];
+    satLayer().addTo(m);lblLayers(m);const B=[];
     d.pts.forEach(u=>{const ll=u.P.map(p=>[p.lat,p.lng]);if(ll.length<2)return;L.polyline(ll,{color:"#fff",weight:6,opacity:.45}).addTo(m);L.polyline(ll,{color:colorOf(u.uid),weight:3.5}).addTo(m);ll.forEach(x=>B.push(x))});
     d.stops.forEach((s,i)=>{L.circleMarker([s.lat,s.lng],{radius:s.sales>0?Math.min(14,6+Math.sqrt(s.sales)/6):5,color:"#fff",weight:2,fillColor:s.sales>0?"#22c55e":"#f59e0b",fillOpacity:.95}).addTo(m);B.push([s.lat,s.lng])});
     if(B.length)m.fitBounds(B,{padding:[14,14],maxZoom:17});else m.setView([HOME.lat,HOME.lng],15);setTimeout(()=>{try{m.invalidateSize()}catch(e){}},150);
