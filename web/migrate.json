@@ -960,6 +960,62 @@
 "chk": false,
 "src": "मेला (31-10-2026)",
 "token": true
+},
+"k-ev-biryani": {
+"active": true,
+"name": "Everest Shahi Biryani Masala 50g",
+"hi": "एवरेस्ट शाही बिरयानी मसाला 50g",
+"alias": "everest shahi biryani masala एवरेस्ट बिरयानी",
+"brand": "Everest",
+"emoji": "🌶️",
+"cat": "kirana",
+"sub": "masala",
+"unit": "pc",
+"size": "50g",
+"mrp": 90,
+"sale": 90,
+"cost": 0,
+"hue": 8,
+"code": "8001",
+"barcode": "8901786140503",
+"track": true,
+"min": 3,
+"order": 800,
+"photo": "",
+"exp": "2027-12-31",
+"pkd": "2026-10",
+"batch": "U17D795250",
+"note": "",
+"chk": false,
+"src": "फोटो (04-11-2026)"
+},
+"k-ev-kking": {
+"active": true,
+"name": "Everest Kitchen King Masala 50g",
+"hi": "एवरेस्ट किचन किंग मसाला 50g",
+"alias": "everest kitchen king masala एवरेस्ट किचन किंग",
+"brand": "Everest",
+"emoji": "🌶️",
+"cat": "kirana",
+"sub": "masala",
+"unit": "pc",
+"size": "50g",
+"mrp": 53,
+"sale": 53,
+"cost": 0,
+"hue": 8,
+"code": "8002",
+"barcode": "8901786120505",
+"track": true,
+"min": 3,
+"order": 800,
+"photo": "",
+"exp": "2027-12-31",
+"pkd": "2026-10",
+"batch": "U15N794747",
+"note": "",
+"chk": false,
+"src": "फोटो (04-11-2026)"
 }
 },
 "pstock": {
@@ -990,6 +1046,20 @@
 "by": "",
 "byName": "Claude",
 "last": "खरीद Kinjal SH-09508"
+},
+"k-ev-biryani": {
+"qty": 10,
+"ts": 1793800000000,
+"by": "",
+"byName": "शुरुआती स्टॉक",
+"last": "शुरुआती स्टॉक 04-11-2026"
+},
+"k-ev-kking": {
+"qty": 10,
+"ts": 1793800000000,
+"by": "",
+"byName": "शुरुआती स्टॉक",
+"last": "शुरुआती स्टॉक 04-11-2026"
 }
 },
 "priceLog": {},
@@ -1090,6 +1160,28 @@
 "photos": [],
 "photoPending": 0,
 "cancelled": false
+}
+},
+"batches": {
+"b-k-ev-biryani": {
+"itemId": "k-ev-biryani",
+"exp": "2027-12-31",
+"qty": 10,
+"date": "2026-11-04",
+"ts": 1793800000000,
+"pid": "opening",
+"src": "opening",
+"batch": "U17D795250"
+},
+"b-k-ev-kking": {
+"itemId": "k-ev-kking",
+"exp": "2027-12-31",
+"qty": 10,
+"date": "2026-11-04",
+"ts": 1793800000000,
+"pid": "opening",
+"src": "opening",
+"batch": "U15N794747"
 }
 }
 }

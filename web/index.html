@@ -890,7 +890,7 @@ const CATS=[["mela","🎪 मेला स्पेशल"],["all","सब"],["m
 /* 🎪 मेला: तीन वैरायटी (पुराने सेव सामान पर भी — नाम/ID से तय) */
 const MELA_G=[["kadhai","🍲 कड़ाही-रोटी"],["fast","🍔 फास्ट फूड"],["dosa","🫓 डोसा"]];
 function melaSub(it){if(it.msub)return it.msub;const k=(it.name+" "+(it.hi||"")).toLowerCase();return /dosa|डोसा/.test(k)?"dosa":/kad?h?ai|कड़ाही|कढ़ाई|roti|रोटी|naan|नान|chicken|चिकन/.test(k)?"kadhai":"fast"}
-const SUBS={mithai:[["mithai","🍬 मिठाई"]],kirana:[["dairy","🥛 दूध-दही"],["ice","🍦 आइसक्रीम"],["tob","📦 कोड वाले"],["namkeen","🥨 नमकीन-चिप्स"],["dryfruit","🥜 ड्राई फ्रूट"],["achar","🌶️ अचार-चटनी"],["rashan","🌾 आटा-दाल-राशन"],["drinks","🥤 कोल्ड ड्रिंक-पेय"],["sweet","🍫 बिस्किट-मिठाई"],["clean","🧼 साबुन-सफाई"]],fast:[["nashta","🍳 नाश्ता"],["meal","🍛 खाना-थाली"],["chai","☕ चाय-कॉफी"]],sabzi:[["sabzi","🥬 सब्ज़ी"],["fruit","🍎 फल"]]};
+const SUBS={mithai:[["mithai","🍬 मिठाई"],["bakery","🍰 बेकरी-केक"]],kirana:[["dairy","🥛 दूध-दही"],["ice","🍦 आइसक्रीम"],["tob","📦 कोड वाले"],["namkeen","🥨 नमकीन-चिप्स"],["dryfruit","🥜 ड्राई फ्रूट"],["achar","🌶️ अचार-सॉस"],["rashan","🌾 आटा-दाल-चावल"],["oil","🫗 तेल-घी"],["masala","🌶️ मसाले"],["drinks","🥤 कोल्ड ड्रिंक-पेय"],["sweet","🍫 बिस्किट-चॉकलेट"],["clean","🧼 साबुन-सफाई"],["personal","🪥 पर्सनल केयर"],["pooja","🪔 पूजा"],["disposal","🥤 डिस्पोज़ल"],["party","🎁 पार्टी-गिफ्ट"]],fast:[["nashta","🍳 नाश्ता"],["meal","🍛 खाना-थाली"],["chai","☕ चाय-कॉफी"]],sabzi:[["sabzi","🥬 सब्ज़ी"],["fruit","🍎 फल"]]};
 const OLDCAT={packed:"kirana",patta:"sabzi",fal:"sabzi",biryani:"fast",nonveg:"fast",veg:"fast",chinese:"fast",drinks:"fast"};
 const UNITS={pc:"पीस",pk:"पैकेट",kg:"कि.ग्रा",pl:"प्लेट",dz:"दर्जन",gd:"गड्डी"};
 function mcat(it){return OLDCAT[it.cat]||it.cat||"kirana"}
@@ -1566,7 +1566,7 @@ async function handleScan(code){
 }
 /* 🗂️ पहचान सूची (पुराने Vyapar के 657 सामान) — सिर्फ़ नाम/कंपनी/पिछला भाव भरने के लिए; स्टॉक नहीं */
 let PEH=null;async function pehchan(){if(PEH)return PEH;try{const r=await fetch("pehchan.json");const j=await r.json();PEH=new Map();j.items.forEach(x=>x.barcodes.forEach(b=>PEH.set(b.code,x)))}catch(e){PEH=new Map()}return PEH}
-const PEH_SUB={NAM:"namkeen",DRY:"dryfruit",SAU:"achar",RAS:"rashan",MAS:"rashan",BAK:"rashan",BEV:"drinks",BIS:"sweet",CHO:"sweet",DAI:"dairy",ICE:"ice",TOB:"tob",OTH:"clean",POO:"clean"};
+const PEH_SUB={NAM:"namkeen",DRY:"dryfruit",SAU:"achar",RAS:"rashan",MAS:"masala",BAK:"bakery",BEV:"drinks",BIS:"sweet",CHO:"sweet",DAI:"dairy",ICE:"ice",TOB:"tob",OTH:"clean",POO:"pooja",DIS:"disposal",PAR:"party"};
 async function pehchanFill(code){const m=await pehchan(),x=m.get(code);window.PEH_HIT=x?{code,x}:null;if(!x){if($("#nbName")&&window.SM)SM.fillNew(code);return}if(!$("#nbName"))return;
   $("#nbName").value=x.bill;$("#nbHi").value=x.hi||"";if(x.mrp)$("#nbMrp").value=x.mrp;
   const sb=$("#nbSub");if(sb&&PEH_SUB[x.cat]&&[...sb.options].some(o=>o.value===PEH_SUB[x.cat]))sb.value=PEH_SUB[x.cat];
