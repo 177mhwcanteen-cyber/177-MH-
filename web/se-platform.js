@@ -196,7 +196,7 @@ SE.setStaffActive=(uid,on)=>db.doc("staff/"+uid).update({active:!!on,[on?"onTs":
 /* ---------- फोटो ---------- */
 SE.bundled=new Set(window.SE_PHOTOS||[]);
 SE.photos={};
-SE.photoSrc=function(it){if(!it)return "";if(SE.photos[it.id])return SE.photos[it.id];if(it.photo&&SE.bundled.has(it.id))return "img/"+it.id+".jpg";return ""};
+SE.photoSrc=function(it){if(!it)return "";if(SE.photos[it.id])return SE.photos[it.id];if(it.photo!=="none"&&SE.bundled.has(it.id))return "img/"+it.id+".jpg";return ""};
 SE.watchPhotos=function(onChange){if(!db)return;db.collection("photos").onSnapshot(s=>{SE.photos={};s.docs.forEach(d=>{const x=d.data();if(x&&x.d)SE.photos[d.id]=x.d});onChange&&onChange()},()=>{})};
 SE.savePhoto=async function(id,blob,max,q){
   /* ऐप में फोटो छोटी (लगभग 8-12 KB) — ताकि ऐप हल्का रहे */
