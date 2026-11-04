@@ -7,7 +7,7 @@
 <title>177 MH कैंटीन</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="fonts/fonts.css">
-<meta name="theme-color" content="#0d1a33">
+<meta name="theme-color" data-x="" content="#0d1a33">
 <link rel="manifest" href="manifest.webmanifest">
 <script src="config.js"></script>
 <script src="build.js"></script>
@@ -798,6 +798,80 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .tile .vegm.nonveg,.tile .vegm.egg{border-color:#92400e}.tile .vegm.nonveg::after,.tile .vegm.egg::after{background:#92400e;border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%)}
 .tile .stor{position:absolute;left:22px;bottom:3px;z-index:3;font-style:normal;font-size:13px}
 .grid.rows .tile .vegm{width:11px;height:11px;left:2px;bottom:2px}
+/* 📷 कैमरा बीच में (हेडर के नीचे) */
+html.camon header{position:fixed;top:0;left:0;right:0;z-index:8;padding-top:calc(env(safe-area-inset-top,0px) + 6px)}
+html.camon #camwin{top:var(--hdh,150px);padding-top:0;border-block:2px solid rgba(255,255,255,.08)}
+html.camon body{top:calc(var(--hdh,150px) + var(--camh))}
+html.camon{--camh:28vh}
+#camwin .cfr{left:7%;right:7%;top:20%;bottom:24%}
+#camwin .cfr i{left:3%;right:3%}
+.camlast{left:10px;right:150px;top:8px;bottom:auto;font-size:13px;background:rgba(0,0,0,.6)}
+#camwin.ok .camlast{background:rgba(22,163,74,.9)}
+.cambtns{top:auto;bottom:8px}
+@media (min-width:900px){html.camon{--camh:24vh}#camwin .cfr{left:30%;right:30%;top:16%;bottom:22%}}
+@media (min-width:1100px){html.camon body.hasside header{right:360px;margin-right:0}html.camon body.hasside #side{top:0}}
+html.camon #greet,html.camon #demo{display:none!important}
+/* 🎨 सब्ज़ी एक्सप्रेस वाला iPhone Pro रंग-रूप (गहरा नीला ऊपर, नारंगी मुख्य बटन, हरा सिर्फ़ मुनाफ़ा/ठीक) */
+:root{--bg:#f2f2f7;--surface:#ffffff;--surface2:#f2f2f5;--ink:#1c1c1e;--muted:#6e6e73;--line:#e3e3e8;
+ --accent:#ef5a0a;--accent-2:#ff8a3d;--accent-ink:#ffffff;--accent-bg:#fff1e6;--grad:linear-gradient(135deg,#ff9a4d 0%,#f2640f 55%,#e04a00 100%);
+ --hdr:linear-gradient(135deg,#0d1a33 0%,#1b3566 100%);--hdr-solid:#13264a;--hdr-ink:#ffffff;
+ --leaf:#1f8a3c;--leaf-ink:#ffffff;--ok-bg:#e8f7ec;--sky:#0a6cff;--sky-bg:#e8f1ff;
+ --shadow:0 1px 2px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.07);--r:20px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#000000;--surface:#1c1c1e;--surface2:#2c2c2e;--ink:#f5f5f7;--muted:#9a9aa1;--line:#38383a;
+ --accent:#ff8a3d;--accent-2:#ffb067;--accent-ink:#ffffff;--accent-bg:#3a2112;--grad:linear-gradient(135deg,#ff9a52 0%,#f06418 55%,#d94c06 100%);
+ --hdr:linear-gradient(135deg,#070d1a 0%,#13264a 100%);--hdr-solid:#0b1630;--hdr-ink:#ffffff;
+ --leaf:#30d158;--leaf-ink:#00180a;--ok-bg:#0f2e1a;--sky:#64a8ff;--sky-bg:#10233d;--shadow:0 1px 1px rgba(0,0,0,.5),0 8px 24px rgba(0,0,0,.55)}}
+html body::before{background:var(--hdr-solid)}
+html header{background:var(--hdr);color:var(--hdr-ink);box-shadow:0 6px 20px rgba(8,16,40,.25);-webkit-backdrop-filter:none;backdrop-filter:none}
+html .tabs button{color:var(--hdr-ink);opacity:.72;border-bottom:0;border-radius:99px;margin:0 1px 6px;padding:6px 11px}
+html .tabs button[aria-selected="true"]{opacity:1;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);color:#fff}
+html .tabs button[aria-selected="true"] .ti{filter:drop-shadow(0 0 6px rgba(255,154,77,.7))}
+html header{--leaf-ink:#ffffff}html #sbar .scanbtn{background:var(--grad);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.25)}html .btab[aria-pressed="true"]{background:var(--grad);color:#fff;border-color:transparent}html .btab[aria-pressed="true"] *{color:#fff}
+html .who{color:var(--hdr-ink);border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)}
+html .lg{background:transparent;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+html .big{background:var(--grad);color:var(--accent-ink);box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);text-shadow:0 1px 1px rgba(0,0,0,.15)}
+html .big.ghost{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);text-shadow:none;border:1px solid var(--line)}
+html .cartbtn{background:var(--grad);color:#fff;box-shadow:0 10px 28px color-mix(in srgb,var(--accent) 45%,transparent)}
+html .cartbtn *{color:#fff}
+html .scanbtn{background:var(--grad);color:#fff}
+html .chip[aria-pressed="true"],html .qchips button[aria-pressed="true"],html .who2 button[aria-pressed="true"],html .dseg button[aria-pressed=true]{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 30%,transparent)}
+html .paym button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-bg);color:var(--ink)}
+html .kpi.hero{background:var(--grad);color:#fff;box-shadow:0 10px 26px color-mix(in srgb,var(--accent) 35%,transparent)}
+html .tick{background:var(--grad);color:#fff}html .sb-spin{border-color:var(--accent);border-top-color:transparent}
+html .bars div,html .hbar .t i{background:linear-gradient(180deg,var(--accent-2),var(--accent))}
+html .lgmsg,html .nsbox summary,html .sb-change b{color:var(--accent)}
+html .livestk,html .card.addnew{border-color:var(--accent)}
+html .obrief{border:0;background:linear-gradient(var(--surface),var(--surface)) padding-box,var(--grad) border-box;border:2px solid transparent}
+html .ob-g>div{background:var(--surface2)}
+html .shopsug button{border-color:var(--accent);background:var(--accent-bg)}
+html .ratechip{color:var(--accent);border-color:var(--accent)!important}html .ratechip.on{background:var(--grad)!important;color:#fff!important}
+html .paper.pp-c .ppc-head{background:var(--hdr)}
+html .paper.pp-c .ppc-meta b{background:#fff1e6;color:#9a3d00}
+html .ppc-qr{border-color:#13264a}
+html .card2,html .kpi,html .list{border-radius:20px}
+@media (prefers-color-scheme:dark){html:not([data-theme="light"]) .card2,html:not([data-theme="light"]) .kpi,html:not([data-theme="light"]) .list{box-shadow:none;border:1px solid #2a2a2d}}
+html h2.sec{letter-spacing:-.01em}
+html button,html .li,html .chip{transition:transform .12s ease,background-color .2s ease,box-shadow .2s ease}
+html button:active,html .li:active{transform:scale(.975)}
+html .cartbtn:active{transform:scale(.985)}
+@media (prefers-reduced-motion:reduce){html button,html .li,html .chip{transition:none}html button:active,html .li:active{transform:none}}
+html #cats .chip[aria-pressed="true"]{background:var(--grad);color:#fff;border-color:transparent}
+/* ⚡ हल्का-तेज़: स्क्रीन से बाहर के कार्ड ब्राउज़र नहीं बनाता (500+ सामान पर भी स्मूद) */
+.grid .card{content-visibility:auto;contain-intrinsic-size:auto 230px}
+.grid.rows .card{contain-intrinsic-size:auto 64px}
+/* 🍱 फोटो वाली टाइल — सब्ज़ी एक्सप्रेस जैसी: पूरी चौड़ाई की फोटो, नीचे बड़ा नाम */
+.grid .tile.hasimg.food{background:#2a1a12}
+.grid .tile.hasimg.food img{object-fit:cover;padding:0}
+.grid .card .tile.hasimg.food{aspect-ratio:4/3}
+.grid .tile.hasimg .em{display:none}
+.grid .card .mg,.grid .card .margin{font-size:11.5px;opacity:.8}
+/* ⚖️ तौल पॉपअप — डार्क में भी साफ़ */
+.qchips2 button,.qchips button{color:var(--ink)}
+.qchips2.one button.rp{background:var(--accent-bg,#fff1e6);color:var(--ink);border-color:var(--accent,#ef5a0a)}
+.qf input{color:var(--ink);caret-color:var(--accent,#ef5a0a)}
+.qf input::placeholder{color:var(--muted);opacity:.6}
+.qpop{background:var(--surface);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.45)}
+
 /* भैरव ऐप से आए नए डिब्बों के रंग */
 :root{--surface2:#f2f3ee;--leaf-bg:#e7f5ec;--warn-bg:#fff4e0;--warn-ink:#9a4d00;--violet-bg:#f3efff;--violet:#6d28d9;--chip-bg:#ffffff}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--surface2:#2a2a2e;--leaf-bg:#11301d;--warn-bg:#3a2a12;--warn-ink:#ffb35c;--violet-bg:#261d3d;--violet:#c4b0ff;--chip-bg:#2a2a2e}}
@@ -993,7 +1067,8 @@ function tileHTML(it,cls=""){
   const psrc=SE.photoSrc(it);const img=psrc?`<img src="${esc(psrc)}" alt="" loading="lazy" decoding="async" style="position:absolute;inset:0" onerror="this.remove()">`:"";
   const vm=it.veg==="veg"||it.veg==="nonveg"||it.veg==="egg"?`<i class="vegm ${it.veg}" title="${it.veg==="veg"?"शाकाहारी":"मांसाहारी"}"></i>`:"";
   const sm=it.storage==="frozen"?`<i class="stor">❄️</i>`:it.storage==="fridge"?`<i class="stor">🧊</i>`:"";
-  return `<div class="tile art ${psrc?"hasimg":""} ${cls}" style="--h:${+a.h};position:relative">${em}${img}${vm}${sm}</div>`;
+  const food=["mithai","fast","mela","sabzi"].includes(mcat(it))&&!it.photoFit||it.photoFit==="cover";
+  return `<div class="tile art ${psrc?"hasimg":""} ${psrc&&food?"food":""} ${cls}" style="--h:${+a.h};position:relative">${em}${img}${vm}${sm}</div>`;
 }
 function biller(){return S.staff||S.meName||""}
 function liveBills(){return S.dayBills.filter(b=>!b.cancelled)}
@@ -1039,7 +1114,7 @@ $("#btabs").onclick=e=>{
 };
 
 /* ---------- tabs ---------- */
-function tabsList(){const _mp=window.SM?SM.badge():0;const t=[["bill","बिलिंग"],["mkt","बाज़ार खरीद"+(_mp?" 🔴"+_mp:"")],["kharid","माल आया"],["stock","स्टॉक"+(window.SK&&SK.counting()?" 🔢":"")],["udhar","उधार खाता"],["bills","आज के बिल"],["day","दिन का हिसाब"]];t.push(["label","लेबल"]);const _cr=(S.cancelReqs||[]).length;if(S.isOwner)t.push(["report","रिपोर्ट"+(guardOpen()+_cr?" 🔴"+(guardOpen()+_cr):"")],["set","रेट व सेटिंग"]);return t}
+function tabsList(){const _mp=window.SM?SM.badge():0;const t=[["bill","बिलिंग"],["mkt","बाज़ार खरीद"+(_mp?" 🔴"+_mp:"")],["kharid","माल आया"],["stock","स्टॉक"+(window.SK&&SK.counting()?" 🔢":"")],["udhar","उधार खाता"],["bills","आज के बिल"],["day","दिन का हिसाब"]];t.push(["label","लेबल"]);const _cr=(S.cancelReqs||[]).length;if(S.isOwner)t.push(["route","लोकेशन"],["report","रिपोर्ट"+(guardOpen()+_cr?" 🔴"+(guardOpen()+_cr):"")],["set","रेट व सेटिंग"]);return t}
 function renderTabs(){
   const TI={mkt:"🛍️",stock:"📦",bill:"🧾",kharid:"🚚",udhar:"📒",bills:"📋",day:"🌙",label:"🏷️",route:"📍",report:"📈",set:"⚙️"};$("#tabs").innerHTML=tabsList().map(([k,v])=>`<button role="tab" aria-selected="${S.tab===k}" data-tab="${k}"><span class="ti">${TI[k]||""}</span> ${v}</button>`).join("");if(renderTabs._t!==S.tab){renderTabs._t=S.tab;const a=$("#tabs [aria-selected=\"true\"]");if(a&&a.scrollIntoView)try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}
   $("#who").textContent="👤 "+(biller()||"नाम डालें");
@@ -1736,16 +1811,22 @@ async function camOn(){
   let ok=false;try{ok=await SE.cam.start(onCamCode,vid,camROI)}catch(e){camUi(false);toast(e.msg||"कैमरा नहीं खुला — "+(e.message||e.name||""));return}
   if(!ok){camUi(false);$("#scanFile").click();return}
   lsSet("se_cam","1");camUi(true);
+  if(lsGet("se_torch")==="1"&&SE.cam.canTorch&&!SE.cam.torch){try{const t=await SE.cam.toggleTorch();$("#camTorch").textContent=t?"🔦 बंद":"🔦"}catch(e){}}
 }
 async function camOff(remember){await SE.cam.stop();camUi(false);if(remember)lsSet("se_cam","0")}
 function camUi(on){document.documentElement.classList.toggle("camon",on);$("#camwin").hidden=!on;$("#scanBtn").setAttribute("aria-pressed",on?"true":"false");
-  const tb=$("#camTorch");tb.hidden=!(on&&SE.cam.canTorch);tb.textContent="🔦";const zb=$("#camZoom");if(zb){zb.hidden=!(on&&(SE.cam.zMax||1)>=1.5);zb.textContent="🔍 "+(Math.round((SE.cam.zoom||1)*10)/10)+"×"}}
-$("#camOff").onclick=()=>camOff(true);
-$("#camZoom").onclick=async()=>{const z=await SE.cam.cycleZoom();if(z)toast("🔍 "+z+"× ज़ूम — सामान 15-20 सेमी दूर रखें, फोकस अपने-आप होगा")};
+  const tb=$("#camTorch");tb.hidden=!(on&&SE.cam.canTorch);tb.textContent="🔦";
+  const zb=$("#camZoom");zb.hidden=!(on&&SE.cam.canZoom);zb.textContent=(+SE.cam.zoom||1).toFixed(1).replace(".0","")+"x";if(on)camLayout()}
+/* कैमरा-खिड़की हेडर के ठीक नीचे (स्क्रीन के बीच) — हेडर की ऊँचाई नापकर */
 function camLayout(){const h=$("header");if(!h)return;document.documentElement.style.setProperty("--hdh",Math.round(h.getBoundingClientRect().height)+"px")}
+if(window.ResizeObserver)new ResizeObserver(()=>{if(document.documentElement.classList.contains("camon"))camLayout()}).observe($("header"));
+window.addEventListener("resize",()=>{if(document.documentElement.classList.contains("camon"))camLayout()});
+/* वेब पर सिर्फ़ चौखटे वाला हिस्सा जाँचें (थोड़ा बड़ा) — [बायाँ, ऊपर, दायाँ, नीचे] खिड़की के अनुपात में */
 function camROI(){const w=$("#camwin"),f=w&&w.querySelector(".cfr");if(!w||!f)return [.05,.15,.95,.85];const a=w.getBoundingClientRect(),b=f.getBoundingClientRect();
   const m=.06;return [Math.max(0,(b.left-a.left)/a.width-m),Math.max(0,(b.top-a.top)/a.height-m),Math.min(1,(b.right-a.left)/a.width+m),Math.min(1,(b.bottom-a.top)/a.height+m)]}
-$("#camTorch").onclick=async()=>{const t=await SE.cam.toggleTorch();$("#camTorch").textContent=t?"🔦 बंद":"🔦"};
+$("#camOff").onclick=()=>camOff(true);
+$("#camZoom").onclick=async()=>{const z=await SE.cam.cycleZoom();$("#camZoom").textContent=(+z||1).toFixed(1).replace(".0","")+"x";toast("🔍 ज़ूम "+(+z).toFixed(1)+"x")};
+$("#camTorch").onclick=async()=>{const t=await SE.cam.toggleTorch();$("#camTorch").textContent=t?"🔦 बंद":"🔦";lsSet("se_torch",t?"1":"0");toast(t?"🔦 टॉर्च चालू — अगली बार भी अपने-आप":"🔦 टॉर्च बंद")};
 function camAuto(){const want=(S.tab==="bill"||(S.tab==="mkt"&&window.SM&&SM.wantCam())||(S.tab==="kharid"&&!(window.SI&&SI.active()))||(S.tab==="stock"&&window.SK&&SK.counting())||(S.tab==="day"&&S.scanIn));if(!want&&SE.cam.on)camOff(false);else if(want&&!SE.cam.on&&SE.isNative&&lsGet("se_cam")==="1"&&!document.hidden)camOn()}
 document.addEventListener("visibilitychange",()=>{if(document.hidden){if(SE.cam.on){SE.cam.stop();camUi(false);camAuto._resume=true}}else if(camAuto._resume){camAuto._resume=false;camAuto()}});
 async function liveScan(){

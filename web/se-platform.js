@@ -239,50 +239,50 @@ function webLiveScan(){
    EAN/UPC का जाँच-अंक मिलाकर ही मानता है; एक पैकेट सामने रुका रहे तो एक ही बार जुड़ेगा */
 function gtinOk(c){if(!/^\d+$/.test(c)||![8,12,13,14].includes(c.length))return true;let s=0;const d=c.slice(0,-1);
   for(let i=0;i<d.length;i++)s+=(+d[d.length-1-i])*(i%2?1:3);return (10-s%10)%10===+c[c.length-1]}
-SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,
-  canTorch:false,
-  _emit(code,cb){const now=Date.now(),last=this._seen[code];this._seen[code]=now;if(last&&now-last<this.GAP)return;
+SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,maxZoom:1,
+  canTorch:false,canZoom:false,
+  _emit(code,cb){code=String(code).trim();if(!code||!gtinOk(code))return;const now=Date.now(),last=this._seen[code];this._seen[code]=now;if(last&&now-last<this.GAP)return;
     for(const k in this._seen)if(now-this._seen[k]>5000)delete this._seen[k];
     if(document.hidden)return;cb(code)},
-  async start(cb,video){
+  wantZoom(){const z=parseFloat(ls.get("se_zoom"));return z>0?z:1.6},
+  async setZoom(z){z=Math.max(1,Math.min(z,this.maxZoom||1));try{
+    if(SE.isNative)await N.BarcodeScanner.setZoomRatio({zoomRatio:z});
+    else if(this._stream)await this._stream.getVideoTracks()[0].applyConstraints({advanced:[{zoom:z}]});
+    this.zoom=z;ls.set("se_zoom",String(z))}catch(e){}return this.zoom},
+  async cycleZoom(){const steps=[1,1.6,2.2,3].filter(x=>x<=this.maxZoom+0.01);if(!steps.length)return this.zoom;const i=steps.findIndex(x=>Math.abs(x-this.zoom)<0.05);return this.setZoom(steps[(i+1)%steps.length])},
+  async start(cb,video,roi){
     if(this.on)return true;this._seen={};
     if(SE.isNative){const B=N.BarcodeScanner,F=N.BarcodeFormat;
       const pm=await B.checkPermissions().catch(()=>({}));if(pm.camera!=="granted"){const r=await B.requestPermissions().catch(()=>({}));if(r.camera!=="granted")throw {msg:"कैमरे की अनुमति नहीं मिली — फोन की सेटिंग में 177 MH कैंटीन को कैमरा दें"}}
-      this._h.push(await B.addListener("barcodesScanned",ev=>{const b=ev&&ev.barcodes&&ev.barcodes[0];if(b&&b.rawValue)this._emit(String(b.rawValue),cb)}));
+      this._h.push(await B.addListener("barcodesScanned",ev=>{for(const b of (ev&&ev.barcodes)||[]){if(b&&b.rawValue){this._emit(String(b.rawValue),cb);break}}}));
       document.documentElement.classList.add("camnative");
-      /* 📷 फुल-HD (धुंधलापन कम) — फ़ोन न दे तो सबसे नज़दीकी */
-      try{await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.QrCode],resolution:2})}
-      catch(e){await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.QrCode]})}
+      await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.QrCode]});
       try{this.canTorch=!!(await B.isTorchAvailable()).available}catch(e){this.canTorch=false}
-      try{this.zMax=+(await B.getMaxZoomRatio()).zoomRatio||1;this.zMin=+(await B.getMinZoomRatio()).zoomRatio||1}catch(e){this.zMax=1;this.zMin=1}
-      this.on=true;await this.setZoom(this.zoomPref());return true}
+      try{this.maxZoom=+(await B.getMaxZoomRatio()).zoomRatio||1;this.canZoom=this.maxZoom>1.05;if(this.canZoom)await this.setZoom(this.wantZoom())}catch(e){this.canZoom=false}
+      this.on=true;return true}
     if(!("BarcodeDetector" in window)||!navigator.mediaDevices)return false;
-    let st;try{st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:"continuous"}]},audio:false})}
-    catch(e){st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1280},height:{ideal:720}},audio:false})}
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1920},height:{ideal:1080}},audio:false});
     this._stream=st;video.srcObject=st;await video.play().catch(()=>{});
     const tr=st.getVideoTracks()[0];let cap={};try{cap=(tr.getCapabilities&&tr.getCapabilities())||{}}catch(e){}
     this.canTorch=!!cap.torch;
-    try{if((cap.focusMode||[]).includes("continuous"))await tr.applyConstraints({advanced:[{focusMode:"continuous"}]})}catch(e){}
-    this.zMax=cap.zoom&&cap.zoom.max?+cap.zoom.max:1;this.zMin=cap.zoom&&cap.zoom.min?+cap.zoom.min:1;
-    this.on=true;await this.setZoom(this.zoomPref());
-    const bd=new BarcodeDetector({formats:["ean_13","ean_8","upc_a","upc_e","code_128","code_39","itf","qr_code"]});
-    /* सिर्फ़ बीच का हिस्सा (खिड़की) पढ़ो — तेज़ और साफ़; न मिले तो पूरा फ्रेम */
-    const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});let busy=false,n=0;
-    const tick=async()=>{if(!this.on)return;if(!busy&&!document.hidden&&video.readyState>=2){busy=true;try{
-        const W=video.videoWidth,H=video.videoHeight;let r=null;
-        if(W&&H&&(n++%3)){const cw=Math.round(W*.86),ch=Math.round(H*.5);cv.width=cw;cv.height=ch;cx.drawImage(video,(W-cw)/2,(H-ch)/2,cw,ch,0,0,cw,ch);r=await bd.detect(cv)}
-        else r=await bd.detect(video);
-        if(r&&r[0])this._emit(String(r[0].rawValue),cb)}catch(e){}busy=false}this._t=setTimeout(tick,110)};tick();
+    try{if(cap.focusMode&&cap.focusMode.includes("continuous"))await tr.applyConstraints({advanced:[{focusMode:"continuous"}]})}catch(e){}
+    this.maxZoom=cap.zoom&&cap.zoom.max?Math.min(cap.zoom.max,4):1;this.canZoom=this.maxZoom>1.05;if(this.canZoom)await this.setZoom(this.wantZoom());
+    let fm=["ean_13","ean_8","upc_a","upc_e","code_128","qr_code"];try{const sup=await BarcodeDetector.getSupportedFormats();fm=fm.filter(f=>sup.includes(f))}catch(e){}
+    const bd=new BarcodeDetector({formats:fm});
+    const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
+    this.on=true;let busy=false,n=0;
+    const tick=async()=>{if(!this.on)return;
+      if(!busy&&!document.hidden&&video.readyState>=2){busy=true;n++;
+        try{let src=video;
+          // बीच का हिस्सा (कैमरा-खिड़की के चौखटे जितना) — हर 5वें फ्रेम में पूरा फ्रेम भी
+          if(roi&&n%5){const vw=video.videoWidth,vh=video.videoHeight,el=video.getBoundingClientRect();
+            if(vw&&vh&&el.width&&el.height){const sc=Math.max(el.width/vw,el.height/vh),visW=el.width/sc,visH=el.height/sc,ox=(vw-visW)/2,oy=(vh-visH)/2,r=roi();
+              const sx=ox+visW*r[0],sy=oy+visH*r[1],sw=visW*(r[2]-r[0]),sh=visH*(r[3]-r[1]),k=Math.min(1,960/sw);
+              cv.width=Math.round(sw*k);cv.height=Math.round(sh*k);cx.drawImage(video,sx,sy,sw,sh,0,0,cv.width,cv.height);src=cv}}
+          const r=await bd.detect(src);if(r&&r[0])this._emit(String(r[0].rawValue),cb)}catch(e){}
+        busy=false}
+      this._t=setTimeout(tick,110)};tick();
     return true},
-  zMin:1,zMax:1,zoom:1,
-  zoomPref(){let z=2;try{const v=parseFloat(localStorage.getItem("se_zoom"));if(v>0)z=v}catch(e){}return z},
-  zoomSteps(){const mx=Math.max(1,Math.min(this.zMax||1,4));return [1,2,3].filter(z=>z<=mx+0.01)},
-  async setZoom(z){const mx=this.zMax||1,mn=this.zMin||1;z=Math.max(mn,Math.min(mx,+z||1));this.zoom=z;
-    try{if(SE.isNative)await N.BarcodeScanner.setZoomRatio({zoomRatio:z});else if(this._stream&&mx>1)await this._stream.getVideoTracks()[0].applyConstraints({advanced:[{zoom:z}]})}catch(e){}
-    try{const b=document.getElementById("camZoom");if(b){b.hidden=mx<1.5;b.textContent="🔍 "+(Math.round(z*10)/10)+"×"}}catch(e){}
-    return z},
-  async cycleZoom(){const st=this.zoomSteps();if(st.length<2){toast&&toast("इस फ़ोन में ज़ूम नहीं");return}const i=st.findIndex(x=>Math.abs(x-this.zoom)<0.3);const z=st[(i+1)%st.length];
-    try{localStorage.setItem("se_zoom",String(z))}catch(e){}await this.setZoom(z);return z},
   async stop(){if(!this.on&&!this._stream)return;this.on=false;this.torch=false;clearTimeout(this._t);
     if(SE.isNative){try{await N.BarcodeScanner.stopScan()}catch(e){}for(const h of this._h)try{h.remove()}catch(e){}this._h=[];document.documentElement.classList.remove("camnative")}
     if(this._stream){try{this._stream.getTracks().forEach(t=>t.stop())}catch(e){}this._stream=null}},

@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileWriter;
 
 /**
- * सब्ज़ी एक्सप्रेस — गाड़ी की जगह हर मिनट फोन में दर्ज (स्क्रीन बंद होने पर भी)।
+ * 177 MH कैंटीन — ऐप चालू रहने की सेवा (स्क्रीन बंद होने पर भी हर मिनट जगह फोन में दर्ज)।
  * हर लाइन: ts,lat,lng,acc  या  ts,OFF / ts,ON (कर्मचारी ने लोकेशन बंद/चालू की)
  * ऐप खुलने पर JS यह फाइल पढ़कर सर्वर पर भेज देता है (BtPrinter.trackDrain)।
  */
@@ -32,6 +32,7 @@ public class TrackService extends Service implements LocationListener {
     static volatile long lastFix = 0;
     private LocationManager lm;
     private long lastSaved = 0;
+    private Location best = null; // 45 सेकंड में मिली सबसे सटीक जगह
 
     static File file(Context c) { return new File(c.getFilesDir(), "trk.txt"); }
 
@@ -63,16 +64,16 @@ public class TrackService extends Service implements LocationListener {
         String who = intent != null && intent.getStringExtra("name") != null ? intent.getStringExtra("name") : "";
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm != null) {
-            NotificationChannel ch = new NotificationChannel(CH, "गाड़ी की लोकेशन", NotificationManager.IMPORTANCE_LOW);
+            NotificationChannel ch = new NotificationChannel(CH, "177 MH कैंटीन", NotificationManager.IMPORTANCE_MIN);
             nm.createNotificationChannel(ch);
         }
         Intent open = new Intent(this, MainActivity.class);
         int pf = Build.VERSION.SDK_INT >= 23 ? PendingIntent.FLAG_IMMUTABLE : 0;
         PendingIntent pi = PendingIntent.getActivity(this, 0, open, pf);
         Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(this, CH) : new Notification.Builder(this);
-        Notification n = b.setContentTitle("🥬 सब्ज़ी एक्सप्रेस चालू है")
-            .setContentText("गाड़ी की लोकेशन दर्ज हो रही है" + (who.isEmpty() ? "" : " · " + who))
-            .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+        Notification n = b.setContentTitle("🛒 177 MH कैंटीन चालू है")
+            .setContentText("ऐप चालू है" + (who.isEmpty() ? "" : " · " + who))
+            .setSmallIcon(getApplicationInfo().icon)
             .setContentIntent(pi)
             .setOngoing(true)
             .build();
@@ -87,7 +88,7 @@ public class TrackService extends Service implements LocationListener {
             lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             try {
                 if (lm.getAllProviders().contains(LocationManager.GPS_PROVIDER))
-                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000L, 0f, this, Looper.getMainLooper());
+                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000L, 0f, this, Looper.getMainLooper());
                 if (lm.getAllProviders().contains(LocationManager.NETWORK_PROVIDER))
                     lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000L, 0f, this, Looper.getMainLooper());
                 running = true;
@@ -103,12 +104,15 @@ public class TrackService extends Service implements LocationListener {
     public void onLocationChanged(Location l) {
         long now = System.currentTimeMillis();
         boolean gps = LocationManager.GPS_PROVIDER.equals(l.getProvider());
-        // नेटवर्क वाली जगह सिर्फ़ तब, जब 3 मिनट से GPS न मिला हो
-        if (!gps && now - lastFix < 180000L) return;
+        // नेटवर्क (टावर) वाली जगह सिर्फ़ तब, जब 3 मिनट से GPS न मिला हो — और ±150 मी. से खराब हो तो बिल्कुल नहीं
+        if (!gps && (now - lastFix < 180000L || !l.hasAccuracy() || l.getAccuracy() > 150f)) return;
         if (gps) lastFix = now;
+        // 45 सेकंड की खिड़की में सबसे सटीक रीडिंग ही दर्ज (दाएँ-बाएँ उछाल कम)
+        if (best == null || (l.hasAccuracy() && l.getAccuracy() < best.getAccuracy())) best = l;
         if (now - lastSaved < 45000L) return;
         lastSaved = now;
-        append(this, now + "," + String.format(java.util.Locale.US, "%.6f,%.6f,%d", l.getLatitude(), l.getLongitude(), Math.round(l.getAccuracy())));
+        Location b = best; best = null;
+        append(this, now + "," + String.format(java.util.Locale.US, "%.6f,%.6f,%d", b.getLatitude(), b.getLongitude(), Math.round(b.getAccuracy())));
     }
 
     @Override

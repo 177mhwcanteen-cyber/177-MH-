@@ -70,6 +70,8 @@ SR.start=async function(){
       e=>{if(e.code===1)SR.st.perm=false;else if(e.code===2)SR.st.gps=false;SR.st.running=false;SR.banner()},{enableHighAccuracy:true,maximumAge:30000,timeout:60000})}catch(e){}
   }
   SR.tick();setInterval(SR.tick,90000);
+  setTimeout(()=>SR.logOpen("खोला"),25000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden&&Date.now()-(SR._lo||0)>20*60000)setTimeout(()=>SR.logOpen("फिर खोला"),20000)});
   if(SR.st.native)setInterval(async()=>{if(document.hidden||SR.st.unsupported)return;try{const r=await BP().trackStatus();const was=SR.gateOn();apply(r);if(was!==SR.gateOn()){SR.banner();if(!SR.gateOn())setTimeout(SR.tick,500)}}catch(e){}},20000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(SR.tick,800)});
 };
@@ -258,7 +260,7 @@ const COLORS=["#22c55e","#f59e0b","#a855f7","#06b6d4","#ef4444"];
 SR.onDb=function(db){
   if(S.isOwner)db.collection("places").onSnapshot(s=>{SR.places=s.docs.map(d=>({id:d.id,...d.data()}));if(S.tab==="route"&&R.raw){R.day=dayFor();SR.renderRoute()}},()=>{});
   if(S.isOwner)db.collection("live").onSnapshot(s=>{R.live=s.docs.map(d=>({id:d.id,...d.data()}));liveAlerts(R.live);if(S.tab==="route")SR.updateLive()},()=>{});
-  // 177 MH कैंटीन: गाड़ी वाली GPS ट्रैकिंग नहीं चलती (कैंटीन एक जगह है)
+  if(!S.isOwner)setTimeout(SR.start,1500);   // 📍 बिलर के फोन पर लोकेशन अपने-आप चालू (भैरव जैसा) — मालिक को "लोकेशन" टैब में
 };
 function parse(docs){
   const by={};
@@ -435,6 +437,13 @@ function playHTML(d){const [a,b]=playRange(d);const t=R.play.t&&R.play.t>=a&&R.p
   return `<div class="rplay"><button class="rp-btn" data-rplay aria-label="रास्ता चलाकर देखें">${R.play.on?"⏸":"▶"}</button>
   <div class="rp-mid"><input type="range" id="rpT" min="${a}" max="${b}" step="30000" value="${t}" aria-label="समय"><div class="rp-info"><b id="rpTime">${R.play.t?ftime(R.play.t):ftime(a)+" – "+ftime(b)}</b> <span id="rpSt">${R.play.t?"":"▶ दबाएँ — कर्मचारी दिन भर के रास्ते पर चलती दिखेगी"}</span></div></div>
   <div class="rp-spd" role="group" aria-label="तेज़ी">${[[1,"1 मि/से"],[5,"5 मि/से"],[15,"15 मि/से"]].map(([v,l])=>`<button data-rspd="${v}" aria-pressed="${R.play.spd===v}">${l}</button>`).join("")}</div></div>`}
+/* 🚪 ऐप कब-कहाँ खुला — हर बार ऐप खोलने पर (20 मिनट में एक बार) जगह के साथ दर्ज; सिर्फ़ मालिक देखें */
+SR.logOpen=async function(what){if(S.isOwner||S.demo||!S.db||!S.uid)return;SR._lo=Date.now();const l=SR.last&&Date.now()-SR.last.ts<10*60000?SR.last:null;
+  try{await S.db.collection("opens").add({uid:S.uid,name:biller()||"",ts:Date.now(),date:today(),what:what||"खोला",lat:l?l.lat:null,lng:l?l.lng:null,acc:l?Math.round(l.acc||0):null,gps:!!SR.st.gps,ver:(window.SE&&SE.version)||""})}catch(e){}};
+const OP={};
+function opensHTML(){const d=R.date;if(!OP[d]&&S.db&&!S.demo){OP[d]={loading:true,list:[]};S.db.collection("opens").where("date","==",d).get().then(q=>{OP[d]={list:q.docs.map(x=>x.data()).sort((a,b)=>b.ts-a.ts)};if(S.tab==="route")SR.renderRoute()}).catch(()=>{OP[d]={list:[],err:1}})}
+  const o=OP[d]||{list:[]};const L=o.list.filter(x=>!R.who||x.uid===R.who);
+  return `<div class="card2"><h3 style="margin:0 0 6px">🚪 ऐप कब-कहाँ खुला <small class="note">${L.length} बार</small></h3>${o.loading?'<p class="note">लोड हो रहा है…</p>':L.length?`<div class="list">${L.slice(0,60).map(x=>`<div class="li"><div class="mid"><b>${esc(x.name||"फोन")} · ${ftime(x.ts)} <small class="note">${esc(x.what||"")}</small></b><span>${x.lat!=null?`📍 ±${x.acc||"?"} मी`:"📍 जगह नहीं मिली (GPS बंद?)"}</span></div>${x.lat!=null?`<a class="chip" target="_blank" rel="noopener" href="https://maps.google.com/?q=${x.lat},${x.lng}">🗺️ नक्शा</a>`:""}</div>`).join("")}</div>`:'<p class="note">इस दिन किसी ने ऐप नहीं खोला (या नियम अभी Firebase में नहीं डाले)</p>'}</div>`}
 SR.renderRoute=function(){
   const el=document.getElementById("p-route");if(!el)return;bindRoute(el);if(!R.date)R.date=today();
   if((!R.raw||R.raw.date!==R.date)&&!R.loading)SR.loadDay(R.date);
@@ -442,7 +451,7 @@ SR.renderRoute=function(){
   el.innerHTML=`<div class="daterow"><h2 class="sec" style="margin:0;flex:1">📍 लोकेशन ट्रैकर</h2><button class="chip" data-rref aria-label="ताज़ा करें">🔄</button></div>
   <div class="rt-f"><div class="rt-chips">${[[today(),"आज"],[yd,"कल"]].map(([v,t])=>`<button class="chip" data-rday="${v}" aria-pressed="${R.date===v}">${t}</button>`).join("")}<input class="inp" type="date" id="rDate" value="${R.date}" aria-label="तारीख"></div>
     ${P.length?`<div class="rt-chips"><button class="chip" data-rwho="" aria-pressed="${!R.who}">👥 सब</button>${P.map(([u,n])=>`<button class="chip" data-rwho="${esc(u)}" aria-pressed="${R.who===u}"><i class="rdot" style="background:${colorOf(u)}"></i>${esc(n||"फोन")}</button>`).join("")}</div>`:""}</div>
-  <div class="card2 rlive" id="rLive">${liveHTML()}</div>
+  <div class="card2 rlive" id="rLive">${liveHTML()}</div>${opensHTML()}
   <div class="seg" style="margin:0 0 10px"><span class="note" style="align-self:center">लोकेशन बंद हो तो कर्मचारी की बिलिंग रोकें:</span><button class="chip" data-locreq="1" aria-pressed="${locReq()}">✅ हाँ, रोकें</button><button class="chip" data-locreq="0" aria-pressed="${!locReq()}">नहीं</button></div>
   <div class="rmapw${R.big?" big":""}" id="rmapw"><div id="rmap" class="rmap" role="img" aria-label="कर्मचारी का रास्ता नक्शे पर"></div>
     <div class="rctl"><button data-rsat>${R.sat?"🗺️ सादा":"🛰️ सैटेलाइट"}</button><button data-rlbl aria-pressed="${R.lbl}">🏷️ नाम</button><button data-rme>📍 मैं</button><button data-rbig>${R.big?"✕ छोटा":"⛶ बड़ा"}</button></div></div>

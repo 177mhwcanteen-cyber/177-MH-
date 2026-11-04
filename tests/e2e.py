@@ -60,7 +60,7 @@ async def main():
         await pg.click('[data-lg="owner-go"]')
         await pg.wait_for_selector("#lock", state="hidden"); await pg.wait_for_timeout(500)
         tabs = await pg.eval_on_selector_all("[data-tab]", "e=>e.map(x=>x.dataset.tab)")
-        assert {"set", "report", "stock", "kharid"} <= set(tabs) and "route" not in tabs, tabs
+        assert {"set", "report", "stock", "kharid"} <= set(tabs) and "route" in tabs, tabs
         await pg.click('[data-tab="set"]'); await pg.wait_for_timeout(300)
         await pg.click("[data-migrate]"); await pg.wait_for_timeout(2500)
         items = await pg.evaluate("window.__MOCK__.items||{}")
