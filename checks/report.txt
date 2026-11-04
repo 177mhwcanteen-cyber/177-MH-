@@ -1,4 +1,4 @@
-Sat Oct 31 03:49:40 UTC 2026
+Wed Nov  4 18:13:49 UTC 2026
 == authorized domains ==
 {
   "projectId": "1053363286177",
@@ -55,30 +55,32 @@ Sat Oct 31 03:49:40 UTC 2026
 == pages ==
 index 200
 projectId: "mh177-canteen"
-window.SE_BUILD="1.22.1031";window.SE_NATIVE_MIN=1;window.SE_PHOTOS=[];
+window.SE_BUILD="1.39.1104";window.SE_NATIVE_MIN=1;window.SE_PHOTOS=["ff-chowmein","ff-dabeli","ff-dhokla","ff-dosa-masala","ff-kachori","ff-mogar-kachori","ff-momos-fried","ff-momos","ff-patties","ff-pav-bhaji","ff-pizza-paneer","ff-samosa","ff-sandwich","ms-anjeer","ms-besan-barfi","ms-besan-laddu","ms-cake-1kg","ms-cake-half","ms-choco-barfi","ms-choco-peda","ms-coconut","ms-df-katli","ms-df-roll","ms-doda","ms-gajar-halwa","ms-gud-pak","ms-gulab-jamun","ms-jalebi","ms-kaju-katli","ms-kaju-roll","ms-kalakand","ms-kesar-peda","ms-mathura-peda","ms-mawa-roll","ms-milk-cake","ms-mohanthal","ms-motichoor","ms-mysore-pak","ms-paneer","ms-pastry","ms-rasmalai","ms-rose-barfi","ms-royal-kaju","ms-special-peda"];
 
 == update ==
 {
- "version": "1.22.1031",
- "url": "update/bundle-1.22.1031.zip",
+ "version": "1.39.1104",
+ "url": "update/bundle-1.39.1104.zip",
  "minNative": 1,
- "built": "2026-10-31T03:35:45.498Z"
+ "built": "2026-11-04T17:41:03.983Z"
 }
-zip 200 1586405 bytes application/x-zip-compressed
+zip 200 2144705 bytes application/x-zip-compressed
 HTTP/2 200 
 server: GitHub.com
 content-type: application/x-zip-compressed
-last-modified: Sat, 31 Oct 2026 03:36:01 GMT
+x-origin-cache: HIT
+last-modified: Wed, 04 Nov 2026 17:50:10 GMT
 access-control-allow-origin: *
 strict-transport-security: max-age=31556952
-etag: "6ae56221-1834e5"
-expires: Sat, 31 Oct 2026 03:59:46 GMT
+etag: "6aeb7052-20b9c1"
+expires: Wed, 04 Nov 2026 18:23:54 GMT
 cache-control: max-age=600
 x-proxy-cache: MISS
-x-github-request-id: 675A:1AEDDD:155A4:2CD34:6AE56559
-x-github-edge-region: westus2
-   135035  2026-10-31 03:35   se-features.js
+x-github-request-id: 2CD2:16F56A:6B40:CA6F:6AEB75E1
+   150824  2026-11-04 17:41   se-route.js
 ---------                     -------
-  3562769                     39 files
+  4418298                     91 files
 == gemini reachability (no key, expect 403/400 quickly) ==
-models 403 0.099320s
+models 403 0.085777s
+== sentry test event ==
+{"id":"b75bfc737d5e4055a1c86c2168ec23ac"} sentry 200
