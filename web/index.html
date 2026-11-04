@@ -1,4 +1,5 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.pks .pkg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:4px}
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.chip.melaoff{opacity:.55;border-style:dashed}.ctg{display:flex;flex-wrap:wrap;gap:6px}.ctg .chip[aria-pressed="false"]{opacity:.55;text-decoration:line-through}
+.pks .pkg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:4px}
 .pkb{display:flex;flex-direction:column;align-items:center;gap:1px;padding:12px 6px;border-radius:14px;border:2px solid var(--line,#e5e7eb);background:var(--card,#fff);font:inherit;color:inherit;position:relative}
 .pkb b{font-size:16px}.pkb small{font-size:12px;opacity:.75}.pkb i{font-style:normal;font-size:20px;font-weight:800;color:var(--leaf,#15803d)}.pkb em{font-style:normal;font-size:11px;background:#fef3c7;color:#92400e;border-radius:8px;padding:1px 6px}
 .pkb:active{transform:scale(.97)}.pkb.off i{color:var(--chili,#b91c1c);font-size:14px}
@@ -1082,6 +1083,21 @@ function openPack(it){const pk=packsOf(it),p1=priceOf(it);
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}const b=e.target.closest("[data-pk]");if(!b)return;const x=item(b.dataset.pk);closeSheet();
     if(priceOf(x)>0)quickAdd(x,1);else if(S.mode!=="inst"&&S.isOwner)priceAsk(x);else toast("इसका भाव नहीं डाला गया — मालिक से पूछें")};
 }
+/* 🎪 मेला + ⚙️ टैब: मेला महीने में एक बार — बंद हो तो टैब सबसे आख़िर में, उसका सामान कहीं नहीं दिखता; मालिक कोई भी टैब छिपा सकते हैं (settings/main) */
+function melaOn(){return !!(S.settings&&S.settings.melaOn)}
+function hiddenCats(){return (S.settings&&S.settings.hideCats)||[]}
+function catsOrdered(){return [...CATS.filter(([k])=>k!=="mela"),...CATS.filter(([k])=>k==="mela")]}
+async function saveCatCfg(patch){S.settings={...(S.settings||{}),...patch};try{if(!S.demo&&S.db)await S.db.doc("settings/main").set(patch,{merge:true})}catch(e){toast("सेव नहीं हुआ — नेट देखें")}renderBill()}
+function openCatSet(){const draw=()=>{const h=hiddenCats();
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="टैब दिखाएँ या छिपाएँ"><div class="grab"></div>
+  <div class="sh-head"><h3 style="font-size:17px">⚙️ ऊपर के टैब</h3><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  <button class="big ${melaOn()?"":"ghost"}" data-melatg style="margin:0 0 8px">${melaOn()?"🎪 मेला चालू है — बंद करें":"🎪 मेला बंद है — चालू करें"}</button>
+  <p class="note" style="margin:0 0 6px">बंद मेला = टैब सबसे आख़िर में, उसका सामान बिलिंग/खोज में नहीं दिखेगा। नीचे जिस टैब को छिपाना है उसे दबाएँ (सामान "सब" में दिखता रहेगा)।</p>
+  <div class="ctg">${catsOrdered().filter(([k])=>k!=="all"&&k!=="mela").map(([k,v])=>`<button class="chip" aria-pressed="${!h.includes(k)}" data-ctg="${k}">${h.includes(k)?"🚫 ":"✓ "}${v}</button>`).join("")}</div></div></div>`;
+  $("#sheet").onclick=async e=>{if(e.target.matches("[data-close]")){closeSheet();return}
+    if(e.target.closest("[data-melatg]")){const on=!melaOn();await saveCatCfg({melaOn:on});if(!on&&S.cat==="mela")S.cat="all";if(on){S.cat="mela";S.sub="all"}renderBill();draw();toast(on?"🎪 मेला चालू":"🎪 मेला बंद — टैब आख़िर में");return}
+    const c=e.target.closest("[data-ctg]");if(c){const k=c.dataset.ctg,h=hiddenCats().slice(),i=h.indexOf(k);if(i>=0)h.splice(i,1);else h.push(k);await saveCatCfg({hideCats:h});if(h.includes(S.cat)){S.cat="all";S.sub="all";renderBill()}draw()}}};
+  draw()}
 function billList(){
   const raw=S.q.trim();let q=raw,qq=0;
   const mm=raw.match(/^(.*?[^\d\s.,])\s*(\d+(?:[.,]\d+)?)\s*(kg|किलो|कि\.?ग्रा|कि)?$/i);
@@ -1090,7 +1106,7 @@ function billList(){
   const catOk=i=>S.flt==="low"?isLow(i):S.flt==="exp"?!!expInfo(i):(S.cat==="all"||mcat(i)===S.cat)&&(S.sub==="all"||(S.cat==="mela"?melaSub(i):i.sub)===S.sub);
   const hit=i=>String(i.name).toLowerCase().includes(ql)||String(i.hi||"").includes(q)||i.id.includes(ql)||String(i.alias||"").toLowerCase().includes(ql)||SN.en(i).toLowerCase().includes(ql)||String(i.code||"")===q||codes(i).includes(q);
   const exact=q&&S.items.find(i=>i.active!==false&&String(i.code||"")===q);
-  const list=exact?[exact]:S.items.filter(i=>i.active!==false&&(q?true:catOk(i)&&!isVariant(i))&&(!q||hit(i)));
+  const list=exact?[exact]:S.items.filter(i=>i.active!==false&&!(i.cat==="mela"&&!melaOn())&&(q?true:catOk(i)&&!isVariant(i))&&(!q||hit(i)));
   if(S.sortTop){const sc=S.top7||{};list.sort((a,b)=>(sc[b.id]||0)-(sc[a.id]||0))}
   if(q)list.sort((a,b)=>(b.name.startsWith(q)?1:0)-(a.name.startsWith(q)?1:0));
   return {raw,q,qq,list};
@@ -1126,9 +1142,9 @@ function renderBill(){
   ["#modes","#custbox","#cats","#cats2"].forEach(x=>$(x).hidden=searching);if(S.demo)$("#demo").hidden=searching||!S.demo;
   const tip=$("#qtip");tip.hidden=!searching;S.qq=bl.qq;
   if(searching){tip.className="qtip"+(bl.list.length===1||bl.qq?" go":"");tip.textContent=bl.list.length?(bl.qq?`टैप करें → ${bl.qq} ${bl.list.length===1&&bl.list[0].unit!=="kg"?"पीस":"कि.ग्रा"} सीधा बिल में`:`${bl.list.length} मिलीं · टैप करके मात्रा चुनें`)+(bl.list.length===1?" · या ✓/Enter दबाएँ":""):""}
-  const act=S.items.filter(i=>i.active!==false);if(!S._melaInit&&act.some(i=>i.cat==="mela")){S._melaInit=1;if(S.cat==="all")S.cat="mela"}const nLow=act.filter(isLow).length,nExp=act.filter(i=>expInfo(i)).length;
+  const act=S.items.filter(i=>i.active!==false);if(!S._melaInit&&melaOn()&&act.some(i=>i.cat==="mela")){S._melaInit=1;if(S.cat==="all")S.cat="mela"}const nLow=act.filter(isLow).length,nExp=act.filter(i=>expInfo(i)).length;
   $("#greet").hidden=searching;if(!searching)$("#greet").innerHTML=greetHTML();
-  $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+CATS.filter(([k])=>k==="mela"?act.some(i=>i.cat==="mela"):NEWCATS.includes(k)?act.some(i=>mcat(i)===k):true).map(([k,v])=>`<button class="chip ${k==="mela"?"melac":""}" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>`;
+  $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+catsOrdered().filter(([k])=>(k===S.cat||!hiddenCats().includes(k))&&(k==="mela"?act.some(i=>i.cat==="mela"):NEWCATS.includes(k)?act.some(i=>mcat(i)===k):true)).map(([k,v])=>`<button class="chip ${k==="mela"?(melaOn()?"melac":"melaoff"):""}" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${k==="mela"&&!melaOn()?"🎪 मेला (बंद)":v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>${S.isOwner?`<button class="chip" data-catset aria-label="टैब दिखाएँ/छिपाएँ">⚙️ टैब</button>`:""}`;
   const subs=!S.flt&&S.cat==="mela"?MELA_G.filter(([k])=>act.some(i=>mcat(i)==="mela"&&melaSub(i)===k)):!S.flt&&SUBS[S.cat]?SUBS[S.cat].filter(([k])=>act.some(i=>mcat(i)===S.cat&&i.sub===k)):[];
   $("#cats2").hidden=searching||!subs.length;
   $("#cats2").innerHTML=subs.length?`<button class="chip" aria-pressed="${S.sub==="all"}" data-sub="all">सब</button>`+subs.map(([k,v])=>`<button class="chip" aria-pressed="${S.sub===k}" data-sub="${k}">${v}</button>`).join(""):"";
@@ -1161,7 +1177,8 @@ $("#p-bill").addEventListener("click",e=>{
   const rmi=S.rateMode&&e.target.closest("[data-item]");if(rmi&&window.SR){const x=item(rmi.dataset.item);SR.rateSheet(x);return}
   const ni=e.target.closest("[data-newitem]");if(ni&&window.SR){SR.newItemSheet(ni.dataset.newitem);return}
   const m=e.target.closest("[data-mode]");if(m){setMode(m.dataset.mode);return}
-  const c=e.target.closest("[data-cat]");if(c){S.cat=c.dataset.cat;S.sub="all";S.flt="";renderBill();return}
+  if(e.target.closest("[data-catset]")){openCatSet();return}
+  const c=e.target.closest("[data-cat]");if(c){if(c.dataset.cat==="mela"&&!melaOn()){if(S.isOwner)openCatSet();else toast("🎪 मेला अभी बंद है");return}S.cat=c.dataset.cat;S.sub="all";S.flt="";renderBill();return}
   const sb=e.target.closest("[data-sub]");if(sb){S.sub=sb.dataset.sub;renderBill();return}
   const fl=e.target.closest("[data-flt]");if(fl){S.flt=S.flt===fl.dataset.flt?"":fl.dataset.flt;renderBill();return}
   const dc=e.target.closest("[data-dec]");if(dc){decItem(dc.dataset.dec);return}

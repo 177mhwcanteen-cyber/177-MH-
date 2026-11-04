@@ -238,7 +238,11 @@ async def main():
         print("web lookup ok")
         # 🎪 मेला स्पेशल + टोकन
         mig = json.load(open(os.path.join(WWW, "migrate.json"), encoding="utf-8")); mel = [dict(v, id=k) for k, v in mig["items"].items() if v.get("cat") == "mela"]
-        await pg.evaluate("x=>{S.items.push(...x);S.cat='mela';S.cart=[];renderCart();renderBill()}", mel); await pg.wait_for_timeout(200)
+        await pg.evaluate("x=>{S.items.push(...x);S.cat='all';S.cart=[];renderCart();renderBill()}", mel); await pg.wait_for_timeout(200)
+        assert await pg.locator('#grid [data-item="m-pnr-kadhai"]').count() == 0, "मेला बंद: सामान नहीं दिखना चाहिए"
+        cats = await pg.evaluate("[...document.querySelectorAll('#cats [data-cat]')].map(x=>x.dataset.cat)"); assert cats[-1] == "mela", cats
+        await pg.evaluate("S.settings.melaOn=true;S.cat='mela';renderBill()"); await pg.wait_for_timeout(200)
+        print("mela off/on ok")
         await pg.click('#grid [data-item="m-pnr-kadhai"] .tile'); await pg.click('#grid [data-item="m-pnr-kadhai"] .tile'); await pg.click('#grid [data-item="m-btr-roti"] .tile')
         await pg.wait_for_timeout(300); await pg.screenshot(path=f"{SHOTS}/8a-mela.png")
         await pg.evaluate("showReceipt({no:'MH-31-7',date:today(),ts:Date.now(),byName:'दिनेश जी',partyName:'VIP',mode:'walk',lines:S.cart.map(l=>({...l})),total:395,disc:0,pay:{cash:395,upi:0,udhar:0}},true)"); await pg.wait_for_timeout(400)
