@@ -769,6 +769,13 @@ kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0
 .grid .card:not(.in):not(.off) .tile::before{width:21px;height:21px;font-size:16px;right:4px;bottom:4px}
 .grid.mela .tile{aspect-ratio:2.3/1}
 #camZoom{font-weight:800}
+
+/* 🟩 वेज / 🟫 नॉन-वेज निशान, ❄️ ठंडा रखें */
+.tile .vegm{position:absolute;left:5px;bottom:5px;z-index:3;width:14px;height:14px;border:2px solid #16a34a;border-radius:3px;background:#fff;display:grid;place-items:center}
+.tile .vegm::after{content:"";width:6px;height:6px;border-radius:99px;background:#16a34a}
+.tile .vegm.nonveg,.tile .vegm.egg{border-color:#92400e}.tile .vegm.nonveg::after,.tile .vegm.egg::after{background:#92400e;border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.tile .stor{position:absolute;left:22px;bottom:3px;z-index:3;font-style:normal;font-size:13px}
+.grid.rows .tile .vegm{width:11px;height:11px;left:2px;bottom:2px}
 </style>
 
 <header class="px">
@@ -945,7 +952,9 @@ function tileHTML(it,cls=""){
   const a=art(it);
   const em=`<span class="em" aria-hidden="true">${esc(a.em)}</span><span class="tbr" aria-hidden="true">${esc(a.brand)}</span>`;
   const psrc=SE.photoSrc(it);const img=psrc?`<img src="${esc(psrc)}" alt="" loading="lazy" decoding="async" style="position:absolute;inset:0" onerror="this.remove()">`:"";
-  return `<div class="tile art ${psrc?"hasimg":""} ${cls}" style="--h:${+a.h};position:relative">${em}${img}</div>`;
+  const vm=it.veg==="veg"||it.veg==="nonveg"||it.veg==="egg"?`<i class="vegm ${it.veg}" title="${it.veg==="veg"?"शाकाहारी":"मांसाहारी"}"></i>`:"";
+  const sm=it.storage==="frozen"?`<i class="stor">❄️</i>`:it.storage==="fridge"?`<i class="stor">🧊</i>`:"";
+  return `<div class="tile art ${psrc?"hasimg":""} ${cls}" style="--h:${+a.h};position:relative">${em}${img}${vm}${sm}</div>`;
 }
 function biller(){return S.staff||S.meName||""}
 function liveBills(){return S.dayBills.filter(b=>!b.cancelled)}
