@@ -237,11 +237,28 @@ function webLiveScan(){
    Chrome/लैपटॉप: <video> + BarcodeDetector — सिर्फ़ बीच का हिस्सा (ROI) जाँचता है, ~9 फ्रेम/सेकंड
    सिर्फ़ दुकान वाले कोड: EAN-13/8, UPC-A/E (1D), Code-128 (लेबल), QR (2D) — कम प्रकार = तेज़
    EAN/UPC का जाँच-अंक मिलाकर ही मानता है; एक पैकेट सामने रुका रहे तो एक ही बार जुड़ेगा */
+/* 🔫 बारकोड-गन इंजन (05-11-2026) — कैमरा, हाथ वाली USB/ब्लूटूथ गन, फोटो — सबका कोड एक ही तरह साफ़ होता है
+   • किसी भी दिशा (उल्टा/तिरछा/दाएँ-बाएँ) — ML Kit/BarcodeDetector 360° पढ़ते हैं; हम सिर्फ़ बीच वाला चुनते हैं
+   • EAN/UPC का जाँच-अंक मिलना ज़रूरी · जिन कोड में जाँच-अंक नहीं (Code39, ITF, Codabar) उन्हें 2 बार एक-सा पढ़ने पर ही मानें
+   • GS1 (QR/DataMatrix/GS1-128 में (01)GTIN) → असली 13 अंक का बारकोड · AIM उपसर्ग (]E0 ]C1 ]Q3 ]d2) और अदृश्य अक्षर हटें */
+SE.normCode=function(raw){let c=String(raw==null?"":raw).replace(/[\u0000-\u001c\u001e\u001f\u007f]/g,"").replace(/\u001d/g,"|").trim();
+  c=c.replace(/^\][A-Za-z]\d/,"");
+  const g=/^\(?01\)?(\d{14})/.exec(c.replace(/\|/g,""));if(g&&c.length>16&&/^\(?01/.test(c))c=g[1];
+  if(/^\d{14}$/.test(c)&&c[0]==="0")c=c.slice(1);
+  return c};
+SE.codeVariants=function(c){c=SE.normCode(c);const v=[c];if(/^\d{12}$/.test(c))v.push("0"+c);if(/^0\d{12}$/.test(c))v.push(c.slice(1));
+  if(/^[01]\d{7}$/.test(c)){const d=c.slice(1,7),x=c[7],m=d[5];let a;if("012".includes(m))a=d.slice(0,2)+m+"0000"+d.slice(2,5);else if(m==="3")a=d.slice(0,3)+"00000"+d.slice(3,5);else if(m==="4")a=d.slice(0,4)+"00000"+d[4];else a=d.slice(0,5)+"0000"+m;const up=c[0]+a+x;v.push(up,"0"+up)}
+  return [...new Set(v)]};
+const NOCHK=/code_?39|itf|codabar|CODE_39|ITF|CODABAR/i;
 function gtinOk(c){if(!/^\d+$/.test(c)||![8,12,13,14].includes(c.length))return true;let s=0;const d=c.slice(0,-1);
   for(let i=0;i<d.length;i++)s+=(+d[d.length-1-i])*(i%2?1:3);return (10-s%10)%10===+c[c.length-1]}
 SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,maxZoom:1,
   canTorch:false,canZoom:false,
-  _emit(code,cb){code=String(code).trim();if(!code||!gtinOk(code))return;const now=Date.now(),last=this._seen[code];this._seen[code]=now;if(last&&now-last<this.GAP)return;
+  _cand:{},
+  _emit(code,cb,fmt){code=SE.normCode(code);if(!code||code.length<4)return;if(!gtinOk(code)&&!(code.length===8&&SE.codeVariants(code).slice(1).some(gtinOk)))return;const now=Date.now();
+    /* बिना जाँच-अंक वाले कोड: 700ms में 2 बार एक-सा पढ़ा जाए तभी */
+    if(fmt&&NOCHK.test(String(fmt))){const k=this._cand[code];this._cand[code]=now;if(!(k&&now-k<700))return}
+    const last=this._seen[code];this._seen[code]=now;if(last&&now-last<this.GAP)return;
     for(const k in this._seen)if(now-this._seen[k]>5000)delete this._seen[k];
     if(document.hidden)return;cb(code)},
   wantZoom(){const z=parseFloat(ls.get("se_zoom"));return z>0?z:1.6},
@@ -254,9 +271,9 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
     if(this.on)return true;this._seen={};
     if(SE.isNative){const B=N.BarcodeScanner,F=N.BarcodeFormat;
       const pm=await B.checkPermissions().catch(()=>({}));if(pm.camera!=="granted"){const r=await B.requestPermissions().catch(()=>({}));if(r.camera!=="granted")throw {msg:"कैमरे की अनुमति नहीं मिली — फोन की सेटिंग में 177 MH कैंटीन को कैमरा दें"}}
-      this._h.push(await B.addListener("barcodesScanned",ev=>{for(const b of (ev&&ev.barcodes)||[]){if(b&&b.rawValue){this._emit(String(b.rawValue),cb);break}}}));
+      this._h.push(await B.addListener("barcodesScanned",ev=>{const L=((ev&&ev.barcodes)||[]).filter(b=>b&&b.rawValue);if(!L.length)return;const b=L.length>1?SE.pickCenter(L,window.innerWidth/2,(window.innerHeight)*.3):L[0];this._emit(String(b.rawValue),cb,b.format)}));
       document.documentElement.classList.add("camnative");
-      await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.QrCode]});
+      await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.Codabar,F.QrCode,F.DataMatrix].filter(Boolean)});
       try{this.canTorch=!!(await B.isTorchAvailable()).available}catch(e){this.canTorch=false}
       try{this.maxZoom=+(await B.getMaxZoomRatio()).zoomRatio||1;this.canZoom=this.maxZoom>1.05;if(this.canZoom)await this.setZoom(this.wantZoom())}catch(e){this.canZoom=false}
       this.on=true;return true}
@@ -267,7 +284,7 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
     this.canTorch=!!cap.torch;
     try{if(cap.focusMode&&cap.focusMode.includes("continuous"))await tr.applyConstraints({advanced:[{focusMode:"continuous"}]})}catch(e){}
     this.maxZoom=cap.zoom&&cap.zoom.max?Math.min(cap.zoom.max,4):1;this.canZoom=this.maxZoom>1.05;if(this.canZoom)await this.setZoom(this.wantZoom());
-    let fm=["ean_13","ean_8","upc_a","upc_e","code_128","qr_code"];try{const sup=await BarcodeDetector.getSupportedFormats();fm=fm.filter(f=>sup.includes(f))}catch(e){}
+    let fm=["ean_13","ean_8","upc_a","upc_e","code_128","code_39","code_93","itf","codabar","qr_code","data_matrix"];try{const sup=await BarcodeDetector.getSupportedFormats();fm=fm.filter(f=>sup.includes(f))}catch(e){}
     const bd=new BarcodeDetector({formats:fm});
     const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
     this.on=true;let busy=false,n=0;
@@ -275,11 +292,11 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
       if(!busy&&!document.hidden&&video.readyState>=2){busy=true;n++;
         try{let src=video;
           // बीच का हिस्सा (कैमरा-खिड़की के चौखटे जितना) — हर 5वें फ्रेम में पूरा फ्रेम भी
-          if(roi&&n%5){const vw=video.videoWidth,vh=video.videoHeight,el=video.getBoundingClientRect();
+          if(roi&&n%3){const vw=video.videoWidth,vh=video.videoHeight,el=video.getBoundingClientRect();
             if(vw&&vh&&el.width&&el.height){const sc=Math.max(el.width/vw,el.height/vh),visW=el.width/sc,visH=el.height/sc,ox=(vw-visW)/2,oy=(vh-visH)/2,r=roi();
               const sx=ox+visW*r[0],sy=oy+visH*r[1],sw=visW*(r[2]-r[0]),sh=visH*(r[3]-r[1]),k=Math.min(1,960/sw);
               cv.width=Math.round(sw*k);cv.height=Math.round(sh*k);cx.drawImage(video,sx,sy,sw,sh,0,0,cv.width,cv.height);src=cv}}
-          const r=await bd.detect(src);if(r&&r[0])this._emit(String(r[0].rawValue),cb)}catch(e){}
+          const r=await bd.detect(src);if(r&&r.length){const w=(src.videoWidth||src.width),h=(src.videoHeight||src.height);const b=r.length>1?SE.pickCenter(r,w/2,h/2):r[0];this._emit(String(b.rawValue),cb,b.format)}}catch(e){}
         busy=false}
       this._t=setTimeout(tick,110)};tick();
     return true},
@@ -289,6 +306,11 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
   async toggleTorch(){try{if(SE.isNative){await N.BarcodeScanner.toggleTorch();this.torch=!this.torch}
     else if(this._stream){this.torch=!this.torch;await this._stream.getVideoTracks()[0].applyConstraints({advanced:[{torch:this.torch}]})}}catch(e){}return this.torch}
 };
+/* कई बारकोड दिखें तो वही जो खिड़की के बीच के सबसे पास */
+SE.pickCenter=function(L,cx,cy){let best=L[0],bd=1e18;for(const b of L){let x=null,y=null;const bb=b.boundingBox||b.bounds;const cp=b.cornerPoints;
+  if(bb&&bb.width!=null){x=(bb.x!=null?bb.x:bb.left)+bb.width/2;y=(bb.y!=null?bb.y:bb.top)+bb.height/2}
+  else if(Array.isArray(cp)&&cp.length){x=0;y=0;cp.forEach(p=>{x+=(p.x!=null?p.x:p[0]);y+=(p.y!=null?p.y:p[1])});x/=cp.length;y/=cp.length}
+  if(x==null)continue;const d=(x-cx)**2+(y-cy)**2;if(d<bd){bd=d;best=b}}return best};
 SE.canLiveScan=()=>SE.isNative||("BarcodeDetector" in window&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia));
 /* null = बंद किया, undefined = यह फोन लाइव स्कैन नहीं कर सकता */
 SE.scan=async function(){

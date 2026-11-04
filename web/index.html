@@ -1688,7 +1688,7 @@ document.addEventListener("change",e=>{
 
 /* ---------- barcode ---------- */
 function codes(it){return String(it.barcode||"").split(/[,\s]+/).filter(Boolean)}
-function findByCode(c){return S.items.find(i=>codes(i).includes(c))||S.items.find(i=>i.code&&String(i.code)===c)}
+function findByCode(c){const V=window.SE&&SE.codeVariants?SE.codeVariants(c):[String(c||"").trim()];for(const v of V){const it=S.items.find(i=>codes(i).includes(v));if(it)return it}const v0=V[0];return S.items.find(i=>i.code&&String(i.code)===v0)}
 function beep(ok){camFlash(ok);try{if(navigator.vibrate)navigator.vibrate(ok?35:[60,40,60])}catch(e){}try{const A=beep.a||(beep.a=new (window.AudioContext||window.webkitAudioContext)());const o=A.createOscillator(),g=A.createGain();o.frequency.value=ok?1250:330;g.gain.value=.08;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+(ok?.09:.25))}catch(e){}}
 async function adjStock(pairs,why){
   /* 📦→🔹 पैकेट वाला सामान (packOf) का स्टॉक उसके पीस वाले सामान में गिना जाता है: 1 पैकेट = perPack पीस */
@@ -1701,7 +1701,7 @@ async function adjStock(pairs,why){
 function packMap(id,q){const it=item(id);return it&&it.packOf&&+it.perPack>0&&item(it.packOf)?[it.packOf,r2(q*it.perPack)]:[id,q]}
 function trackedPairs(lines,sign){return lines.filter(l=>{const it=item(l.id);return it&&(it.track||(it.packOf&&item(it.packOf)?.track))}).map(l=>packMap(l.id,sign*l.qty))}
 async function handleScan(code){
-  code=String(code||"").trim();if(!code)return;
+  code=window.SE&&SE.normCode?SE.normCode(code):String(code||"").trim();if(!code)return;
   if(S.tab==="kharid"&&window.SI&&SI.active()&&SI.scan(code))return;
   if(window.SO&&SO.active()){const it=findByCode(code);beep(!!it);if(!it){unknownCode(code);return}SO.scan(it);return}
   if(S.tab==="mkt"&&window.SM&&SM.scan(code))return;
@@ -1848,10 +1848,10 @@ $("#scanFile").onchange=async e=>{const f=e.target.files[0];e.target.value="";if
 const W={buf:"",t:0,gaps:[]};
 document.addEventListener("keydown",e=>{
   const now=performance.now();
-  if(e.key==="Enter"){
+  if(e.key==="Enter"||(e.key==="Tab"&&W.buf.length>=6&&now-W.t<80)){
     const b=W.buf,avg=W.gaps.length?W.gaps.reduce((a,x)=>a+x,0)/W.gaps.length:999;W.buf="";W.gaps=[];
     const inPop=document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#sheet");
-    if(b.length>=6&&avg<45&&!inPop){e.preventDefault();e.stopImmediatePropagation();
+    if(b.length>=6&&avg<50&&(!inPop||/^\d{8,14}$/.test(b)&&!(document.activeElement&&document.activeElement.matches&&document.activeElement.matches("#qIn,#aIn,#rtIn")))){e.preventDefault();e.stopImmediatePropagation();
       const ae=document.activeElement;if(ae&&ae.tagName==="INPUT"&&ae.value.endsWith(b)){ae.value=ae.value.slice(0,-b.length);if(ae.id==="q"){S.q=ae.value}}
       handleScan(b);return}
     if(e.target&&e.target.id==="q"){const v=e.target.value.trim();if(v&&findByCode(v)){e.preventDefault();e.target.value="";S.q="";handleScan(v)}else if(/^\d{6,}$/.test(v)){e.preventDefault();e.target.value="";S.q="";renderBill();handleScan(v)}}
