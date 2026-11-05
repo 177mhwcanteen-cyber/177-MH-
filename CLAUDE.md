@@ -6,7 +6,7 @@
 ## पत्थर के नियम (कभी न तोड़ें)
 1. **पुराना डेटा कभी न मिटे, न बदले।** migrate.json सिर्फ़ जोड़ता है (जो doc है उसे छोड़ता है)। पुराना सामान हटाना हो तो `active:false` (replaces से), delete नहीं।
 2. **काम शुरू करने से पहले `git pull --rebase`** — दूसरा Claude/चैट भी इसी repo में push करता है। push से पहले फिर pull।
-3. **बदलाव के बाद:** `node scripts/build.mjs` → `python3 tests/e2e.py www <shots-dir>` — "✅ पूरा टेस्ट पास" आए तभी commit/push। हर टैब बिना JS error खुले।
+3. **बदलाव के बाद:** `node scripts/build.mjs` → `python3 tests/e2e.py www <shots-dir>` (लेबल छुआ तो `python3 tests/label.py www <dir>` भी) — "✅ पूरा टेस्ट पास" आए तभी commit/push। हर टैब बिना JS error खुले।
 4. Gemini चाबी कोड/GitHub में कभी नहीं — Firebase `settings/main.gk` में है।
 5. हर छोटी जगह का अच्छा उपयोग (compact), अच्छे ग्राफिक्स; हर नए सामान की टाइल अपने-आप सुंदर (art()/फोटो)।
 6. सामान का नाम छोटा: `short` ≤24 अक्षर "कंपनी + सामान + साइज़" (बिल/लेबल पर यही)।
@@ -18,7 +18,7 @@
 ## ढाँचा
 - `web/index.html` मुख्य (top-level `const S`, `window.__S__` भी) · मॉड्यूल `web/se-*.js`:
   platform (लॉगिन, OTA, कैमरा, प्रिंटर, Gemini) · features (रिपोर्ट, कागज़ी बिल) · bill (बिल शीट, संस्था चालान) · market (बाज़ार खरीद) ·
-  stock · intake · route · pay · plus (मालिक के औज़ार) · galla · open (ओपनिंग स्टॉक) · return · items (सामान-वार मुनाफ़ा) · order · watch (Sentry)
+  stock · intake · route · pay · plus (मालिक के औज़ार) · galla · open (ओपनिंग स्टॉक) · return · items (सामान-वार मुनाफ़ा) · order · watch (Sentry) · label (🏷️ बारकोड छपाई: लिस्ट, 6 डिज़ाइन, सेटिंग)
 - Firebase प्रोजेक्ट `mh177-canteen` (Firestore + Email लॉगिन) · नियम `firestore.rules` (विक्रम जी खुद Firebase में डालते हैं)।
 - CI: `.github/workflows/build.yml` → GitHub Pages (OTA अपडेट) + APK (releases/latest/download/mh-wet-canteen.apk)।
   `.github/check-request` बदलने पर check.yml जाँच करके `checks/report.txt` लिखता है।
@@ -33,3 +33,4 @@
 पहले छोटा प्लान → बनाओ → टेस्ट → push → विक्रम जी को 3-6 लाइन में बताओ "क्या बदला, अपडेट दबाएँ"।
 ऐप में बदलाव "ऐप अपडेट करें" से पहुँचते हैं; Android के नए plugin/permission हों तभी नया APK चाहिए।
 - बारकोड/स्कैनर बदलने से पहले docs/बारकोड-गन-प्रॉम्प्ट.txt पढ़ें (SE.normCode, codeVariants, pickCenter)।
+- लेबल/बारकोड छपाई बदलने से पहले docs/बारकोड-छपाई-प्रॉम्प्ट.txt और docs/लेबल-प्रिंटर-प्रॉम्प्ट.txt पढ़ें।

@@ -823,7 +823,7 @@ async function ensurePLU(){
   }finally{ensurePLU.busy=false}
 }
 SF.ensurePLU=ensurePLU;
-const SIZES={"50x25":[50,25],"40x30":[40,30],"38x25":[38,25],"60x40":[60,40],"75x50":[75,50],"100x50":[100,50],"100x75":[100,75]};
+const SIZES=SF.SIZES={"50x25":[50,25],"40x30":[40,30],"38x25":[38,25],"60x40":[60,40],"75x50":[75,50],"100x50":[100,50],"100x75":[100,75]};
 /* दो तरह के लेबल:
    🛒 सब्ज़ी — टोकरी/लोरी के खाने पर एक बार चिपकाओ: नाम + भाव/किलो + बारकोड (स्कैन पर वज़न पूछेगा)
    🛒 किराना — हर पैकेट पर पक्का: दुकान का नाम, सामान, पैकेट की मात्रा, कीमत, एक्सपायरी, बारकोड */
@@ -835,6 +835,7 @@ function itemCode(it){
   if(own)return own;                       // कंपनी का अपना बारकोड (पैकेट पर पहले से छपा)
   return it.plu?SF.vwCode(it.plu,"fix",0):""; // हमारा अपना पक्का कोड: 20 + सामान कोड + 00000
 }
+SF.itemCode=itemCode;SF.isKirana=isKirana;SF.lblState=()=>L;
 function labelSpec(){
   const it=item(L.id);if(!it)return null;
   const kir=L.type==="kirana";
@@ -847,6 +848,7 @@ function specOf(it,kir,o){o=o||{};const ex=o.exp!=null&&o.exp!==""?o.exp:(it.exp
     exp:kir&&ex?fdate(ex):"",mfg:kir&&o.mfg?fdate(o.mfg):""};
 }
 SF.labelCanvas=function(sp,sizeKey){
+  if(sp.kir&&window.SL)return SL.draw(SL.dataOf(sp.it,{price:sp.price}),null,sizeKey||L.size);/* 🛒 पैकेट लेबल = नया डिज़ाइन (se-label.js) */
   const [wmm,hmm]=SIZES[sizeKey||L.size]||SIZES["50x25"];const W=wmm*8,H=hmm*8,P=24,TOP=18,BOT=14;/* 3 mm बाएँ-दाएँ, 2 mm ऊपर — छपाई कभी किनारे से न कटे */
   const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   x.fillStyle="#fff";x.fillRect(0,0,W,H);x.fillStyle="#000";x.textBaseline="top";
@@ -911,20 +913,17 @@ function pickList(type,qq){
 }
 SF.renderLabel=function(force){
   const el=$("#p-label");if(!el)return;
+  if(L.type!=="sabzi"&&window.SL)return SL.render(force);/* 🛒 सामान: छापने की लिस्ट (se-label.js) */
   if(!force&&el.contains(document.activeElement)&&document.activeElement.matches("input"))return SF.drawPreview();
   const it=item(L.id),qq=(L.q||"").trim().toLowerCase();
   const head=`<h2 class="sec">🏷️ बारकोड लेबल</h2>
-  <div class="paym" style="margin:0 0 12px"><button data-ltype="kirana" aria-pressed="${L.type==="kirana"}">🛒 किराना पैकेट</button><button data-ltype="sabzi" aria-pressed="${L.type==="sabzi"}">🥬 सब्ज़ी-फल (वज़न)</button></div>`;
+  <div class="paym" style="margin:0 0 12px"><button data-ltype="kirana" aria-pressed="${L.type==="kirana"}">🛒 सामान · लिस्ट से</button><button data-ltype="sabzi" aria-pressed="${L.type==="sabzi"}">🥬 सब्ज़ी-फल (वज़न)</button></div>`;
   if(!L.type){el.innerHTML=head+`<div class="card2"><p class="note" style="margin:0"><b>🛒 सब्ज़ी:</b> लोरी/टोकरी के खाने पर एक बार चिपकाएँ — नाम, भाव और बारकोड। स्कैन करने पर ऐप वज़न पूछेगा।<br><b>🛒 किराना:</b> हर पैकेट पर पक्का लेबल — दुकान का नाम, सामान, मात्रा (जैसे ½ किलो), कीमत, एक्सपायरी और बारकोड। स्कैन करते ही बिल में।</p></div>`;return}
   if(!it){el.innerHTML=head+`<div class="card2"><h3>${L.type==="kirana"?"कौन-सा किराना सामान?":"कौन-सी सब्ज़ी?"}</h3>
     <input class="inp" id="lq" type="search" placeholder="🔍 खोजें" value="${esc(L.q||"")}" autocomplete="off" aria-label="खोजें">
     <div class="ppick">${pickList(L.type,qq)||'<p class="note">कोई सामान नहीं मिला।</p>'}</div></div>
     ${L.type==="kirana"?SF.batchHTML():""}
-    ${L.type==="kirana"&&S.isOwner?`<div class="card2"><h3>+ नया किराना सामान</h3>
-      <input class="inp" id="kNm" placeholder="छोटा नाम (जैसे Moong Dal 500g)">
-      <div class="row2" style="margin:0"><input class="inp" id="kPk" placeholder="साइज़ (जैसे 500g)"><input class="inp" id="kPr" inputmode="decimal" placeholder="बिक्री ₹"></div>
-      <div class="row2" style="margin:0"><input class="inp" id="kCo" inputmode="decimal" placeholder="खरीद ₹ (ज़रूरी नहीं)"><input class="inp" id="kBc" inputmode="numeric" placeholder="कंपनी का बारकोड (हो तो)"></div>
-      <button class="big ghost" data-knew>सामान जोड़ें</button></div>`:""}`;return}
+    ${L.type==="kirana"&&S.isOwner?SF.kNewHTML():""}`;return}
   const kir=L.type==="kirana";
   el.innerHTML=head+`<div class="card2"><div class="supsel">${tileHTML(it)}<b>${esc(it.name)}</b><span class="note">${it.code?"#"+esc(it.code)+" · ":""}${ownBar(it)?"अपना बारकोड":it.barcode?"कंपनी बारकोड":"कोड "+(it.plu||"—")} · ${rs(+it.sale||0)}${kir?"":"/"+(UNITS[it.unit]||it.unit)}</span><button class="lnk" data-lpick="">बदलें</button></div>
     ${kir?`<div class="row2" style="margin:0"><label class="fld">पैकेट की मात्रा<input class="inp" id="lPack" value="${esc(L.pack||it.pack||"")}" placeholder="जैसे 500 ग्राम"></label><label class="fld">कीमत ₹<input class="inp" id="lPrice" inputmode="decimal" value="${esc(L.price||it.sale||"")}"></label></div>
@@ -963,6 +962,11 @@ SF.bindLabel=function(){
         L.id=id;L.pack=pack;SF.renderLabel(1);toast(name+" जुड़ गया — अब लेबल छापें")}catch(err){toast("नहीं जुड़ा — सिर्फ़ विक्रम जी जोड़ सकते हैं")}}
   });
 };
+SF.kNewHTML=()=>`<div class="card2"><h3>+ नया किराना सामान</h3>
+      <input class="inp" id="kNm" placeholder="छोटा नाम (जैसे Moong Dal 500g)">
+      <div class="row2" style="margin:0"><input class="inp" id="kPk" placeholder="साइज़ (जैसे 500g)"><input class="inp" id="kPr" inputmode="decimal" placeholder="बिक्री ₹"></div>
+      <div class="row2" style="margin:0"><input class="inp" id="kCo" inputmode="decimal" placeholder="खरीद ₹ (ज़रूरी नहीं)"><input class="inp" id="kBc" inputmode="numeric" placeholder="कंपनी का बारकोड (हो तो)"></div>
+      <button class="big ghost" data-knew>सामान जोड़ें</button></div>`;
 /* 📄 एक साथ: जिन सामान का अपना (2000000…) बारकोड है, उन सबके स्टिकर एक A4 शीट पर */
 SF.batchHTML=function(){
   const own=S.items.filter(i=>i.active!==false&&isKirana(i)&&ownBar(i)).length;
@@ -994,7 +998,7 @@ SF.labelSettingsHTML=function(){
   <div class="row2" style="margin:6px 0 0"><label class="fld">↔ खिसकाएँ (mm) <small>+ दाएँ</small><input class="inp" id="lSx" inputmode="decimal" value="${esc(LS.get("se_lsx")||"0")}"></label><label class="fld">↕ खिसकाएँ (mm) <small>+ नीचे</small><input class="inp" id="lSy" inputmode="decimal" value="${esc(LS.get("se_lsy")||"0")}"></label></div>
   <div class="row2" style="margin:6px 0 0"><label class="fld">गहराई (कालापन 1-15)<input class="inp" id="lDen" inputmode="numeric" value="${esc(LS.get("se_lden")||"10")}"></label><span></span></div>
   <div class="row2" style="margin:6px 0 0"><button class="big ghost" data-lcal="gap">📏 लेबल नापें (प्रिंटर खुद)</button><button class="big ghost" data-lcal="test">🧪 जाँच लेबल छापें</button></div>
-  <p class="note" style="margin:4px 0 0">① पहले "📏 लेबल नापें" — प्रिंटर 2-3 खाली लेबल निकालकर गैप सीखेगा ② फिर "🧪 जाँच लेबल" — मोटा फ्रेम पूरा दिखे तो ठीक; बाएँ कटे तो ↔ में +1, दाएँ कटे तो −1; ऊपर कटे तो ↕ में +1, नीचे कटे तो −1।</p>`:""}</div>`;
+  <p class="note" style="margin:4px 0 0">① पहले "📏 लेबल नापें" — प्रिंटर 2-3 खाली लेबल निकालकर गैप सीखेगा ② फिर "🧪 जाँच लेबल" — मोटा फ्रेम पूरा दिखे तो ठीक; बाएँ कटे तो ↔ में +1, दाएँ कटे तो −1; ऊपर कटे तो ↕ में +1, नीचे कटे तो −1।</p>`:""}</div>`+(window.SL?SL.settingsHTML():"");
 };
 SF.bindLabelSettings=function(){
   $("#p-set").addEventListener("click",async e=>{

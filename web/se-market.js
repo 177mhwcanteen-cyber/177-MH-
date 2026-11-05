@@ -8,6 +8,7 @@
 (function(){
 "use strict";
 const SM=window.SM={};
+SM.draftLines=()=>D?D.lines:[];/* 🏷️ लेबल छपाई (se-label.js) के लिए */
 const KEY="mh_mkt_draft",MAXL=80,LOW=10;
 const num=v=>{const n=parseFloat(String(v??"").replace(",","."));return isFinite(n)?n:0};
 const rid=n=>Math.random().toString(36).slice(2,2+(n||4)).toUpperCase();
@@ -250,6 +251,7 @@ function draftHTML(){const L=D.lines,ai=D.ai,unm=L.filter(l=>l.ai&&!l.bar).lengt
   ${ai?`<div class="mk-aisum"><b>🤖 ${esc(ai.supplier.name||"")}</b><span>बिल ${esc(ai.supplier.billNo||"")} · ${esc(ai.supplier.date||"")} · कुल ${rs(ai.G)}${ai.diff?` · ${rs(Math.abs(ai.diff))} सबमें बाँटा`:""}</span>${ai.warn?`<em>⚠ ${esc(ai.warn)}</em>`:""}${unm?`<em>📟 ${unm} सामान का बारकोड स्कैन करके मिलाएँ</em>`:`<i>✓ सब बारकोड मिले</i>`}</div>`:""}
   <div class="mk-search"><span>🔎</span><input id="mkQ" value="${esc(D.q||"")}" placeholder="नाम / कोड लिखें — या ऊपर कैमरे से स्कैन" autocomplete="off" enterkeyhint="done"><button type="button" class="scanbtn" data-mkscan aria-label="कैमरा">📷</button></div>
   <div id="mkHits">${searchHits()}</div>
+  ${L.length&&window.SL?`<button type="button" class="mk-lbl" data-mklbl>🏷️ इन ${L.length} सामान के बारकोड लेबल छापें</button>`:""}
   <div class="mk-lines">${L.length?L.map(lineHTML).join(""):`<div class="mk-empty"><b>📟 बारकोड कैमरे के सामने लाएँ</b><span>सामान अपने-आप जुड़ेगा — MRP और पिछला भाव भी। दोबारा स्कैन = +1<br>पक्का बिल हो तो ऊपर <b>🤖 बिल से</b> दबाएँ</span></div>`}</div>
   <div class="mk-cart" id="mkCart"><div><b>${L.length} सामान · ${rs(tot())}</b><span>${pct!=null?`MRP पर फायदा <em class="${pct<LOW?"bad":""}">${pct}%</em> (${rs(r2(mrpTot()-costWithMrp()))})`:"भाव और MRP डालें"}${L.some(l=>(gain(l.rate,l.mrp)||{}).low)?` · 🔴 ${L.filter(l=>(gain(l.rate,l.mrp)||{}).low).length} कम`:""}</span></div><button class="mk-go" data-fin ${L.length?"":"disabled"}>आगे ›</button></div>`}
 function cartBar(){const c=$("#mkCart");if(!c||!D)return;const L=D.lines,pct=totPct();

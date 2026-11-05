@@ -1219,7 +1219,7 @@ function renderBill(){
   if(searching){tip.className="qtip"+(bl.list.length===1||bl.qq?" go":"");tip.textContent=bl.list.length?(bl.qq?`टैप करें → ${bl.qq} ${bl.list.length===1&&bl.list[0].unit!=="kg"?"पीस":"कि.ग्रा"} सीधा बिल में`:`${bl.list.length} मिलीं · टैप करके मात्रा चुनें`)+(bl.list.length===1?" · या ✓/Enter दबाएँ":""):""}
   const act=S.items.filter(i=>i.active!==false);if(!S._melaInit&&melaOn()&&act.some(i=>i.cat==="mela")){S._melaInit=1;if(S.cat==="all")S.cat="mela"}const nLow=act.filter(isLow).length,nExp=act.filter(i=>expInfo(i)).length;
   $("#greet").hidden=searching;if(!searching)$("#greet").innerHTML=greetHTML();
-  $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+catsOrdered().filter(([k])=>(k===S.cat||!hiddenCats().includes(k))&&(k==="mela"?act.some(i=>i.cat==="mela"):NEWCATS.includes(k)?act.some(i=>mcat(i)===k):true)).map(([k,v])=>`<button class="chip ${k==="mela"?(melaOn()?"melac":"melaoff"):""}" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${k==="mela"&&!melaOn()?"🎪 मेला (बंद)":v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>${S.isOwner?`<button class="chip" data-catset aria-label="टैब दिखाएँ/छिपाएँ">⚙️ टैब</button>`:""}`;
+  $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+(window.SL?SL.chipHTML():"")+catsOrdered().filter(([k])=>(k===S.cat||!hiddenCats().includes(k))&&(k==="mela"?act.some(i=>i.cat==="mela"):NEWCATS.includes(k)?act.some(i=>mcat(i)===k):true)).map(([k,v])=>`<button class="chip ${k==="mela"?(melaOn()?"melac":"melaoff"):""}" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${k==="mela"&&!melaOn()?"🎪 मेला (बंद)":v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>${S.isOwner?`<button class="chip" data-catset aria-label="टैब दिखाएँ/छिपाएँ">⚙️ टैब</button>`:""}`;
   const subs=!S.flt&&S.cat==="mela"?MELA_G.filter(([k])=>act.some(i=>mcat(i)==="mela"&&melaSub(i)===k)):!S.flt&&SUBS[S.cat]?SUBS[S.cat].filter(([k])=>act.some(i=>mcat(i)===S.cat&&i.sub===k)):[];
   $("#cats2").hidden=searching||!subs.length;
   $("#cats2").innerHTML=subs.length?`<button class="chip" aria-pressed="${S.sub==="all"}" data-sub="all">सब</button>`+subs.map(([k,v])=>`<button class="chip" aria-pressed="${S.sub===k}" data-sub="${k}">${v}</button>`).join(""):"";
@@ -1702,6 +1702,7 @@ function packMap(id,q){const it=item(id);return it&&it.packOf&&+it.perPack>0&&it
 function trackedPairs(lines,sign){return lines.filter(l=>{const it=item(l.id);return it&&(it.track||(it.packOf&&item(it.packOf)?.track))}).map(l=>packMap(l.id,sign*l.qty))}
 async function handleScan(code){
   code=window.SE&&SE.normCode?SE.normCode(code):String(code||"").trim();if(!code)return;
+  if(window.SL&&SL.scan(code))return;/* 🏷️ लेबल टैब या बिलिंग का बारकोड-मोड: स्कैन = लेबल की लिस्ट में +1 */
   if(S.tab==="kharid"&&window.SI&&SI.active()&&SI.scan(code))return;
   if(window.SO&&SO.active()){const it=findByCode(code);beep(!!it);if(!it){unknownCode(code);return}SO.scan(it);return}
   if(S.tab==="mkt"&&window.SM&&SM.scan(code))return;
@@ -1827,7 +1828,7 @@ function camROI(){const w=$("#camwin"),f=w&&w.querySelector(".cfr");if(!w||!f)re
 $("#camOff").onclick=()=>camOff(true);
 $("#camZoom").onclick=async()=>{const z=await SE.cam.cycleZoom();$("#camZoom").textContent=(+z||1).toFixed(1).replace(".0","")+"x";toast("🔍 ज़ूम "+(+z).toFixed(1)+"x")};
 $("#camTorch").onclick=async()=>{const t=await SE.cam.toggleTorch();$("#camTorch").textContent=t?"🔦 बंद":"🔦";lsSet("se_torch",t?"1":"0");toast(t?"🔦 टॉर्च चालू — अगली बार भी अपने-आप":"🔦 टॉर्च बंद")};
-function camAuto(){const want=(S.tab==="bill"||(S.tab==="mkt"&&window.SM&&SM.wantCam())||(S.tab==="kharid"&&!(window.SI&&SI.active()))||(S.tab==="stock"&&window.SK&&SK.counting())||(S.tab==="day"&&S.scanIn));if(!want&&SE.cam.on)camOff(false);else if(want&&!SE.cam.on&&SE.isNative&&lsGet("se_cam")==="1"&&!document.hidden)camOn()}
+function camAuto(){const want=(S.tab==="bill"||(S.tab==="mkt"&&window.SM&&SM.wantCam())||(S.tab==="kharid"&&!(window.SI&&SI.active()))||(S.tab==="stock"&&window.SK&&SK.counting())||(S.tab==="day"&&S.scanIn)||(S.tab==="label"&&window.SL&&SL.wantCam()));if(!want&&SE.cam.on)camOff(false);else if(want&&!SE.cam.on&&SE.isNative&&lsGet("se_cam")==="1"&&!document.hidden)camOn()}
 document.addEventListener("visibilitychange",()=>{if(document.hidden){if(SE.cam.on){SE.cam.stop();camUi(false);camAuto._resume=true}}else if(camAuto._resume){camAuto._resume=false;camAuto()}});
 async function liveScan(){
   if(SE.cam.on){camOff(true);return}
@@ -2244,7 +2245,8 @@ function renderSettings(){
       <label class="note"><input type="checkbox" id="a-${esc(it.id)}" data-if="active" ${it.active!==false?"checked":""}> चालू</label>
       <input class="inp code" id="b-${esc(it.id)}" data-if="barcode" value="${esc(it.barcode||"")}" placeholder="बारकोड" style="width:150px" aria-label="${esc(it.name)} का बारकोड">
       <label class="note"><input type="checkbox" id="t-${esc(it.id)}" data-if="track" ${it.track?"checked":""}> स्टॉक गिनें</label>
-      <label class="note"><input type="checkbox" id="f-${esc(it.id)}" data-if="flex" ${it.flex?"checked":""}> बिलर भाव बदल सके</label></div>
+      <label class="note"><input type="checkbox" id="f-${esc(it.id)}" data-if="flex" ${it.flex?"checked":""}> बिलर भाव बदल सके</label>
+      <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(it.name)} के बारकोड लेबल छापें">🏷️ लेबल</button></div>
       <div class="flds3">
       <label class="fld">हिंदी नाम<input class="inp" data-if="hi" value="${esc(it.hi||"")}"></label>
       <label class="fld">MRP ₹<input class="inp" data-if="mrp" inputmode="decimal" value="${it.mrp||""}"></label>
@@ -2448,6 +2450,7 @@ boot();
 <script src="se-stock.js"></script>
 <script src="se-intake.js"></script>
 <script src="se-market.js"></script>
+<script src="se-label.js"></script>
 <script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>
