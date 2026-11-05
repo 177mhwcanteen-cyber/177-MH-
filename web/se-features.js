@@ -847,13 +847,13 @@ function specOf(it,kir,o){o=o||{};const ex=o.exp!=null&&o.exp!==""?o.exp:(it.exp
     exp:kir&&ex?fdate(ex):"",mfg:kir&&o.mfg?fdate(o.mfg):""};
 }
 SF.labelCanvas=function(sp,sizeKey){
-  const [wmm,hmm]=SIZES[sizeKey||L.size]||SIZES["50x25"];const W=wmm*8,H=hmm*8,P=10;
+  const [wmm,hmm]=SIZES[sizeKey||L.size]||SIZES["50x25"];const W=wmm*8,H=hmm*8,P=24,TOP=18,BOT=14;/* 3 mm बाएँ-दाएँ, 2 mm ऊपर — छपाई कभी किनारे से न कटे */
   const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   x.fillStyle="#fff";x.fillRect(0,0,W,H);x.fillStyle="#000";x.textBaseline="top";
   const F='"Baloo 2","Mukta","Noto Sans Devanagari",sans-serif';
   const font=(t,sz,maxW,w)=>{let s=sz;do{x.font=`${w||700} ${s}px ${F}`;s--}while(x.measureText(t).width>maxW&&s>9);return s+1};
   const ctr=(t,y,sz,w)=>{const s=font(t,sz,W-2*P,w);const tw=x.measureText(t).width;x.fillText(t,(W-tw)/2,y);return s};
-  let y=4;
+  let y=TOP;
   if(sp.kir){
     y+=ctr("177 MH कैंटीन · बाड़मेर"+(sp.icode?"   #"+sp.icode:""),y,Math.round(H*.075),600)+1;x.fillRect(P,y,W-2*P,2);y+=4;
     y+=ctr(sp.name,y,Math.round(H*.13),800)+1;
@@ -869,10 +869,19 @@ SF.labelCanvas=function(sp,sizeKey){
     y+=ctr("₹"+sp.price+" / "+(sp.unit==="kg"?"किलो":(UNITS[sp.unit]||sp.unit)),y,Math.round(H*.13),800)+2;
   }
   if(sp.code&&window.JsBarcode){const bc=document.createElement("canvas");const ean=/^\d{13}$/.test(sp.code)&&ean13check(sp.code.slice(0,12))===sp.code[12];
-    try{JsBarcode(bc,sp.code,{format:ean?"EAN13":"CODE128",width:2,height:60,displayValue:true,fontSize:16,margin:0,textMargin:1,background:"#fff",lineColor:"#000",flat:true});
-      const bh=H-y-3,sc=Math.min((W-2*P)/bc.width,bh/bc.height);const bw=Math.round(bc.width*sc),bhh=Math.round(bc.height*sc);x.imageSmoothingEnabled=false;x.drawImage(bc,Math.round((W-bw)/2),H-bhh-2,bw,bhh)}catch(e){}}
+    try{const mk=w=>JsBarcode(bc,sp.code,{format:ean?"EAN13":"CODE128",width:w,height:60,displayValue:true,fontSize:16+(w-2)*4,margin:0,textMargin:1,background:"#fff",lineColor:"#000",flat:true});mk(3);if(bc.width>W-2*P)mk(2);if(bc.width>W-2*P)mk(1);
+      const bh=H-y-BOT,sc=Math.min((W-2*P)/bc.width,bh/bc.height);const k=sc>=1?Math.floor(sc):sc;/* पूरे-पूरे डॉट — बार साफ़, स्कैनर तुरंत पढ़े */const bw=Math.round(bc.width*k),bhh=Math.round(bc.height*Math.min(sc,bh/bc.height));x.imageSmoothingEnabled=false;x.drawImage(bc,Math.round((W-bw)/2),H-bhh-BOT,bw,bhh)}catch(e){}}
   return c;
 };
+/* 🧪 जाँच लेबल: किनारे पर फ्रेम + बीच में क्रॉस + हर किनारे पर निशान — देखकर पता चले किस तरफ़ कटा */
+SF.calibCanvas=function(sizeKey){const [wmm,hmm]=SIZES[sizeKey||L.size]||SIZES["50x25"];const W=wmm*8,H=hmm*8;const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  x.fillStyle="#fff";x.fillRect(0,0,W,H);x.fillStyle="#000";x.strokeStyle="#000";
+  x.lineWidth=2;x.strokeRect(8,8,W-16,H-16);/* 1 mm अंदर फ्रेम */
+  x.lineWidth=4;x.strokeRect(24,24,W-48,H-48);/* 3 mm अंदर मोटा फ्रेम = सुरक्षित जगह */
+  x.fillRect(W/2-1,H/2-30,2,60);x.fillRect(W/2-30,H/2-1,60,2);
+  for(let m=0;m<=wmm;m+=5){x.fillRect(m*8,0,2,m%10?10:18)}for(let m=0;m<=hmm;m+=5){x.fillRect(0,m*8,m%10?10:18,2)}
+  x.font='700 22px "Baloo 2","Noto Sans Devanagari",sans-serif';x.textBaseline="middle";x.textAlign="center";
+  x.font='700 18px sans-serif';x.fillText("ऊपर ↑",W/2,40);x.fillText("← बायाँ",70,H/2);x.fillText("दायाँ →",W-70,H/2);x.fillText("नीचे ↓",W/2,H-40);return c};
 /* TSPL लेबल प्रिंटर के लिए बाइट */
 function tspl(cv,sizeKey,copies){const [w,h]=SIZES[sizeKey]||SIZES["50x25"];return SE.tspl(cv,{wmm:w,hmm:h,copies})}
 SF.labelPrinter={get addr(){return LS.get("se_lbl")},get name(){return LS.get("se_lbl_n")},get type(){return LS.get("se_lbl_t")||"tspl"}};
@@ -981,13 +990,22 @@ SF.labelSettingsHTML=function(){
   <p class="note" style="margin:0">${SE.isNative?(pr.addr?`चुना हुआ: <b>${esc(pr.name)}</b> · ${pr.type==="escpos"?"रसीद वाला (ESC/POS)":"लेबल वाला (TSPL)"}`:"पहले फोन की Bluetooth सेटिंग में लेबल प्रिंटर pair करें।"):"लेबल प्रिंटर Android ऐप में चुना जाता है।"}</p>
   ${SE.isNative?`<div class="row2" style="margin:0"><button class="big ghost" data-lprn="tspl">लेबल प्रिंटर (TSC/Xprinter)</button><button class="big ghost" data-lprn="escpos">रसीद प्रिंटर पर लेबल</button></div><div id="lprnList"></div>
   <div class="row2" style="margin:0"><label class="fld">लेबल के बीच गैप (mm)<input class="inp" id="lGap" inputmode="decimal" value="${esc(LS.get("se_lgap")||"2")}"></label>
-  <label class="note lsw" style="align-self:end"><input type="checkbox" id="lInv" ${LS.get("se_linv")==="1"?"checked":""}> लेबल उल्टा (काला-सफ़ेद) छपे तो</label></div>`:""}</div>`;
+  <label class="note lsw" style="align-self:end"><input type="checkbox" id="lInv" ${LS.get("se_linv")==="1"?"checked":""}> लेबल उल्टा (काला-सफ़ेद) छपे तो</label></div>
+  <div class="row2" style="margin:6px 0 0"><label class="fld">↔ खिसकाएँ (mm) <small>+ दाएँ</small><input class="inp" id="lSx" inputmode="decimal" value="${esc(LS.get("se_lsx")||"0")}"></label><label class="fld">↕ खिसकाएँ (mm) <small>+ नीचे</small><input class="inp" id="lSy" inputmode="decimal" value="${esc(LS.get("se_lsy")||"0")}"></label></div>
+  <div class="row2" style="margin:6px 0 0"><label class="fld">गहराई (कालापन 1-15)<input class="inp" id="lDen" inputmode="numeric" value="${esc(LS.get("se_lden")||"10")}"></label><span></span></div>
+  <div class="row2" style="margin:6px 0 0"><button class="big ghost" data-lcal="gap">📏 लेबल नापें (प्रिंटर खुद)</button><button class="big ghost" data-lcal="test">🧪 जाँच लेबल छापें</button></div>
+  <p class="note" style="margin:4px 0 0">① पहले "📏 लेबल नापें" — प्रिंटर 2-3 खाली लेबल निकालकर गैप सीखेगा ② फिर "🧪 जाँच लेबल" — मोटा फ्रेम पूरा दिखे तो ठीक; बाएँ कटे तो ↔ में +1, दाएँ कटे तो −1; ऊपर कटे तो ↕ में +1, नीचे कटे तो −1।</p>`:""}</div>`;
 };
 SF.bindLabelSettings=function(){
   $("#p-set").addEventListener("click",async e=>{
+    const lc=e.target.closest("[data-lcal]");if(lc){const pr=SF.labelPrinter;if(!pr.addr){toast("पहले ऊपर से लेबल प्रिंटर चुनें");return}
+      const [w,h]=SIZES[L.size]||SIZES["50x25"];lc.disabled=true;try{
+        const data=lc.dataset.lcal==="gap"?SE.tsplCalib(w,h):tspl(SF.calibCanvas(L.size),L.size,1);
+        await SENative.BtPrinter.print({address:pr.addr,data});toast(lc.dataset.lcal==="gap"?"📏 प्रिंटर लेबल नाप रहा है — 2-3 खाली लेबल निकलेंगे":"🧪 जाँच लेबल छपा — फ्रेम देखें")}
+      catch(err){toast("प्रिंटर से जुड़ नहीं पाया: "+((err&&err.message)||err))}finally{lc.disabled=false}return}
     const b=e.target.closest("[data-lprn]");if(b){try{const list=await SE.printer.list();$("#lprnList").innerHTML=list.map(d=>`<button class="big ghost" data-lprnset="${esc(d.address)}" data-n="${esc(d.name||d.address)}" data-t="${b.dataset.lprn}">🏷️ ${esc(d.name||d.address)}</button>`).join("")||'<p class="note">कोई pair किया प्रिंटर नहीं मिला।</p>'}catch(err){toast(err.msg||err.message||"Bluetooth की अनुमति दें")}return}
     const s=e.target.closest("[data-lprnset]");if(s){LS.set("se_lbl",s.dataset.lprnset);LS.set("se_lbl_n",s.dataset.n);LS.set("se_lbl_t",s.dataset.t);renderSettings();toast("लेबल प्रिंटर चुना: "+s.dataset.n)}});
-  $("#p-set").addEventListener("change",e=>{if(e.target.id==="lGap")LS.set("se_lgap",e.target.value.trim()||"2");if(e.target.id==="lInv")LS.set("se_linv",e.target.checked?"1":"0")});
+  $("#p-set").addEventListener("change",e=>{if(e.target.id==="lSx")LS.set("se_lsx",String(Math.max(-8,Math.min(8,parseFloat(e.target.value)||0))));if(e.target.id==="lSy")LS.set("se_lsy",String(Math.max(-8,Math.min(8,parseFloat(e.target.value)||0))));if(e.target.id==="lDen")LS.set("se_lden",String(Math.max(1,Math.min(15,parseInt(e.target.value)||10))));if(e.target.id==="lGap")LS.set("se_lgap",e.target.value.trim()||"2");if(e.target.id==="lInv")LS.set("se_linv",e.target.checked?"1":"0")});
 };
 /* =============== 📈 रिपोर्ट के ग्राफ़ (हल्के SVG, कोई भारी लाइब्रेरी नहीं) =============== */
 const CH={data:null,at:0,busy:false};
