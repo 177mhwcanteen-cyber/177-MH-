@@ -499,7 +499,8 @@ SE._busy=()=>false;
 /* 🤖 Google Gemini — Apps Script के ज़रिए (चाबी Script में, ऐप में नहीं) */
 /* ऐप की सेटिंग (index.html का S — window पर नहीं होता, इसलिए typeof से) */
 const _set=()=>{try{return (typeof S!=="undefined"&&S&&S.settings)||{}}catch(e){return {}}};
-SE.gk=()=>String(_set().gk||"").replace(/\s+/g,"");
+SE._ogk="";/* मालिक की चाबी ownerCfg/ai से (se-quick.js) — साथियों के फोन में नहीं */
+SE.gk=()=>String(SE._ogk||_set().gk||"").replace(/\s+/g,"");
 SE.scriptUrl=()=>CFG.photoUrl||_set().scriptUrl||"";
 SE.aiReady=()=>!!(SE.gk()||SE.scriptUrl());
 /* सीधा Gemini (चाबी ऐप की सेटिंग में — सिर्फ़ लॉगिन वाले साथी पढ़ सकते हैं; GitHub/कोड में नहीं) */

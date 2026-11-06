@@ -1102,7 +1102,7 @@ function renderBillTabsOnly(){const f=document.activeElement;renderBillTabs();if
 function renderBillTabs(){
   const el=$("#btabs");el.hidden=S.tab!=="bill";$("#sbar").hidden=S.tab!=="bill";if(el.hidden)return;
   renderBcust();
-  $("#bts").innerHTML=S.bt.map((t,i)=>{const tot=(t.cart||[]).reduce((a,l)=>a+l.amt,0);return `<div class="btab" role="button" tabindex="0" data-bt="${i}" aria-pressed="${i===S.ai}"><div style="min-width:0"><span>${esc(tabLabel(t,i))}</span><small>${rs(tot)}</small></div>${S.bt.length>1?`<button class="bx" data-btx="${i}" aria-label="यह बिल बंद करें">✕</button>`:""}</div>`}).join("")+`<button class="btab new" data-btnew aria-label="नया ग्राहक" title="नया ग्राहक">＋</button>`;
+  $("#bts").innerHTML=S.bt.map((t,i)=>{const tot=(t.cart||[]).reduce((a,l)=>a+l.amt,0),cn=(t.cart||[]).length;return `<div class="btab" role="button" tabindex="0" data-bt="${i}" aria-pressed="${i===S.ai}"><div style="min-width:0"><span>${esc(tabLabel(t,i))}</span><small>${rs(tot)}${cn&&S.bt.length>1?` <i>· ${cn} · ${window.SA?SA.ago(t.ts):""}</i>`:""}</small></div>${S.bt.length>1?`<button class="bx" data-btx="${i}" aria-label="यह बिल बंद करें">✕</button>`:""}</div>`}).join("")+`<button class="btab new" data-btnew aria-label="नया ग्राहक" title="नया ग्राहक">＋</button>`;
   const a=$("#bts").querySelector('[aria-pressed="true"]');if(a&&a.scrollIntoView)a.scrollIntoView({inline:"nearest",block:"nearest"});
 }
 $("#btabs").onclick=e=>{
@@ -1178,7 +1178,7 @@ function billList(){
   const mm=raw.match(/^(.*?[^\d\s.,])\s*(\d+(?:[.,]\d+)?)\s*(kg|किलो|कि\.?ग्रा|कि)?$/i);
   if(mm){q=mm[1].trim();qq=parseFloat(mm[2].replace(",","."))||0}
   const ql=q.toLowerCase();
-  const catOk=i=>S.flt==="low"?isLow(i):S.flt==="exp"?!!expInfo(i):(S.cat==="all"||mcat(i)===S.cat)&&(S.sub==="all"||(S.cat==="mela"?melaSub(i):i.sub)===S.sub);
+  const catOk=i=>S.flt==="fav"?!!(window.SA&&SA.isFav(i)):S.flt==="low"?isLow(i):S.flt==="exp"?!!expInfo(i):(S.cat==="all"||mcat(i)===S.cat)&&(S.sub==="all"||(S.cat==="mela"?melaSub(i):i.sub)===S.sub);
   const hit=i=>String(i.name).toLowerCase().includes(ql)||String(i.hi||"").includes(q)||i.id.includes(ql)||String(i.alias||"").toLowerCase().includes(ql)||SN.en(i).toLowerCase().includes(ql)||String(i.code||"")===q||codes(i).includes(q);
   const exact=q&&S.items.find(i=>i.active!==false&&String(i.code||"")===q);
   const list=exact?[exact]:S.items.filter(i=>i.active!==false&&!(i.cat==="mela"&&!melaOn())&&(q?true:catOk(i)&&!isVariant(i))&&(!q||hit(i)));
@@ -1219,7 +1219,7 @@ function renderBill(){
   if(searching){tip.className="qtip"+(bl.list.length===1||bl.qq?" go":"");tip.textContent=bl.list.length?(bl.qq?`टैप करें → ${bl.qq} ${bl.list.length===1&&bl.list[0].unit!=="kg"?"पीस":"कि.ग्रा"} सीधा बिल में`:`${bl.list.length} मिलीं · टैप करके मात्रा चुनें`)+(bl.list.length===1?" · या ✓/Enter दबाएँ":""):""}
   const act=S.items.filter(i=>i.active!==false);if(!S._melaInit&&melaOn()&&act.some(i=>i.cat==="mela")){S._melaInit=1;if(S.cat==="all")S.cat="mela"}const nLow=act.filter(isLow).length,nExp=act.filter(i=>expInfo(i)).length;
   $("#greet").hidden=searching;if(!searching)$("#greet").innerHTML=greetHTML();
-  $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+(window.SL?SL.chipHTML():"")+catsOrdered().filter(([k])=>(k===S.cat||!hiddenCats().includes(k))&&(k==="mela"?act.some(i=>i.cat==="mela"):NEWCATS.includes(k)?act.some(i=>mcat(i)===k):true)).map(([k,v])=>`<button class="chip ${k==="mela"?(melaOn()?"melac":"melaoff"):""}" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${k==="mela"&&!melaOn()?"🎪 मेला (बंद)":v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>${S.isOwner?`<button class="chip" data-catset aria-label="टैब दिखाएँ/छिपाएँ">⚙️ टैब</button>`:""}`;
+  $("#cats").innerHTML=(window.SR?SR.rateChipHTML():"")+(window.SL?SL.chipHTML():"")+(window.SA?SA.favChipHTML():"")+catsOrdered().filter(([k])=>(k===S.cat||!hiddenCats().includes(k))&&(k==="mela"?act.some(i=>i.cat==="mela"):NEWCATS.includes(k)?act.some(i=>mcat(i)===k):true)).map(([k,v])=>`<button class="chip ${k==="mela"?(melaOn()?"melac":"melaoff"):""}" aria-pressed="${!S.flt&&S.cat===k}" data-cat="${k}">${k==="mela"&&!melaOn()?"🎪 मेला (बंद)":v}</button>`).join("")+(nLow?`<button class="chip warnc" aria-pressed="${S.flt==="low"}" data-flt="low">⚠ कम स्टॉक ${nLow}</button>`:"")+(nExp?`<button class="chip warnc" aria-pressed="${S.flt==="exp"}" data-flt="exp">⏰ एक्सपायरी ${nExp}</button>`:"")+`<button class="chip" aria-pressed="${S.sortTop}" data-sorttop>⭐ टॉप सेलिंग ऊपर</button><button class="chip" data-view>${S.view==="list"?"▦ फोटो":"☰ लिस्ट"}</button>${S.isOwner?`<button class="chip" data-catset aria-label="टैब दिखाएँ/छिपाएँ">⚙️ टैब</button>`:""}`;
   const subs=!S.flt&&S.cat==="mela"?MELA_G.filter(([k])=>act.some(i=>mcat(i)==="mela"&&melaSub(i)===k)):!S.flt&&SUBS[S.cat]?SUBS[S.cat].filter(([k])=>act.some(i=>mcat(i)===S.cat&&i.sub===k)):[];
   $("#cats2").hidden=searching||!subs.length;
   $("#cats2").innerHTML=subs.length?`<button class="chip" aria-pressed="${S.sub==="all"}" data-sub="all">सब</button>`+subs.map(([k,v])=>`<button class="chip" aria-pressed="${S.sub===k}" data-sub="${k}">${v}</button>`).join(""):"";
@@ -1702,6 +1702,7 @@ function packMap(id,q){const it=item(id);return it&&it.packOf&&+it.perPack>0&&it
 function trackedPairs(lines,sign){return lines.filter(l=>{const it=item(l.id);return it&&(it.track||(it.packOf&&item(it.packOf)?.track))}).map(l=>packMap(l.id,sign*l.qty))}
 async function handleScan(code){
   code=window.SE&&SE.normCode?SE.normCode(code):String(code||"").trim();if(!code)return;
+  if(window.SA&&SA.scan(code))return;/* 🔢 बिल का बारकोड (BW-…) = वही बिल + वापसी */
   if(window.SL&&SL.scan(code))return;/* 🏷️ लेबल टैब या बिलिंग का बारकोड-मोड: स्कैन = लेबल की लिस्ट में +1 */
   if(S.tab==="kharid"&&window.SI&&SI.active()&&SI.scan(code))return;
   if(window.SO&&SO.active()){const it=findByCode(code);beep(!!it);if(!it){unknownCode(code);return}SO.scan(it);return}
@@ -1923,7 +1924,7 @@ async function commitBill(item){
   if(!f.b){await withTimeout(S.db.collection("days/"+date+"/bills").doc(bill.no).set({...bill,pending:false}),9000);f.b=1}
   if(!f.l&&bill.pay.udhar>0){await withTimeout(S.db.collection("ledger").doc(bill.no).set({ts:bill.ts,date,partyId:bill.partyId,partyName:bill.partyName,type:"udhar",amt:bill.pay.udhar,billNo:bill.no,by:bill.by,byName:bill.byName}),9000)}f.l=1;
   if(!f.c){const lastCart=bill.lines.filter(l=>!l.free).map(l=>({id:l.id,qty:l.qty})),lastItems=bill.lines.map(l=>l.name).slice(0,5).join(", ");
-    try{if((bill.custPhone||"").length===10){const ref=S.db.collection("customers").doc(bill.custPhone);const g=await ref.get();const o=g.exists?g.data():{};await ref.set({...(bill.loc?{lastLoc:bill.loc}:{}),name:bill.custName||o.name||"",phone:bill.custPhone,visits:(o.visits||0)+1,spent:r2((o.spent||0)+bill.total),firstTs:o.firstTs||bill.ts,lastTs:bill.ts,lastItems,lastCart})}
+    try{if((bill.custPhone||"").length===10){const ref=S.db.collection("customers").doc(bill.custPhone);const g=await ref.get();const o=g.exists?g.data():{};await ref.set({...(bill.loc?{lastLoc:bill.loc}:{}),name:bill.custName||o.name||"",phone:bill.custPhone,visits:(o.visits||0)+1,spent:r2((o.spent||0)+bill.total),firstTs:o.firstTs||bill.ts,lastTs:bill.ts,lastItems,lastCart},{merge:true})/* merge: पॉइंट वगैरह पुराने खेत कभी न मिटें */}
       else if(bill.mode==="udhar"&&bill.partyId)await S.db.collection("parties").doc(bill.partyId).update({lastCart,lastTs:bill.ts})}catch(e){}f.c=1}
   if(!f.s){if(!item.localStock)await adjStock(trackedPairs(bill.lines,-1),"बिल "+bill.no);else{for(const [id,d] of trackedPairs(bill.lines,-1)){try{await S.db.collection("pstock").doc(id).set({qty:SE.inc(r2(d)),ts:Date.now(),byName:bill.byName,last:"बिल "+bill.no},{merge:true})}catch(e){}}}f.s=1}
 }
@@ -1952,7 +1953,7 @@ async function saveCustPhone(b,ph){
   b.custPhone=ph;if(S.demo||!S.db)return;
   try{await S.db.doc("days/"+b.date+"/bills/"+b.no).update({custPhone:ph})}catch(e){}
   if(b.mode==="udhar"&&b.partyId){const p=S.parties.find(x=>x.id===b.partyId);if(p&&!p.phone){try{await S.db.collection("parties").doc(p.id).update({phone:ph})}catch(e){}}return}
-  try{const ref=S.db.collection("customers").doc(ph);const g=await ref.get();const o=g.exists?g.data():{};await ref.set({...(b.loc?{lastLoc:b.loc}:{}),name:b.custName||o.name||"",phone:ph,visits:(o.visits||0)+(g.exists?0:1),spent:r2((o.spent||0)+(g.exists?0:b.total)),firstTs:o.firstTs||b.ts,lastTs:b.ts,lastItems:o.lastItems||b.lines.map(l=>l.name).slice(0,5).join(", "),lastCart:o.lastCart||b.lines.map(l=>({id:l.id,qty:l.qty}))})}catch(e){}
+  try{const ref=S.db.collection("customers").doc(ph);const g=await ref.get();const o=g.exists?g.data():{};await ref.set({...(b.loc?{lastLoc:b.loc}:{}),name:b.custName||o.name||"",phone:ph,visits:(o.visits||0)+(g.exists?0:1),spent:r2((o.spent||0)+(g.exists?0:b.total)),firstTs:o.firstTs||b.ts,lastTs:b.ts,lastItems:o.lastItems||b.lines.map(l=>l.name).slice(0,5).join(", "),lastCart:o.lastCart||b.lines.map(l=>({id:l.id,qty:l.qty}))},{merge:true})}catch(e){}
 }
 
 /* ---------- guard: tamper alarm (owner-private fingerprints) ---------- */
@@ -2227,11 +2228,13 @@ function renderSettings(){
   <div class="card2"><h3>🖨️ ब्लूटूथ प्रिंटर</h3>
     <p class="note" style="margin:0">${SE.isNative?(SE.printer.addr?"चुना हुआ: <b>"+esc(SE.printer.name)+"</b> · "+(SE.printer.mm==="100"?"4 इंच · लेबल-भाषा (TSPL)":SE.printer.mm+"mm"):"पहले फोन की Bluetooth सेटिंग में प्रिंटर को pair करें, फिर यहाँ चुनें।"):"प्रिंटर Android ऐप में चुना जाता है। वेब में बिल फोन के प्रिंट से छपेगा।"}</p>
     ${SE.isNative?'<div class="row2" style="margin:0"><button class="big ghost" data-prnpick="58">58mm प्रिंटर चुनें</button><button class="big ghost" data-prnpick="80">80mm प्रिंटर चुनें</button></div><button class="big ghost" data-prnpick="100">4 इंच प्रिंटर (Xprinter XP-D4601B जैसा) चुनें</button><div id="prnList"></div><button class="big ghost" data-prntest>टेस्ट प्रिंट</button>':""}</div>
+  ${window.SA?SA.bkHTML():""}
   ${window.SRc?SRc.settingsHTML():""}
   ${window.SF?SF.labelSettingsHTML():""}
   <div class="card2"><h3>🔄 ऐप अपडेट</h3>${updBoxHTML()}</div>
   <div class="card2"><h3>🤖 Google AI (Gemini) — अनजान बारकोड व पैकेट की फोटो</h3><p class="note" style="margin:0 0 6px">aistudio.google.com से बनी मुफ़्त चाबी (AIza… या AQ.… से शुरू) यहाँ चिपकाएँ। चाबी सिर्फ़ आपके Firebase में रहती है, GitHub/कोड में नहीं।</p>
-    <div class="row2" style="margin:0"><input class="inp" id="aiKey" type="password" autocomplete="off" value="${esc(S.settings.gk||"")}" placeholder="AIza… / AQ.…"><button class="big ghost" data-aikey>सेव + जाँचें</button></div><p class="note" id="aiMsg" style="margin:6px 0 0">${S.settings.gk?"✓ चाबी लगी है — जाँचने के लिए फिर दबाएँ":"अभी चाबी नहीं लगी"}</p><p class="note" style="margin:2px 0 0;opacity:.7">ऐप संस्करण ${esc(SE.version)} · फोटो: Gemini Pro (सीमा खत्म तो Flash) · बारकोड: Flash + Google खोज</p></div>
+    <div class="row2" style="margin:0"><input class="inp" id="aiKey" type="password" autocomplete="off" value="${esc(SE._ogk||S.settings.gk||"")}" placeholder="AIza… / AQ.…"><button class="big ghost" data-aikey>सेव + जाँचें</button></div><p class="note" id="aiMsg" style="margin:6px 0 0">${SE._ogk||S.settings.gk?"✓ चाबी लगी है — जाँचने के लिए फिर दबाएँ":"अभी चाबी नहीं लगी"}</p>
+    <label class="note lsw" style="display:flex;gap:8px;align-items:center;margin-top:6px"><input type="checkbox" id="aiShare" ${S.settings.aiShare?"checked":""}> साथियों के फोन पर भी सीधा AI (चाबी उनके फोन में जाएगी) — बंद हो तो चाबी सिर्फ़ आपके फोन में, साथियों का AI Apps Script से</label><p class="note" style="margin:2px 0 0;opacity:.7">ऐप संस्करण ${esc(SE.version)} · फोटो: Gemini Pro (सीमा खत्म तो Flash) · बारकोड: Flash + Google खोज</p></div>
   <div class="card2"><h3>📦 पुराने ऐप का डेटा</h3><p class="note" style="margin:0">पुराने (आर्टिफ़ैक्ट) ऐप का सामान, भाव, खरीद इतिहास, उधार खाते और संस्थाएँ यहाँ लाएँ। जो पहले से है वह नहीं बदलेगा।</p><button class="big ghost" data-migrate>पुराना डेटा लाएँ</button></div>
   <h3 style="margin:0 0 4px">सामान और भाव</h3><p class="note" style="margin:0 0 8px">MRP = पैकेट पर छपा · बिक्री = ग्राहक से लेंगे · खरीद = हमें पड़ा। फोटो बदलने के लिए फोटो पर टैप करें। ${(()=>{const n=S.items.filter(i=>!i.photo).length;return n?`<b style="color:var(--chili)">${n} सामान की असली फोटो अभी बाकी है।</b> अच्छी रोशनी में ऊपर से फोटो खींचकर लगाएँ।`:'<b style="color:var(--leaf)">सबकी फोटो लग चुकी है।</b>'})()}</p>
   <div class="list">${S.items.filter(i=>!i.virtual).map(it=>`<div class="setitem" data-sid="${esc(it.id)}">
@@ -2247,7 +2250,8 @@ function renderSettings(){
       <input class="inp code" id="b-${esc(it.id)}" data-if="barcode" value="${esc(it.barcode||"")}" placeholder="बारकोड" style="width:150px" aria-label="${esc(it.name)} का बारकोड">
       <label class="note"><input type="checkbox" id="t-${esc(it.id)}" data-if="track" ${it.track?"checked":""}> स्टॉक गिनें</label>
       <label class="note"><input type="checkbox" id="f-${esc(it.id)}" data-if="flex" ${it.flex?"checked":""}> बिलर भाव बदल सके</label>
-      <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(it.name)} के बारकोड लेबल छापें">🏷️ लेबल</button></div>
+      <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(it.name)} के बारकोड लेबल छापें">🏷️ लेबल</button>
+      <button type="button" class="chip" data-favpin="${esc(it.id)}" aria-pressed="${((S.settings.favs||[]).includes(it.id))}" aria-label="${esc(it.name)} फ़ेवरेट">⭐</button></div>
       <div class="flds3">
       <label class="fld">हिंदी नाम<input class="inp" data-if="hi" value="${esc(it.hi||"")}"></label>
       <label class="fld">MRP ₹<input class="inp" data-if="mrp" inputmode="decimal" value="${it.mrp||""}"></label>
@@ -2272,6 +2276,7 @@ function renderSettings(){
   <div class="list">${S.priceLog.length?S.priceLog.map(l=>`<div class="li"><div class="mid"><b>${esc(l.name)} · ${l.field==="sale"?"बिक्री":"खरीद"} रेट</b><span>${fdate(today(new Date(l.ts)))} ${ftime(l.ts)} · ${esc(l.byName||"")}</span></div><div class="rt">${rs(l.old)} → ${rs(l.new)}</div></div>`).join(""):'<div class="empty">अभी कोई बदलाव दर्ज नहीं</div>'}</div>`;
 ;niSubFill()}
 $("#p-set").addEventListener("change",async e=>{
+  if(e.target.id==="aiShare"&&window.SA){SA.setShare(e.target.checked);return}
   const t=e.target;
   if(t.dataset.sf){let v=t.value.trim();if(t.dataset.sf==="insts")v=v.split("\n").map(x=>x.trim()).filter(Boolean);await saveSetting({[t.dataset.sf]:v});return}
   if(t.dataset.if){const id=t.closest("[data-sid]").dataset.sid;let v=t.type==="checkbox"?t.checked:t.value.trim();if(["sale","cost","mrp","min"].includes(t.dataset.if))v=parseFloat(v)||0;
@@ -2291,8 +2296,9 @@ $("#p-set").addEventListener("click",async e=>{
   if(e.target.closest("[data-prntest]")){printBill({no:"TEST",date:today(),ts:Date.now(),partyName:"टेस्ट",lines:[{name:"आलू",qty:1.5,unit:"kg",rate:20,amt:30}],total:30,pay:{cash:30},byName:biller()});return}
   if(e.target.closest("[data-migrate]")){migrateOld();return}
   if(e.target.closest("[data-updnow]")){runUpdate();return}
+  const fp=e.target.closest("[data-favpin]");if(fp&&window.SA){SA.togglePin(fp.dataset.favpin);return}
   if(e.target.closest("[data-aikey]")){const k=$("#aiKey").value.replace(/\s+/g,""),m=$("#aiMsg");if(k&&(k.length<20||!/^[\w.\-]+$/.test(k))){m.textContent="चाबी अधूरी लगती है — aistudio.google.com से पूरी कॉपी करें (AIza… या AQ.… से शुरू)";return}
-    S.settings.gk=k;if(!S.demo)S.db.collection("settings").doc("main").set({gk:k},{merge:true}).catch(()=>{});if(!k){m.textContent="चाबी हटा दी";return}m.textContent="⏳ जाँच रहे हैं…";
+    if(window.SA&&!S.demo){SA.saveKey(k).catch(()=>{})}else{S.settings.gk=k}SE._ogk=k;if(!k){m.textContent="चाबी हटा दी";return}m.textContent="⏳ जाँच रहे हैं…";
     SE.ai({mode:"ping",onStep:md=>{m.textContent="⏳ Google से पूछ रहे हैं ("+md+")… 5-20 सेकंड"}}).then(r=>{m.textContent=r.ok&&r.busy?"✅ चाबी सही है — Google अभी थोड़ा व्यस्त है, ऐप अपने-आप दोबारा कोशिश करेगा":r.ok?"✅ AI तैयार है ("+r.model+") — अनजान बारकोड इंटरनेट से और पैकेट की फोटो AI से भरेगी":r.error==="quota"?"⚠ चाबी सही है, पर आज की मुफ़्त सीमा पूरी — कल चलेगा ("+(r.detail||"").slice(0,80)+")":r.error==="bad-key"?"⚠ Google ने चाबी नहीं मानी — aistudio.google.com/apikey से दोबारा पूरी कॉपी करें"+(r.detail?" ("+r.detail.replace(/[{}"\n]/g," ").slice(0,90)+")":""):"⚠ नहीं चला: "+(r.error||"")+" "+(r.detail||"")});return}
   const gm=e.target.closest("[data-gem]");if(gm){if(window.SI)SI.copyGemini(gm.dataset.gem);return}
   const ph=e.target.closest("[data-photo]");if(ph){const fi=$("#photoIn");fi.dataset.for=ph.dataset.photo;fi.click();return}
@@ -2453,6 +2459,7 @@ boot();
 <script src="se-market.js"></script>
 <script src="se-label.js"></script>
 <script src="se-receipt.js"></script>
+<script src="se-quick.js"></script>
 <script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>

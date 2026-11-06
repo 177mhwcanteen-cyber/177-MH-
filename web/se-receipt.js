@@ -15,10 +15,10 @@ const SHOW=[
   ["custTag","⭐ ग्राहक टैग (VIP/उधार)"],["billno","बिल नंबर"],["date","तारीख-समय"],["cust","ग्राहक का नाम/नंबर"],
   ["sr","क्र. कॉलम"],["en","अंग्रेज़ी नाम भी"],["rate","भाव कॉलम"],["count","कुल सामान/मात्रा"],["saved","🎉 MRP से बचत"],
   ["pay","भुगतान का तरीका"],["balance","खाते में बाकी"],["qr","UPI QR"],["stamps","PAID / बिलर मुहर"],
-  ["delivery","📲 घर बैठे मँगाएँ डिब्बा"],["nutri","🥗 सेहत का हिसाब"],["note","💬 अपनी लाइन"],["barcode","🔢 बिल नंबर का बारकोड"],
+  ["points","🎁 ग्राहक के पॉइंट"],["delivery","📲 घर बैठे मँगाएँ डिब्बा"],["nutri","🥗 सेहत का हिसाब"],["note","💬 अपनी लाइन"],["barcode","🔢 बिल नंबर का बारकोड"],
   ["foot","🙏 धन्यवाद लाइन"],["biller","बिलर का नाम"]];
 const DEF={theme:"classic",size:"m",shop:"177 MH कैंटीन",tag:"किराना · मिठाई · फास्ट फूड",addr:"आकाशवाणी रोड, बाड़मेर",gst:"",note:"",foot:"🙏 धन्यवाद! फिर पधारें",
-  show:{logo:1,tag:1,addr:1,phone:1,gst:0,custTag:1,billno:1,date:1,cust:1,sr:1,en:1,rate:1,count:0,saved:1,pay:1,balance:1,qr:1,stamps:1,delivery:1,nutri:0,note:0,barcode:0,foot:1,biller:1}};
+  show:{logo:1,tag:1,addr:1,phone:1,gst:0,custTag:1,billno:1,date:1,cust:1,sr:1,en:1,rate:1,count:0,saved:1,pay:1,balance:1,qr:1,stamps:1,delivery:1,points:1,nutri:0,note:0,barcode:1,foot:1,biller:1}};
 SRc.THEMES=THEMES;SRc.SHOW=SHOW;
 SRc.cfg=function(){let s={};try{s=(S.settings&&S.settings.rcpt)||{}}catch(e){}return {...DEF,...s,show:{...DEF.show,...(s.show||{})}}};
 let saveT=0;
@@ -100,6 +100,8 @@ SRc.draw=function(b,o,widthPx,cfg){
     font(fs(18),800,FB);const st="🎉 आपने MRP से "+money(o.saved)+" बचाए",sw=x.measureText(st).width;x.fillText(st,(W-sw)/2,y+(h-fs(18)*1.2)/2);y+=h+px(6)}
   if(sh.pay&&b.pay&&o.paid!==false&&!(sh.stamps&&o.stampL)){const p=b.pay;const parts=[p.cash?"नकद ₹"+p.cash:"",p.upi?"UPI ₹"+p.upi:"",p.udhar?"उधार ₹"+p.udhar:""].filter(Boolean);if(parts.length)T("भुगतान: "+parts.join(" · "),fs(15),"l")}
   if(sh.balance&&o.balance!=null)LR("खाते में कुल बाकी",money(o.balance),fs(17),800);
+  if(sh.points&&o.points&&o.points.left>0){const t2="🎁 आपके पॉइंट: "+o.points.left+(o.points.left>=20?" — अगली बार इनाम":"");font(fs(15),800);const tw=x.measureText(t2).width+px(20),h=fs(26);
+    x.save();x.setLineDash([px(4),px(3)]);x.lineWidth=px(1.5);rr((W-tw)/2,y,tw,h,px(8));x.stroke();x.restore();x.fillText(t2,(W-tw)/2+px(10),y+(h-fs(15)*1.2)/2);y+=h+px(6)}
   /* ---------- QR + मुहर ---------- */
   const qrOn=sh.qr&&o.qr,stL=sh.stamps?o.stampL:null,stR=sh.stamps?o.stampR:null;
   if(qrOn||stL){SEP();if(qrOn)T(o.qrLabel||"स्कैन करके भुगतान करें",fs(16),"c",800);
@@ -135,14 +137,14 @@ SRc.draw=function(b,o,widthPx,cfg){
   if(th==="premium"){x.lineWidth=px(1.5);x.setLineDash([px(4),px(4)]);x.strokeRect(px(4),px(4),W-px(8),y-px(8));x.setLineDash([])}
   const out=document.createElement("canvas");out.width=W;out.height=Math.ceil(y);out.getContext("2d").drawImage(c,0,0);return out;
 };
-SE.receiptCanvas=function(b,o,w){try{return SRc.draw(b,o||{},w)}catch(e){console.warn("receipt",e);return OLD(b,o,w)}};
+SE.receiptCanvas=function(b,o,w){o=o||{};if(o.points==null&&window.SA&&SA.points&&b&&b.custPhone)try{o={...o,points:SA.points(b.custPhone)}}catch(e){}try{return SRc.draw(b,o,w)}catch(e){console.warn("receipt",e);return OLD(b,o,w)}};
 SE.receiptCanvasOld=OLD;
 
 /* ================= नमूना बिल (झलक के लिए) ================= */
 SRc.sample=function(){const lines=[{name:"Shahi Kaju Katli",qty:.5,unit:"kg",rate:840,amt:420},{name:"Mogar Kachori",qty:4,unit:"pc",rate:15,amt:60},{name:"Fortune Mustard Oil 1L",qty:1,unit:"pc",rate:189,amt:189},{name:"Parle-G 70g",qty:3,unit:"pc",rate:10,amt:30}];
   const b={no:"MH-0611-27",date:today(),ts:Date.now(),lines,sub:699,total:699,mode:"cash",pay:{upi:699},byName:"मुकेश भाई",partyName:"",custPhone:""};
   const o={shop:"177 MH कैंटीन",phone:(window.SF&&SF.fmtPh&&SF.orderPh)?SF.fmtPh(SF.orderPh()):"98xxxxxx10",date:fdate(today())+"  "+(typeof ftime==="function"?ftime(Date.now()):""),fq:typeof fq==="function"?fq:(q,u)=>q+" "+u,
-    custTag:"⭐ VIP ग्राहक",vip:true,saved:46,paid:true,upi:"",qr:null,stampL:{l1:"✅ PAID",l2:"by UPI"},stampR:{l1:"🧑‍🌾 बिलिंग",l2:"मुकेश भाई",l3:"05:30 PM"},balance:null};
+    custTag:"⭐ VIP ग्राहक",vip:true,saved:46,points:{left:37},paid:true,upi:"",qr:null,stampL:{l1:"✅ PAID",l2:"by UPI"},stampR:{l1:"🧑‍🌾 बिलिंग",l2:"मुकेश भाई",l3:"05:30 PM"},balance:null};
   try{if(window.SF&&SF.qrCanvas)o.qr=SF.qrCanvas(699,b.no);o.upi=typeof upiId==="function"?upiId():""}catch(e){}
   return {b,o}};
 

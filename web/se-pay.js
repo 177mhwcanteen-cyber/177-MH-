@@ -15,7 +15,10 @@ const acctLabel=l4=>{l4=String(l4||"").replace(/\D/g,"").slice(-4);if(!l4)return
 
 SP.onDb=function(db){
   if(!S.isOwner||S.demo&&!db)return;
-  db.collection("pay").onSnapshot(s=>{ST.pay=s.docs.map(d=>({id:d.id,...d.data()}));ST.ready=true;rer()},()=>{});
+  /* ⚡ तेज़: सिर्फ़ पिछले 180 दिन + सारे "बिना मिलान" वाले लाइव — महीनों बाद भी ऐप हल्का (पुराना डेटा Firebase में वैसा ही) */
+  const P={a:[],b:[]},mergeP=()=>{const m=new Map();P.a.concat(P.b).forEach(x=>m.set(x.id,x));ST.pay=[...m.values()];ST.ready=true;rer()};
+  db.collection("pay").where("date",">=",dayAdd(today(),-180)).onSnapshot(s=>{P.a=s.docs.map(d=>({id:d.id,...d.data()}));mergeP()},()=>{});
+  db.collection("pay").where("kind","==","unmatched").onSnapshot(s=>{P.b=s.docs.map(d=>({id:d.id,...d.data()}));mergeP()},()=>{});
   db.collection("payees").onSnapshot(s=>{ST.payees=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.total||0)-(a.total||0));rer()},()=>{});
   db.doc("ownerCfg/accounts").onSnapshot(s=>{ST.accts=(s.exists&&s.data().list)||[];rer()},()=>{});
   loadPurch();
