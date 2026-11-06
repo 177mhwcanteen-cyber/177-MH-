@@ -79,14 +79,24 @@ async def main():
         assert await pg.locator("#p-report .rp-fav button").count() == 4
         await pg.click('#p-report .rp-fav [data-rsel="full"]'); await pg.wait_for_timeout(200)
         assert "कुल बिक्री" in await pg.text_content("#p-report") and await pg.locator("#p-report [data-a4]").count() == 1
-        for rid in ["brief","chart","galla","flags","staff","short","profit","udhar","topc","inst","range","rr","tools"]:
+        for rid in ["brief","chart","galla","flags","hour","sleep","area","staff","short","profit","udhar","topc","inst","range","rr","tools"]:
             await pg.evaluate(f"S.repSel='{rid}';renderReport()"); await pg.wait_for_timeout(60)
         await pg.evaluate("S.repSel='';renderReport()")
         for tb in ["stock","udhar","day","bills"]:
             await pg.click(f'#p-report .rp-go[data-rtab="{tb}"]'); await pg.wait_for_timeout(150)
             assert await pg.evaluate("S.tab") == tb and not await pg.evaluate(f"document.getElementById('p-{tb}').hidden")
             await pg.evaluate("S.tab='report';showTab()"); await pg.wait_for_timeout(150)
-        print("dashboard + report hub ok")
+        await pg.evaluate("S.repSel='hour';renderReport()"); await pg.wait_for_timeout(100)
+        await pg.screenshot(path=f"{SHOTS}/q3c-hour.png")
+        await pg.evaluate("S.repSel='';renderReport()")
+        # 🧭 सेटिंग की "सीधे जाएँ" पट्टी
+        await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_timeout(400)
+        n = await pg.locator("#p-set .snav button").count(); assert n >= 6, n
+        await pg.screenshot(path=f"{SHOTS}/q3d-setnav.png")
+        await pg.locator("#p-set .snav button").nth(n - 1).click(); await pg.wait_for_timeout(500)
+        assert await pg.evaluate("window.scrollY") > 300
+        await pg.evaluate("S.tab='report';showTab()"); await pg.wait_for_timeout(200)
+        print("dashboard + report hub + set nav ok")
 
         # 📲 उधार की याद
         await pg.evaluate("""()=>{S.parties=[{id:'p1',name:'सुरेश भाई',phone:'9829012345'},{id:'p2',name:'बिना नंबर',phone:''}];S.ledger=[{id:'x1',partyId:'p1',type:'udhar',amt:450,date:today(),ts:Date.now()},{id:'x2',partyId:'p2',type:'udhar',amt:90,date:today(),ts:Date.now()}];S.tab='udhar';showTab()}""")
