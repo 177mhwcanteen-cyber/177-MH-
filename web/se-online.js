@@ -68,7 +68,8 @@ SON.step=async function(id,st,extra){extra=extra||{};const o=(SX.orders||[]).fin
   const pubSt={new:"new",billing:"pack",acc:"acc",pack:"pack",out:"out",done:"done",cancel:"cancel"}[st]||st;
   const msg=extra.msg?rom(extra.msg):(st==="out"&&extra.rider?"🛵 "+rom(extra.rider)+" is bringing your order":st==="pack"?"Your items are being packed":"");
   try{if(!S.demo&&S.db){await S.db.collection("orders").doc(id).update({status:st,dts:Date.now(),byName:biller()||"",...(etaTs?{etaTs}:{}),...(extra.rider?{rider:extra.rider}:{}),...(extra.billNo?{billNo:extra.billNo}:{}),...(extra.reason?{reason:extra.reason}:{})});
-      await S.db.collection("pub").doc("ot_"+id).set({st:pubSt,ts:Date.now(),by,...(etaTs?{eta:etaTs}:{}),...(msg?{msg}:{}),...(extra.billNo?{billNo:extra.billNo}:{})},{merge:true})}}
+      const pp=window.SA&&SA.points&&o.phone?SA.points(String(o.phone).replace(/\D/g,"").slice(-10)):null;/* 🎁 ग्राहक को उसके पॉइंट दिखें (सिर्फ़ गिनती) */
+      await S.db.collection("pub").doc("ot_"+id).set({st:pubSt,ts:Date.now(),by,...(pp?{pts:pp.left,ptsPer:+((S.settings&&S.settings.pts&&S.settings.pts.per)||100)}:{}),...(etaTs?{eta:etaTs}:{}),...(msg?{msg}:{}),...(extra.billNo?{billNo:extra.billNo}:{})},{merge:true})}}
   catch(e){toast("नहीं हुआ: "+(e.code||e.message||""));return false}
   toast(({acc:"✓ ऑर्डर स्वीकार — ग्राहक को दिख रहा",pack:"📦 पैक हो रहा",out:"🛵 रास्ते में",done:"✅ ऑर्डर पूरा",cancel:"✕ रद्द"})[st]||"✓");return true};
 if(window.SX)SX.orderSet=(id,status,extra)=>SON.step(id,status,extra);
@@ -92,7 +93,7 @@ SON.sheet=function(){const L=SX.orders||[];const link=SON.link();
   <div class="sh-head"><div><h3>📥 घर बैठे ऑर्डर (${L.length})</h3><span class="note">नया ऑर्डर तुरंत स्वीकार करें — ग्राहक अपने फोन पर देख रहा है</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
   ${L.length?L.map(card).join(""):'<div class="empty">अभी कोई ऑर्डर नहीं 🙂</div>'}
   <details class="card2 son-acc"><summary><b>👤 ऑनलाइन खाते (${(SON.accts||[]).length})</b></summary>${SON.acctHTML(30)}</details>
-  <div class="son-ft"><button class="big ghost" data-sxolink>🔗 लिंक भेजें</button><button class="big ghost" data-sxposter>🖨️ QR पोस्टर</button></div>
+  <div class="son-ft"><button class="big ghost" data-sxolink>🔗 लिंक भेजें</button><button class="big ghost" data-sonqr>📲 QR कार्ड</button></div>
   <p class="note" style="text-align:center;margin:6px 0 0">${esc(link)}</p></div></div>`};
 document.addEventListener("click",async e=>{const t=e.target;let b;
   if((b=t.closest("[data-sona]"))){b.disabled=true;await SON.step(b.dataset.sona,"acc",{mins:+b.dataset.mins});SON.alarm();return}
@@ -100,6 +101,8 @@ document.addEventListener("click",async e=>{const t=e.target;let b;
   if((b=t.closest("[data-sonout]"))){const r=prompt("कौन ले जा रहा है? (नाम)",LSx.get("son_rider")||String(biller()||"").split(/\s+/)[0]);if(r===null)return;LSx.set("son_rider",r.trim());await SON.step(b.dataset.sonout,"out",{rider:r.trim().slice(0,20)});return}
   if((b=t.closest("[data-sonx]"))){const r=prompt("रद्द क्यों? (ग्राहक को अंग्रेज़ी में दिखेगा)","Item out of stock");if(r===null)return;await SON.step(b.dataset.sonx,"cancel",{reason:r.slice(0,60),msg:r.slice(0,60)});return}
   if((b=t.closest("[data-sonon]"))){SON.save({[b.dataset.sonon]:!SON.cfg()[b.dataset.sonon]});try{renderSettings()}catch(x){}return}
+  if(t.closest("[data-sonqr]")){SON.qrSheet();return}
+  if((b=t.closest("[data-sonqrsh]"))){SON.qrShare(b.dataset.sonqrsh);return}
   if(t.closest("[data-sonpub]")){await SON.publish(true);toast("✓ ग्राहक-पेज पर आज के भाव और स्टॉक भेज दिए");return}
   if((b=t.closest("[data-noonline]"))){const it=item(b.dataset.noonline);if(!it)return;const v=!it.noOnline;it.noOnline=v;
     try{if(!S.demo&&S.db)await S.db.collection("items").doc(it.id).update({noOnline:v})}catch(x){}b.setAttribute("aria-pressed",String(!v));toast(v?"🌐 ऑनलाइन से छिपाया":"🌐 ऑनलाइन दिखेगा");SON.publish(true)}});
@@ -109,6 +112,39 @@ document.addEventListener("click",async e=>{const t=e.target;let b;
 SON.alarm=function(){clearInterval(SON._al);SON._al=setInterval(()=>{const n=(SX.orders||[]).filter(o=>o.status==="new").length;if(!n){clearInterval(SON._al);SON._al=0;return}
   try{beep(true);setTimeout(()=>beep(true),300)}catch(e){}try{if(navigator.vibrate)navigator.vibrate([150,80,150])}catch(e){}},45000)};
 const op=window.SX&&SX.orderPill;if(op)SX.orderPill=function(){op.apply(this,arguments);if((SX.orders||[]).some(o=>o.status==="new")&&!SON._al)SON.alarm()};
+
+/* ================= 📲 घर-घर का QR कार्ड (छापकर हर घर पर — स्कैन करो, ऑर्डर करो) ================= */
+SON.qrCanvas=async function(){const link=SON.link(),W=1240,H=1748,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  try{await document.fonts.load('800 60px "Baloo 2"');await document.fonts.load('700 40px "Mukta"')}catch(e){}
+  const F=(w,px,f)=>`${w} ${px}px ${f||'"Baloo 2","Mukta",sans-serif'}`,ctr=(t,y,f,col)=>{x.font=f;x.fillStyle=col||"#14181c";x.textAlign="center";x.fillText(t,W/2,y)};
+  const rr=(X,Y,w,h,r)=>{x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()};
+  x.fillStyle="#fffdf5";x.fillRect(0,0,W,H);
+  x.fillStyle="#f8cb46";x.fillRect(0,0,W,400);x.fillStyle="#0c831f";x.fillRect(0,400,W,16);
+  try{const im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src="icon.png"});x.save();rr(W/2-70,40,140,140,30);x.clip();x.drawImage(im,W/2-70,40,140,140);x.restore()}catch(e){}
+  ctr("177 MH Canteen",262,F(800,92),"#1a1a1a");ctr("Military Hospital · Akashvani Road, Barmer",330,F(700,40),"#3b3b2f");ctr("मिलिट्री हॉस्पिटल कैंटीन",385,F(700,38),"#3b3b2f");
+  ctr("घर बैठे ऑर्डर करें",520,F(800,96),"#0a6b19");ctr("Scan · Order · Get it at your door 🛵",590,F(700,44),"#14181c");
+  x.fillStyle="#fff";x.strokeStyle="#0c831f";x.lineWidth=10;rr(W/2-410,640,820,820,48);x.fill();x.stroke();
+  let m=null;try{const q=new QRCode(document.createElement("div"),{text:link,width:64,height:64,correctLevel:QRCode.CorrectLevel?QRCode.CorrectLevel.H:2});m=q&&q._oQRCode}catch(e){}
+  if(!m)throw new Error("QR");const n=m.getModuleCount(),cs=Math.floor(720/n),o0=Math.round(W/2-cs*n/2),o1=Math.round(1050-cs*n/2);x.fillStyle="#0b3d14";
+  for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(m.isDark(r,k))x.fillRect(o0+k*cs,o1+r*cs,cs,cs);
+  x.fillStyle="#fff";rr(W/2-76,974,152,152,28);x.fill();try{const im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src="icon.png"});x.drawImage(im,W/2-58,992,116,116)}catch(e){}
+  ctr("📷 कैमरा खोलें → QR पर रखें → ऑर्डर करें",1530,F(700,44));
+  ctr("🍬 मिठाई · 🥟 नाश्ता · 🛒 किराना · 🥛 दूध",1600,F(700,42),"#3b3b2f");
+  const ph=String((S.settings&&(S.settings.ownerPh||S.settings.shopPh))||"").replace(/\D/g,"").slice(-10);
+  x.fillStyle="#0c831f";x.fillRect(0,H-100,W,100);ctr((ph?"📞 "+ph+"  ·  ":"")+link.replace(/^https?:\/\//,""),H-36,F(700,36),"#fff");
+  return c};
+SON.qrSheet=async function(){toast("📲 QR कार्ड बन रहा है…");let c;try{c=await SON.qrCanvas()}catch(e){toast("QR नहीं बना");return}SON._qr=c;
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="QR कार्ड"><div class="grab"></div><div class="sh-head"><h3>📲 घर-घर का QR कार्ड</h3><button class="x" data-close aria-label="बंद करें">✕</button></div>
+    <img src="${c.toDataURL("image/jpeg",.9)}" alt="QR कार्ड" style="width:100%;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.12)">
+    <p class="note">इसे छपवाकर हर घर/क्वार्टर पर लगाएँ — ग्राहक कैमरे से स्कैन करके सीधा ऑर्डर पेज खोलेगा। आकार A6 (पोस्टकार्ड) — A4 पर 4 भी छप सकते हैं।</p>
+    <div class="row2" style="margin:0"><button class="big" data-sonqrsh="share">📤 WhatsApp / शेयर</button><button class="big ghost" data-sonqrsh="save">⬇️ फोटो सेव</button></div></div></div>`;
+  $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")||e.target.closest(".x[data-close]"))closeSheet()}};
+SON.qrShare=async function(how){const c=SON._qr||await SON.qrCanvas(),name="MH177_Order_QR.png",txt="🛵 177 MH Canteen — घर बैठे ऑर्डर करें: "+SON.link();
+  try{if(window.SENative&&SENative.isNative){await SENative.BtPrinter.shareBytes({name,data:c.toDataURL("image/png").split(",")[1],mime:"image/png"});return}
+    const blob=await new Promise(r=>c.toBlob(r,"image/png")),f=new File([blob],name,{type:"image/png"});
+    if(how==="share"&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:txt});return}
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("⬇️ QR कार्ड सेव हो गया")}
+  catch(e){if(e&&e.name!=="AbortError")toast("शेयर नहीं हुआ")}};
 
 /* ================= ⚙️ 🛵 ऑनलाइन दुकान ================= */
 SON.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const c=SON.cfg(),L=SON.list(),out=L.filter(i=>i.k===0).length,tob=S.items.filter(i=>i.active!==false&&typeof isTob==="function"&&isTob(i)).length;
@@ -120,7 +156,7 @@ SON.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const c=SON.cfg(),L
     <label class="fld">दुकान खुलती<input class="inp" type="time" data-sonf="open" value="${esc(c.open)}"></label><label class="fld">बंद होती<input class="inp" type="time" data-sonf="close" value="${esc(c.close)}"></label></div>
   <div class="son-ln"><code>${esc(SON.link())}</code></div>
   <div class="row2" style="margin:0"><a class="big ghost" href="${esc(SON.link())}" target="_blank" rel="noopener">👀 ग्राहक-पेज देखें</a><button class="big ghost" data-sxolink>💬 WhatsApp पर भेजें</button></div>
-  <div class="row2" style="margin:0"><button class="big ghost" data-sxposter>🖨️ दुकान के लिए QR पोस्टर</button><button class="big ghost" data-sonpub>🔄 भाव/स्टॉक अभी भेजें</button></div>
+  <div class="row2" style="margin:0"><button class="big" data-sonqr>📲 घर-घर का QR कार्ड</button><button class="big ghost" data-sxposter>🖼️ भाव-पोस्टर</button></div><div class="row2" style="margin:0"><button class="big ghost" data-sonpub>🔄 भाव/स्टॉक अभी भेजें</button></div>
   <details class="son-acc"><summary><b>👤 ऑनलाइन खाते (${(SON.accts||[]).length})</b> <span class="note">— किसने खाता बनाया / नंबर बदला</span></summary>${SON.acctHTML(50)}</details>
   <p class="note" style="margin:0">हर सामान को ऑनलाइन से छिपाने के लिए नीचे सामान की पंक्ति में 🌐 दबाएँ। सिगरेट-तम्बाकू अपने-आप कभी नहीं दिखते।</p></div>`};
 document.addEventListener("change",e=>{const t=e.target;if(!t.dataset||!t.dataset.sonf)return;const k=t.dataset.sonf;SON.save({[k]:k==="open"||k==="close"?t.value:num(t.value)})});

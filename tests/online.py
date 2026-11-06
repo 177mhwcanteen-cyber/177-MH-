@@ -69,7 +69,18 @@ async def main():
         await pg.click("#p-set [data-sopen]"); await pg.wait_for_timeout(100)
         assert await pg.locator("#sonSet").count() == 1 and await pg.locator("#p-set [data-noonline]").count() > 0
         el = await pg.query_selector("#sonSet"); await el.screenshot(path=f"{SHOTS}/o2-settings.png")
-        print("shop orders + settings ok")
+        # 📲 घर-घर का QR कार्ड: स्कैन करने पर ऑर्डर पेज
+        await pg.click("#sonSet [data-sonqr]"); await pg.wait_for_selector("#sheet img[alt='QR कार्ड']", timeout=8000); await pg.wait_for_timeout(600)
+        await pg.screenshot(path=f"{SHOTS}/o2b-qr-sheet.png")
+        b64 = await pg.evaluate("SON._qr.toDataURL('image/png').split(',')[1]")
+        import base64, numpy as np, cv2
+        img = cv2.imdecode(np.frombuffer(base64.b64decode(b64), np.uint8), cv2.IMREAD_COLOR)
+        cv2.imwrite(f"{SHOTS}/o2c-qr-card.png", img)
+        val, _, _ = cv2.QRCodeDetector().detectAndDecode(img)
+        link = await pg.evaluate("SON.link()")
+        assert val == link, (val, link)
+        await pg.evaluate("closeSheet()")
+        print("shop orders + settings + QR ok")
 
         # ---------- ग्राहक-पेज ----------
         posted = {}
@@ -88,7 +99,7 @@ async def main():
                 return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/AbCdEf123456", "fields": posted["fields"]})
             if "/documents/pub/ot_AbCdEf123456" in u:
                 if track["st"] == "new": return await route.fulfill(status=404, json={})
-                return await route.fulfill(json={"fields": {"st": fsv(track["st"]), "eta": fsv(1893456000000), "by": fsv("Manohar")}})
+                return await route.fulfill(json={"fields": {"st": fsv(track["st"]), "eta": fsv(1893456000000), "by": fsv("Manohar"), **({"pts": fsv(25), "ptsPer": fsv(100)} if track["st"] == "done" else {})}})
             return await route.fulfill(status=404, json={})
         c = await ctx.new_page()
         c.on("pageerror", lambda e: errs.append("page: " + str(e)))
@@ -142,15 +153,37 @@ async def main():
         await c.screenshot(path=f"{SHOTS}/o6-track.png")
         # दुकान ने स्वीकार किया → ट्रैकिंग में दिखे
         track["st"] = "acc"
-        await c.click(".sheet .x"); await c.click("#myo"); await c.click("[data-trk]"); await c.wait_for_timeout(400)
+        await c.click(".sheet .x"); await c.click("#myo"); await c.click("#ov [data-trk]"); await c.wait_for_timeout(400)
         assert "Manohar" in await c.text_content(".trk") and await c.locator(".st.done").count() >= 1
         await c.screenshot(path=f"{SHOTS}/o7-track-acc.png")
         # फिर से मँगाएँ
         await c.click(".sheet .x"); await c.click("#myo"); await c.click("[data-again]"); await c.wait_for_timeout(150)
         assert not await c.locator("#cbar").is_hidden()
         # ✏️ नंबर बदला → दुकान को दोनों नंबर
-        await c.click("[data-chacc2]"); await c.fill("#wph", "9000012345"); await c.click("#wgo"); await c.wait_for_timeout(300)
+        await c.click("#me"); await c.click("#ov [data-chacc2]"); await c.fill("#wph", "9000012345"); await c.click("#wgo"); await c.wait_for_timeout(300)
         assert len(signups) == 2 and "old:9876543210" in signups[1]["note"]["stringValue"] and signups[1]["phone"]["stringValue"] == "9000012345", signups[-1]
+        # 🟢 चालू ऑर्डर: पॉप-अप नहीं, ऊपर पट्टी · 👤 ऊपर खाते का बटन
+        await c.reload(); await c.wait_for_timeout(1800)
+        assert not await c.locator("#ov .sheet").count(), "पुराना ऑर्डर अपने-आप न खुले"
+        assert "Track" in await c.text_content("#livebar") and "Ramesh" in await c.text_content("#me")
+        await c.screenshot(path=f"{SHOTS}/o8-live.png")
+        # ✅ पहुँच गया → पट्टी गायब, पॉइंट ऊपर, My orders में Delivered
+        track["st"] = "done"; await c.reload(); await c.wait_for_timeout(1800)
+        assert not await c.locator("#ov .sheet").count() and not (await c.text_content("#livebar")).strip()
+        assert "25 pts" in await c.text_content("#me"), await c.text_content("#me")
+        await c.click("#me"); await c.wait_for_selector(".ptsb")
+        assert "25" in await c.text_content(".ptsb") and "Delivered" in await c.text_content(".sheet")
+        await c.screenshot(path=f"{SHOTS}/o9-myorders-pts.png"); await c.click(".sheet .x")
+        assert not await c.evaluate("document.body.classList.contains('locked')")
+        # 👴 पुराना ग्राहक (खाते से पहले ऑर्डर किया): दोबारा नाम-नंबर न पूछे
+        await c.evaluate("localStorage.removeItem('mh_acc');localStorage.setItem('mh_me',JSON.stringify({nm:'Old Singh',ph:'9414000000'}))")
+        await c.reload(); await c.wait_for_timeout(1500)
+        assert not await c.evaluate("document.body.classList.contains('locked')") and not await c.locator("#wgo").count()
+        assert "Old" in await c.text_content("#me")
+        # नया ग्राहक: welcome बंद नहीं होता, ऊपर "Sign in" से भी खुलता
+        await c.evaluate("localStorage.clear()"); await c.reload(); await c.wait_for_selector("#wgo")
+        assert "Sign in" in await c.text_content("#me")
+        print("account/live/points ok")
         # पुराना लिंक नए पेज पर
         o = await ctx.new_page(); await o.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={};", content_type="application/javascript"))
         await o.goto("http://127.0.0.1:8770/o.html"); await o.wait_for_timeout(600)
