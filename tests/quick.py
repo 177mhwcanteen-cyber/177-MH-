@@ -69,7 +69,20 @@ async def main():
         await pg.evaluate("S.tab='report';showTab()"); await pg.wait_for_timeout(300)
         assert await pg.locator("#p-report .dash .dk").count() == 1 and await pg.locator("#p-report .d7 rect").count() == 7
         el = await pg.query_selector("#p-report .dash"); await el.screenshot(path=f"{SHOTS}/q3-dash.png")
-        print("dashboard ok")
+        # 📊 रिपोर्ट-क्षेत्र: समूह, ⭐ पसंदीदा, टैप = वही रिपोर्ट, ‹ वापस
+        assert await pg.locator("#p-report .rp-g").count() == 4 and await pg.locator("#p-report .rp-fav button").count() == 3
+        await pg.screenshot(path=f"{SHOTS}/q3b-report-hub.png", full_page=True)
+        await pg.click('#p-report .rp-go[data-rsel="items"]'); await pg.wait_for_timeout(200)
+        assert "सामान-वार बिक्री" in await pg.text_content("#p-report") and not await pg.locator("#p-report .rp-g").count()
+        await pg.click("#p-report .rp-back"); await pg.wait_for_timeout(200)
+        await pg.click('#p-report [data-rfav="staff"]'); await pg.wait_for_timeout(200)
+        assert await pg.locator("#p-report .rp-fav button").count() == 4
+        await pg.click('#p-report .rp-fav [data-rsel="full"]'); await pg.wait_for_timeout(200)
+        assert "कुल बिक्री" in await pg.text_content("#p-report") and await pg.locator("#p-report [data-a4]").count() == 1
+        for rid in ["brief","chart","galla","flags","staff","short","profit","udhar","topc","inst","range","rr","tools"]:
+            await pg.evaluate(f"S.repSel='{rid}';renderReport()"); await pg.wait_for_timeout(60)
+        await pg.evaluate("S.repSel='';renderReport()")
+        print("dashboard + report hub ok")
 
         # 📲 उधार की याद
         await pg.evaluate("""()=>{S.parties=[{id:'p1',name:'सुरेश भाई',phone:'9829012345'},{id:'p2',name:'बिना नंबर',phone:''}];S.ledger=[{id:'x1',partyId:'p1',type:'udhar',amt:450,date:today(),ts:Date.now()},{id:'x2',partyId:'p2',type:'udhar',amt:90,date:today(),ts:Date.now()}];S.tab='udhar';showTab()}""")

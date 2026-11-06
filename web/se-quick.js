@@ -170,7 +170,7 @@ const css=document.createElement("style");css.textContent=`
 
 /* ================= जोड़ (पुराने फ़ंक्शन के ऊपर, बिना उन्हें बदले) ================= */
 function wrap(name,after){const f=window[name];if(typeof f!=="function"||f._sq)return;const g=function(){const r=f.apply(this,arguments);try{after.apply(this,arguments)}catch(e){console.warn("SA "+name,e)}return r};g._sq=1;window[name]=g}
-wrap("renderReport",()=>{const el=$("#p-report");if(!el||el.querySelector(".dash"))return;const h=el.querySelector("h2");const html=SA.dashHTML();if(!html)return;if(h)h.insertAdjacentHTML("afterend",html);else el.insertAdjacentHTML("afterbegin",html)});
+wrap("renderReport",()=>{const el=$("#p-report");if(!el||el.querySelector(".dash")||!el.querySelector(".rp-g"))return;const h=el.querySelector(".daterow")||el.querySelector("h2");const html=SA.dashHTML();if(!html)return;if(h)h.insertAdjacentHTML("afterend",html);else el.insertAdjacentHTML("afterbegin",html)});
 wrap("renderUdhar",()=>{const el=$("#p-udhar");if(!el||el.querySelector(".rmd"))return;const html=SA.remindHTML();if(!html)return;const h=el.querySelector("h2");if(h)h.insertAdjacentHTML("afterend",html);else el.insertAdjacentHTML("afterbegin",html)});
 wrap("renderBcust",()=>{const b=$("#bcust");if(!b||S.mode!=="walk"||b.querySelector(".ptsp"))return;const p=SA.points(S.cust&&S.cust.phone);if(!p)return;
   const x=document.createElement("button");x.type="button";x.className="ptsp";x.dataset.pts=S.cust.phone;x.textContent="🎁 "+p.left;x.setAttribute("aria-label",p.left+" पॉइंट");b.appendChild(x)});
