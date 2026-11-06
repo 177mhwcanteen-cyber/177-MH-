@@ -118,6 +118,16 @@ async def main():
         after = await pg.evaluate(f"(i=>({{name:i.name,hi:i.hi,brand:i.brand,sale:i.sale,stock:i.stock}}))(item('{it[2]['id']}'))")
         assert after["name"] == "EVEREST BIRYANI MASALA 50G" and after["brand"] == "EVEREST" and after["hi"].startswith("एवरेस्ट"), after
         assert after["sale"] == before["sale"] and after["stock"] == before["stock"], (before, after)
+        # 🎨 हर सामान का अपना प्रॉम्प्ट: AI के "img" से सेव, सूची में एक टैप = कॉपी
+        await pg.evaluate("""(()=>{const P=SPH.fix('{"app":"mh177","mode":"fix","items":[{"barcode":"8901786140503","imgKind":"ref","img":"Use my attached photo of EVEREST BIRYANI MASALA 50G as the only reference."}]}');P.forEach(x=>x.it&&Object.assign(x.it,x.p))})()""")
+        assert "EVEREST BIRYANI" in await pg.evaluate(f"item('{it[2]['id']}').aiPrompt")
+        sab = await pg.evaluate("SPH.makePrompt({name:'tomato',hi:'टमाटर',cat:'sabzi'})"); assert "cut in half" in sab and "TOMATO" in sab
+        await pg.click("[data-sphpl]"); await pg.wait_for_selector("#sheet [data-sphpc]"); await pg.wait_for_timeout(700)
+        await pg.screenshot(path=f"{SHOTS}/p3-prompts.png")
+        await pg.locator("#sheet [data-sphpc]").first.click(); await pg.wait_for_timeout(200)
+        assert "कॉपी" in await pg.text_content("#sheet [data-sphpc]")
+        await pg.evaluate("closeSheet()")
+        src = await pg.evaluate("fetch('se-intake.js').then(r=>r.text())"); assert '"imgKind":"ref","img"' in src and "cut in half" in src
         print("blur/grid/fix ok")
         # 📦 फोटो से माल → ZIP (READ-ME + items.csv + फोटो), दो कदम वाला निर्देश
         z = await pg.evaluate("""async()=>{SI.open();const B={};return 1}""")

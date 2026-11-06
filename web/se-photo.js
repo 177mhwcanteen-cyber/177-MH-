@@ -58,6 +58,12 @@ SPH.scan=async function(){const A=S.items.filter(i=>pub(i)&&i.photo&&SE.photos&&
   LSx.set(QK,JSON.stringify(q));return {n:A.length,bad}};
 async function mark(id,p){const it=item(id);if(!it)return;Object.assign(it,p);if(!S.demo&&S.db)try{await S.db.doc("items/"+id).update(p)}catch(e){toast("सेव नहीं हुआ")}}
 const isFood=i=>["mithai","fast","mela"].includes(i.cat);
+SPH.makePrompt=function(i){const n=SE.capNm(i.name),hi=i.hi?` (${i.hi})`:"";
+  if(i.cat==="sabzi")return `Fresh ${n}${hi}: 3-4 whole pieces and one cut in half showing the fresh inside, tiny water droplets, on pure white background, soft daylight, realistic e-commerce photo like Blinkit, square 800x800, no text, no hands.`;
+  if(i.cat==="mithai")return `Fresh Indian sweet ${n}${hi}: a few pieces neatly arranged on a white plate, one piece in front showing its texture, 45° view, pure white background, soft warm light, realistic and tasty, square 800x800, no text.`;
+  return `Freshly made Indian ${n}${hi} as served in a canteen: on a white plate or steel thali, 45° view, hot and tasty with natural garnish, pure white background, soft light, realistic food photo, square 800x800, no text, no hands.`};
+/* हर सामान की पंक्ति: उसका अपना प्रॉम्प्ट (AI का लिखा) या अपने-आप वाला */
+SPH.itemPrompt=i=>i.aiPrompt||(isFood(i)||i.cat==="sabzi"?SPH.makePrompt(i):(window.SI&&SI.geminiPrompt?SI.geminiPrompt(i):""));
 SPH.foodPrompt=function(L){return `I own "177 MH Canteen" (Military Hospital canteen, Barmer, India). We COOK these dishes ourselves in our shop kitchen — they have NO brand and NO pack, so there is no "original" photo to find.
 I, the owner, ASK you to CREATE (generate) one photo for each dish. A generated photo is exactly what I want here — it is not fake, it is a menu picture for my own dishes.
 
@@ -132,6 +138,14 @@ SPH.importFiles=async function(files){const jobs=[];
   if(un.length){SPH.pick(un,ok);return {ok,miss}}
   toast(`✓ ${ok} असली फोटो लगीं (हर एक ≤20 KB)${miss.length?` · ${miss.length} का सामान नहीं मिला: ${miss.slice(0,4).join(", ")}${miss.length>4?"…":""}`:""}`);return {ok,miss}};
 
+/* 🎨 हर सामान का अपना प्रॉम्प्ट — सूची, एक टैप = कॉपी (फिर Gemini में अपनी फोटो के साथ/बिना चिपकाएँ) */
+SPH.promptList=function(){const N=SPH.need().map(x=>x.i);
+  $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:50px;max-height:86vh;overflow:auto" role="dialog" aria-label="फोटो प्रॉम्प्ट">
+    <div class="sl-ah"><b>🎨 ${N.length} सामान के फोटो-प्रॉम्प्ट</b><span></span><button class="x" data-close aria-label="बंद करें">✕</button></div>
+    <p class="note" style="margin:0">📷 = Gemini में <b>अपनी खींची फोटो के साथ</b> चिपकाएँ (असली पैकेट साफ़ बनेगा) · ✨ = बिना फोटो, Gemini खुद बनाएगा। बनी फोटो "📥 ZIP / फोटो डालें" से लगाएँ।</p>
+    <div class="list">${N.map(i=>{const k=i.imgKind||(isFood(i)||i.cat==="sabzi"?"make":"ref");return `<div class="li" style="align-items:flex-start;gap:8px">${SE.photos&&SE.photos[i.id]?`<img src="${SE.photos[i.id]}" alt="" style="width:44px;height:44px;object-fit:contain;border-radius:8px;background:#fff;flex:none">`:`<span style="font-size:26px;flex:none">${esc(i.emoji||"📦")}</span>`}<div class="mid"><b>${k==="make"?"✨":"📷"} ${esc(SE.capNm(i.short||i.name))}</b><span style="white-space:normal;font-size:11.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(SPH.itemPrompt(i).slice(0,120))}</span></div><button class="lnk" data-sphpc="${esc(i.id)}" style="flex:none">📋 कॉपी</button></div>`}).join("")||'<p class="note">सबकी अच्छी फोटो लग चुकी है 🎉</p>'}</div></div>`;
+  $("#sheet").onclick=async e=>{if(e.target.closest("[data-close]")){closeSheet();return}const b=e.target.closest("[data-sphpc]");if(!b)return;const it=item(b.dataset.sphpc);if(!it)return;
+    SPH._lastIds=[it.id];if(await SPH.copy(SPH.itemPrompt(it))){b.textContent="✓ कॉपी";toast("📋 प्रॉम्प्ट कॉपी — Gemini में चिपकाएँ")}else toast("कॉपी नहीं हुआ")}};
 /* 🖐️ नाम न मिला (गैलरी में सेव की फोटो): फोटो दिखाओ, नीचे सामान चुनो — पिछले प्रॉम्प्ट वाले पहले */
 SPH.pick=function(Q,done){done=done||0;let k=0,qs="";const url={};
   const cand=()=>{const ids=SPH._lastIds||[],N=SPH.need().map(x=>x.i),A=S.items.filter(pub);const o=[...ids.map(id=>item(id)).filter(Boolean),...N,...A];const seen=new Set();
@@ -163,6 +177,7 @@ SPH.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const N=SPH.need(),
   <button class="big" data-sphin>📥 ZIP / फोटो डालें</button><input type="file" id="sphFile" accept="image/*,.zip,application/zip,.html,.htm" multiple hidden>
   <div class="row2" style="margin:0"><button class="big ghost" data-sphscan>🔍 धुंधली फोटो ढूँढें</button><button class="big ghost" data-sphview>👀 फोटो देखें</button></div>
   <button class="big ghost" data-sphfix>📝 AI का सुधार चिपकाएँ (नाम/हिंदी/ब्रांड)</button>
+  <button class="big ghost" data-sphpl>🎨 हर सामान का अपना फोटो-प्रॉम्प्ट (Gemini) — ${N.length} बाकी</button>
   <p class="note" style="margin:0">हर फोटो अपने-आप साफ़ कटकर ≤20 KB की बनती है। खराब फोटो पर "👀 फोटो देखें" में टैप करें — वह सूची में आ जाएगी।</p></div>`};
 /* 👀 सब फोटो एक जाली में — टैप: 🔁 बदलवानी है ⇄ ✓ ठीक है */
 SPH.view=function(f){f=f||"all";const q=qGet(),A=S.items.filter(i=>pub(i)&&i.photo&&SE.photos&&SE.photos[i.id]);
@@ -181,7 +196,7 @@ SPH.fix=function(t){let s=String(t||"");const f=s.match(/```(?:json)?\s*([\s\S]*
     const p={};const cap=v=>SE.capNm(String(v).trim());
     if(r.name&&cap(r.name)!==it.name)p.name=cap(r.name).slice(0,40);if(r.short)p.short=cap(r.short).slice(0,24);else if(p.name&&p.name.length>24&&!it.short)p.short=p.name.slice(0,24);
     if(r.hi&&r.hi!==it.hi)p.hi=String(r.hi).slice(0,40);if(r.brand&&cap(r.brand)!==it.brand)p.brand=cap(r.brand).slice(0,30);if(r.size&&r.size!==it.size)p.size=String(r.size).slice(0,16);
-    if(r.emoji&&!it.emoji)p.emoji=String(r.emoji).slice(0,4);if(+r.mrp>0&&!(+it.mrp))p.mrp=+r.mrp;/* भाव कभी नहीं बदलता — सिर्फ़ खाली MRP भरता है */
+    if(r.emoji&&!it.emoji)p.emoji=String(r.emoji).slice(0,4);if(r.img&&String(r.img).trim()!==it.aiPrompt){p.aiPrompt=String(r.img).trim().slice(0,700);p.imgKind=r.imgKind==="make"?"make":"ref"}if(+r.mrp>0&&!(+it.mrp))p.mrp=+r.mrp;/* भाव कभी नहीं बदलता — सिर्फ़ खाली MRP भरता है */
     out.push({r,it,p})}return out};
 SPH.fixSheet=function(){$("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:70px;max-height:80vh;overflow:auto" role="dialog" aria-label="AI का सुधार">
     <div class="sl-ah"><b>📝 AI का सुधार (STEP 2)</b><span></span><button class="x" data-close aria-label="बंद करें">✕</button></div>
@@ -198,6 +213,7 @@ document.addEventListener("click",e=>{const t=e.target;let b;
   if((b=t.closest("[data-sphscan]"))){b.disabled=true;b.textContent="⏳ जाँच रहे हैं…";SPH.scan().then(r=>{toast(`🔍 ${r.n} फोटो जाँची · ${r.bad} धुंधली/खराब`);try{renderSettings()}catch(e){}});return}
   if(t.closest("[data-sphview]")){SPH.view("all");return}
   if(t.closest("[data-sphfix]")){SPH.fixSheet();return}
+  if(t.closest("[data-sphpl]")){SPH.promptList();return}
   if(t.closest("[data-sphin]")){const f=document.getElementById("sphFile");if(f){f.value="";f.click()}}});
 document.addEventListener("change",e=>{if(e.target.id==="sphFile"&&e.target.files&&e.target.files.length){toast("📥 फोटो लग रही हैं…");SPH.importFiles([...e.target.files])}});
 })();

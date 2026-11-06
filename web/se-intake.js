@@ -41,39 +41,26 @@ function close(){B.open=false;save();if(window.SF)SF.renderKharid(1)}
 
 /* ---------- AI निर्देश ---------- */
 function prompt(){
-  const src=B.src==="mh"?"Received from 177 MH canteen (internal transfer)":B.src==="shop"?"Purchased from shop: "+(B.shop||"-"):"Opening stock (already on shelf)";
-  return `177 MH WET CANTEEN - PRODUCT ENTRY (batch ${B.id})
-You are helping "177 MH Canteen" (Military Hospital wet canteen, Akashvani Road, Barmer, India) add products to its billing app.
-Source of these goods: ${src}.
-Each product is numbered #N and has up to 3 photos: FRONT (pack front), PRICE (MRP / expiry / batch label), BARCODE.
-In a PDF: one page per product. In a ZIP: files NN-front.jpg, NN-mrp.jpg, NN-barcode.jpg and one line per product in items.csv.
-Given for each product: QTY = pieces received, COST = purchase price per piece (may be blank), SALE = selling price per piece (blank = sell at MRP), BARCODE = digits already read by the app (may be blank).
+  const src=B.src==="mh"?"177 MH transfer":B.src==="shop"?"Bought from: "+(B.shop||"-"):"Opening stock";
+  return `177 MH CANTEEN (Barmer, India) - PRODUCT ENTRY · batch ${B.id} · ${src}
+Each product #N has up to 3 photos: FRONT, MRP (price/expiry label), BARCODE. ZIP: NN-front.jpg / NN-mrp.jpg / NN-barcode.jpg + items.csv (n, qty, cost, sale, barcode). PDF: one page per product.
 
-WORK IN TWO STEPS — speed first, research later:
-STEP 1 (do it NOW, fast): go through ALL products one after another without stopping. Only read what is printed in the photos (name, size, MRP, expiry, barcode digits) and copy QTY/COST/SALE. No web search, no long thinking. If something is unclear put null and move on. If you can keep a running table / artifact, add each product to it as you go. Then give the JSON below at once, so the shop can start billing.
-STEP 2 (ONLY when the owner later writes "STEP 2"): calmly research each product on the web — exact official name, brand, pack size, Hindi name — and find the ORIGINAL front-of-pack photo (like Amazon/Blinkit main image; never invent or AI-draw a branded pack). Reply with:
-  a) one json block {"app":"mh177","mode":"fix","items":[{"barcode":"8901719101038","name":"PARLE-G 70G","short":"PARLE-G 70G","hi":"पारले-जी 70 ग्राम","brand":"PARLE","size":"70g"}]}  (only the fields you are sure about; never stock or price)
-  b) ONE ZIP of original photos, each file named <barcode>.jpg (or the product name if no barcode), square, white background.
+WORK FAST: go through ALL products without stopping. Read only what is printed. No web search now. Unsure = null. Give the JSON at once so billing can start.
+Later, only if I write "STEP 2": search the web for exact name/brand/size/Hindi and the ORIGINAL pack photo; reply {"app":"mh177","mode":"fix","items":[{"barcode":"…","name":"…","hi":"…","brand":"…","size":"…"}]} + ONE ZIP (or show photos in chat) named <barcode>.jpg.
 
-Read every photo carefully. Reply with ONLY ONE json code block in exactly this shape:
+Reply with ONE json code block:
 {"app":"mh177","v":1,"batch":"${B.id}","items":[
- {"n":1,"name":"PARLE-G 70G","hi":"<Hindi name in Devanagari>","brand":"Parle","size":"70g","mrp":10,"sale":10,"cost":8,"qty":12,"exp":"2027-03-31","mfg":"2026-09-30","batchNo":"B123","barcode":"8901719101038","cat":"kirana","sub":"sweet","emoji":"<one emoji>","note":""}
+ {"n":1,"name":"PARLE-G 70G","hi":"पारले-जी 70 ग्राम","brand":"PARLE","size":"70g","mrp":10,"sale":10,"cost":8,"qty":12,"exp":"2027-03-31","mfg":"2026-09-30","batchNo":"B123","barcode":"8901719101038","cat":"kirana","sub":"sweet","emoji":"🍪","imgKind":"ref","img":"<photo prompt>","note":""}
 ]}
+Rules: n = #N, same order · name = CAPITAL English, max 22 letters, Brand + product + size · hi = simple Hindi (Devanagari) · mrp = printed MRP ₹ · sale = given SALE else mrp · cost, qty = copy exactly, never invent · exp = YYYY-MM-DD (from "best before N months" + mfg; month only = last day) · barcode = given BARCODE else digits under barcode · cat: kirana (packed), fast (cooked food), sabzi (veg/fruit) · sub (kirana): namkeen, dryfruit, achar, rashan, drinks, sweet, clean · doubt → null + short Hindi "note".
 
-Rules:
-1. One object per page, same order, "n" = page number #N.
-2. name: short English billing name in CAPITAL letters, max 22 characters: Brand + product + size. Example "LAYS MAGIC MASALA 52G".
-3. hi: simple Hindi name in Devanagari script.
-4. mrp: the MRP printed on the pack in rupees (incl. of all taxes). null if not readable.
-5. sale: use the SALE printed on the page if present, else the same as mrp.
-6. cost and qty: copy exactly from the page. Never invent.
-7. exp: expiry date as YYYY-MM-DD. If the pack says "best before N months from manufacture", calculate it from mfg. If only month and year, use the last day of that month. null if not readable.
-8. barcode: prefer the BARCODE printed on the page; otherwise the digits under the barcode in the photo; null if none.
-9. cat: "kirana" for packaged goods, "fast" for cooked food, "sabzi" for vegetables or fruit.
-10. sub (only for kirana): one of namkeen, dryfruit, achar, rashan, drinks, sweet, clean.
-11. If you are not sure about any value, put null and explain in "note" in simple Hindi. Never guess numbers.
-After the json block write 2-3 short lines in Hindi about anything doubtful.`}
+"img" = ONE ready-to-paste image prompt (English, 2-4 lines) made for THIS product, so the shop can get a perfect photo later in Gemini:
+• imgKind "ref" (any branded pack): "Use my attached photo of <BRAND PRODUCT SIZE, pack colours, what is printed> as the only reference. Make a clean e-commerce photo of exactly this pack: keep the real logo, colours and printed text, front view, centred, pure white background, soft studio light, light shadow, square 800x800, no hands, no extra text."
+• imgKind "make" (no brand / loose / fresh / cooked in shop / plain item): describe the real thing vividly so it can be created, e.g. "Fresh red tomatoes, 3 whole and one cut in half showing juicy inside, water droplets, on pure white background, soft daylight, realistic e-commerce photo, square 800x800, no text." — sweets/snacks: "on a white plate, 45° view, fresh and tasty"; loose grain/spice: "small heap in a white bowl plus a few grains in front".
+After the json write 2-3 short Hindi lines only about doubtful items.`}
 SI.prompt=()=>B?prompt():"";
+/* 🎨 हर सामान का अपना फोटो-प्रॉम्प्ट (AI ने STEP 1 में लिखा) — items/<id>.aiPrompt, imgKind "ref" (अपनी फोटो से साफ़) / "make" (बनाओ) */
+const imgP=a=>a&&a.img?{aiPrompt:String(a.img).trim().slice(0,700),imgKind:a.imgKind==="make"?"make":"ref"}:{};
 
 /* ---------- स्क्रीन ---------- */
 SI.render=function(el){
@@ -245,11 +232,11 @@ async function apply(){
     let id;
     if(r.ex){id=r.ex.id;nOld++;
       if(S.isOwner){const p={};if(!r.ex.hi&&r.hi)p.hi=r.hi;if(!r.ex.size&&r.a.size)p.size=r.a.size;if(!(+r.ex.mrp)&&r.mrp)p.mrp=r.mrp;if(!r.ex.sub&&r.a.sub)p.sub=r.a.sub;if(!(+r.ex.cost)&&r.cost)p.cost=r.cost;
-        if(!r.ex.barcode&&r.bar)p.barcode=r.bar;if(Object.keys(p).length){Object.assign(r.ex,p);if(!S.demo)S.db.doc("items/"+id).update(p).catch(()=>{})}}}
+        if(!r.ex.barcode&&r.bar)p.barcode=r.bar;if(!r.ex.aiPrompt&&r.a.img)Object.assign(p,imgP(r.a));if(Object.keys(p).length){Object.assign(r.ex,p);if(!S.demo)S.db.doc("items/"+id).update(p).catch(()=>{})}}}
     else{nNew++;id="i"+uid();const cat=["kirana","fast","sabzi"].includes(r.a.cat)?r.a.cat:"kirana",code=nextCode(cat);
       const bar=/^\d{8,14}$/.test(r.bar)&&!findByCode(r.bar)?r.bar:ean13("2000000"+code+"0");
       const it={name:r.name,hi:r.hi,emoji:r.a.emoji||"📦",cat,sub:(SUBS[cat]||[]).some(([k])=>k===r.a.sub)?r.a.sub:"",unit:"pc",size:r.a.size||"",mrp:r.mrp,sale:r.sale,cost:r.cost||0,code,barcode:bar,track:true,min:5,
-        hue:Math.floor(Math.random()*360),order:S.items.length+1,active:true,src:"photo-ai",photoSrc:"shop",addedBy:S.uid||"",addedByName:biller(),addedTs:ts,pending:!S.isOwner,...(r.exp?{exp:r.exp}:{})};
+        hue:Math.floor(Math.random()*360),order:S.items.length+1,active:true,src:"photo-ai",photoSrc:"shop",...imgP(r.a),addedBy:S.uid||"",addedByName:biller(),addedTs:ts,pending:!S.isOwner,...(r.exp?{exp:r.exp}:{})};
       // ऐप में छोटी फोटो (≈6-10 KB)
       try{const big=await IDB.get(pk(r.e.n,"f"));if(big){const sm=await shrink(big,220,.66);photoKB+=sm.size/1024;
         if(S.demo||!S.isOwner){SE.photos[id]=await toURL(sm);it.photo=""}else{it.photo=await SE.savePhoto(id,sm,220,.66)}}}catch(e){}
@@ -274,7 +261,7 @@ async function apply(){
 }
 
 /* ---------- 🎨 Gemini फोटो प्रॉम्प्ट ---------- */
-SI.geminiPrompt=function(it){return `Create a clean e-commerce product photo of this exact product: ${it.name}${it.size&&!String(it.name).includes(it.size)?" "+it.size:""}.
+SI.geminiPrompt=function(it){if(it.aiPrompt)return it.aiPrompt;if(window.SPH&&SPH.makePrompt&&["mithai","fast","mela","sabzi"].includes(it.cat))return SPH.makePrompt(it);return `Create a clean e-commerce product photo of this exact product: ${it.name}${it.size&&!String(it.name).includes(it.size)?" "+it.size:""}.
 Use my attached photo as the only reference. Keep the real packaging, colours, brand logo and printed text exactly as they are; do not redesign anything.
 Square 1:1 image, pure white background, product centred and filling about 80% of the frame, straight front view, soft studio light, gentle shadow under the pack.
 No hands, no other objects, no extra text, no watermark. Output size 800x800.`};
