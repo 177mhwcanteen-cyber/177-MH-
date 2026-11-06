@@ -71,7 +71,7 @@ SRc.draw=function(b,o,widthPx,cfg){
   if(sh.cust&&((b.partyName&&b.partyName!=="VIP ग्राहक")||b.custPhone))LR("ग्राहक: "+(b.partyName||"")+(b.custPhone?" · "+b.custPhone:""),"",fs(th==="compact"?14:17));
   SEP();
   /* ---------- सामान ---------- */
-  const L=b.lines||[];const nm=l=>sh.en&&window.SN?SN.withEn(l.name):l.name;const qf=l=>(o.fq?o.fq(l.qty,l.unit):String(l.qty)).replace(" कि.ग्रा"," kg");
+  const L=b.lines||[];const nm=l=>SE.capNm(sh.en&&window.SN?SN.withEn(String(l.name||"")):String(l.name||""));/* 🔠 पुराने बिल भी CAPITAL में छपें */const qf=l=>(o.fq?o.fq(l.qty,l.unit):String(l.qty)).replace(" कि.ग्रा"," kg");
   const rateT=l=>l.free?"मुफ्त":money(l.rate);
   if(th==="modern"){/* दो लाइन: नाम … रकम / नीचे छोटा "2 × ₹40" — Swiggy/Amazon जैसा साफ़ */
     L.forEach((l,i)=>{const sz=fs(17);font(sz,700);const am=money(l.amt),aw=x.measureText(am).width;const pre=sh.sr?(i+1)+". ":"";

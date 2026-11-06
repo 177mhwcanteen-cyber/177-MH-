@@ -99,6 +99,14 @@ async def main():
         await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_timeout(200)
         assert await pg.locator("#p-set .bkst").count() == 1 and await pg.locator("#p-set [data-favpin]").count() > 0 and await pg.locator("#aiShare").count() == 1
         print("settings ok")
+        # 🔠 नाम CAPITAL: टाइप करते ही, सेव के पहरे में, बिल/लेबल पर
+        await pg.fill("#ni-name", "parle-g biscuit 70g"); await pg.dispatch_event("#ni-name", "input")
+        assert await pg.input_value("#ni-name") == "PARLE-G BISCUIT 70G", await pg.input_value("#ni-name")
+        c = await pg.evaluate("SE.capItem({name:'haldiram bhujia 200g',short:'Haldiram Bhujia',hi:'हल्दीराम भुजिया',brand:'haldiram'})")
+        assert c["name"] == "HALDIRAM BHUJIA 200G" and c["short"] == "HALDIRAM BHUJIA" and c["hi"] == "हल्दीराम भुजिया" and c["brand"] == "HALDIRAM", c
+        assert await pg.evaluate("shortNm({name:'Nihar Badam Amla 240ml'})") == "NIHAR BADAM AMLA 240ML"
+        assert await pg.evaluate("SL.dataOf({id:'x',name:'Nihar Badam Amla 240ml',sale:72}).name") == "NIHAR BADAM AMLA"
+        print("capital names ok")
         await b.close()
     assert not errs, errs
     print("✅ सुधार टेस्ट पास")

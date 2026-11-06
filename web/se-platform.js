@@ -29,7 +29,18 @@ function initFB(){
   db.enablePersistence({synchronizeTabs:true}).catch(()=>{});
   auth=firebase.auth();
   SE.db=db;SE.auth=auth;SE.FieldValue=firebase.firestore.FieldValue;
+  capGuard();
 }
+/* 🔠 विक्रम जी का पक्का नियम (06-11-2026): हर सामान का नाम CAPITAL अक्षरों में।
+   items/* में जो भी लिखा जाए (टाइप किया, AI ने पढ़ा, बिल से आया, पुराने ऐप से) — name/short/brand के अंग्रेज़ी अक्षर अपने-आप बड़े।
+   हिंदी (hi) वैसी ही। एक ही जगह पर पहरा, ताकि कोई रास्ता छूटे नहीं। */
+SE.capNm=s=>typeof s==="string"?s.replace(/[a-z]+/g,m=>m.toUpperCase()):s;
+SE.capItem=function(d){if(!d||typeof d!=="object")return d;let o=d;for(const k of ["name","short","brand"])if(typeof d[k]==="string"&&/[a-z]/.test(d[k])){if(o===d)o={...d};o[k]=SE.capNm(d[k])}return o};
+function capGuard(){try{const F=firebase.firestore,isI=r=>r&&typeof r.path==="string"&&/^items\/[^/]+$/.test(r.path);
+  const wrap=(P,m,pos)=>{if(!P||!P[m]||P[m]._cap)return;const f=P[m];P[m]=function(){const a=[...arguments];const r=pos?a[0]:this;if(isI(r)&&a[pos])a[pos]=SE.capItem(a[pos]);return f.apply(this,a)};P[m]._cap=1};
+  if(F.DocumentReference){wrap(F.DocumentReference.prototype,"set",0);wrap(F.DocumentReference.prototype,"update",0)}
+  if(F.WriteBatch){wrap(F.WriteBatch.prototype,"set",1);wrap(F.WriteBatch.prototype,"update",1)}
+  if(F.Transaction){wrap(F.Transaction.prototype,"set",1);wrap(F.Transaction.prototype,"update",1)}}catch(e){}}
 SE.inc=n=>firebase.firestore.FieldValue.increment(n);
 
 /* ---------- लॉगिन स्क्रीन ---------- */

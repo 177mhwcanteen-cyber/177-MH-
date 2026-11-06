@@ -122,9 +122,17 @@ SA.bkHTML=function(){if(!S.isOwner)return "";const y=dayAdd(today(),-1),last=loc
   <div class="bkr"><span>☁️</span><div><b>Google Drive "177 MH कैंटीन बैकअप" + Sheet</b><small>Apps Script दिन में 2 बार (सुबह 7, रात 10) + हर घंटे Sheet — वही पुरानी जगह</small></div></div>
   <div class="bkr"><span>${lf?"✅":"•"}</span><div><b>फ़ाइल बैकअप (30 दिन, हाथ से)</b><small>${lf?"आख़िरी: "+new Date(lf).toLocaleDateString("hi-IN"):"अभी तक नहीं बना"} · <button type="button" class="lnk" data-sxbk>अभी बनाएँ</button></small></div></div></div>`};
 
+/* ================= 🔠 सामान का नाम: टाइप करते ही CAPITAL (विक्रम जी का पक्का नियम) =================
+   बचत Firebase में पहरे (SE.capItem, se-platform) से भी पक्की; यहाँ कीबोर्ड Caps-Lock जैसा + लिखते ही बड़े अक्षर */
+const NAMEF='[data-if="name"],[data-if="short"],#nbName,#ni-name,#kNm,#niName,#ikName,[data-nmf]';
+document.addEventListener("focusin",e=>{const t=e.target;if(t&&t.matches&&t.matches(NAMEF)){t.setAttribute("autocapitalize","characters");t.style.textTransform="uppercase"}});
+document.addEventListener("input",e=>{const t=e.target;if(!t||!t.matches||!t.matches(NAMEF)||!/[a-z]/.test(t.value))return;
+  const a=t.selectionStart,b=t.selectionEnd;t.value=SE.capNm(t.value);try{t.setSelectionRange(a,b)}catch(x){}},true);
+
 /* ================= रूप-रंग ================= */
 const css=document.createElement("style");css.textContent=`
 .favchip{border-color:var(--haldi)!important}
+.card .nm,.sl-nm b,.lb-nm,.sl-ah b,.sl-hits b,.lines .mid b,.dtop span,.qh .qn b{text-transform:uppercase}
 .dash{display:grid;gap:10px}.dh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.dh b{font-size:16px}.dh .up{color:var(--leaf);font-weight:800;font-size:13px}.dh .dn{color:var(--chili);font-weight:800;font-size:13px}
 .dk{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.dk div{background:var(--bg);border-radius:12px;padding:7px 6px;display:grid;gap:1px;min-width:0}
 .dk span{font-size:11px;color:var(--muted)}.dk b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dk .pos{color:var(--leaf)}.dk .neg{color:var(--chili)}

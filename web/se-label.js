@@ -37,7 +37,7 @@ SL.save=function(patch){
 /* नाम के आख़िर का साइज़ (240ml, 1kg…) अलग — "मात्रा" चालू हो तभी छपे */
 const SIZE_RE=/\s*[-–(]?\s*\d+(?:[.,]\d+)?\s*(?:ml|ltr|lt|l|gms?|grm|g|kgs?|pcs?|nos|मि\.?\s?ली\.?|ली\.?|ग्राम|किलो|पीस)\.?\s*\)?\s*$/i;
 function nameParts(it){
-  const nm=String(it.short||it.name||"").trim();/* पूरा नाम — लंबा हो तो लेबल पर 2 लाइन में */const m=nm.match(SIZE_RE);
+  const nm=SE.capNm(String(it.short||it.name||"").trim());/* 🔠 CAPITAL *//* पूरा नाम — लंबा हो तो लेबल पर 2 लाइन में */const m=nm.match(SIZE_RE);
   const plain=m&&nm.replace(SIZE_RE,"").trim()?nm.replace(SIZE_RE,"").trim():nm;
   const size=String(it.size||it.pack||"").trim()||(m?m[0].replace(/[()\-–]/g,"").trim():"");
   return {plain,size};

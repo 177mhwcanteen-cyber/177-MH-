@@ -1754,7 +1754,7 @@ function autoShort(n){let s=String(n||"").replace(/\s+/g," ").trim()
   if(s.length>SHORT_MAX){const w=s.split(" ");for(let i=w.length-2;i>0&&w.join(" ").length>SHORT_MAX;i--)if(SH_DROP.test(w[i]))w.splice(i,1);s=w.join(" ")}
   if(s.length>SHORT_MAX){const m=s.match(/\s(\S*\d\S*)$/),tail=m?" "+m[1]:"";s=s.slice(0,SHORT_MAX-tail.length).trim()+tail}
   return s}
-function shortNm(it){return it?(it.short?String(it.short).slice(0,30):autoShort(it.name)):""}
+function shortNm(it){return it?SE.capNm(it.short?String(it.short).slice(0,30):autoShort(it.name)):""}/* 🔠 बिल/लेबल पर हमेशा CAPITAL */
 /* 🔒 स्थायी नियम: सिगरेट/बीड़ी/गुटखा/तम्बाकू/पान मसाला — ऐप में असली नाम, छपे बिल/शेयर/PDF पर सिर्फ़ "Misc Item कोड" */
 const TOBRX=/cigar|sigret|सिगरेट|bidi|beedi|\bbiri\b|बीड़ी|बीडी|gutk|गुटखा|tambak|tobac|तम्बाकू|तंबाकू|zarda|ज़र्दा|जर्दा|khaini|खैनी|pan ?masala|पान ?मसाला|vimal|विमल|rajnigandha|रजनीगंधा|tansen|siggnature|gold ?flake|marlboro|navy cut|nevla|hookah|हुक्का/i;
 function isTob(it){return !!it&&(it.sub==="tob"||!!it.secret||TOBRX.test([it.name,it.hi,it.alias].join(" ")))}
