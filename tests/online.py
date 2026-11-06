@@ -60,6 +60,9 @@ async def main():
         assert "PARLE-G" in txt and "नक्शा" in txt and "गेट पर फोन करें" in txt and "📱 UPI" in txt and "✓ 15 मि" in txt and "ग्राहक ले गया" in txt, txt[:400]
         p0 = await pg.evaluate("SON.parse({note:'🛵|📱|⏰ अभी|📍25.7,71.3|₹170¦हाय'})")
         assert p0 == {"note": "हाय", "mode": "d", "pay": "UPI", "when": "अभी", "ll": "25.7,71.3", "total": 170}, p0
+        h = await pg.evaluate("""(()=>{SON.accts=[{id:'a1',name:'Ramesh',phone:'9000012345',note:'👤|old:9876543210|ua:x',ts:Date.now()},{id:'a2',name:'Seema',phone:'9876500000',note:'👤|ua:x',ts:Date.now()-3600e3}];return SON.acctHTML()})()""")
+        assert "नंबर बदला" in h and "9876543210" in h and "नया खाता" in h, h[:300]
+        assert (await pg.evaluate("SON.parse({note:'🛵|💵|☎️9829011111|₹90¦'})"))["alt"] == "9829011111"
         await pg.screenshot(path=f"{SHOTS}/o1-shop-orders.png")
         await pg.evaluate("closeSheet()")
         await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_timeout(200)
@@ -70,6 +73,7 @@ async def main():
 
         # ---------- ग्राहक-पेज ----------
         posted = {}
+        signups = []
         track = {"st": "new"}
 
         async def fs(route):
@@ -77,7 +81,10 @@ async def main():
             if "/documents/pub/rates" in u:
                 return await route.fulfill(json={"fields": {k: fsv(v) for k, v in rates.items()}})
             if m == "POST" and "/documents/orders" in u:
-                posted.update(json.loads(route.request.post_data))
+                body = json.loads(route.request.post_data)
+                if body["fields"]["src"]["stringValue"] == "signup":
+                    signups.append(body["fields"]); return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/Sg" + str(len(signups)), "fields": body["fields"]})
+                posted.update(body)
                 return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/AbCdEf123456", "fields": posted["fields"]})
             if "/documents/pub/ot_AbCdEf123456" in u:
                 if track["st"] == "new": return await route.fulfill(status=404, json={})
@@ -88,7 +95,18 @@ async def main():
         c.on("console", lambda m: m.type == "error" and "Failed to load resource" not in m.text and errs.append("page: " + m.text))
         await c.route("https://firestore.googleapis.com/**", fs)
         await c.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={firebase:{projectId:'mh177-canteen',apiKey:'k'},updateUrl:'https://177mhwcanteen-cyber.github.io/177-MH-/'};", content_type="application/javascript"))
-        await c.goto("http://127.0.0.1:8770/order/"); await c.wait_for_selector(".t")
+        await c.goto("http://127.0.0.1:8770/order/"); await c.wait_for_selector("#wgo")
+        # 👋 खाता: नाम + मोबाइल बिना सामान/भाव नहीं (धुंधला), भरोसे की लाइन
+        assert await c.evaluate("document.body.classList.contains('locked')")
+        assert "only to call you about your order" in await c.text_content(".safe")
+        await c.screenshot(path=f"{SHOTS}/o0-welcome.png")
+        await c.fill("#wnm", "Ramesh"); await c.fill("#wph", "12345"); await c.click("#wgo"); await c.wait_for_timeout(150)
+        assert not signups, "गलत नंबर पर खाता नहीं"
+        await c.fill("#wph", "98765 43210"); await c.click("#wgo"); await c.wait_for_timeout(300)
+        assert len(signups) == 1 and signups[0]["phone"]["stringValue"] == "9876543210" and signups[0]["status"]["stringValue"] == "new"
+        assert set(signups[0]) <= {"name", "phone", "addr", "note", "items", "ts", "status", "src"}
+        assert not await c.evaluate("document.body.classList.contains('locked')")
+        await c.wait_for_selector(".t")
         tiles = await c.locator(".t").count(); assert tiles > 3, tiles
         assert "GOLD FLAKE" not in (await c.text_content("#m")).upper() and "CLASSIC" not in (await c.text_content("#m")).upper()
         assert await c.locator(".t.out").count() == 0, "सिर्फ़ स्टॉक वाले चालू — ख़त्म वाला न दिखे"
@@ -107,12 +125,15 @@ async def main():
         assert "₹20" in await c.text_content(".sheet") and "Delivery fee" in await c.text_content(".sheet"), "₹200 से कम — डिलीवरी शुल्क"
         await c.screenshot(path=f"{SHOTS}/o5-cart.png", full_page=False)
         await c.click("#place"); await c.wait_for_timeout(150)
-        assert not posted, "बिना नाम ऑर्डर नहीं जाना चाहिए"
-        await c.fill("#nm", "रमेश जी"); await c.fill("#ph", "98765 43210"); await c.fill("#ad", "12/B JCO लाइन")
+        assert not posted, "बिना पता/लोकेशन ऑर्डर नहीं जाना चाहिए"
+        assert "9876543210" in await c.text_content(".acc")
+        await c.fill("#qt", "12/B"); await c.fill("#un", "177 MH"); await c.fill("#ad", "JCO Lines"); await c.fill("#alt", "9829011111")
         await c.click("#loc"); await c.wait_for_timeout(400)
         await c.click('[data-pay="u"]')
         await c.click("#place"); await c.wait_for_selector(".trk")
         f = posted["fields"]
+        assert f["addr"]["stringValue"] == "Qtr 12/B · 177 MH · JCO Lines", f["addr"]
+        assert "☎️9829011111" in f["note"]["stringValue"] and f["phone"]["stringValue"] == "9876543210"
         assert set(f) <= {"name", "phone", "addr", "note", "items", "ts", "status", "src"}, set(f)
         assert f["status"]["stringValue"] == "new" and f["phone"]["stringValue"] == "9876543210"
         assert len(f["note"]["stringValue"]) <= 200 and len(f["addr"]["stringValue"]) <= 80 and 0 < len(f["items"]["arrayValue"]["values"]) <= 40
@@ -126,6 +147,9 @@ async def main():
         # फिर से मँगाएँ
         await c.click(".sheet .x"); await c.click("#myo"); await c.click("[data-again]"); await c.wait_for_timeout(150)
         assert not await c.locator("#cbar").is_hidden()
+        # ✏️ नंबर बदला → दुकान को दोनों नंबर
+        await c.click("[data-chacc2]"); await c.fill("#wph", "9000012345"); await c.click("#wgo"); await c.wait_for_timeout(300)
+        assert len(signups) == 2 and "old:9876543210" in signups[1]["note"]["stringValue"] and signups[1]["phone"]["stringValue"] == "9000012345", signups[-1]
         # पुराना लिंक नए पेज पर
         o = await ctx.new_page(); await o.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={};", content_type="application/javascript"))
         await o.goto("http://127.0.0.1:8770/o.html"); await o.wait_for_timeout(600)

@@ -66,6 +66,11 @@ button{font:inherit;cursor:pointer;color:inherit}input,textarea{font:inherit;col
 .lnk{border:0;background:none;color:var(--g);font-weight:800;padding:0}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 14px;border-radius:10px;font-size:14px;z-index:20;max-width:90vw}
 .sk{background:linear-gradient(90deg,var(--line),var(--card),var(--line));background-size:200% 100%;animation:sk 1.2s infinite;border-radius:14px;height:190px}@keyframes sk{to{background-position:-200% 0}}
+.locked #m,.locked .cats,.locked .trust{filter:blur(6px);pointer-events:none;user-select:none}.locked .srch{opacity:.5;pointer-events:none}
+.wel{align-items:center}.wel .sheet{border-radius:20px;max-width:440px;margin:12px;padding-bottom:12px}.place.in{position:static;width:100%;margin-top:10px;box-shadow:none}
+.safe{display:flex;gap:8px;background:var(--gbg);color:var(--ink);border-radius:12px;padding:10px;font-size:13px;margin-top:6px}.safe span{line-height:1.35}
+.acc{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:12px;padding:8px 12px;margin-bottom:6px}.acc div{display:grid}.acc span{font-size:13px;color:var(--mut)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.trust .accs{padding:0;border:0;background:none}.accs:empty{display:none}.accs .lnk{font-size:12px;font-weight:800;background:var(--gbg);border:1px solid var(--g);border-radius:99px;padding:3px 9px}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 </style></head><body>
 <div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1>177 MH Canteen</h1><small id="sub">Military Hospital · Akashvani Road, Barmer</small></div><div class="eta" id="eta"></div></div>
@@ -90,7 +95,7 @@ const CATS=[["all","All","🛍️"],["mithai","Sweets","🍬"],["fast","Snacks",
 const EM={mithai:"🍬",fast:"🥟",kirana:"🛒",daily:"🧴",sabzi:"🥬",stationery:"✏️",gift:"🎁",kapde:"👕"};
 let R=null,CF={},L=[],cat="all",qs="",Q=LS.get("mh_cart",{}),me=LS.get("mh_me",{});
 const toast=t=>{const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)};
-const photo=i=>i.p?(/^(https?:|data:)/.test(i.p)?i.p:"../"+i.p):"";
+const photo=i=>PH&&PH[i.id]?PH[i.id]:i.p?(/^(https?:|data:)/.test(i.p)?i.p:"../"+i.p):"";
 const bg=i=>photo(i)?`background-image:url('${esc(photo(i))}')`:`background:linear-gradient(135deg,hsl(${(+i.h||((i.id||"").length*47))%360} 70% 92%),hsl(${(+i.h||((i.id||"").length*47))%360} 60% 80%))`;
 const openNow=()=>{if(!CF.open||!CF.close)return true;const n=new Date(),m=n.getHours()*60+n.getMinutes(),p=s=>{const[a,b]=String(s).split(":");return(+a)*60+(+b||0)};return m>=p(CF.open)&&m<p(CF.close)};
 const tot=()=>L.reduce((a,i)=>a+(Q[i.id]||0)*i.s,0),cnt=()=>L.filter(i=>Q[i.id]>0).length;
@@ -104,7 +109,7 @@ function prep(){CF=R.cfg||{};L=(R.items||[]).filter(i=>i&&i.id&&+i.s>0&&!(CF.sto
   Object.keys(Q).forEach(id=>{const i=L.find(x=>x.id===id);if(!i||i.k===0)delete Q[id]});
   const ph=String(CF.phone||R.phone||"");
   $("#eta").innerHTML=CF.on===false?"":`<b>⚡ ${+CF.eta||30} min</b><span>${mode()==="d"?"delivery":"pickup"}</span>`;
-  $("#trust").innerHTML=[`✅ Army canteen`,`🏷️ Same price as shop`,CF.freeAbove?`🛵 Free delivery above ₹${CF.freeAbove}`:"",`💵 Cash / 📱 UPI`,ph?`<a href="tel:+91${esc(ph)}" style="color:inherit;text-decoration:none">📞 ${esc(ph)}</a>`:""].filter(Boolean).map(x=>`<span>${x}</span>`).join("");
+  $("#trust").innerHTML='<span id="acc" class="accs"></span>'+[`✅ Army canteen`,`🏷️ Same price as shop`,CF.freeAbove?`🛵 Free delivery above ₹${CF.freeAbove}`:"",`💵 Cash / 📱 UPI`,ph?`<a href="tel:+91${esc(ph)}" style="color:inherit;text-decoration:none">📞 ${esc(ph)}</a>`:""].filter(Boolean).map(x=>`<span>${x}</span>`).join("");accChip();
   $("#closed").innerHTML=CF.on===false?`<div class="closed">⛔ Online orders are paused right now — please visit or call the shop.</div>`:!openNow()?`<div class="closed">🌙 Shop is closed now (open ${esc(CF.open)}–${esc(CF.close)}). You can still order — we will prepare it when we open.</div>`:"";
   const have=new Set(L.map(i=>i.c));$("#cats").innerHTML=CATS.filter(c=>c[0]==="all"||have.has(c[0])).map(c=>`<button type="button" data-c="${c[0]}" aria-pressed="${cat===c[0]}">${c[2]} ${c[1]}</button>`).join("")}
 function card(i){const q=Q[i.id]||0,off=i.m>i.s?Math.round((i.m-i.s)/i.m*100):0,out=i.k===0;
@@ -142,18 +147,21 @@ function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();retu
     <div class="row tot"><span>To pay (approx.)</span><span>${rs(total)}</span></div>
     <p class="hint">Items sold by weight (sweets, veg) are billed after weighing. ${CF.freeAbove&&mode()==="d"&&sub<CF.freeAbove?`Add <b>₹${Math.ceil(CF.freeAbove-sub)}</b> more for free delivery.`:""}</p></div>
   <div class="box"><h3>🛵 Delivery or pickup?</h3><div class="seg">${CF.del!==false?`<button type="button" data-mode="d" aria-pressed="${mode()==="d"}">🛵 Home delivery</button>`:""}${CF.pick!==false?`<button type="button" data-mode="p" aria-pressed="${mode()==="p"}">🏪 Pickup</button>`:""}</div></div>
-  <div class="box"><h3>📞 Your details</h3>
-    <input class="f" id="nm" placeholder="Your name" maxlength="40" autocomplete="name" value="${esc(me.nm||"")}">
-    <input class="f" id="ph" placeholder="Mobile number (10 digits)" inputmode="tel" maxlength="14" autocomplete="tel" value="${esc(me.ph||"")}">
-    ${mode()==="d"?`<input class="f" id="ad" placeholder="Quarter / address (e.g. 12/B, JCO Lines)" maxlength="70" autocomplete="street-address" value="${esc(me.ad||"")}">
+  <div class="box"><h3>👤 Order for</h3>
+    <div class="acc"><div><b>${esc(ACC().nm)}</b><span>📱 ${esc(ACC().ph)}</span></div><button type="button" class="lnk" data-chacc>✏️ Change</button></div>
+    <input class="f" id="alt" placeholder="📞 Number to call for delivery (if different)" inputmode="tel" maxlength="14" value="${esc(me.alt||"")}">
+    ${mode()==="d"?`<h3 style="margin:10px 0 4px">📍 Delivery address</h3>
+    <div class="two"><input class="f" id="qt" placeholder="Quarter No. (e.g. 12/B)" maxlength="16" value="${esc(me.qt||"")}"><input class="f" id="un" placeholder="Unit (e.g. 177 MH)" maxlength="24" value="${esc(me.un||"")}"></div>
+    <input class="f" id="ad" placeholder="Area / Lines (e.g. JCO Lines, near temple)" maxlength="36" autocomplete="street-address" value="${esc(me.ad||"")}">
     <button type="button" class="loc" id="loc">📍 ${me.ll?"Location added ✓ — update":"Add my location (faster delivery)"}</button>`:""}
     <div class="seg" style="margin-top:8px">${["Now","Evening 6-8"].map((w,k)=>`<button type="button" data-when="${w}" aria-pressed="${(me.when||"Now")===w}">⏰ ${w}</button>`).join("")}</div>
     <div class="seg" style="margin-top:8px">${[["c","💵 Cash"],["u","📱 UPI"]].map(([k,v])=>`<button type="button" data-pay="${k}" aria-pressed="${(me.pay||"c")===k}">${v}</button>`).join("")}</div>
     <textarea class="f" id="nt" rows="2" maxlength="120" placeholder="Any instructions? (optional)"></textarea></div>`,
   `<button class="place" id="place" type="button" ${minOk&&CF.on!==false?"":"disabled"}>${CF.on===false?"Online orders paused":minOk?`✓ Place order · ${rs(total)}`:`Minimum order ${rs(min)}`}</button>`);
-  const keep=()=>{const g=id=>{const x=$("#"+id);return x?x.value.trim():undefined};["nm","ph","ad"].forEach(k=>{const v=g(k);if(v!==undefined)me[k]=v});LS.set("mh_me",me)};
+  const keep=()=>{const g=id=>{const x=$("#"+id);return x?x.value.trim():undefined};["alt","qt","un","ad"].forEach(k=>{const v=g(k);if(v!==undefined)me[k]=v});LS.set("mh_me",me)};
   const sc=$("#ov .scrim");sc.addEventListener("input",keep);
   sc.addEventListener("click",e=>{const t=e.target;let b;
+    if(t.closest("[data-chacc]")){keep();welcome(true);return}
     if((b=t.closest("[data-mode]"))){keep();MODE=b.dataset.mode;LS.set("mh_mode",MODE);cart();return}
     if((b=t.closest("[data-when]"))){me.when=b.dataset.when;keep();b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));return}
     if((b=t.closest("[data-pay]"))){me.pay=b.dataset.pay;keep();b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));return}
@@ -161,11 +169,12 @@ function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();retu
       navigator.geolocation.getCurrentPosition(p=>{me.ll=p.coords.latitude.toFixed(5)+","+p.coords.longitude.toFixed(5);LS.set("mh_me",me);t.textContent="📍 Location added ✓";toast("📍 Location added")},()=>{t.textContent="📍 Could not get location — please type address"},{enableHighAccuracy:true,timeout:12000})}
     if(t.closest("#place"))place()});
 }
-async function place(){const nm=($("#nm").value||"").trim(),ph=($("#ph").value||"").replace(/\D/g,"").slice(-10),ad=$("#ad")?$("#ad").value.trim():"",nt=($("#nt").value||"").trim();
-  if(!nm){toast("Please enter your name");$("#nm").focus();return}if(ph.length!==10){toast("Enter a 10-digit mobile number");$("#ph").focus();return}
-  if(mode()==="d"&&!ad&&!me.ll){toast("Add address or 📍 location");return}
+async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.nm,ph=A.ph,g=id=>($("#"+id)?$("#"+id).value.trim():""),nt=g("nt"),alt=g("alt").replace(/\D/g,"").slice(-10);
+  const qt=g("qt"),un=g("un"),ar=g("ad"),ad=[qt?"Qtr "+qt:"",un,ar].filter(Boolean).join(" · ");
+  if(mode()==="d"&&!qt&&!me.ll){toast("Add Quarter No. or 📍 location");if($("#qt"))$("#qt").focus();return}
+  if(alt&&alt.length!==10){toast("Call number must be 10 digits");$("#alt").focus();return}
   const I=L.filter(i=>Q[i.id]>0).slice(0,40),sub=tot(),total=Math.round((sub+fee(sub))*100)/100;
-  const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"c")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),me.ll&&mode()==="d"?"📍"+me.ll:"","₹"+total].filter(Boolean).join("|");
+  const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"c")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"","₹"+total].filter(Boolean).join("|");
   const note=(meta+"¦"+nt).slice(0,200);const btn=$("#place");btn.disabled=true;btn.textContent="⏳ Placing order…";
   const S=v=>({stringValue:String(v)});const ts=Date.now();
   const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S((mode()==="d"?ad:"Pickup from shop").slice(0,80)),note:S(note),ts:{integerValue:String(ts)},status:S("new"),src:S("web2"),
@@ -195,6 +204,38 @@ function myOrders(){const M=LS.get("mh_orders",[]);sheet("📦 My orders",`<div 
   $("#ov .scrim").addEventListener("click",e=>{const t=e.target.closest("[data-trk]"),a=e.target.closest("[data-again]");if(t)track(t.dataset.trk,false);
     if(a){const o=M.find(x=>x.id===a.dataset.again);(o.items||[]).forEach(([id,q])=>{const i=L.find(x=>x.id===id);if(i&&i.k!==0)Q[id]=q});close();draw();toast("🛒 Added to cart — at today\u2019s prices")}})}
 const last=LS.get("mh_orders",[])[0];if(last&&Date.now()-last.ts<3*3600e3)setTimeout(()=>track(last.id,false),1200);
-load();setInterval(()=>{if(!$("#ov .sheet"))load()},5*60000);
+/* ---------- 👤 खाता (बिना OTP): नाम + मोबाइल — दुकान को रिपोर्ट (orders, src:"signup") ---------- */
+function ACC(){return LS.get("mh_acc",{})}
+async function report(nm,ph,old){const S=v=>({stringValue:String(v)});
+  const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S(""),note:S(("👤"+(old&&old!==ph?"|old:"+old:"")+"|ua:"+(navigator.userAgent.match(/\(([^)]+)\)/)||["",""])[1]).slice(0,200)),ts:{integerValue:String(Date.now())},status:S("new"),src:S("signup"),
+    items:{arrayValue:{values:[{mapValue:{fields:{id:S("signup"),n:S(old&&old!==ph?"Number changed":"New account"),q:{doubleValue:1},u:S("pc"),s:{doubleValue:0}}}}]}}}};
+  try{const r=await fetch(B+"orders?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw 0;LS.set("mh_pend",null);return true}
+  catch(e){LS.set("mh_pend",{nm,ph,old});return false}}
+function lock(on){document.body.classList.toggle("locked",!!on)}
+function welcome(change){const A=ACC();lock(!A.ph);
+  $("#ov").innerHTML=`<div class="scrim wel"${A.ph?" data-x":""}><div class="sheet" role="dialog" aria-label="Welcome"><div class="sh"><h2>${change?"✏️ Update your details":"👋 Welcome to 177 MH Canteen"}</h2>${A.ph?'<button class="x" type="button" data-x aria-label="Close">✕</button>':""}</div>
+    <div class="box"><p style="margin:0 0 8px">${change?"Change your name or number below.":"Order sweets, snacks and groceries from home. Tell us who you are so we can deliver to you."}</p>
+    <input class="f" id="wnm" placeholder="Your name" maxlength="40" autocomplete="name" value="${esc(A.nm||"")}">
+    <input class="f" id="wph" placeholder="Mobile number (10 digits)" inputmode="tel" maxlength="14" autocomplete="tel" value="${esc(A.ph||"")}">
+    <div class="safe">🔒 <span>We use your number <b>only to call you about your order</b> — to confirm items and reach your door. We never share it. No spam, no ads.</span></div>
+    <button class="place in" id="wgo" type="button">${change?"Save":"Continue →"}</button></div></div></div>`;
+  const sc=$("#ov .scrim");sc.addEventListener("click",async e=>{if(e.target.matches("[data-x]")&&ACC().ph){close();return}
+    if(!e.target.closest("#wgo"))return;const nm=$("#wnm").value.trim(),ph=$("#wph").value.replace(/\D/g,"").slice(-10);
+    if(nm.length<2){toast("Please enter your name");$("#wnm").focus();return}if(ph.length!==10||!/^[6-9]/.test(ph)){toast("Enter a valid 10-digit mobile number");$("#wph").focus();return}
+    const old=A.ph||"";const b=e.target.closest("#wgo");b.disabled=true;b.textContent="⏳ …";
+    if(old!==ph||A.nm!==nm||!A.ts)await report(nm,ph,old);LS.set("mh_acc",{nm,ph,ts:A.ts||Date.now()});me.nm=nm;me.ph=ph;LS.set("mh_me",me);
+    close();lock(false);accChip();draw();toast(change?"✓ Details updated":"👋 Welcome, "+nm.split(" ")[0]+"!")});
+  setTimeout(()=>{const x=$("#wnm");if(x&&!A.nm)x.focus()},200)}
+function accChip(){const A=ACC();const el=$("#acc");if(el)el.innerHTML=A.ph?`<button type="button" class="lnk" data-chacc2>👤 ${esc(A.nm.split(" ")[0])} ›</button>`:""}
+document.addEventListener("click",e=>{if(e.target.closest("[data-chacc2]"))welcome(true)});
+(function(){const P=LS.get("mh_pend",null);if(P)report(P.nm,P.ph,P.old)})();/* बिना नेट बना खाता — अब भेजो */
+/* ---------- 📸 असली फोटो: pub/ph_<n> (112px, ~4 KB) पीछे से आती रहें ---------- */
+const PH=LS.get("mh_ph",{});let phT=0;
+async function loadPhotos(){try{const r=await fetch(B+"pub/phx?key="+C.apiKey,{cache:"no-store"});if(!r.ok)return;const x=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
+  const n=+x.n||0,v=String(x.v||"");if(!n)return;if(LS.get("mh_phv","")===v&&Object.keys(PH).length){return}
+  for(let k=0;k<n;k++){try{const q=await fetch(B+"pub/ph_"+k+"?key="+C.apiKey);if(!q.ok)continue;const d=V({mapValue:{fields:(await q.json()).fields||{}}})||{};Object.assign(PH,d.m||{});clearTimeout(phT);phT=setTimeout(()=>{if(!$("#ov .sheet"))draw()},150)}catch(e){}}
+  try{LS.set("mh_ph",PH);LS.set("mh_phv",v)}catch(e){}}catch(e){}}
+if(!ACC().ph)welcome(false);else accChip();
+load();loadPhotos();setInterval(()=>{if(!$("#ov .sheet"))load()},5*60000);
 })();
 </script></body></html>

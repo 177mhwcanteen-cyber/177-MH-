@@ -1,0 +1,84 @@
+"""177 MH कैंटीन — 📸 असली फोटो की जाँच (डेमो):
+बड़ी HD फोटो (3000px, किनारे पर खाली जगह) → ≤20 KB, खाली किनारा कटे, चौकोर · ZIP (deflate) से एक साथ, नाम से सही सामान (id/कोड/बारकोड/नाम) ·
+10/15/20 का प्रॉम्प्ट (असली फोटो, फाइल-नाम = id) · ⚙️ कार्ड · ग्राहक-पेज वाली छोटी फोटो (112px)।
+उपयोग: python3 tests/photo.py <www फ़ोल्डर> <स्क्रीनशॉट फ़ोल्डर>"""
+import asyncio, io, os, sys, zipfile, threading, http.server, functools
+from PIL import Image, ImageDraw
+from playwright.async_api import async_playwright
+
+WWW, SHOTS = os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2])
+os.makedirs(SHOTS, exist_ok=True)
+H = os.path.dirname(os.path.abspath(__file__))
+srv = http.server.ThreadingHTTPServer(("127.0.0.1", 8772), functools.partial(http.server.SimpleHTTPRequestHandler, directory=WWW))
+srv.RequestHandlerClass.log_message = lambda *a: None
+threading.Thread(target=srv.serve_forever, daemon=True).start()
+MOCK = open(os.path.join(H, "mock-firebase.js"), encoding="utf8").read() + "\n" + open(os.path.join(H, "..", "node_modules/jsbarcode/dist/JsBarcode.all.min.js"), encoding="utf8").read()
+errs = []
+
+
+def pack_img(seed, w=3000, h=2400):
+    """HD फोटो: सफ़ेद पृष्ठभूमि, बीच में रंगीन 'पैकेट' + शोर (भारी JPEG)"""
+    im = Image.new("RGB", (w, h), (255, 255, 255)); d = ImageDraw.Draw(im)
+    x0, y0 = int(w * .35), int(h * .2); d.rectangle([x0, y0, int(w * .65), int(h * .85)], fill=(200 - seed * 30, 40 + seed * 40, 30))
+    for k in range(0, 600, 7): d.line([x0, y0 + k, int(w * .65), y0 + (k * 3) % 900], fill=(255, 220, 0), width=3)
+    d.text((x0 + 40, y0 + 60), "EVEREST", fill=(255, 255, 255))
+    b = io.BytesIO(); im.save(b, "JPEG", quality=95); return b.getvalue()
+
+
+async def main():
+    async with async_playwright() as p:
+        br = await p.chromium.launch()
+        ctx = await br.new_context(viewport={"width": 400, "height": 860}, service_workers="block", permissions=["clipboard-read", "clipboard-write"])
+        pg = await ctx.new_page()
+        pg.on("pageerror", lambda e: errs.append(str(e)))
+        pg.on("console", lambda m: m.type == "error" and "Failed to load resource" not in m.text and errs.append(m.text))
+        await pg.add_init_script("window.__MOCK__={};window.__USERS__={};localStorage.clear();")
+        await pg.route("**/lib/vendor.js", lambda r: r.fulfill(body=MOCK, content_type="application/javascript"))
+        await pg.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={};", content_type="application/javascript"))
+        await pg.goto("http://127.0.0.1:8772/index.html"); await pg.wait_for_timeout(1500)
+        await pg.evaluate("S.isOwner=true")
+        it = await pg.evaluate("S.items.filter(i=>!i.virtual).slice(0,4).map((i,k)=>{i.photo='';if(k===1)i.code='7777';if(k===2)i.barcode='8901786140503';return {id:i.id,name:i.name}})")
+        # ZIP: id से, कोड से, बारकोड से, नाम से + एक बेकार फाइल
+        zb = io.BytesIO()
+        with zipfile.ZipFile(zb, "w", zipfile.ZIP_DEFLATED) as z:
+            z.writestr(f"photos/{it[0]['id']}.jpg", pack_img(0))
+            z.writestr("photos/7777.jpg", pack_img(1))
+            z.writestr("8901786140503.png", pack_img(2))
+            z.writestr(it[3]["name"].upper().replace(" ", "_") + ".jpg", pack_img(3))
+            z.writestr("unknown-thing.jpg", pack_img(1))
+            z.writestr("__MACOSX/._x.jpg", b"junk")
+        zp = os.path.join(SHOTS, "photos.zip"); open(zp, "wb").write(zb.getvalue())
+        print("zip", round(len(zb.getvalue()) / 1024), "KB, HD images 3000px")
+
+        await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_selector("#sphCard")
+        miss0 = await pg.evaluate("SPH.missing().length")
+        # 📋 प्रॉम्प्ट
+        await pg.click('[data-sphb="10"]'); await pg.wait_for_timeout(300)
+        t = await pg.evaluate("SPH._last")
+        assert t and "ORIGINAL photo" in t and "Never invent" in t and ".jpg" in t and t.count("| product:") == min(10, miss0), t[:300]
+        clip = await pg.evaluate("navigator.clipboard.readText().catch(()=>'')")
+        assert clip == t or clip == "", "प्रॉम्प्ट कॉपी हुआ"
+        await pg.evaluate("closeSheet()")
+        t2 = await pg.evaluate("SPH.batch(10).then(()=>SPH._last)")
+        assert t2 != t or miss0 <= 10, "अगली बार अगले 10 सामान"
+        await pg.evaluate("closeSheet()")
+        # 📥 ZIP डालो
+        await pg.set_input_files("#sphFile", zp); await pg.wait_for_timeout(4000)
+        r = await pg.evaluate("""ids=>ids.map(id=>{const u=SE.photos[id]||'';return {id,kb:Math.round(u.length*.75/1024*10)/10,ok:u.startsWith('data:image/jpeg'),photo:!!item(id).photo}})""", [x["id"] for x in it])
+        print(r)
+        assert all(x["ok"] and x["photo"] and 0 < x["kb"] <= 20 for x in r), r
+        assert await pg.evaluate("SPH.missing().length") == miss0 - 4
+        # खाली किनारा कटा: पैकेट (रंगीन) चौकोर फोटो का बड़ा हिस्सा भरे
+        fill = await pg.evaluate("""id=>new Promise(res=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);
+          const d=x.getImageData(0,0,c.width,c.height).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i]+d[i+1]+d[i+2]<600)n++;res({w:im.width,h:im.height,fill:n/(c.width*c.height)})};im.src=SE.photos[id]})""", it[0]["id"])
+        assert fill["w"] == fill["h"] and fill["w"] >= 200 and fill["fill"] > 0.35, fill
+        print("crop ok", fill)
+        el = await pg.query_selector("#sphCard"); await el.screenshot(path=f"{SHOTS}/p1-card.png")
+        # ग्राहक-पेज वाली छोटी कॉपी
+        th = await pg.evaluate("""id=>new Promise(res=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=112;c.getContext('2d').drawImage(im,0,0,112,112);res(c.toDataURL('image/jpeg',.62).length*.75/1024)};im.src=SE.photos[id]})""", it[0]["id"])
+        assert th < 8, th
+        await br.close()
+    assert not errs, errs
+    print("✅ फोटो टेस्ट पास")
+
+asyncio.run(main())
