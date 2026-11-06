@@ -76,7 +76,7 @@ if(window.SX)SX.orderSet=(id,status,extra)=>SON.step(id,status,extra);
 const ago=ts=>{const m=Math.floor((Date.now()-num(ts))/60000);return m<1?"अभी":m<60?m+" मि पहले":Math.floor(m/60)+" घं पहले"};
 SON.sheet=function(){const L=SX.orders||[];const link=SON.link();
   const card=o=>{const p=SON.parse(o),st=o.status||"new",[ic,tx]=ST[st]||["",st],old=st==="new"&&Date.now()-num(o.ts)>3*60000;
-    const items=(o.items||[]).map(x=>`${esc(SE.capNm(x.n))} <b>${fq(num(x.q),x.u||"pc")}</b>`).join(" · ");
+    const items=(window.SRK?SRK.sortItems(o.items||[]):(o.items||[])).map(x=>{const r=window.SRK?SRK.norm((item(x.id)||{}).rack):"";return `${r?`<i class="son-rk">📍${esc(r)}</i> `:""}${esc(SE.capNm(x.n))} <b>${fq(num(x.q),x.u||"pc")}</b>`}).join(" · ");/* 📍 रैक के क्रम में — एक चक्कर में पूरा ऑर्डर */
     const est=p.total||(o.items||[]).reduce((a,x)=>a+num(x.q)*num(x.s),0);const eta=o.etaTs?new Date(o.etaTs).toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"}):"";
     return `<div class="card2 son-o ${st}${old?" late":""}"><div class="son-h"><span class="son-st">${ic} ${tx}</span><b>${esc(o.name||"ग्राहक")}</b><small>${ago(o.ts)}${eta?" · ⏱️ "+eta:""}</small></div>
     <div class="son-m">${p.mode==="p"?"🏪 दुकान से लेंगे":"🛵 घर पहुँचाना"} · ${p.pay?(p.pay==="UPI"?"📱 UPI":"💵 नकद"):""} · ⏰ ${esc(p.when||"अभी")} · <b>≈ ${rs(Math.round(est))}</b></div>
@@ -166,7 +166,7 @@ const css=document.createElement("style");css.textContent=`
 @keyframes sonp{50%{box-shadow:0 0 0 3px rgba(239,68,68,.25)}}.son-o.late .son-h small{color:var(--chili);font-weight:800}
 .son-h{display:flex;align-items:baseline;gap:8px}.son-h b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px}.son-h small{font-size:12px;color:var(--muted)}
 .son-st{font-size:12px;font-weight:900;padding:2px 8px;border-radius:99px;background:var(--bg)}.son-o.new .son-st{background:var(--chili);color:#fff}
-.son-m,.son-a{font-size:13px;color:var(--muted)}.son-a a{color:var(--leaf);font-weight:800}.son-i{font-size:14px;line-height:1.5}
+.son-m,.son-a{font-size:13px;color:var(--muted)}.son-a a{color:var(--leaf);font-weight:800}.son-i{font-size:14px;line-height:1.5}.son-rk{font-style:normal;font:700 11px monospace;background:#0f766e1a;color:#0f766e;border-radius:6px;padding:0 4px}
 .son-b{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.son-l{font-size:12px;font-weight:800;color:var(--muted)}
 .son-b button,.son-b a{border:0;border-radius:10px;padding:8px 11px;font-weight:900;font-size:14px;background:var(--leaf);color:#fff;text-decoration:none}
 .son-b .g{background:var(--bg);color:var(--ink);border:1.5px solid var(--line);padding:7px 10px}.son-b .r{color:var(--chili)}.son-b button:disabled{opacity:.5}

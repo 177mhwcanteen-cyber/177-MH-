@@ -1202,10 +1202,10 @@ function openCatSet(){const draw=()=>{const h=hiddenCats();
 function billList(){
   const raw=S.q.trim();let q=raw,qq=0;
   const mm=raw.match(/^(.*?[^\d\s.,])\s*(\d+(?:[.,]\d+)?)\s*(kg|किलो|कि\.?ग्रा|कि)?$/i);
-  if(mm){q=mm[1].trim();qq=parseFloat(mm[2].replace(",","."))||0}
+  if(mm&&!S.items.some(i=>i.rack&&String(i.rack).toLowerCase()===raw.toLowerCase())){q=mm[1].trim();qq=parseFloat(mm[2].replace(",","."))||0}/* "A3-2" रैक है, मात्रा नहीं */
   const ql=q.toLowerCase();
   const catOk=i=>S.flt==="fav"?!!(window.SA&&SA.isFav(i)):S.flt==="low"?isLow(i):S.flt==="exp"?!!expInfo(i):(S.cat==="all"||mcat(i)===S.cat)&&(S.sub==="all"||(S.cat==="mela"?melaSub(i):i.sub)===S.sub);
-  const hit=i=>String(i.name).toLowerCase().includes(ql)||String(i.hi||"").includes(q)||i.id.includes(ql)||String(i.alias||"").toLowerCase().includes(ql)||SN.en(i).toLowerCase().includes(ql)||String(i.code||"")===q||codes(i).includes(q);
+  const hit=i=>String(i.name).toLowerCase().includes(ql)||String(i.hi||"").includes(q)||i.id.includes(ql)||String(i.alias||"").toLowerCase().includes(ql)||SN.en(i).toLowerCase().includes(ql)||String(i.code||"")===q||codes(i).includes(q)||(ql.length>=2&&String(i.rack||"").toLowerCase()===ql);/* 📍 A3-2 = उस खाने का सारा सामान */
   const exact=q&&S.items.find(i=>i.active!==false&&String(i.code||"")===q);
   const list=exact?[exact]:S.items.filter(i=>i.active!==false&&!(i.cat==="mela"&&!melaOn())&&(q?true:catOk(i)&&!isVariant(i))&&(!q||hit(i)));
   if(S.sortTop){const sc=S.top7||{};list.sort((a,b)=>(sc[b.id]||0)-(sc[a.id]||0))}
@@ -1729,6 +1729,7 @@ function trackedPairs(lines,sign){return lines.filter(l=>{const it=item(l.id);re
 async function handleScan(code){
   code=window.SE&&SE.normCode?SE.normCode(code):String(code||"").trim();if(!code)return;
   if(window.SA&&SA.scan(code))return;/* 🔢 बिल का बारकोड (BW-…) = वही बिल + वापसी */
+  if(window.SRK&&SRK.scan(code))return;/* 📍 रैक लगाओ: स्कैन = यह सामान इस खाने का */
   if(window.SBC&&SBC.scan(code))return;/* 🏷️ बारकोड पहरा: "लग गया" की जाँच या पैकेट का बारकोड जोड़ना */
   if(window.SL&&SL.scan(code))return;/* 🏷️ लेबल टैब या बिलिंग का बारकोड-मोड: स्कैन = लेबल की लिस्ट में +1 */
   if(S.tab==="kharid"&&window.SI&&SI.active()&&SI.scan(code))return;
@@ -2286,6 +2287,7 @@ function setItemEdit(it){return `<div class="setitem" data-sid="${esc(it.id)}">
       <label class="fld">MRP ₹<input class="inp" data-if="mrp" inputmode="decimal" value="${it.mrp||""}"></label>
       <label class="fld">साइज़<input class="inp" data-if="size" value="${esc(it.size||"")}" placeholder="400g"></label>
       <label class="fld">कोड<input class="inp code" data-if="code" inputmode="numeric" maxlength="4" value="${esc(it.code||"")}"></label>
+      <label class="fld">📍 रैक<input class="inp code" data-if="rack" value="${esc(it.rack||"")}" placeholder="A3-2" autocapitalize="characters" aria-label="${esc(SE.capNm(it.name))} का रैक नंबर"></label>
       <label class="fld">कम स्टॉक<input class="inp" data-if="min" inputmode="numeric" value="${it.min||""}" placeholder="5"></label>
       <label class="fld">एक्सपायरी<input class="inp" type="date" data-if="exp" value="${esc(it.exp||"")}"></label>
       <label class="fld">उप-कैटेगरी<select class="inp" data-if="sub"><option value="">—</option>${(SUBS[mcat(it)]||[]).map(([k,v])=>`<option value="${k}" ${it.sub===k?"selected":""}>${v}</option>`).join("")}</select></label>
@@ -2293,7 +2295,7 @@ function setItemEdit(it){return `<div class="setitem" data-sid="${esc(it.id)}">
     </div></div>`}
 const SETV={q:"",f:"all",n:40,open:""};
 function setMatch(it){const q=SETV.q.toLowerCase(),f=SETV.f;
-  if(q&&!((it.name||"")+" "+(it.hi||"")+" "+(it.short||"")+" "+(it.code||"")+" "+(it.barcode||"")+" "+(it.alias||"")).toLowerCase().includes(q))return false;
+  if(q&&!((it.name||"")+" "+(it.hi||"")+" "+(it.short||"")+" "+(it.code||"")+" "+(it.barcode||"")+" "+(it.alias||"")+" "+(it.rack||"")).toLowerCase().includes(q))return false;
   if(f==="all")return it.active!==false;if(f==="off")return it.active===false;if(f==="noprice")return !((+it.sale)>0);if(f==="nophoto")return !SE.photoSrc(it);
   if(f==="low")return isLow(it);if(f==="exp")return !!expInfo(it);if(f==="noweb")return !!it.noOnline;return it.cat===f&&it.active!==false}
 function setRowHTML(it){const ps=SE.photoSrc(it),st=it.track?(+(S.pstock[it.id]?.qty)||0):null,id=esc(it.id);
@@ -2332,6 +2334,7 @@ function renderSettings(){
   ${window.SON?SON.settingsHTML():""}
   ${window.SPH?SPH.settingsHTML():""}
   ${window.SBC?SBC.settingsHTML():""}
+  ${window.SRK?SRK.settingsHTML():""}
   ${window.SA?SA.bkHTML():""}
   ${window.SRc?SRc.settingsHTML():""}
   ${window.SF?SF.labelSettingsHTML():""}
@@ -2370,6 +2373,7 @@ $("#p-set").addEventListener("change",async e=>{
   if(t.dataset.if){const id=t.closest("[data-sid]").dataset.sid;let v=t.type==="checkbox"?t.checked:t.value.trim();if(["sale","cost","mrp","min"].includes(t.dataset.if))v=parseFloat(v)||0;
     if(t.dataset.if==="code"&&v){if(!/^\d{4}$/.test(v)){toast("कोड 4 अंक का हो");t.value=item(id)?.code||"";return}const o=S.items.find(i=>i.id!==id&&String(i.code)===v);if(o){toast("कोड "+v+" पहले से "+o.name+" में है");t.value=item(id)?.code||"";return}}
     if(t.dataset.if==="barcode"){v=String(v).split(/[,\s]+/).filter(Boolean).join(",");const dup=v.split(",").find(c=>{const o=findByCode(c);return o&&o.id!==id});if(dup){toast("बारकोड "+dup+" पहले से "+findByCode(dup).name+" में लगा है");t.value=item(id)?.barcode||"";return}}
+    if(t.dataset.if==="rack"){v=window.SRK?SRK.norm(v):String(v).toUpperCase().replace(/\s+/g,"");t.value=v}
     const old=item(id)?.[t.dataset.if];await saveItem(id,{[t.dataset.if]:v});if((t.dataset.if==="sale"||t.dataset.if==="cost")&&+old!==v)logPrice(id,t.dataset.if,+old||0,v);return}
   if(t.id==="photoIn"&&t.files[0]){const id=t.dataset.for;const f=t.files[0];t.value="";
     if(S.demo){toast("डेमो में फोटो नहीं लगती");return}
@@ -2551,6 +2555,7 @@ boot();
 <script src="se-quick.js"></script>
 <script src="se-photo.js"></script>
 <script src="se-bcode.js"></script>
+<script src="se-rack.js"></script>
 <script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>
