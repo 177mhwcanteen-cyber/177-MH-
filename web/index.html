@@ -907,7 +907,8 @@ html .ob-g>div{background:var(--surface2)}
 @media (prefers-color-scheme:dark){.grid .tile.art{background:linear-gradient(135deg,hsl(var(--h) 48% 38%),hsl(calc(var(--h) + 28) 46% 26%))}}
 .grid .tile.art::after{background:radial-gradient(circle at 88% -20%,rgba(255,255,255,.5),transparent 55%),repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 5px,transparent 5px 13px)}
 .grid .tile.art .em{left:4px;bottom:4px;top:auto;transform:none;width:23px;height:23px;display:grid;place-items:center;font-size:14px;background:rgba(255,255,255,.92);border-radius:99px;box-shadow:0 1px 4px rgba(0,0,0,.22);opacity:1}
-.grid .tile.art .tbr{left:27px;right:26px;text-align:center;font-size:14px;letter-spacing:.1px;white-space:normal;text-overflow:clip;overflow-wrap:anywhere;text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.grid .tile.art .tbr{left:27px;right:26px;text-align:center;font-size:14px;letter-spacing:0;white-space:normal;text-overflow:clip;overflow-wrap:normal;word-break:normal;text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.grid .tile.art .tbr.tl1{font-size:11.5px;left:25px;right:22px}.grid .tile.art .tbr.tl2{font-size:10px;left:25px;right:21px}
 .grid.rows .tile.art .em{position:static;transform:none;width:auto;height:auto;background:none;box-shadow:none}
 .grid .card{border-radius:14px;border:1px solid rgba(15,23,42,.07);box-shadow:0 1px 2px rgba(16,24,40,.05),0 3px 10px rgba(16,24,40,.06)}
 .toast{font-size:14px;padding:8px 16px;border-radius:14px;max-width:80%;background:rgba(20,24,28,.9);color:#fff;backdrop-filter:blur(6px);box-shadow:0 6px 22px rgba(0,0,0,.25)}
@@ -1088,7 +1089,7 @@ function art(it){const k=(it.name||"")+" "+(it.hi||"")+" "+(it.alias||"");const 
   const h=b?b[1]:(it.hue!=null&&!(generic&&+it.hue===30)?+it.hue:hhash(brand)%360);return {em,h,brand}}
 function tileHTML(it,cls=""){
   const a=art(it);
-  const em=`<span class="em" aria-hidden="true">${esc(a.em)}</span><span class="tbr" aria-hidden="true">${esc(a.brand)}</span>`;
+  const em=`<span class="em" aria-hidden="true">${esc(a.em)}</span><span class="tbr${a.brand.length>8?" tl2":a.brand.length>5?" tl1":""}" aria-hidden="true">${esc(a.brand)}</span>`;
   const psrc=SE.photoSrc(it);const img=psrc?`<img src="${esc(psrc)}" alt="" loading="lazy" decoding="async" style="position:absolute;inset:0" onerror="this.remove()">`:"";
   const vm=it.veg==="veg"||it.veg==="nonveg"||it.veg==="egg"?`<i class="vegm ${it.veg}" title="${it.veg==="veg"?"शाकाहारी":"मांसाहारी"}"></i>`:"";
   const sm=it.storage==="frozen"?`<i class="stor">❄️</i>`:it.storage==="fridge"?`<i class="stor">🧊</i>`:"";
