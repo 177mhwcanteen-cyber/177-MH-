@@ -1491,7 +1491,7 @@ async function saveBill(){
   if(c.pay==="cash")pay.cash=tot;else if(c.pay==="upi")pay.upi=tot;else if(c.pay==="udhar")pay.udhar=tot;
   else if(c.pay==="split"){const cp=Math.min(tot,parseFloat(c.cashPart)||0);pay.cash=cp;pay.udhar=r2(tot-cp)}
   const now=Date.now(),date=today();
-  const lines=S.cart.map(l=>({id:l.id,name:l.name,emoji:l.emoji||"",unit:l.unit,qty:l.qty,rate:l.rate,board:l.board,cost:l.cost,amt:l.amt,mrp:+(S.items.find(x=>x.id===l.id)?.mrp)||0,changed:!!l.changed,free:!!l.free,...(l.note?{note:l.note}:{}),...(l.costTyped?{costTyped:l.costTyped}:{})}));
+  const lines=S.cart.map(l=>({id:l.id,name:l.name,emoji:l.emoji||"",unit:l.unit,qty:l.qty,rate:l.rate,board:l.board,cost:l.cost,amt:l.amt,mrp:+(S.items.find(x=>x.id===l.id)?.mrp)||0,changed:!!l.changed,free:!!l.free,...(l.note?{note:l.note}:{}),...(l.costTyped?{costTyped:l.costTyped}:{}),...(l.sc?{sc:l.sc}:{})}));
   /* 🛡️ 177 MH चेतावनियाँ (पुरानी गलतियों से सीख) — C3 अजीब भाव, C4 बहुत ज़्यादा मात्रा, C9 ₹0 बिल; C10 हर चेतावनी बिल में दर्ज */
   const warn=[];
   if(!(tot>0)&&S.mode!=="inst"){toast("₹0 का बिल नहीं बनता — सामान और भाव देखें");return}
@@ -1509,7 +1509,7 @@ async function saveBill(){
   const _l=window.SR&&SR.last&&Date.now()-SR.last.ts<15*60000?SR.last:null;
   const bill={...(_l?{loc:{lat:_l.lat,lng:_l.lng,acc:_l.acc||0}}:{}),no:c.no,ts:now,date,by:S.uid||"",byName:biller(),mode:S.mode,partyId:S.mode==="udhar"?S.partyId:"",partyName:S.mode==="udhar"?(party?.name||""):S.mode==="inst"?S.inst:(cnm||"VIP ग्राहक"),custPhone:cph,custName:cnm,
     lines,sub:cartTotal(),disc:+c.disc||0,total:S.mode==="inst"?cartTotal():tot,pay,payMode:c.pay,cost,
-    rateChanged:lines.some(l=>l.changed),cancelled:false,...(warn.length?{warn}:{}),settled:c.pay!=="pending",...(c.photo?{photo:true}:{})};if(window.SR)SR.stamp(bill);if(bill.mode==="inst"&&window.SB&&SB.instReprice)SB.instReprice(bill);
+    rateChanged:lines.some(l=>l.changed),cancelled:false,...(warn.length?{warn}:{}),settled:c.pay!=="pending",...(c.photo?{photo:true}:{})};if(window.SR)SR.stamp(bill);if(window.SBC)SBC.onBill(lines);if(bill.mode==="inst"&&window.SB&&SB.instReprice)SB.instReprice(bill);
   if(c.photo){const ph={d:c.photo,no:c.no,date,ts:now,by:S.uid||"",byName:biller()};S.billPhotos=S.billPhotos||{};S.billPhotos[c.no]=c.photo;if(!S.demo)S.db.collection("billPhotos").doc(c.no).set(ph).catch(()=>{})}
   S.saving=true;drawCheckout();
   if(S.demo){S.dayBills=[bill,...S.dayBills];if(pay.udhar>0)S.ledger.push({id:c.no,ts:now,date,partyId:bill.partyId,partyName:bill.partyName,type:"udhar",amt:pay.udhar,billNo:c.no,byName:biller()});await adjStock(trackedPairs(lines,-1),"बिल "+c.no);S.saving=false;closeCurTab();refreshAfterCart();if(bill.settled===false&&window.SB)SB.settleSheet(bill);else quickDone(bill,false);return}
@@ -1729,6 +1729,7 @@ function trackedPairs(lines,sign){return lines.filter(l=>{const it=item(l.id);re
 async function handleScan(code){
   code=window.SE&&SE.normCode?SE.normCode(code):String(code||"").trim();if(!code)return;
   if(window.SA&&SA.scan(code))return;/* 🔢 बिल का बारकोड (BW-…) = वही बिल + वापसी */
+  if(window.SBC&&SBC.scan(code))return;/* 🏷️ बारकोड पहरा: "लग गया" की जाँच या पैकेट का बारकोड जोड़ना */
   if(window.SL&&SL.scan(code))return;/* 🏷️ लेबल टैब या बिलिंग का बारकोड-मोड: स्कैन = लेबल की लिस्ट में +1 */
   if(S.tab==="kharid"&&window.SI&&SI.active()&&SI.scan(code))return;
   if(window.SO&&SO.active()){const it=findByCode(code);beep(!!it);if(!it){unknownCode(code);return}SO.scan(it);return}
@@ -1739,6 +1740,7 @@ async function handleScan(code){
     if(vw.kind==="fix"&&vw.it.unit!=="pc"){beep(true);openQty(vw.it);return}quickAdd(vw.it,vw.qty);return}
   const it=findByCode(code);beep(!!it);
   if(!it){unknownCode(code);return}
+  if(window.SBC)SBC.seen(it,code);/* दुकान वाला लेबल स्कैन हुआ = लेबल लगा है → अपने-आप ✅ */
   if(S.tab==="stock"&&window.SK&&SK.counting()){SK.scanCount(it);return}
   if(S.tab==="kharid"&&!S.scanIn&&window.SF&&SF.scanAdd){SF.scanAdd(it);return}
   if(S.scanIn){
@@ -1751,8 +1753,8 @@ async function handleScan(code){
   if(!isPc(it.unit)){openQty(it);return}
   if(!canSell(it))return;
   const ex=S.cart.find(l=>l.id===it.id&&!l.changed&&!l.free);
-  if(ex){ex.qty=r2(ex.qty+1);ex.amt=r2(ex.qty*ex.rate)}
-  else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:1,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:p});
+  if(ex){ex.qty=r2(ex.qty+1);ex.amt=r2(ex.qty*ex.rate);ex.sc=(ex.sc||0)+1}
+  else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:1,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:p,sc:1});
   clearSearch();refreshAfterCart();popItem(it.id);
   const inCart=S.cart.filter(l=>l.id===it.id).reduce((a,l)=>a+l.qty,0),left=it.track?r2((+(S.pstock[it.id]?.qty)||0)-inCart):null;
   toast("✓ "+it.name+" · "+rs(p)+(inCart>1?" · कुल "+inCart:"")+(left!=null&&left<0?" · ⚠ स्टॉक में इतना नहीं दिखता":""));
@@ -2329,6 +2331,7 @@ function renderSettings(){
     ${SE.isNative?'<div class="row2" style="margin:0"><button class="big ghost" data-prnpick="58">58mm प्रिंटर चुनें</button><button class="big ghost" data-prnpick="80">80mm प्रिंटर चुनें</button></div><button class="big ghost" data-prnpick="100">4 इंच प्रिंटर (Xprinter XP-D4601B जैसा) चुनें</button><div id="prnList"></div><button class="big ghost" data-prntest>टेस्ट प्रिंट</button>':""}</div>
   ${window.SON?SON.settingsHTML():""}
   ${window.SPH?SPH.settingsHTML():""}
+  ${window.SBC?SBC.settingsHTML():""}
   ${window.SA?SA.bkHTML():""}
   ${window.SRc?SRc.settingsHTML():""}
   ${window.SF?SF.labelSettingsHTML():""}
@@ -2397,7 +2400,7 @@ $("#p-set").addEventListener("click",async e=>{
     const pkR=parseFloat(($("#ni-pkrate")||{}).value)||0,pkB=(($("#ni-pkbar")||{}).value||"").trim();
     try{if(S.demo)S.items.push({id,...it});else await S.db.collection("items").doc(id).set(it);
       if(it.perPack>1&&pkR>0){const pid=id+"-pk";let pc=nextCode(cat);if(pc===code)pc=String(+code+1);const pk={...it,name:shortNm(it).replace(/\s*\(?1\s*(pc|पीस)\)?\s*$/i,"")+" "+it.perPack+" पैक",short:"",secret:it.secret?it.secret+"P":"",packOf:id,sale:pkR,mrp:it.mrp?r2(it.mrp*it.perPack):0,cost:it.cost?r2(it.cost*it.perPack):0,code:pc,barcode:pkB||ean13("2000000"+pc+"0"),track:false,min:0,order:it.order+0.5};if(S.demo)S.items.push({id:pid,...pk});else await S.db.collection("items").doc(pid).set(pk)}
-      toast(name+" जुड़ गया · कोड "+code+(it.perPack>1&&pkR>0?" · 📦 पैकेट भी":""));renderSettings()}catch(err){toast("नहीं जुड़ा — सिर्फ मालिक जोड़ सकते हैं")}
+      toast(name+" जुड़ गया · कोड "+code+(it.perPack>1&&pkR>0?" · 📦 पैकेट भी":""));renderSettings();if(window.SBC&&!bar)SBC.onNew(id)}catch(err){toast("नहीं जुड़ा — सिर्फ मालिक जोड़ सकते हैं")}
   }
 });
 async function logPrice(id,field,old,nw){if(S.demo)return;try{await S.db.collection("priceLog").doc("r"+Date.now().toString(36)).set({itemId:id,name:item(id)?.name||id,field,old,new:nw,ts:Date.now(),by:S.uid||"",byName:biller()})}catch(e){}}
@@ -2547,6 +2550,7 @@ boot();
 <script src="se-receipt.js"></script>
 <script src="se-quick.js"></script>
 <script src="se-photo.js"></script>
+<script src="se-bcode.js"></script>
 <script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>

@@ -518,7 +518,14 @@ SE.aiReady=()=>!!(SE.gk()||SE.scriptUrl());
 const AI_P={code:c=>'Search the web (Google) for the retail product with barcode / EAN / GTIN "'+c+'" sold in India. Use only what you actually find for this exact barcode; if nothing reliable is found, set found=false. Reply with ONLY one JSON object, no other words: {"found":true,"name":"Brand Item Size (short, for a shop bill, e.g. Parle-G Biscuit 100g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other","source":"website name"}',
   img:'This is a photo of a retail product pack (front or back label) in an Indian shop. Read it. Reply with ONLY one JSON object: {"found":true,"name":"Brand Item Size (short, e.g. Haldiram Bhujia 200g)","hi":"हिंदी नाम","brand":"","size":"","mrp":0,"barcode":"digits if visible else empty","exp":"YYYY-MM if expiry/best-before visible else empty","category":"namkeen|biscuit|chocolate|drinks|dairy|rashan|masala|clean|personal|tobacco|other"}. mrp = printed MRP in rupees (number only). If not readable, use 0 / empty. If this is not a product, found=false.'};
 /* मॉडल: फोटो पढ़ने के लिए सबसे समझदार (Pro) पहले, सीमा खत्म हो तो तेज़ वाला (Flash) — बारकोड खोज के लिए Flash (Google खोज के साथ) */
-const GM={img:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash","gemini-2.5-pro"],code:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"],ping:["gemini-2.5-flash-lite","gemini-2.0-flash","gemini-flash-latest"]};
+/* 🏷️ बारकोड पहरा: कौन-सा सामान फ़ैक्ट्री पैकेट (कंपनी बारकोड छपा) और कौन-सा खुला/दुकान का (अपना लेबल) — EAN सिर्फ़ सुझाव */
+AI_P.bcfind=L=>'You help an Indian army canteen shop. For EACH product below (id | name | brand | size), use Google search and decide:\n'+
+ '"pack" = factory-packed branded retail product whose pack carries a printed manufacturer barcode (EAN-13/GTIN, usually starting 890);\n'+
+ '"loose" = shop-made, loose, unbranded, sold by weight/plate, handmade sweets/snacks, or no manufacturer barcode.\n'+
+ 'Only if you find the EXACT EAN-13 for that exact brand+product+size on a reliable page, put it in "ean"; otherwise "". Never guess digits.\n'+
+ 'Reply with ONLY one JSON object, no other words: {"r":[{"id":"<id>","k":"pack|loose","ean":"","why":"max 8 words"}]}\n\n'+
+ L.map(x=>String(x.id)+" | "+String(x.n||"")+" | "+String(x.b||"")+" | "+String(x.s||"")).join("\n");
+const GM={bcfind:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"],img:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash","gemini-2.5-pro"],code:["gemini-flash-latest","gemini-2.5-flash","gemini-2.0-flash"],ping:["gemini-2.5-flash-lite","gemini-2.0-flash","gemini-flash-latest"]};
 SE.aiLast="";
 /* Android ऐप में Google को सीधा (फ़ोन की मशीनी नेटवर्क से — ब्राउज़र की CORS रोक नहीं); वेब में सामान्य fetch */
 async function gfetch(url,opt,ms){
@@ -534,6 +541,7 @@ async function geminiDirect(p,key){
   let parts,tools=null;
   if(p.mode==="ping")parts=[{text:"Reply with exactly: OK"}];
   else if(p.mode==="code"){const c=String(p.code||"").replace(/\D/g,"").slice(0,14);if(c.length<8)return {ok:false,error:"bad-code"};parts=[{text:AI_P.code(c)}];tools=[{google_search:{}}]}
+  else if(p.mode==="bcfind"){const L=(p.items||[]).slice(0,25);if(!L.length)return {ok:false,error:"no-items"};parts=[{text:AI_P.bcfind(L)}];tools=[{google_search:{}}]}
   else if(p.mode==="img")parts=[{inline_data:{mime_type:"image/jpeg",data:String(p.b64||"")}},{text:AI_P.img}];else return {ok:false,error:"mode"};
   const own=_set().gmodel;const list=[...(own?[own]:[]),...GM[p.mode]];let last="",quota=false,busy=false;const tries=[];
   for(const m of list){
