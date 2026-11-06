@@ -2221,9 +2221,10 @@ function renderReport(){
     R("range","long","🗓️","7 / 30 दिन की बिक्री","",()=>`<div class="seg"><button class="chip" data-range="7" aria-pressed="${S.range?.n===7}">पिछले 7 दिन</button><button class="chip" data-range="30" aria-pressed="${S.range?.n===30}">पिछले 30 दिन</button></div>
   <div id="rangeBox">${rangeHTML()}</div>`),
     R("rr","long","📆","तारीख से तारीख तक","",()=>window.SF&&SF.rangeHTML?SF.rangeHTML():""),
-    R("tools","long","🧰","महीने का A4 · बैकअप · पोस्टर","",()=>window.SX&&SX.toolsHTML?SX.toolsHTML():"")];
+    R("tools","long","🧰","महीने का A4 · बैकअप · पोस्टर","",()=>window.SX&&SX.toolsHTML?SX.toolsHTML():""),
+    ...(window.SFM&&SFM.html?[R("firms","long","🏢","सभी फर्म · 177 MH का महीना","",()=>SFM.html())]:[])];
   const G={day:"📅 आज का हिसाब",item:"📦 सामान और स्टॉक",party:"👥 ग्राहक और पार्टी",long:"🗓️ लंबा समय और औज़ार"};
-  let fav=[];try{fav=JSON.parse(lsGet("rep_fav")||'["full","items","galla"]')}catch(e){}
+  let fav=[];try{fav=JSON.parse(lsGet("rep_fav")||(window.SFM?'["full","items","firms"]':'["full","items","galla"]'))}catch(e){}
   const alerts=(window.SF?SF.cancelReqsHTML():"")+(window.SB?SB.editsHTML():"")+(window.SR?SR.pendingItemsHTML():"")+guardHTML();
   const GO={daybook:"bills",kharch:"day",stock:"stock",ledger:"udhar"};REP.forEach(r=>{if(GO[r.id])r.tab=GO[r.id]});
   const sel=REP.find(r=>r.id===S.repSel&&!r.tab);
