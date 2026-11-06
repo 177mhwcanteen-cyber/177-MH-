@@ -82,6 +82,10 @@ async def main():
         for rid in ["brief","chart","galla","flags","staff","short","profit","udhar","topc","inst","range","rr","tools"]:
             await pg.evaluate(f"S.repSel='{rid}';renderReport()"); await pg.wait_for_timeout(60)
         await pg.evaluate("S.repSel='';renderReport()")
+        for tb in ["stock","udhar","day","bills"]:
+            await pg.click(f'#p-report .rp-go[data-rtab="{tb}"]'); await pg.wait_for_timeout(150)
+            assert await pg.evaluate("S.tab") == tb and not await pg.evaluate(f"document.getElementById('p-{tb}').hidden")
+            await pg.evaluate("S.tab='report';showTab()"); await pg.wait_for_timeout(150)
         print("dashboard + report hub ok")
 
         # 📲 उधार की याद
