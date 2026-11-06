@@ -64,6 +64,16 @@ async def main():
         await pg.evaluate("closeSheet()")
         # 📥 ZIP डालो
         await pg.set_input_files("#sphFile", zp); await pg.wait_for_timeout(4000)
+        # 🖐️ नाम न मिला → फोटो दिखाकर सामान चुनवाओ
+        assert "किस सामान" in await pg.text_content("#sheet"), "हाथ से चुनने की शीट"
+        await pg.screenshot(path=f"{SHOTS}/p1b-pick.png")
+        free = await pg.evaluate("SPH.need().map(x=>x.i).find(i=>!i.photo).id")
+        await pg.fill("#sphQ", ""); await pg.click(f'#sheet [data-sphto="{free}"]'); await pg.wait_for_timeout(800)
+        assert await pg.evaluate(f"!!item('{free}').photo"), "हाथ से चुनी फोटो लगी"
+        miss0 -= 1
+        # 🍛 दुकान का खाना: अलग प्रॉम्प्ट — AI फोटो बनाए, ZIP न बने तो चैट में दिखाए
+        ft = await pg.evaluate("(()=>{const L=S.items.filter(i=>['mithai','fast'].includes(i.cat)).slice(0,3);return SPH.prompt(L)})()")
+        assert "CREATE (generate)" in ft and "CANNOT make a ZIP" in ft and "Never invent" not in ft, ft[:200]
         r = await pg.evaluate("""ids=>ids.map(id=>{const u=SE.photos[id]||'';return {id,kb:Math.round(u.length*.75/1024*10)/10,ok:u.startsWith('data:image/jpeg'),photo:!!item(id).photo}})""", [x["id"] for x in it])
         print(r)
         assert all(x["ok"] and x["photo"] and 0 < x["kb"] <= 20 for x in r), r
@@ -98,6 +108,7 @@ async def main():
         # नई फोटो लगी → सूची से अपने-आप बाहर
         await pg.set_input_files("#sphFile", zp); await pg.wait_for_timeout(4000)
         assert not await pg.evaluate(f"SPH.isBad(item('{it[0]['id']}'))"), "नई फोटो से सूची पूरी"
+        await pg.evaluate("closeSheet()")
         # 📝 STEP 2 सुधार: सिर्फ़ नाम-जानकारी, भाव/स्टॉक नहीं
         before = await pg.evaluate(f"(i=>({{sale:i.sale,stock:i.stock}}))(item('{it[2]['id']}'))")
         await pg.click("[data-sphfix]"); await pg.wait_for_selector("#sphFixT")
