@@ -63,6 +63,7 @@ async def main():
         await pg.screenshot(path=f"{SHOTS}/o1-shop-orders.png")
         await pg.evaluate("closeSheet()")
         await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_timeout(200)
+        await pg.click("#p-set [data-sopen]"); await pg.wait_for_timeout(100)
         assert await pg.locator("#sonSet").count() == 1 and await pg.locator("#p-set [data-noonline]").count() > 0
         el = await pg.query_selector("#sonSet"); await el.screenshot(path=f"{SHOTS}/o2-settings.png")
         print("shop orders + settings ok")
@@ -80,7 +81,7 @@ async def main():
                 return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/AbCdEf123456", "fields": posted["fields"]})
             if "/documents/pub/ot_AbCdEf123456" in u:
                 if track["st"] == "new": return await route.fulfill(status=404, json={})
-                return await route.fulfill(json={"fields": {"st": fsv(track["st"]), "eta": fsv(1893456000000), "by": fsv("मनोहर")}})
+                return await route.fulfill(json={"fields": {"st": fsv(track["st"]), "eta": fsv(1893456000000), "by": fsv("Manohar")}})
             return await route.fulfill(status=404, json={})
         c = await ctx.new_page()
         c.on("pageerror", lambda e: errs.append("page: " + str(e)))
@@ -91,7 +92,7 @@ async def main():
         tiles = await c.locator(".t").count(); assert tiles > 3, tiles
         assert "GOLD FLAKE" not in (await c.text_content("#m")).upper() and "CLASSIC" not in (await c.text_content("#m")).upper()
         assert await c.locator(".t.out").count() == 0, "सिर्फ़ स्टॉक वाले चालू — ख़त्म वाला न दिखे"
-        assert "मुफ़्त डिलीवरी" in await c.text_content("#trust")
+        assert "Free delivery" in await c.text_content("#trust")
         await c.screenshot(path=f"{SHOTS}/o3-page.png")
         # खोज + ADD + स्टेपर
         await c.fill("#q", "parle"); await c.wait_for_timeout(100)
@@ -103,7 +104,7 @@ async def main():
         await c.screenshot(path=f"{SHOTS}/o4-added.png")
         # कार्ट
         await c.click("#cbar"); await c.wait_for_selector("#place")
-        assert "₹20" in await c.text_content(".sheet"), "₹200 से कम — डिलीवरी शुल्क"
+        assert "₹20" in await c.text_content(".sheet") and "Delivery fee" in await c.text_content(".sheet"), "₹200 से कम — डिलीवरी शुल्क"
         await c.screenshot(path=f"{SHOTS}/o5-cart.png", full_page=False)
         await c.click("#place"); await c.wait_for_timeout(150)
         assert not posted, "बिना नाम ऑर्डर नहीं जाना चाहिए"
@@ -120,7 +121,7 @@ async def main():
         # दुकान ने स्वीकार किया → ट्रैकिंग में दिखे
         track["st"] = "acc"
         await c.click(".sheet .x"); await c.click("#myo"); await c.click("[data-trk]"); await c.wait_for_timeout(400)
-        assert "मनोहर" in await c.text_content(".trk") and await c.locator(".st.done").count() >= 1
+        assert "Manohar" in await c.text_content(".trk") and await c.locator(".st.done").count() >= 1
         await c.screenshot(path=f"{SHOTS}/o7-track-acc.png")
         # फिर से मँगाएँ
         await c.click(".sheet .x"); await c.click("#myo"); await c.click("[data-again]"); await c.wait_for_timeout(150)

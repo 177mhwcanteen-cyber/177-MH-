@@ -180,6 +180,7 @@ async def main():
 
         # ---------- 5) बाज़ार खरीद / सामान की सेटिंग से ----------
         await pg.evaluate("S.tab='set';showTab()")
+        await pg.click("#p-set [data-sopen]")  # सामान की पंक्ति दबाओ → संपादन खुले
         btn = pg.locator("[data-lbladd]").first
         await btn.scroll_into_view_if_needed(); await btn.click()
         await pg.wait_for_selector(".sl-ask"); await pg.click('[data-slqk="10"]')

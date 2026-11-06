@@ -469,21 +469,21 @@ SR.renderRoute=function(){
 function loadLeaflet(){return new Promise((res,rej)=>{if(window.L)return res();if(!document.querySelector('link[href="lib/leaflet.css"]')){const l=document.createElement("link");l.rel="stylesheet";l.href="lib/leaflet.css";document.head.appendChild(l)}
   const s=document.createElement("script");s.src="lib/leaflet.js";s.onload=()=>res();s.onerror=rej;document.head.appendChild(s)})}
 const ESRI="https://server.arcgisonline.com/ArcGIS/rest/services/",SATU=ESRI+"World_Imagery/MapServer/tile/{z}/{y}/{x}";
-/* 🛰️ साफ़ सैटेलाइट: Esri "Clarity" (नई, ज़्यादा साफ़ फोटो) + फोन की स्क्रीन के हिसाब से दोगुनी बारीक टाइल (detectRetina);
-   कोई टाइल न मिले तो अपने-आप पुरानी Esri टाइल — नक्शा कभी खाली नहीं */
-const SATC="https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-/* बाड़मेर जैसे शहरों में z19 पर फोटो नहीं होती (धुंधली "डेटा नहीं" टाइल) — इसलिए z18 की असली फोटो ही बड़ी करके दिखाओ */
-function satLayer(){const t=L.tileLayer(SATC,{maxZoom:21,maxNativeZoom:18,crossOrigin:true,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"});
-  t.on("tileerror",e=>{const im=e.tile;if(im&&!im.dataset.fb){im.dataset.fb=1;const c=e.coords;im.src=SATU.replace("{z}",c.z).replace("{y}",c.y).replace("{x}",c.x)}});return t}
-function lblLayers(m){L.tileLayer(ESRI+"Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,opacity:.55}).addTo(m);
-  L.tileLayer(ESRI+"Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,opacity:.95}).addTo(m)}
-/* 🗺️ नक्शे (सब मुफ़्त, कोई API चाबी नहीं):
-   osm = OpenStreetMap — सबसे ज़्यादा जानकारी (गलियाँ, दुकानें, इमारतें, नाम) · clean = CARTO Voyager (हल्का, साफ़, फोन की स्क्रीन जितना बारीक) · sat = Esri सैटेलाइट */
+/* 🗺️ नक्शे — सब मुफ़्त, कोई API चाबी नहीं, कोई खर्च नहीं (06-11-2026):
+   CARTO ने मुफ़्त टाइल पर भी "API KEY REQUIRED" लगा दिया — इसलिए CARTO पूरी तरह हटाया।
+   🧭 साफ़ = Esri World Street Map (Google जैसा साफ़ सड़क-नक्शा) · 🗺️ नक्शा = OpenStreetMap (गलियाँ/इमारतें)
+   🛰️ सैटेलाइट = Esri World Imagery + हल्के सड़क/नाम (hybrid) · कोई टाइल न आए तो अपने-आप दूसरा मुफ़्त स्रोत — नक्शा कभी खाली/चाबी वाला नहीं */
+const STREET=ESRI+"World_Street_Map/MapServer/tile/{z}/{y}/{x}",OSMT="https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const fill=(u,c)=>u.replace("{z}",c.z).replace("{y}",c.y).replace("{x}",c.x);
+const withFb=(t,fb)=>{t.on("tileerror",e=>{const im=e.tile;if(im&&!im.dataset.fb){im.dataset.fb=1;im.src=fill(fb,e.coords)}});return t};
+/* बाड़मेर में z18 से आगे फोटो नहीं होती — z18 की असली फोटो ही बड़ी करके दिखाओ (धुंधली "डेटा नहीं" टाइल नहीं) */
+function satLayer(){return withFb(L.tileLayer(SATU,{maxZoom:21,maxNativeZoom:18,attribution:"Imagery © Esri, Maxar"}),STREET)}
+function lblLayers(m){L.tileLayer(ESRI+"Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,opacity:.5}).addTo(m);
+  L.tileLayer(ESRI+"Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,opacity:.9}).addTo(m)}
 function baseLayers(m,lbl){
   if(R.sty==="sat"){satLayer().addTo(m);if(lbl)lblLayers(m)}
-  else if(R.sty==="osm"){const t=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:21,maxNativeZoom:19,attribution:"© OpenStreetMap"});
-    t.on("tileerror",e=>{const im=e.tile;if(im&&!im.dataset.fb){im.dataset.fb=1;const c=e.coords;im.src="https://a.basemaps.cartocdn.com/rastertiles/voyager/"+c.z+"/"+c.x+"/"+c.y+"@2x.png"}});t.addTo(m)}/* OSM न मिले तो साफ़ वाला */
-  else L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:21,maxNativeZoom:20,attribution:"© OpenStreetMap © CARTO"}).addTo(m);
+  else if(R.sty==="osm")withFb(L.tileLayer(OSMT,{maxZoom:21,maxNativeZoom:19,attribution:"© OpenStreetMap"}),STREET).addTo(m);
+  else withFb(L.tileLayer(STREET,{maxZoom:21,maxNativeZoom:19,attribution:"© Esri, OpenStreetMap"}),OSMT).addTo(m);
 }
 const pin=(html,cls,w,h)=>L.divIcon({className:cls,html,iconSize:[w,h],iconAnchor:[w/2,h/2]});
 SR.drawMap=async function(){

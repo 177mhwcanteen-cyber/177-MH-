@@ -2208,6 +2208,51 @@ $("#p-report").addEventListener("click",e=>{const crk=e.target.closest("[data-cr
   const b=e.target.closest("[data-bill]");if(b){const x=S.dayBills.find(y=>y.no===b.dataset.bill);if(x)showReceipt(x,false)}});
 
 /* ---------- settings (owner) ---------- */
+/* ⚙️ सामान और भाव — 2000+ सामान पर भी हल्का: खोज + छाँटना + 40-40 करके; पंक्ति दबाओ तो उसी जगह पूरा संपादन (06-11-2026) */
+function setItemEdit(it){return `<div class="setitem" data-sid="${esc(it.id)}">
+    <div class="tilecol"><button class="tile" data-photo="${esc(it.id)}" style="--h:${+(it.hue??120)}" aria-label="${esc(it.name)} की फोटो बदलें">${SE.photoSrc(it)?`<img src="${esc(SE.photoSrc(it))}" alt="">`:`<span class="em">${esc(it.emoji||"🛒")}</span>`}</button><button class="lnk gem" data-gem="${esc(it.id)}" title="Gemini से सुंदर फोटो बनवाने का प्रॉम्प्ट">🎨 Gemini</button></div>
+    <div style="min-width:0"><div class="flds">
+      <label class="fld">नाम<input class="inp" id="n-${esc(it.id)}" data-if="name" value="${esc(it.name)}"></label>
+      <label class="fld">बिक्री ₹<input class="inp ${(+it.sale)>0?"":"bad"}" id="s-${esc(it.id)}" data-if="sale" inputmode="decimal" value="${it.sale||""}"></label>
+      <label class="fld">खरीद ₹<input class="inp" id="c-${esc(it.id)}" data-if="cost" inputmode="decimal" value="${it.cost||""}"></label></div>
+      <div class="flds2"><select class="inp" id="u-${esc(it.id)}" data-if="unit" aria-label="इकाई">${Object.entries(UNITS).map(([k,v])=>`<option value="${k}" ${it.unit===k?"selected":""}>${v}</option>`).join("")}</select>
+      <select class="inp" id="k-${esc(it.id)}" data-if="cat" aria-label="कैटेगरी">${CATS.slice(1).map(([k,v])=>`<option value="${k}" ${it.cat===k?"selected":""}>${v}</option>`).join("")}</select>
+      <input class="inp" id="e-${esc(it.id)}" data-if="emoji" value="${esc(it.emoji||"")}" style="width:56px" aria-label="इमोजी">
+      <label class="note"><input type="checkbox" id="a-${esc(it.id)}" data-if="active" ${it.active!==false?"checked":""}> चालू</label>
+      <input class="inp code" id="b-${esc(it.id)}" data-if="barcode" value="${esc(it.barcode||"")}" placeholder="बारकोड" style="width:150px" aria-label="${esc(it.name)} का बारकोड">
+      <label class="note"><input type="checkbox" id="t-${esc(it.id)}" data-if="track" ${it.track?"checked":""}> स्टॉक गिनें</label>
+      <label class="note"><input type="checkbox" id="f-${esc(it.id)}" data-if="flex" ${it.flex?"checked":""}> बिलर भाव बदल सके</label>
+      <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(it.name)} के बारकोड लेबल छापें">🏷️ लेबल</button>
+      <button type="button" class="chip" data-noonline="${esc(it.id)}" aria-pressed="${!it.noOnline}" aria-label="${esc(it.name)} ऑनलाइन दिखे">🌐</button>
+      <button type="button" class="chip" data-favpin="${esc(it.id)}" aria-pressed="${((S.settings.favs||[]).includes(it.id))}" aria-label="${esc(it.name)} फ़ेवरेट">⭐</button></div>
+      <div class="flds3">
+      <label class="fld">हिंदी नाम<input class="inp" data-if="hi" value="${esc(it.hi||"")}"></label>
+      <label class="fld">MRP ₹<input class="inp" data-if="mrp" inputmode="decimal" value="${it.mrp||""}"></label>
+      <label class="fld">साइज़<input class="inp" data-if="size" value="${esc(it.size||"")}" placeholder="400g"></label>
+      <label class="fld">कोड<input class="inp code" data-if="code" inputmode="numeric" maxlength="4" value="${esc(it.code||"")}"></label>
+      <label class="fld">कम स्टॉक<input class="inp" data-if="min" inputmode="numeric" value="${it.min||""}" placeholder="5"></label>
+      <label class="fld">एक्सपायरी<input class="inp" type="date" data-if="exp" value="${esc(it.exp||"")}"></label>
+      <label class="fld">उप-कैटेगरी<select class="inp" data-if="sub"><option value="">—</option>${(SUBS[mcat(it)]||[]).map(([k,v])=>`<option value="${k}" ${it.sub===k?"selected":""}>${v}</option>`).join("")}</select></label>
+      <label class="fld">कहाँ से<input class="inp" data-if="supplier" value="${esc(it.supplier||"")}"></label></div>
+    </div></div>`}
+const SETV={q:"",f:"all",n:40,open:""};
+function setMatch(it){const q=SETV.q.toLowerCase(),f=SETV.f;
+  if(q&&!((it.name||"")+" "+(it.hi||"")+" "+(it.short||"")+" "+(it.code||"")+" "+(it.barcode||"")+" "+(it.alias||"")).toLowerCase().includes(q))return false;
+  if(f==="all")return it.active!==false;if(f==="off")return it.active===false;if(f==="noprice")return !((+it.sale)>0);if(f==="nophoto")return !SE.photoSrc(it);
+  if(f==="low")return isLow(it);if(f==="exp")return !!expInfo(it);if(f==="noweb")return !!it.noOnline;return it.cat===f&&it.active!==false}
+function setRowHTML(it){const ps=SE.photoSrc(it),st=it.track?(+(S.pstock[it.id]?.qty)||0):null,id=esc(it.id);
+  return `<button type="button" class="srow${it.active===false?" off":""}" data-sopen="${id}" aria-expanded="false"><span class="tile" style="--h:${+(it.hue??120)}">${ps?`<img src="${esc(ps)}" alt="" loading="lazy">`:`<span class="em">${esc(it.emoji||"🛒")}</span>`}</span>
+    <span class="sr-n"><b>${esc(SE.capNm(it.short||it.name))}</b><small>${esc(it.hi||"")}${it.code?" · #"+esc(it.code):""}</small></span>
+    <span class="sr-p">${(+it.sale)>0?rs(+it.sale):'<em>₹?</em>'}<small>${st!=null?`<i class="${st<=lowOf(it)?"lo":""}">${+st.toFixed(2)} ${esc(UNITS[it.unit]||"")}</i>`:""}${it.noOnline?" 🌐✕":""}</small></span><span class="sr-c">›</span></button>`}
+function setListHTML(){const A=S.items.filter(i=>!i.virtual),L=A.filter(setMatch),n=Math.min(L.length,SETV.n);
+  const cnt=f=>{const o=SETV.f;SETV.f=f;const c=A.filter(setMatch).length;SETV.f=o;return c};
+  const F=[["all","सब"],["noprice","⚠ भाव नहीं"],["nophoto","📷 फोटो नहीं"],["low","📉 कम स्टॉक"],["exp","⏳ एक्सपायरी"],["noweb","🌐 छिपे"],["off","बंद"]].concat(CATS.slice(2).filter(([k])=>A.some(i=>i.cat===k)));
+  return `<div class="sl-hd2"><input class="inp" id="setQ" type="search" value="${esc(SETV.q)}" placeholder="🔍 सामान खोजें — नाम / कोड / बारकोड" autocomplete="off" aria-label="सामान खोजें"></div>
+  <div class="sf-row">${F.map(([k,v])=>{const c=k==="all"||k==="off"||CATS.some(x=>x[0]===k)?"":cnt(k);return k!=="all"&&c===0?"":`<button type="button" class="chip" data-sf="${k}" aria-pressed="${SETV.f===k}">${v}${c?` <i>${c}</i>`:""}</button>`}).join("")}</div>
+  <div id="setBody">${setBodyHTML(L,n)}</div>`}
+function setBodyHTML(L,n){if(!L)L=S.items.filter(i=>!i.virtual).filter(setMatch);n=n||Math.min(L.length,SETV.n);
+  return `<p class="note" style="margin:6px 2px">${L.length} सामान${L.length>n?` · पहले ${n} दिख रहे`:""}</p><div class="list slist">${L.slice(0,n).map(it=>it.id===SETV.open?`<div class="sopen">${setRowHTML(it).replace('aria-expanded="false"','aria-expanded="true"')}${setItemEdit(it)}</div>`:setRowHTML(it)).join("")||'<div class="empty">कुछ नहीं मिला</div>'}</div>
+  ${L.length>n?`<button type="button" class="big ghost" data-smore>और ${Math.min(40,L.length-n)} दिखाएँ ↓</button>`:""}`}
 function renderSettings(){
   const s=S.settings;
   $("#p-set").innerHTML=`<h2 class="sec">रेट व सेटिंग</h2>
@@ -2238,32 +2283,7 @@ function renderSettings(){
     <label class="note lsw" style="display:flex;gap:8px;align-items:center;margin-top:6px"><input type="checkbox" id="aiShare" ${S.settings.aiShare?"checked":""}> साथियों के फोन पर भी सीधा AI (चाबी उनके फोन में जाएगी) — बंद हो तो चाबी सिर्फ़ आपके फोन में, साथियों का AI Apps Script से</label><p class="note" style="margin:2px 0 0;opacity:.7">ऐप संस्करण ${esc(SE.version)} · फोटो: Gemini Pro (सीमा खत्म तो Flash) · बारकोड: Flash + Google खोज</p></div>
   <div class="card2"><h3>📦 पुराने ऐप का डेटा</h3><p class="note" style="margin:0">पुराने (आर्टिफ़ैक्ट) ऐप का सामान, भाव, खरीद इतिहास, उधार खाते और संस्थाएँ यहाँ लाएँ। जो पहले से है वह नहीं बदलेगा।</p><button class="big ghost" data-migrate>पुराना डेटा लाएँ</button></div>
   <h3 style="margin:0 0 4px">सामान और भाव</h3><p class="note" style="margin:0 0 8px">MRP = पैकेट पर छपा · बिक्री = ग्राहक से लेंगे · खरीद = हमें पड़ा। फोटो बदलने के लिए फोटो पर टैप करें। ${(()=>{const n=S.items.filter(i=>!i.photo).length;return n?`<b style="color:var(--chili)">${n} सामान की असली फोटो अभी बाकी है।</b> अच्छी रोशनी में ऊपर से फोटो खींचकर लगाएँ।`:'<b style="color:var(--leaf)">सबकी फोटो लग चुकी है।</b>'})()}</p>
-  <div class="list">${S.items.filter(i=>!i.virtual).map(it=>`<div class="setitem" data-sid="${esc(it.id)}">
-    <div class="tilecol"><button class="tile" data-photo="${esc(it.id)}" style="--h:${+(it.hue??120)}" aria-label="${esc(it.name)} की फोटो बदलें">${SE.photoSrc(it)?`<img src="${esc(SE.photoSrc(it))}" alt="">`:`<span class="em">${esc(it.emoji||"🛒")}</span>`}</button><button class="lnk gem" data-gem="${esc(it.id)}" title="Gemini से सुंदर फोटो बनवाने का प्रॉम्प्ट">🎨 Gemini</button></div>
-    <div style="min-width:0"><div class="flds">
-      <label class="fld">नाम<input class="inp" id="n-${esc(it.id)}" data-if="name" value="${esc(it.name)}"></label>
-      <label class="fld">बिक्री ₹<input class="inp ${(+it.sale)>0?"":"bad"}" id="s-${esc(it.id)}" data-if="sale" inputmode="decimal" value="${it.sale||""}"></label>
-      <label class="fld">खरीद ₹<input class="inp" id="c-${esc(it.id)}" data-if="cost" inputmode="decimal" value="${it.cost||""}"></label></div>
-      <div class="flds2"><select class="inp" id="u-${esc(it.id)}" data-if="unit" aria-label="इकाई">${Object.entries(UNITS).map(([k,v])=>`<option value="${k}" ${it.unit===k?"selected":""}>${v}</option>`).join("")}</select>
-      <select class="inp" id="k-${esc(it.id)}" data-if="cat" aria-label="कैटेगरी">${CATS.slice(1).map(([k,v])=>`<option value="${k}" ${it.cat===k?"selected":""}>${v}</option>`).join("")}</select>
-      <input class="inp" id="e-${esc(it.id)}" data-if="emoji" value="${esc(it.emoji||"")}" style="width:56px" aria-label="इमोजी">
-      <label class="note"><input type="checkbox" id="a-${esc(it.id)}" data-if="active" ${it.active!==false?"checked":""}> चालू</label>
-      <input class="inp code" id="b-${esc(it.id)}" data-if="barcode" value="${esc(it.barcode||"")}" placeholder="बारकोड" style="width:150px" aria-label="${esc(it.name)} का बारकोड">
-      <label class="note"><input type="checkbox" id="t-${esc(it.id)}" data-if="track" ${it.track?"checked":""}> स्टॉक गिनें</label>
-      <label class="note"><input type="checkbox" id="f-${esc(it.id)}" data-if="flex" ${it.flex?"checked":""}> बिलर भाव बदल सके</label>
-      <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(it.name)} के बारकोड लेबल छापें">🏷️ लेबल</button>
-      <button type="button" class="chip" data-noonline="${esc(it.id)}" aria-pressed="${!it.noOnline}" aria-label="${esc(it.name)} ऑनलाइन दिखे">🌐</button>
-      <button type="button" class="chip" data-favpin="${esc(it.id)}" aria-pressed="${((S.settings.favs||[]).includes(it.id))}" aria-label="${esc(it.name)} फ़ेवरेट">⭐</button></div>
-      <div class="flds3">
-      <label class="fld">हिंदी नाम<input class="inp" data-if="hi" value="${esc(it.hi||"")}"></label>
-      <label class="fld">MRP ₹<input class="inp" data-if="mrp" inputmode="decimal" value="${it.mrp||""}"></label>
-      <label class="fld">साइज़<input class="inp" data-if="size" value="${esc(it.size||"")}" placeholder="400g"></label>
-      <label class="fld">कोड<input class="inp code" data-if="code" inputmode="numeric" maxlength="4" value="${esc(it.code||"")}"></label>
-      <label class="fld">कम स्टॉक<input class="inp" data-if="min" inputmode="numeric" value="${it.min||""}" placeholder="5"></label>
-      <label class="fld">एक्सपायरी<input class="inp" type="date" data-if="exp" value="${esc(it.exp||"")}"></label>
-      <label class="fld">उप-कैटेगरी<select class="inp" data-if="sub"><option value="">—</option>${(SUBS[mcat(it)]||[]).map(([k,v])=>`<option value="${k}" ${it.sub===k?"selected":""}>${v}</option>`).join("")}</select></label>
-      <label class="fld">कहाँ से<input class="inp" data-if="supplier" value="${esc(it.supplier||"")}"></label></div>
-    </div></div>`).join("")}</div>
+  <div id="setList">${setListHTML()}</div>
   <div class="list" style="padding:12px 14px;display:grid;gap:8px"><b>नया सामान जोड़ें</b>
     <div class="row2" style="margin:0"><input class="inp" id="ni-name" placeholder="छोटा अंग्रेज़ी नाम (Parle-G 70g)"><input class="inp" id="ni-hi" placeholder="हिंदी नाम (पारले-जी)"></div>
     <div class="row2" style="margin:0"><select class="inp" id="ni-cat" onchange="niSubFill()">${CATS.filter(([k])=>k!=="all").map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select><select class="inp" id="ni-sub" aria-label="उप-श्रेणी"></select><select class="inp" id="ni-unit">${Object.entries(UNITS).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></div>

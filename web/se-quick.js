@@ -129,9 +129,25 @@ document.addEventListener("focusin",e=>{const t=e.target;if(t&&t.matches&&t.matc
 document.addEventListener("input",e=>{const t=e.target;if(!t||!t.matches||!t.matches(NAMEF)||!/[a-z]/.test(t.value))return;
   const a=t.selectionStart,b=t.selectionEnd;t.value=SE.capNm(t.value);try{t.setSelectionRange(a,b)}catch(x){}},true);
 
+/* ================= ⚙️ सामान और भाव: खोज / छाँटना / 40-40 / टैप करके संपादन ================= */
+const reSet=(all)=>{const el=document.getElementById(all?"setList":"setBody");if(!el||typeof setListHTML!=="function")return;el.innerHTML=all?setListHTML():setBodyHTML()};
+document.addEventListener("click",e=>{const t=e.target;if(!t.closest||!t.closest("#p-set"))return;let b;
+  if((b=t.closest("[data-sopen]"))&&!t.closest(".setitem")){const id=b.dataset.sopen;SETV.open=SETV.open===id?"":id;reSet(false);
+    if(SETV.open)setTimeout(()=>{const o=document.querySelector("#setBody .sopen");if(o)o.scrollIntoView({block:"start",behavior:"smooth"})},30);return}
+  if((b=t.closest("[data-sf]"))){SETV.f=SETV.f===b.dataset.sf&&b.dataset.sf!=="all"?"all":b.dataset.sf;SETV.n=40;reSet(true);return}
+  if(t.closest("[data-smore]")){SETV.n+=40;reSet(false)}});
+let sqT=0;document.addEventListener("input",e=>{if(e.target.id!=="setQ")return;SETV.q=e.target.value.trim();SETV.n=40;clearTimeout(sqT);sqT=setTimeout(()=>reSet(false),120)});
+
 /* ================= रूप-रंग ================= */
 const css=document.createElement("style");css.textContent=`
 .favchip{border-color:var(--haldi)!important}
+.sl-hd2{padding:4px 0}.sf-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px}.sf-row .chip{flex:none}.sf-row i{font-style:normal;opacity:.75;font-size:12px}
+.slist{display:grid;gap:0}.srow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 10px;min-height:58px}
+.srow.off{opacity:.55}.srow .tile{width:44px;height:44px;flex:none;border-radius:10px;overflow:hidden;display:grid;place-items:center;background:hsl(var(--h) 60% 88%)}.srow .tile img{width:100%;height:100%;object-fit:cover}.srow .tile .em{font-size:22px}
+.sr-n{flex:1;min-width:0;display:grid}.sr-n b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sr-n small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-p{display:grid;text-align:right;font-weight:800;font-size:15px}.sr-p em{color:var(--chili);font-style:normal}.sr-p small{font-weight:600;font-size:11.5px;color:var(--muted)}.sr-p i{font-style:normal}.sr-p i.lo{color:var(--chili);font-weight:800}
+.sr-c{color:var(--muted);font-size:20px;transition:transform .15s}.srow[aria-expanded=true] .sr-c{transform:rotate(90deg)}
+.sopen{border:2px solid var(--haldi);border-radius:14px;overflow:hidden;margin:6px 0;background:var(--surface)}.sopen .srow{border-bottom:1px dashed var(--line)}
 .card .nm,.sl-nm b,.lb-nm,.sl-ah b,.sl-hits b,.lines .mid b,.dtop span,.qh .qn b{text-transform:uppercase}
 .dash{display:grid;gap:10px}.dh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.dh b{font-size:16px}.dh .up{color:var(--leaf);font-weight:800;font-size:13px}.dh .dn{color:var(--chili);font-weight:800;font-size:13px}
 .dk{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.dk div{background:var(--bg);border-radius:12px;padding:7px 6px;display:grid;gap:1px;min-width:0}

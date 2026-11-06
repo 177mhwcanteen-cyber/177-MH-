@@ -97,6 +97,12 @@ async def main():
 
         # ⚙️ सेटिंग: बैकअप का हाल, ⭐ बटन, AI साझा
         await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_timeout(200)
+        n_rows = await pg.locator("#p-set .srow").count(); assert 0 < n_rows <= 40, n_rows  # 40-40 करके, लंबी सूची नहीं
+        await pg.fill("#setQ", "laddu"); await pg.wait_for_timeout(250)
+        assert all("LADDU" in t.upper() for t in await pg.locator("#p-set .srow .sr-n b").all_text_contents())
+        await pg.fill("#setQ", ""); await pg.wait_for_timeout(250)
+        await pg.click("#p-set [data-sopen]"); await pg.wait_for_timeout(100)
+        assert await pg.locator("#p-set .sopen .setitem").count() == 1
         assert await pg.locator("#p-set .bkst").count() == 1 and await pg.locator("#p-set [data-favpin]").count() > 0 and await pg.locator("#aiShare").count() == 1
         print("settings ok")
         # 🔠 नाम CAPITAL: टाइप करते ही, सेव के पहरे में, बिल/लेबल पर

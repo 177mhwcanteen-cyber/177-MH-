@@ -40,10 +40,10 @@ SON.watch=function(){if(S.demo||!S.db||SON._un)return;
     if($("#sheet .son-sheet"))SON.sheet()},()=>{})}catch(e){}};
 if(window.SX){SX.watchOrders=SON.watch;SX.ordersSheet=()=>SON.sheet()}
 /* कदम: Firestore ऑर्डर + ग्राहक की ट्रैकिंग (pub/ot_<id>, सिर्फ़ स्थिति — कोई निजी जानकारी नहीं) */
-SON.step=async function(id,st,extra){extra=extra||{};const o=(SX.orders||[]).find(x=>x.id===id)||{};const by=String(biller()||"").split(/\s+/)[0];
+SON.step=async function(id,st,extra){extra=extra||{};const o=(SX.orders||[]).find(x=>x.id===id)||{};const rom=t=>window.SRc&&SRc.roman?SRc.roman(String(t||"")):String(t||"");const by=rom(String(biller()||"").split(/\s+/)[0]);/* ग्राहक-पेज अंग्रेज़ी में — नाम रोमन (मनोहर → Manohar) */
   const etaTs=extra.mins?Date.now()+extra.mins*60000:(o.etaTs||0);
   const pubSt={new:"new",billing:"pack",acc:"acc",pack:"pack",out:"out",done:"done",cancel:"cancel"}[st]||st;
-  const msg=extra.msg||(st==="out"&&extra.rider?"🛵 "+extra.rider+" ला रहे हैं":st==="pack"?"सामान तौला-बाँधा जा रहा":"");
+  const msg=extra.msg?rom(extra.msg):(st==="out"&&extra.rider?"🛵 "+rom(extra.rider)+" is bringing your order":st==="pack"?"Your items are being packed":"");
   try{if(!S.demo&&S.db){await S.db.collection("orders").doc(id).update({status:st,dts:Date.now(),byName:biller()||"",...(etaTs?{etaTs}:{}),...(extra.rider?{rider:extra.rider}:{}),...(extra.billNo?{billNo:extra.billNo}:{}),...(extra.reason?{reason:extra.reason}:{})});
       await S.db.collection("pub").doc("ot_"+id).set({st:pubSt,ts:Date.now(),by,...(etaTs?{eta:etaTs}:{}),...(msg?{msg}:{}),...(extra.billNo?{billNo:extra.billNo}:{})},{merge:true})}}
   catch(e){toast("नहीं हुआ: "+(e.code||e.message||""));return false}
@@ -74,7 +74,7 @@ document.addEventListener("click",async e=>{const t=e.target;let b;
   if((b=t.closest("[data-sona]"))){b.disabled=true;await SON.step(b.dataset.sona,"acc",{mins:+b.dataset.mins});SON.alarm();return}
   if((b=t.closest("[data-sonst]"))){b.disabled=true;await SON.step(b.dataset.id,b.dataset.sonst);return}
   if((b=t.closest("[data-sonout]"))){const r=prompt("कौन ले जा रहा है? (नाम)",LSx.get("son_rider")||String(biller()||"").split(/\s+/)[0]);if(r===null)return;LSx.set("son_rider",r.trim());await SON.step(b.dataset.sonout,"out",{rider:r.trim().slice(0,20)});return}
-  if((b=t.closest("[data-sonx]"))){const r=prompt("रद्द क्यों? (ग्राहक को दिखेगा) — जैसे: सामान ख़त्म, बहुत दूर","सामान ख़त्म");if(r===null)return;await SON.step(b.dataset.sonx,"cancel",{reason:r.slice(0,60),msg:r.slice(0,60)});return}
+  if((b=t.closest("[data-sonx]"))){const r=prompt("रद्द क्यों? (ग्राहक को अंग्रेज़ी में दिखेगा)","Item out of stock");if(r===null)return;await SON.step(b.dataset.sonx,"cancel",{reason:r.slice(0,60),msg:r.slice(0,60)});return}
   if((b=t.closest("[data-sonon]"))){SON.save({[b.dataset.sonon]:!SON.cfg()[b.dataset.sonon]});try{renderSettings()}catch(x){}return}
   if(t.closest("[data-sonpub]")){await SON.publish(true);toast("✓ ग्राहक-पेज पर आज के भाव और स्टॉक भेज दिए");return}
   if((b=t.closest("[data-noonline]"))){const it=item(b.dataset.noonline);if(!it)return;const v=!it.noOnline;it.noOnline=v;

@@ -14,18 +14,46 @@ const SHOW=[
   ["logo","🛒 लोगो"],["tag","टैगलाइन"],["addr","📍 पता"],["phone","📞 ऑर्डर नंबर (ऊपर)"],["gst","GSTIN"],
   ["custTag","⭐ ग्राहक टैग (VIP/उधार)"],["billno","बिल नंबर"],["date","तारीख-समय"],["cust","ग्राहक का नाम/नंबर"],
   ["sr","क्र. कॉलम"],["en","अंग्रेज़ी नाम भी"],["rate","भाव कॉलम"],["count","कुल सामान/मात्रा"],["saved","🎉 MRP से बचत"],
-  ["pay","भुगतान का तरीका"],["balance","खाते में बाकी"],["qr","UPI QR"],["stamps","PAID / बिलर मुहर"],
+  ["pay","भुगतान का तरीका"],["balance","खाते में बाकी"],["qr","UPI QR"],["stampPay","✅ PAID ठप्पा"],["stampBy","🧑 बिलर का ठप्पा (नाम+समय)"],
   ["points","🎁 ग्राहक के पॉइंट"],["delivery","📲 घर बैठे मँगाएँ डिब्बा"],["nutri","🥗 सेहत का हिसाब"],["note","💬 अपनी लाइन"],["barcode","🔢 बिल नंबर का बारकोड"],
   ["foot","🙏 धन्यवाद लाइन"],["biller","बिलर का नाम"]];
-const DEF={theme:"classic",size:"m",shop:"177 MH कैंटीन",tag:"किराना · मिठाई · फास्ट फूड",addr:"आकाशवाणी रोड, बाड़मेर",gst:"",note:"",foot:"🙏 धन्यवाद! फिर पधारें",
-  show:{logo:1,tag:1,addr:1,phone:1,gst:0,custTag:1,billno:1,date:1,cust:1,sr:1,en:1,rate:1,count:0,saved:1,pay:1,balance:1,qr:1,stamps:1,delivery:1,points:1,nutri:0,note:0,barcode:1,foot:1,biller:1}};
+const DEF={theme:"classic",size:"m",lang:"en",shop:"177 MH CANTEEN",tag:"Sweets · Snacks · Grocery · Daily Needs",addr:"Akashvani Road, Barmer",gst:"",note:"",foot:"🙏 Thank you! Visit again",
+  show:{logo:1,tag:1,addr:1,phone:1,gst:0,custTag:1,billno:1,date:1,cust:1,sr:1,en:1,rate:1,count:0,saved:1,pay:1,balance:1,qr:1,stamps:1,stampPay:1,stampBy:1,delivery:1,points:1,nutri:0,note:0,barcode:1,foot:1,biller:1}};
 SRc.THEMES=THEMES;SRc.SHOW=SHOW;
-SRc.cfg=function(){let s={};try{s=(S.settings&&S.settings.rcpt)||{}}catch(e){}return {...DEF,...s,show:{...DEF.show,...(s.show||{})}}};
+SRc.cfg=function(){let s={};try{s=(S.settings&&S.settings.rcpt)||{}}catch(e){}const sh={...DEF.show,...(s.show||{})};
+  if(s.show&&s.show.stamps===0&&s.show.stampPay==null&&s.show.stampBy==null){sh.stampPay=0;sh.stampBy=0}/* पुरानी "दोनों ठप्पे बंद" सेटिंग */
+  return {...DEF,...s,show:sh}};
+/* 🇬🇧 छपे बिल की भाषा — English (D-Mart/Vishal जैसा प्रोफ़ेशनल, सरल अंग्रेज़ी); ऐप की स्क्रीन हिंदी ही रहती है।
+   छपाई के canvas पर ही अनुवाद — कोई बिल-डेटा नहीं बदलता। */
+const EN_X={"क्र.":"#","सामान":"ITEM","मात्रा":"QTY","भाव":"RATE","रकम":"AMT","मुफ्त":"FREE","जोड़":"Subtotal","छूट":"Discount","राउंड ऑफ":"Round off","कुल रकम":"TOTAL",
+  "खाते में कुल बाकी":"Account balance due","UPI · स्कैन करें":"UPI · SCAN TO PAY","WhatsApp या कॉल करें":"WhatsApp or call us","📲 घर बैठे सामान मँगाएँ":"📲 Order from home",
+  "🧑‍🌾 बिलिंग":"BILLED BY","❌ रद्द":"❌ CANCELLED","💵 नकद":"💵 CASH","लेना है":"Due","📒 उधार":"📒 CREDIT","खाते में":"On account","🔀 नकद+उधार":"🔀 CASH+CREDIT",
+  "⏳ भुगतान":"⏳ PAYMENT","बाकी":"Pending","स्कैन करें":"Scan to pay","नकद":"Cash","🥗 इस थैले में आपकी सेहत (लगभग)":"🥗 Nutrition in this bag (approx.)","—":"—"};
+const EN_R=[[/VIP ग्राहक/,"VIP CUSTOMER"],[/🧑‍🌾 बिलिंग|बिलिंग/,"BILLED BY"],[/📒 क्रेडिट \/ उधार खाता/,"📒 CREDIT ACCOUNT"],[/🏢 संस्था चालान · खरीद भाव/,"🏢 INSTITUTION CHALLAN"],[/माल चालान — /,"Delivery Challan — "],
+  [/^बिल नं: /,"Bill No: "],[/^बिल: /,"Bill: "],[/^तारीख: /,"Date: "],[/^ग्राहक: /,"Customer: "],[/^कुल सामान: /,"Items: "],[/^पीस: /,"Pcs: "],[/^भुगतान: /,"Paid: "],
+  [/🎉 आपने MRP से (₹[\d,.]+) बचाए/,"🎉 You saved $1 on MRP"],[/🎁 आपके पॉइंट: /,"🎁 Your points: "],[/ — अगली बार इनाम/," — reward on next visit"],
+  [/📲 घर बैठे मँगाएँ: /,"📲 Order from home: "],[/📞 ऑर्डर: /,"📞 Orders: "],[/^बिलर: /,"Billed by: "],
+  [/खाते में कुल बाकी (₹[\d.,]+) — इसी QR से चुकाएँ/,"Balance due $1 — pay with this QR"],[/✓ भुगतान हो गया · अगली बार भी इसी QR से भुगतान करें/,"✓ Paid · Use this QR for future payments"],
+  [/स्कैन करके भुगतान करें/,"Scan & pay"],[/नकद ₹/g,"Cash ₹"],[/उधार ₹/g,"Credit ₹"],[/खाते में ₹/g,"On account ₹"],
+  [/(\d) ग्राम/g,"$1 g"],[/ कि\.ग्रा/g," kg"],[/ पीस/g," pc"],[/ पैकेट/g," pkt"],[/ प्लेट/g," plate"],[/ दर्जन/g," dozen"],[/ गड्डी/g," bundle"],
+  [/धन्यवाद! फिर पधारें/,"Thank you! Visit again"],[/किराना · मिठाई · फास्ट फूड/,"Grocery · Sweets · Fast Food"],[/आकाशवाणी रोड, बाड़मेर/,"Akashvani Road, Barmer"],[/177 MH कैंटीन/,"177 MH CANTEEN"]];
+/* बची हुई हिंदी (ग्राहक/बिलर के नाम) → सरल रोमन: "मुकेश भाई" → "Mukesh Bhai" */
+const DV_C={"क":"k","ख":"kh","ग":"g","घ":"gh","ङ":"n","च":"ch","छ":"chh","ज":"j","झ":"jh","ञ":"n","ट":"t","ठ":"th","ड":"d","ढ":"dh","ण":"n","त":"t","थ":"th","द":"d","ध":"dh","न":"n",
+  "प":"p","फ":"ph","ब":"b","भ":"bh","म":"m","य":"y","र":"r","ल":"l","व":"v","श":"sh","ष":"sh","स":"s","ह":"h","क़":"q","ख़":"kh","ग़":"g","ज़":"z","ड़":"d","ढ़":"rh","फ़":"f","ळ":"l"};
+const DV_V={"अ":"a","आ":"aa","इ":"i","ई":"ee","उ":"u","ऊ":"oo","ऋ":"ri","ए":"e","ऐ":"ai","ओ":"o","औ":"au","ऑ":"o"};
+const DV_M={"ा":"a","ि":"i","ी":"ee","ु":"u","ू":"oo","ृ":"ri","े":"e","ै":"ai","ो":"o","ौ":"au","ॉ":"o"};
+SRc.roman=function(t){return String(t).replace(/[ऀ-ॿ]+/g,w=>{w=w.normalize("NFC");let o="";const A=[...w];
+  for(let i=0;i<A.length;i++){const ch=A[i],nx=A[i+1];
+    if(DV_C[ch]!=null||(ch+(nx||""))in DV_C){let c=DV_C[ch];if(nx==="़"&&DV_C[ch+nx]!=null){c=DV_C[ch+nx];i++}const n2=A[i+1];
+      if(n2==="्"){o+=c;i++;continue}if(DV_M[n2]!=null){o+=c+DV_M[n2];i++;continue}o+=c+(i+1<A.length&&!/[ंँः]/.test(n2||"")?"a":(/[ंँ]/.test(n2||"")?"a":""));continue}
+    if(DV_V[ch]!=null){o+=DV_V[ch];continue}if(ch==="ं"||ch==="ँ"){o+="n";continue}if(ch==="ः"){o+="h";continue}if(/[०-९]/.test(ch)){o+=String("०१२३४५६७८९".indexOf(ch));continue}}
+  o=o.replace(/ee$/,"i");return o.charAt(0).toUpperCase()+o.slice(1)})};/* आख़िरी ई = i (भाई → Bhai, जी → Ji) */
+SRc.en=function(t){t=String(t??"");if(EN_X[t]!=null)return EN_X[t];for(const [a,b] of EN_R)t=t.replace(a,b);return /[ऀ-ॿ]/.test(t)?SRc.roman(t):t};
 let saveT=0;
 SRc.save=function(patch){const cur=SRc.cfg(),c={...cur,...patch,show:{...cur.show,...(patch.show||{})}};S.settings={...(S.settings||{}),rcpt:c};
   clearTimeout(saveT);saveT=setTimeout(async()=>{try{if(!S.demo&&S.db)await S.db.doc("settings/main").set({rcpt:c},{merge:true});toast("✓ बिल का डिज़ाइन सेव — सब फोन पर")}catch(e){toast("सेव नहीं हुआ — सिर्फ़ विक्रम जी बदल सकते हैं")}},450)};
 
-function wrap(x,t,maxW){const out=[];for(const para of String(t).split("\n")){const ws=para.split(" ");let cur="";
+function wrap(x,t,maxW){if(x._en)t=x._en(t);const out=[];/* अंग्रेज़ी बिल: पहले अनुवाद, फिर लाइन तोड़ो */for(const para of String(t).split("\n")){const ws=para.split(" ");let cur="";
   for(const w of ws){const tt=cur?cur+" "+w:w;if(x.measureText(tt).width>maxW&&cur){out.push(cur);cur=w}else cur=tt}
   /* एक शब्द ही बहुत लंबा हो तो अक्षर से तोड़ो */
   while(cur&&x.measureText(cur).width>maxW&&cur.length>1){let k=cur.length;while(k>1&&x.measureText(cur.slice(0,k)).width>maxW)k--;out.push(cur.slice(0,k));cur=cur.slice(k)}
@@ -38,6 +66,7 @@ SRc.draw=function(b,o,widthPx,cfg){
   const F='"Mukta","Noto Sans Devanagari","Noto Sans",sans-serif',FB='"Baloo 2","Mukta","Noto Sans Devanagari",sans-serif';
   const k=W/384*({s:.9,m:1,l:1.12}[cfg.size]||1)*(th==="compact"?.9:1);const fs=n=>Math.max(9,Math.round(n*k));const px=n=>Math.max(1,Math.round(n*W/384));
   const c=document.createElement("canvas");c.width=W;c.height=9000;const x=c.getContext("2d");
+  if(cfg.lang!=="hi"){const fT=x.fillText.bind(x),mT=x.measureText.bind(x);x.fillText=(t,...a)=>fT(SRc.en(t),...a);x.measureText=t=>mT(SRc.en(t));x._en=SRc.en}
   x.fillStyle="#fff";x.fillRect(0,0,W,c.height);x.fillStyle="#000";x.strokeStyle="#000";x.textBaseline="top";
   let y=px(th==="premium"?14:8);
   const font=(sz,w,fam)=>{x.font=`${w||500} ${sz}px ${fam||F}`};
@@ -98,22 +127,24 @@ SRc.draw=function(b,o,widthPx,cfg){
   else LR("कुल रकम",money(b.total),fs(th==="compact"?24:30),800);
   if(sh.saved&&o.saved>0){const h=fs(32);x.lineWidth=Math.max(2,px(2));if(th==="bigtotal"){x.save();x.setLineDash([px(6),px(4)])}x.strokeRect(P,y,W-2*P,h);if(th==="bigtotal")x.restore();
     font(fs(18),800,FB);const st="🎉 आपने MRP से "+money(o.saved)+" बचाए",sw=x.measureText(st).width;x.fillText(st,(W-sw)/2,y+(h-fs(18)*1.2)/2);y+=h+px(6)}
-  if(sh.pay&&b.pay&&o.paid!==false&&!(sh.stamps&&o.stampL)){const p=b.pay;const parts=[p.cash?"नकद ₹"+p.cash:"",p.upi?"UPI ₹"+p.upi:"",p.udhar?"उधार ₹"+p.udhar:""].filter(Boolean);if(parts.length)T("भुगतान: "+parts.join(" · "),fs(15),"l")}
+  if(sh.pay&&b.pay&&o.paid!==false&&!(sh.stampPay&&o.stampL)){const p=b.pay;const parts=[p.cash?"नकद ₹"+p.cash:"",p.upi?"UPI ₹"+p.upi:"",p.udhar?"उधार ₹"+p.udhar:""].filter(Boolean);if(parts.length)T("भुगतान: "+parts.join(" · "),fs(15),"l")}
   if(sh.balance&&o.balance!=null)LR("खाते में कुल बाकी",money(o.balance),fs(17),800);
   if(sh.points&&o.points&&o.points.left>0){const t2="🎁 आपके पॉइंट: "+o.points.left+(o.points.left>=20?" — अगली बार इनाम":"");font(fs(15),800);const tw=x.measureText(t2).width+px(20),h=fs(26);
     x.save();x.setLineDash([px(4),px(3)]);x.lineWidth=px(1.5);rr((W-tw)/2,y,tw,h,px(8));x.stroke();x.restore();x.fillText(t2,(W-tw)/2+px(10),y+(h-fs(15)*1.2)/2);y+=h+px(6)}
   /* ---------- QR + मुहर ---------- */
-  const qrOn=sh.qr&&o.qr,stL=sh.stamps?o.stampL:null,stR=sh.stamps?o.stampR:null;
+  const qrOn=sh.qr&&o.qr,stL=sh.stampPay?o.stampL:null,stR=sh.stampBy?o.stampR:null;
   if(qrOn||stL){SEP();if(qrOn)T(o.qrLabel||"स्कैन करके भुगतान करें",fs(16),"c",800);
     const s=qrOn?Math.round(W*(th==="compact"?0.36:0.44)):0,pad=px(8),y0=y+pad+(qrOn?px(12):0),sideW=Math.round((W-2*P-s)/2)-px(12);
     if(qrOn){x.imageSmoothingEnabled=false;x.drawImage(o.qr,(W-s)/2,y0,s,s);
       const bx=(W-s)/2-pad,by=y0-pad,bw=s+2*pad;x.lineWidth=Math.max(3,px(3.5));rr(bx,by,bw,bw,px(12));x.stroke();
       font(px(13),800);const tg="UPI · स्कैन करें",tw=x.measureText(tg).width+px(14);x.fillRect((W-tw)/2,by-px(9),tw,px(18));x.fillStyle="#fff";x.fillText(tg,(W-tw)/2+px(7),by-px(8));x.fillStyle="#000"}
-    const stamp=(st,x0,side)=>{if(!st||sideW<px(60))return 0;const LL=[[st.l1,fs(18),800],[st.l2,fs(15),700],[st.l3,fs(12),500]].filter(l=>l[0]);
-      const lh=LL.map(l=>Math.round(l[1]*1.3));const h=lh.reduce((a,v)=>a+v,0)+px(16);const by=y0+Math.max(0,((s||h)-h)/2);
+    const stamp=(st,x0,side)=>{if(!st||sideW<px(60))return 0;
+      /* पहले हर लाइन लपेटो (नाम लंबा हो तो 2 लाइन), फिर उतना ऊँचा डिब्बा — कुछ भी डिब्बे से बाहर नहीं */
+      const LL=[];[[st.l1,fs(18),800],[st.l2,fs(15),700],[st.l3,fs(12),500]].filter(l=>l[0]).forEach(l=>{font(l[1],l[2]);wrap(x,l[0],sideW-px(14)).slice(0,2).forEach(t=>LL.push([t,l[1],l[2]]))});
+      const lh=LL.map(l=>Math.round(l[1]*1.25));const h=lh.reduce((a,v)=>a+v,0)+px(16);const by=y0+Math.max(0,((s||h)-h)/2);
       x.save();x.translate(x0+sideW/2,by+h/2);x.rotate(side==="l"?-0.06:0.06);x.lineWidth=Math.max(2,px(2.5));rr(-sideW/2,-h/2,sideW,h,px(10));x.stroke();
       x.lineWidth=Math.max(1,px(1));rr(-sideW/2+px(4),-h/2+px(4),sideW-px(8),h-px(8),px(7));x.stroke();
-      let yy=-h/2+px(8);LL.forEach((l,i)=>{font(l[1],l[2]);for(const ln of wrap(x,l[0],sideW-px(14)).slice(0,2)){const w=x.measureText(ln).width;x.fillText(ln,-w/2,yy);yy+=lh[i]}});x.restore();return by+h};
+      let yy=-h/2+px(8);LL.forEach((l,i)=>{font(l[1],l[2]);const w=x.measureText(l[0]).width;x.fillText(l[0],-w/2,yy);yy+=lh[i]});x.restore();return by+h};
     const e1=stamp(stL,P,"l"),e2=stamp(stR,W-P-sideW,"r");
     y=Math.max(y0+s+pad,e1,e2)+px(8);if(qrOn&&o.upi)T("UPI: "+o.upi,fs(13),"c")}
   /* ---------- सेहत ---------- */
@@ -132,7 +163,7 @@ SRc.draw=function(b,o,widthPx,cfg){
       if(bc.width<=W){y+=px(6);x.imageSmoothingEnabled=false;x.drawImage(bc,Math.round((W-bc.width)/2),y);y+=bc.height+px(6)}}catch(e){}}
   if(th!=="compact")SEP();
   if(sh.foot&&cfg.foot)T(cfg.foot,fs(th==="compact"?15:19),"c",800);
-  if(sh.biller&&b.byName&&!(sh.stamps&&o.stampR))T("बिलर: "+b.byName,fs(13),"c");
+  if(sh.biller&&b.byName&&!(sh.stampBy&&o.stampR))T("बिलर: "+b.byName,fs(13),"c");
   y+=px(th==="premium"?16:24);
   if(th==="premium"){x.lineWidth=px(1.5);x.setLineDash([px(4),px(4)]);x.strokeRect(px(4),px(4),W-px(8),y-px(8));x.setLineDash([])}
   const out=document.createElement("canvas");out.width=W;out.height=Math.ceil(y);out.getContext("2d").drawImage(c,0,0);return out;
@@ -160,6 +191,7 @@ SRc.settingsHTML=function(){const c=SRc.cfg();setTimeout(SRc.drawPrev,0);
   <label class="fld">💬 अपनी लाइन (ऑफ़र/सूचना)<input class="inp" data-rcf="note" value="${esc(c.note)}" maxlength="90" placeholder="जैसे: रविवार को 5% छूट"></label></div>
   <b class="sl-t">1️⃣ थीम</b>
   <div class="seg rc-th">${THEMES.map(([k,v])=>`<button class="chip" data-rcth="${k}" aria-pressed="${c.theme===k}">${v}</button>`).join("")}</div>
+  <div class="seg rc-th">${[["en","🇬🇧 English बिल"],["hi","हिंदी बिल"]].map(([k,v])=>`<button class="chip" data-rclang="${k}" aria-pressed="${(c.lang||"en")===k}">${v}</button>`).join("")}</div>
   <div class="seg rc-th">${[["s","छोटे अक्षर"],["m","सामान्य"],["l","बड़े अक्षर"]].map(([k,v])=>`<button class="chip" data-rcsz="${k}" aria-pressed="${c.size===k}">${v}</button>`).join("")}</div>
   <b class="sl-t">2️⃣ बिल पर क्या-क्या छपे</b>
   <div class="sl-tg">${SHOW.map(([k,v])=>`<label class="sl-sw${c.show[k]?" on":""}"><input type="checkbox" data-rcshow="${k}" ${c.show[k]?"checked":""}><span>${v}</span></label>`).join("")}</div>
@@ -170,6 +202,7 @@ SRc.drawPrev=function(tmp){const cv=document.getElementById("rcPrev");if(!cv)ret
 function bindSettings(){const ps=document.getElementById("p-set");if(!ps)return;
   ps.addEventListener("click",e=>{let t;
     if((t=e.target.closest("#rcDesign [data-rcth]"))){SRc.save({theme:t.dataset.rcth});ps.querySelectorAll("#rcDesign [data-rcth]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));SRc.drawPrev();return}
+    if((t=e.target.closest("#rcDesign [data-rclang]"))){SRc.save({lang:t.dataset.rclang});ps.querySelectorAll("#rcDesign [data-rclang]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));SRc.drawPrev();return}
     if((t=e.target.closest("#rcDesign [data-rcsz]"))){SRc.save({size:t.dataset.rcsz});ps.querySelectorAll("#rcDesign [data-rcsz]").forEach(x=>x.setAttribute("aria-pressed",String(x===t)));SRc.drawPrev()}});
   ps.addEventListener("change",e=>{const t=e.target;
     if(t.dataset.rcshow){SRc.save({show:{[t.dataset.rcshow]:t.checked?1:0}});const l=t.closest(".sl-sw");if(l)l.classList.toggle("on",t.checked);SRc.drawPrev();return}

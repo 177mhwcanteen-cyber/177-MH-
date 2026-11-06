@@ -75,8 +75,9 @@ async def m():
         await pg.click('[data-tab="set"]'); await pg.wait_for_timeout(500)
         t = await pg.inner_text("#p-set")
         ok("सेटिंग: पक्की UPI, संस्थाएँ, कर्मचारी, प्रिंटर, लेबल प्रिंटर, भाव, फोटो", all(k in t for k in ["9460409552", "संस्थाएँ", "कर्मचारी", "ब्लूटूथ प्रिंटर", "लेबल प्रिंटर", "बिक्री"]))
-        ok("फोटो बदलने का बटन", await pg.evaluate("document.querySelectorAll('#p-set [data-photo]').length") >= 50)
+        ok("सामान की सूची (40-40)", await pg.evaluate("document.querySelectorAll('#p-set .srow').length") >= 20)
         # भाव बदलें → priceLog
+        await pg.evaluate("SETV.open='aloo';SETV.q='aloo';document.getElementById('setList').innerHTML=setListHTML()")
         await pg.fill("#s-aloo", "22"); await pg.press("#s-aloo", "Tab"); await pg.wait_for_timeout(500)
         ok("भाव बदलने पर तारीख सहित इतिहास (priceLog)", await pg.evaluate("Object.values(window.__MOCK__.priceLog||{}).some(x=>x.itemId==='aloo'&&x.new===22)"))
         # बिना नेट
