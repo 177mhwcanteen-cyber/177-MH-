@@ -886,6 +886,15 @@ html .ratechip{color:var(--violet);border-color:var(--violet)!important}
 html .buynag{background:var(--warn-bg);color:var(--ink)}html .buynag button{background:var(--chip-bg);color:var(--ink)}html .buynag .nag-go{background:var(--haldi);color:var(--haldi-ink)}
 html .gp-l,html .gp-sum>div{color:var(--ink)}html .ns-t.on{background:var(--ok-bg);color:var(--ink)}html .ns-t.on span{color:var(--ink)}
 html .ob-g>div{background:var(--surface2)}
+/* 🎨 ग्राफिक्स सुधार (06-11-2026): टाइल पर इमोजी सफ़ेद गोले में, कंपनी का नाम साफ़ बाएँ, हल्का चमकीला पैटर्न, कार्ड पर नरम छाया, छोटा toast */
+.grid .tile.art{background:linear-gradient(135deg,hsl(var(--h) 72% 60%),hsl(calc(var(--h) + 28) 66% 44%))}
+@media (prefers-color-scheme:dark){.grid .tile.art{background:linear-gradient(135deg,hsl(var(--h) 48% 38%),hsl(calc(var(--h) + 28) 46% 26%))}}
+.grid .tile.art::after{background:radial-gradient(circle at 88% -20%,rgba(255,255,255,.5),transparent 55%),repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 5px,transparent 5px 13px)}
+.grid .tile.art .em{left:4px;bottom:4px;top:auto;transform:none;width:23px;height:23px;display:grid;place-items:center;font-size:14px;background:rgba(255,255,255,.92);border-radius:99px;box-shadow:0 1px 4px rgba(0,0,0,.22);opacity:1}
+.grid .tile.art .tbr{left:27px;right:26px;text-align:center;font-size:14px;letter-spacing:.1px;white-space:normal;text-overflow:clip;overflow-wrap:anywhere;text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.grid.rows .tile.art .em{position:static;transform:none;width:auto;height:auto;background:none;box-shadow:none}
+.grid .card{border-radius:14px;border:1px solid rgba(15,23,42,.07);box-shadow:0 1px 2px rgba(16,24,40,.05),0 3px 10px rgba(16,24,40,.06)}
+.toast{font-size:14px;padding:8px 16px;border-radius:14px;max-width:80%;background:rgba(20,24,28,.9);color:#fff;backdrop-filter:blur(6px);box-shadow:0 6px 22px rgba(0,0,0,.25)}
 </style>
 
 <header class="px">
