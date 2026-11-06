@@ -896,6 +896,9 @@ html .ob-g>div{background:var(--surface2)}
 .rp-r.warn .rp-go small{color:var(--chili)}.rp-r.warn .rp-go b::after{content:" •";color:var(--chili)}
 .rp-st{border:0;background:none;font-size:20px;color:#c3c7cf;width:38px;height:40px;flex:none}.rp-st.on{color:#f5b301}
 .rp-top{display:flex;align-items:center;gap:10px;margin:0 0 10px}.rp-top b{font-size:16px}.rp-back{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 12px;font-weight:700;color:var(--ink)}
+/* 📐 बिल स्क्रीन का ऊपरी हिस्सा कसा: 1-2 बिल हों तो बिल-टैब + मोबाइल/नाम एक पंक्ति (≈45px बचत) */
+.btabs.few{flex-wrap:nowrap}.btabs.few #bts{flex:0 0 auto!important;max-width:44%!important}.btabs.few #bts .btab{flex:0 0 auto;min-width:66px}.btabs.few #bts .btab.new{min-width:0;padding:3px 9px}
+.btabs.few .bcust input{font-size:14px;padding:7px 0}
 /* 🎨 ग्राफिक्स सुधार (06-11-2026): टाइल पर इमोजी सफ़ेद गोले में, कंपनी का नाम साफ़ बाएँ, हल्का चमकीला पैटर्न, कार्ड पर नरम छाया, छोटा toast */
 .grid .tile.art{background:linear-gradient(135deg,hsl(var(--h) 72% 60%),hsl(calc(var(--h) + 28) 66% 44%))}
 @media (prefers-color-scheme:dark){.grid .tile.art{background:linear-gradient(135deg,hsl(var(--h) 48% 38%),hsl(calc(var(--h) + 28) 46% 26%))}}
@@ -1119,7 +1122,7 @@ $("#btabs").addEventListener("change",e=>{if(e.target.id==="custPh"){e.target.va
 $("#btabs").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.target.id==="custPh"||e.target.id==="custNm")){e.preventDefault();if(e.target.id==="custPh")$("#custNm").focus();else e.target.blur()}});
 function renderBillTabsOnly(){const f=document.activeElement;renderBillTabs();if(f&&f.isConnected&&document.activeElement!==f)f.focus()}
 function renderBillTabs(){
-  const el=$("#btabs");el.hidden=S.tab!=="bill";$("#sbar").hidden=S.tab!=="bill";if(el.hidden)return;
+  const el=$("#btabs");el.hidden=S.tab!=="bill";$("#sbar").hidden=S.tab!=="bill";if(el.hidden)return;el.classList.toggle("few",S.bt.length<=2);/* 1-2 बिल: टैब और ग्राहक एक ही पंक्ति में — सामान के लिए ज़्यादा जगह */
   renderBcust();
   $("#bts").innerHTML=S.bt.map((t,i)=>{const tot=(t.cart||[]).reduce((a,l)=>a+l.amt,0),cn=(t.cart||[]).length;return `<div class="btab" role="button" tabindex="0" data-bt="${i}" aria-pressed="${i===S.ai}"><div style="min-width:0"><span>${esc(tabLabel(t,i))}</span><small>${rs(tot)}${cn&&S.bt.length>1?` <i>· ${cn} · ${window.SA?SA.ago(t.ts):""}</i>`:""}</small></div>${S.bt.length>1?`<button class="bx" data-btx="${i}" aria-label="यह बिल बंद करें">✕</button>`:""}</div>`}).join("")+`<button class="btab new" data-btnew aria-label="नया ग्राहक" title="नया ग्राहक">＋</button>`;
   const a=$("#bts").querySelector('[aria-pressed="true"]');if(a&&a.scrollIntoView)a.scrollIntoView({inline:"nearest",block:"nearest"});
