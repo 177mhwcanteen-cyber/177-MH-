@@ -254,7 +254,7 @@ document.addEventListener("click",async e=>{
 });
 
 /* ======================= 📍 मालिक का रूट डैशबोर्ड ======================= */
-const R={date:null,map:null,live:[],day:null,raw:null,agg:null,loading:false,custQ:"",custAll:false,liveLayer:null,who:"",sat:LSx.get("se_rsat")!=="0",lbl:LSx.get("se_rlbl")!=="0",big:false,placeQ:"",play:{t:0,on:false,spd:5,timer:null},bcache:{}};
+const R={date:null,map:null,live:[],day:null,raw:null,agg:null,loading:false,custQ:"",custAll:false,liveLayer:null,who:"",sty:(()=>{const v=LSx.get("se_rsty");return ["osm","clean","sat"].includes(v)?v:"clean"})(),get sat(){return this.sty==="sat"},lbl:LSx.get("se_rlbl")!=="0",big:false,placeQ:"",play:{t:0,on:false,spd:5,timer:null},bcache:{}};
 const HOME={lat:25.7521,lng:71.3967};/* बाड़मेर — नक्शे का शुरुआती इलाका (पॉइंट आते ही नक्शा उन पर आ जाता है) */
 const COLORS=["#22c55e","#f59e0b","#a855f7","#06b6d4","#ef4444"];
 SR.onDb=function(db){
@@ -454,7 +454,7 @@ SR.renderRoute=function(){
   <div class="card2 rlive" id="rLive">${liveHTML()}</div>${opensHTML()}
   <div class="seg" style="margin:0 0 10px"><span class="note" style="align-self:center">लोकेशन बंद हो तो कर्मचारी की बिलिंग रोकें:</span><button class="chip" data-locreq="1" aria-pressed="${locReq()}">✅ हाँ, रोकें</button><button class="chip" data-locreq="0" aria-pressed="${!locReq()}">नहीं</button></div>
   <div class="rmapw${R.big?" big":""}" id="rmapw"><div id="rmap" class="rmap" role="img" aria-label="कर्मचारी का रास्ता नक्शे पर"></div>
-    <div class="rctl"><button data-rsat>${R.sat?"🗺️ सादा":"🛰️ सैटेलाइट"}</button><button data-rlbl aria-pressed="${R.lbl}">🏷️ नाम</button><button data-rme>📍 मैं</button><button data-rbig>${R.big?"✕ छोटा":"⛶ बड़ा"}</button></div></div>
+    <div class="rctl"><button data-rsat aria-label="नक्शे का प्रकार बदलें">${{osm:"🗺️ नक्शा",clean:"🧭 साफ़",sat:"🛰️ सैटेलाइट"}[R.sty]} ▾</button><button data-rlbl aria-pressed="${R.lbl}">🏷️ नाम</button><button data-rme>📍 मैं</button><button data-rbig>${R.big?"✕ छोटा":"⛶ बड़ा"}</button></div></div>
   ${d&&d.pts.some(u=>u.P.length>1)?playHTML(d):""}
   <button class="big" data-plhere style="margin:8px 0">📍 मैं यहाँ हूँ — फोन की असली जगह से जगह जोड़ें</button>
   ${d?dayHTML(d):'<div class="empty">⏳ रूट लोड हो रहा है…</div>'}
@@ -472,12 +472,17 @@ const ESRI="https://server.arcgisonline.com/ArcGIS/rest/services/",SATU=ESRI+"Wo
 /* 🛰️ साफ़ सैटेलाइट: Esri "Clarity" (नई, ज़्यादा साफ़ फोटो) + फोन की स्क्रीन के हिसाब से दोगुनी बारीक टाइल (detectRetina);
    कोई टाइल न मिले तो अपने-आप पुरानी Esri टाइल — नक्शा कभी खाली नहीं */
 const SATC="https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-function satLayer(){const t=L.tileLayer(SATC,{maxZoom:21,maxNativeZoom:19,detectRetina:true,crossOrigin:true,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"});
+/* बाड़मेर जैसे शहरों में z19 पर फोटो नहीं होती (धुंधली "डेटा नहीं" टाइल) — इसलिए z18 की असली फोटो ही बड़ी करके दिखाओ */
+function satLayer(){const t=L.tileLayer(SATC,{maxZoom:21,maxNativeZoom:18,crossOrigin:true,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"});
   t.on("tileerror",e=>{const im=e.tile;if(im&&!im.dataset.fb){im.dataset.fb=1;const c=e.coords;im.src=SATU.replace("{z}",c.z).replace("{y}",c.y).replace("{x}",c.x)}});return t}
 function lblLayers(m){L.tileLayer(ESRI+"Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,opacity:.55}).addTo(m);
   L.tileLayer(ESRI+"Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,opacity:.95}).addTo(m)}
+/* 🗺️ नक्शे (सब मुफ़्त, कोई API चाबी नहीं):
+   osm = OpenStreetMap — सबसे ज़्यादा जानकारी (गलियाँ, दुकानें, इमारतें, नाम) · clean = CARTO Voyager (हल्का, साफ़, फोन की स्क्रीन जितना बारीक) · sat = Esri सैटेलाइट */
 function baseLayers(m,lbl){
-  if(R.sat){satLayer().addTo(m);if(lbl)lblLayers(m)}
+  if(R.sty==="sat"){satLayer().addTo(m);if(lbl)lblLayers(m)}
+  else if(R.sty==="osm"){const t=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:21,maxNativeZoom:19,attribution:"© OpenStreetMap"});
+    t.on("tileerror",e=>{const im=e.tile;if(im&&!im.dataset.fb){im.dataset.fb=1;const c=e.coords;im.src="https://a.basemaps.cartocdn.com/rastertiles/voyager/"+c.z+"/"+c.x+"/"+c.y+"@2x.png"}});t.addTo(m)}/* OSM न मिले तो साफ़ वाला */
   else L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:21,maxNativeZoom:20,attribution:"© OpenStreetMap © CARTO"}).addTo(m);
 }
 const pin=(html,cls,w,h)=>L.divIcon({className:cls,html,iconSize:[w,h],iconAnchor:[w/2,h/2]});
@@ -725,7 +730,7 @@ function bindRoute(el){
     if(t.dataset.ccsv!==undefined){SR.saveFile("MH177Canteen_Customers_"+today()+".csv",csvCustomers(),"text/csv");return}
     if(t.dataset.rday){if(R.date!==t.dataset.rday){R.date=t.dataset.rday;R.agg=null;R.raw=null;R.day=null;playStop();R.play.t=0;SR.renderRoute()}return}
     if(t.dataset.rwho!==undefined){R.who=t.dataset.rwho;reday();return}
-    if(t.dataset.rsat!==undefined){R.sat=!R.sat;LSx.set("se_rsat",R.sat?"1":"0");SR.renderRoute();return}
+    if(t.dataset.rsat!==undefined){R.sty={clean:"osm",osm:"sat",sat:"clean"}[R.sty]||"clean";LSx.set("se_rsty",R.sty);toast({osm:"🗺️ OpenStreetMap — गलियाँ, दुकानें, इमारतें साफ़",clean:"🧭 साफ़ सड़क नक्शा",sat:"🛰️ सैटेलाइट"}[R.sty]);SR.renderRoute();return}
     if(t.dataset.rlbl!==undefined){R.lbl=!R.lbl;LSx.set("se_rlbl",R.lbl?"1":"0");SR.renderRoute();return}
     if(t.dataset.rme!==undefined){SR.showMe();return}
     if(t.dataset.rbig!==undefined){R.big=!R.big;const w=document.getElementById("rmapw");if(w)w.classList.toggle("big",R.big);t.textContent=R.big?"✕ छोटा":"⛶ बड़ा";document.body.classList.toggle("rbig-on",R.big);setTimeout(()=>{try{R.map.invalidateSize()}catch(x){}},150);return}

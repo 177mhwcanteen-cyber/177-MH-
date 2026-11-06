@@ -286,52 +286,68 @@ SL.scan=function(code){
   if(!onL&&!onB)return false;
   let it=findByCode(code);if(!it&&SF.parseVW){const v=SF.parseVW(code);if(v&&v.it)it=v.it}
   beep(!!it);if(!it){toast("यह बारकोड किसी सामान में नहीं: "+code);return true}
-  const n=SL.add(it.id,1);V.q="";
-  if(onL)SL.render(1);else{const sh=$("#sheet");if(sh&&sh.querySelector(".sl-ask"))closeSheet();renderBill()}
+  if(onB){SL.tap(it,1);return true}
+  const n=SL.add(it.id,1);V.q="";SL.render(1);
   toast("🏷️ "+SL.dataOf(it).name+" · "+n+" लेबल (लिस्ट में "+Q.length+" सामान)");return true;
 };
 
-/* ================= बिलिंग: "🏷️ बारकोड छापें" चिप + पॉपअप ================= */
-SL.chipHTML=function(){const n=SL.count();setTimeout(SL.syncBar,0);
+/* ================= बिलिंग: "🏷️ बारकोड छापें" — बिक्री जैसा: सामान दबाओ = +1 लेबल =================
+   कोई बड़ा पॉपअप नहीं। हेडर में एक पतली पट्टी: आख़िरी सामान · [− संख्या ＋] · 📋 लिस्ट · ✕ — कीबोर्ड खुलने पर भी दिखे। */
+SL.chipHTML=function(){const n=SL.count();setTimeout(()=>{SL.syncBar(1);SL.marks()},0);
   return `<button class="chip lblchip${S.lblMode?" on":""}" data-lblmode>${S.lblMode?"🏷️ बारकोड मोड · बंद ✕":"🏷️ बारकोड छापें"}${n&&!S.lblMode?` <i>${n}</i>`:""}</button>`};
-SL.syncBar=function(){const c=$("#cats");if(!c)return;let b=$("#lblbar");
-  if(!b){b=document.createElement("div");b.id="lblbar";b.className="lblbar";c.parentNode.insertBefore(b,c)}
-  const on=S.tab==="bill"&&!!S.lblMode;b.hidden=!on;if(!on)return;const n=SL.count();
-  b.innerHTML=`<span>🏷️ सामान दबाएँ, खोजकर Enter, या स्कैन करें</span><b>${Q.length} सामान · ${n} लेबल</b><button type="button" data-lblgo ${n?"":"disabled"}>📋 लिस्ट / छापें ›</button>`};
+SL.tap=function(it,n){if(!it||it.virtual)return;SL.add(it.id,n||1);V.last=it.id;try{if(navigator.vibrate)navigator.vibrate(20)}catch(e){}SL.syncBar(1);SL.marks()};
+/* कार्ड पर 🏷️ गिनती */
+SL.marks=function(){const g=$("#grid");if(!g)return;g.querySelectorAll(".lbub").forEach(x=>x.remove());if(!(S.tab==="bill"&&S.lblMode))return;
+  Q.forEach(r=>{const c=g.querySelector(`[data-item="${CSS.escape(r.id)}"]`);if(c&&r.n>0){const s=document.createElement("span");s.className="lbub";s.textContent="🏷️"+r.n;c.appendChild(s)}})};
+SL.syncBar=function(keep){const sb=$("#sbar");if(!sb)return;let b=$("#lblbar");
+  if(!b){b=document.createElement("div");b.id="lblbar";b.className="lblbar";sb.parentNode.insertBefore(b,sb.nextSibling);bindBar(b)}
+  const on=S.tab==="bill"&&!!S.lblMode;b.hidden=!on;document.documentElement.classList.toggle("lblon",on);if(!on){V.last="";return}
+  if(keep&&b.contains(document.activeElement)&&document.activeElement.id==="lbN"){const r=Q.find(x=>x.id===V.last);const g=b.querySelector(".lb-go");if(g)g.innerHTML=`📋 ${Q.length}·${SL.count()} ›`;return}
+  const it=item(V.last),r=it&&Q.find(x=>x.id===it.id),n=SL.count();
+  b.innerHTML=`<span class="lb-ic">🏷️</span>${r?`<b class="lb-nm">${esc(SL.dataOf(it).name)}</b><span class="lb-n"><button type="button" data-lbm aria-label="एक कम">−</button><input id="lbN" inputmode="numeric" enterkeyhint="done" value="${r.n}" aria-label="कितने लेबल"><button type="button" data-lbp aria-label="एक ज़्यादा">＋</button></span>`
+    :`<b class="lb-nm lb-hint">सामान दबाएँ या स्कैन करें — हर बार +1</b>`}
+    <button type="button" class="lb-go" data-lblgo ${n?"":"disabled"} aria-label="लेबल की लिस्ट खोलें और छापें">📋 ${Q.length}·${n} ›</button><button type="button" class="lb-x" data-lbloff aria-label="बारकोड मोड बंद करें">✕</button>`};
+function bindBar(b){
+  b.addEventListener("click",e=>{const c=s=>e.target.closest(s);
+    if(c("[data-lbloff]")){S.lblMode=false;renderBill();return}
+    if(c("[data-lblgo]")){S.tab="label";showTab();return}
+    const p=c("[data-lbp]"),m=c("[data-lbm]");if(p||m){const r=Q.find(x=>x.id===V.last);if(!r)return;r.n=Math.max(0,Math.min(500,(+r.n||0)+(p?1:-1)));
+      if(!r.n){Q=Q.filter(x=>x!==r);V.last=""}saveQ();SL.syncBar();SL.marks()}});
+  b.addEventListener("input",e=>{if(e.target.id!=="lbN")return;const r=Q.find(x=>x.id===V.last);if(!r)return;r.n=Math.max(0,Math.min(500,Math.round(num(e.target.value))));saveQ();SL.syncBar(1);SL.marks()});
+  b.addEventListener("keydown",e=>{if(e.target.id==="lbN"&&e.key==="Enter"){e.preventDefault();const r=Q.find(x=>x.id===V.last);if(r&&!r.n){Q=Q.filter(x=>x!==r);saveQ()}e.target.blur();SL.syncBar();SL.marks()}});
+}
+/* छोटा पॉपअप (सेटिंग/कहीं से एक सामान): नाम · [− n ＋] · 1/5/10/20 · अभी छापें / जोड़ें — कोई बड़ी तस्वीर नहीं */
 SL.ask=function(it){if(!it||it.virtual)return;
   const d=SL.dataOf(it,{}),hd=$("header"),top=hd?Math.max(8,Math.round(hd.getBoundingClientRect().bottom)+6):60;
-  const inQ=(Q.find(r=>r.id===it.id)||{}).n||0;let pv="";try{pv=d.bc?SL.canvasFor(it,{}).toDataURL("image/png"):""}catch(e){}
-  $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop sl-ask" style="top:${top}px" role="dialog" aria-label="${esc(it.name)} के बारकोड लेबल">
-    <div class="qh">${tileHTML(it)}<div class="qn"><b>🏷️ ${esc(d.name)}</b><span>${d.price>0?rs(d.price):"⚠ भाव नहीं"}${it.code?" · #"+esc(it.code):""}${inQ?" · लिस्ट में "+inQ:""}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
-    ${d.bc?`<img class="sl-askpv" alt="लेबल की झलक" src="${pv}">`:`<p class="note" style="margin:0;color:var(--chili)">⚠ इस सामान का बारकोड नहीं है — सेटिंग में बारकोड डालें।</p>`}
-    <div class="qrow"><label class="qf"><span>कितने</span><input id="slAskN" inputmode="numeric" autocomplete="off" value="1"><span>लेबल</span></label></div>
-    <div class="sl-qk">${[1,2,5,10,20,50].map(k=>`<button type="button" data-slqk="${k}">${k}</button>`).join("")}</div>
-    <div class="row2" style="margin:0"><button class="big ghost" data-slnow ${d.bc?"":"disabled"}>🖨️ अभी छापें</button><button class="big" data-sladdq>＋ लिस्ट में जोड़ें</button></div>
-    <p class="note" style="margin:0;text-align:center">${Q.length?`लिस्ट में ${Q.length} सामान · ${SL.count()} लेबल`:"कई सामान जोड़ते जाएँ — फिर एक साथ छापें"}</p></div>`;
+  const inQ=(Q.find(r=>r.id===it.id)||{}).n||0;
+  $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop sl-ask" style="top:${Math.min(top,140)}px" role="dialog" aria-label="${esc(it.name)} के बारकोड लेबल">
+    <div class="sl-ah"><b>🏷️ ${esc(d.name)}</b><span>${d.price>0?rs(d.price):"⚠ भाव नहीं"}${inQ?" · लिस्ट में "+inQ:""}${d.bc?"":" · ⚠ बारकोड नहीं"}</span><button class="x" data-close aria-label="बंद करें">✕</button></div>
+    <div class="sl-ar"><span class="lb-n"><button type="button" data-slqm aria-label="एक कम">−</button><input id="slAskN" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="1" aria-label="कितने लेबल"><button type="button" data-slqp aria-label="एक ज़्यादा">＋</button></span>
+      ${[5,10,20,50].map(k=>`<button type="button" class="sl-k" data-slqk="${k}">${k}</button>`).join("")}</div>
+    <div class="sl-ar"><button class="big ghost" data-slnow ${d.bc?"":"disabled"}>🖨️ अभी छापें</button><button class="big" data-sladdq>＋ लिस्ट में</button></div></div>`;
   const I=$("#slAskN"),N=()=>Math.max(1,Math.min(500,Math.round(num(I.value))||1));
-  const addQ=()=>{const n=N();const t=SL.add(it.id,n);closeSheet();if(S.tab==="bill")renderBill();else if(S.tab==="label")SL.render(1);toast("🏷️ "+d.name+" · "+t+" लेबल लिस्ट में ("+Q.length+" सामान)")};
+  const addQ=()=>{const n=N();const t=SL.add(it.id,n);closeSheet();if(S.tab==="bill"){V.last=it.id;SL.syncBar();SL.marks()}else if(S.tab==="label")SL.render(1);toast("🏷️ "+d.name+" · "+t+" लेबल लिस्ट में")};
   $("#sheet").onclick=async e=>{const c=s=>e.target.closest(s);let b;
     if(c("[data-close]")){closeSheet();return}
-    if((b=c("[data-slqk]"))){I.value=b.dataset.slqk;I.focus();return}
+    if((b=c("[data-slqk]"))){I.value=b.dataset.slqk;return}
+    if(c("[data-slqp]")){I.value=N()+1;return}if(c("[data-slqm]")){I.value=Math.max(1,N()-1);return}
     if(c("[data-sladdq]")){addQ();return}
     if((b=c("[data-slnow]"))){b.disabled=true;const n=await SL.print([{id:it.id,n:N()}]);b.disabled=false;if(n)closeSheet()}};
   $("#sheet").onkeydown=e=>{if(e.key==="Enter"&&e.target===I){e.preventDefault();addQ()}if(e.key==="Escape")closeSheet()};
-  setTimeout(()=>{I.focus();I.select()},60);
 };
 function bindBill(){const pb=$("#p-bill");if(!pb)return;
   pb.addEventListener("click",e=>{
-    if(e.target.closest("[data-lblmode]")){e.stopPropagation();S.lblMode=!S.lblMode;if(S.lblMode)S.rateMode=false;renderBill();
-      if(S.lblMode)toast("🏷️ अब जिस सामान का लेबल छापना है, उसे दबाएँ या स्कैन करें");return}
+    if(e.target.closest("[data-lblmode]")){e.stopPropagation();S.lblMode=!S.lblMode;if(S.lblMode)S.rateMode=false;V.last="";renderBill();
+      if(S.lblMode)toast("🏷️ सामान दबाते जाएँ — हर बार +1 लेबल");return}
     if(e.target.closest("[data-ratemode]")){S.lblMode=false;return}
-    if(e.target.closest("[data-lblgo]")){e.stopPropagation();S.tab="label";showTab();return}
     if(!S.lblMode)return;
-    const c=e.target.closest("[data-item]");if(c){e.stopPropagation();e.preventDefault();SL.ask(item(c.dataset.item))}
+    const c=e.target.closest("[data-item]");if(c){e.stopPropagation();e.preventDefault();SL.tap(item(c.dataset.item),1)}
   },true);
-  pb.addEventListener("keydown",e=>{if(!S.lblMode||e.key!=="Enter")return;const c=e.target.closest&&e.target.closest("[data-item]");if(c){e.stopPropagation();e.preventDefault();SL.ask(item(c.dataset.item))}},true);
+  pb.addEventListener("keydown",e=>{if(!S.lblMode||e.key!=="Enter")return;const c=e.target.closest&&e.target.closest("[data-item]");if(c){e.stopPropagation();e.preventDefault();SL.tap(item(c.dataset.item),1)}},true);
   const q=$("#q");if(q)q.addEventListener("keydown",e=>{if(!S.lblMode||e.key!=="Enter")return;const v=q.value.trim();if(!v)return;
     const bl=typeof billList==="function"?billList():null;const L=bl?bl.list:[];
-    if(/^\d{6,}$/.test(v)&&findByCode(v)){e.preventDefault();e.stopImmediatePropagation();q.value="";S.q="";SL.scan(v);return}
-    if(L.length===1){e.preventDefault();e.stopImmediatePropagation();SL.ask(L[0])}},true);
+    if(/^\d{6,}$/.test(v)&&findByCode(v)){e.preventDefault();e.stopImmediatePropagation();q.value="";S.q="";renderBill();SL.scan(v);return}
+    if(L.length===1){e.preventDefault();e.stopImmediatePropagation();q.value="";S.q="";renderBill();SL.tap(L[0],bl.qq>0?bl.qq:1)}},true);
 }
 
 /* ================= कहीं से भी: 🏷️ बटन (सामान की सेटिंग, बाज़ार खरीद) ================= */
@@ -376,8 +392,18 @@ function bindSettings(){const ps=$("#p-set");if(!ps)return;
 const css=document.createElement("style");css.id="slcss";css.textContent=`
 .lblchip{border-color:var(--haldi)!important;font-weight:800}.lblchip.on{background:var(--haldi)!important;color:var(--haldi-ink)!important}
 .lblchip i{font-style:normal;background:var(--haldi);color:var(--haldi-ink);border-radius:9px;padding:0 6px;margin-left:4px;font-size:12px}
-.lblbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;padding:8px 10px;border-radius:14px;background:var(--haldi);color:var(--haldi-ink);font-size:13px;font-weight:700}
-.lblbar span{flex:1 1 150px}.lblbar b{font-size:14px}.lblbar button{border:0;border-radius:10px;padding:7px 10px;font-weight:800;background:var(--haldi-ink);color:var(--haldi)}.lblbar button:disabled{opacity:.5}
+.lblbar{display:flex;align-items:center;gap:6px;margin:6px 0 2px;padding:4px 4px 4px 8px;border-radius:12px;background:var(--haldi);color:var(--haldi-ink);font-weight:700;min-height:40px}
+.lblbar[hidden]{display:none}html.lblon #btabs,html.lblon #custbox,html.lblon #greet{display:none!important}.lb-ic{font-size:16px;flex:none}.lb-nm{flex:1;min-width:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lb-hint{font-weight:600;font-size:13px;opacity:.85}
+.lb-n{display:flex;align-items:center;flex:none;background:rgba(255,255,255,.55);border-radius:9px;overflow:hidden}
+.lb-n button{border:0;background:transparent;color:inherit;width:28px;height:32px;font-size:18px;font-weight:900;padding:0}
+.lb-n input{width:40px;border:0;background:#fff;color:#111;text-align:center;font-weight:900;font-size:16px;height:32px;padding:0}
+.lb-go{flex:none;border:0;border-radius:9px;padding:0 9px;height:32px;font-weight:900;font-size:13px;background:var(--haldi-ink);color:var(--haldi)}.lb-go:disabled{opacity:.5}
+.lb-x{flex:none;border:0;background:transparent;color:inherit;width:28px;height:32px;font-size:16px;font-weight:900}
+.lbub{position:absolute;top:6px;right:6px;z-index:4;padding:1px 7px;border-radius:99px;font-weight:900;font-size:13px;background:var(--haldi);color:var(--haldi-ink);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sl-ah{display:flex;align-items:center;gap:8px}.sl-ah b{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.sl-ah span{flex:1;font-size:12px;color:var(--muted);white-space:nowrap}
+.sl-ar{display:flex;gap:6px;align-items:center}.sl-ar .lb-n{background:var(--bg);border:1.5px solid var(--line)}.sl-ar .lb-n button{color:var(--ink)}
+.sl-ar .big{flex:1;padding:10px!important;font-size:15px!important}.sl-k{flex:1;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;height:34px;font-weight:800}
+.sl-ask{gap:8px!important;padding:10px!important}
 .sl-box{display:grid;gap:8px}.sl-hd{display:flex;justify-content:space-between;align-items:baseline;gap:6px;flex-wrap:wrap}
 .sl-srch{display:flex;gap:6px}.sl-srch input{flex:1;min-width:0;border:2px solid var(--line);border-radius:12px;padding:10px 12px;font-size:17px;background:var(--bg);color:var(--ink)}
 .sl-srch .scanbtn{border:0;border-radius:12px;padding:0 14px;font-size:20px;background:var(--haldi);color:var(--haldi-ink)}

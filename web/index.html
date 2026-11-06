@@ -2227,6 +2227,7 @@ function renderSettings(){
   <div class="card2"><h3>🖨️ ब्लूटूथ प्रिंटर</h3>
     <p class="note" style="margin:0">${SE.isNative?(SE.printer.addr?"चुना हुआ: <b>"+esc(SE.printer.name)+"</b> · "+(SE.printer.mm==="100"?"4 इंच · लेबल-भाषा (TSPL)":SE.printer.mm+"mm"):"पहले फोन की Bluetooth सेटिंग में प्रिंटर को pair करें, फिर यहाँ चुनें।"):"प्रिंटर Android ऐप में चुना जाता है। वेब में बिल फोन के प्रिंट से छपेगा।"}</p>
     ${SE.isNative?'<div class="row2" style="margin:0"><button class="big ghost" data-prnpick="58">58mm प्रिंटर चुनें</button><button class="big ghost" data-prnpick="80">80mm प्रिंटर चुनें</button></div><button class="big ghost" data-prnpick="100">4 इंच प्रिंटर (Xprinter XP-D4601B जैसा) चुनें</button><div id="prnList"></div><button class="big ghost" data-prntest>टेस्ट प्रिंट</button>':""}</div>
+  ${window.SRc?SRc.settingsHTML():""}
   ${window.SF?SF.labelSettingsHTML():""}
   <div class="card2"><h3>🔄 ऐप अपडेट</h3>${updBoxHTML()}</div>
   <div class="card2"><h3>🤖 Google AI (Gemini) — अनजान बारकोड व पैकेट की फोटो</h3><p class="note" style="margin:0 0 6px">aistudio.google.com से बनी मुफ़्त चाबी (AIza… या AQ.… से शुरू) यहाँ चिपकाएँ। चाबी सिर्फ़ आपके Firebase में रहती है, GitHub/कोड में नहीं।</p>
@@ -2451,6 +2452,7 @@ boot();
 <script src="se-intake.js"></script>
 <script src="se-market.js"></script>
 <script src="se-label.js"></script>
+<script src="se-receipt.js"></script>
 <script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>

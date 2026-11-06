@@ -59,30 +59,37 @@ async def main():
         await pg.click("[data-lblmode]")
         assert await pg.is_visible("#lblbar"), "lblbar"
         await pg.screenshot(path=f"{SHOTS}/l1-mode.png")
-        await pg.click(f'#grid [data-item="{ids[0]}"] .tile')
-        await pg.wait_for_selector(".sl-ask")
+        # टैप = +1 (बिक्री जैसा, कोई पॉपअप नहीं)
+        for _ in range(3): await pg.click(f'#grid [data-item="{ids[0]}"] .tile')
+        assert await pg.locator(".sl-ask").count() == 0, "बड़ा पॉपअप नहीं खुलना चाहिए"
         assert await pg.evaluate("S.cart.length") == 0, "बारकोड मोड में बिल में नहीं जुड़ना चाहिए"
-        await pg.click('[data-slqk="5"]')
-        await pg.screenshot(path=f"{SHOTS}/l2-ask.png")
-        await pg.click("[data-sladdq]")
-        assert await pg.evaluate("SL.list()[0].n") == 5
+        assert await pg.evaluate(f"SL.list().find(r=>r.id==='{ids[0]}').n") == 3
+        assert "🏷️3" in await pg.text_content(f'#grid [data-item="{ids[0]}"] .lbub')
+        # पट्टी में संख्या लिखो (कीबोर्ड खुलने पर भी ऊपर दिखे)
+        await pg.fill("#lbN", "5"); await pg.press("#lbN", "Enter")
+        assert await pg.evaluate(f"SL.list().find(r=>r.id==='{ids[0]}').n") == 5
+        await pg.click("[data-lbp]")
+        assert await pg.evaluate(f"SL.list().find(r=>r.id==='{ids[0]}').n") == 6
+        await pg.click("[data-lbm]")
+        bb = await pg.eval_on_selector("#lblbar", "e=>e.getBoundingClientRect().height")
+        assert bb < 60, bb
+        assert await pg.evaluate("!!document.querySelector('header #lblbar')"), "पट्टी हेडर में"
+        await pg.screenshot(path=f"{SHOTS}/l2-bar.png")
         # स्कैन (गन/कैमरा) = +1, सिर्फ़ लिस्ट में
         bc1 = await pg.evaluate(f"item('{ids[1]}').barcode")
         await pg.evaluate(f"handleScan('{bc1}')")
         await pg.evaluate(f"handleScan('{bc1}')")
         assert await pg.evaluate(f"SL.list().find(r=>r.id==='{ids[1]}').n") == 2
         assert await pg.evaluate("S.cart.length") == 0
-        # खोजकर Enter → पॉपअप
+        # खोजकर Enter = +1
         nm = await pg.evaluate(f"item('{ids[2]}').name")
         await pg.fill("#q", nm); await pg.press("#q", "Enter"); await pg.wait_for_timeout(150)
-        if await pg.locator(".sl-ask").count():
-            await pg.fill("#slAskN", "12"); await pg.press("#slAskN", "Enter")
-            assert await pg.evaluate(f"SL.list().find(r=>r.id==='{ids[2]}').n") == 12
+        assert await pg.evaluate(f"SL.list().find(r=>r.id==='{ids[2]}').n") == 1
         await pg.evaluate("clearSearch&&clearSearch();renderBill()")
-        bar = await pg.text_content("#lblbar")
-        assert "सामान" in bar, bar
+        bar = await pg.evaluate("document.querySelector('#lblbar').innerHTML")
+        assert "data-lblgo" in bar and "3·" in bar, bar
         # बंद करो → सामान फिर से बिल में
-        await pg.click("[data-lblmode]")
+        await pg.click("[data-lbloff]")
         assert await pg.is_hidden("#lblbar")
         await pg.click(f'#grid [data-item="{ids[3]}"] .tile'); await pg.wait_for_timeout(150)
         print("billing label mode ok")
@@ -175,7 +182,9 @@ async def main():
         await pg.evaluate("S.tab='set';showTab()")
         btn = pg.locator("[data-lbladd]").first
         await btn.scroll_into_view_if_needed(); await btn.click()
-        await pg.wait_for_selector(".sl-ask"); await pg.click("[data-sladdq]")
+        await pg.wait_for_selector(".sl-ask"); await pg.click('[data-slqk="10"]')
+        h = await pg.eval_on_selector(".sl-ask", "e=>e.getBoundingClientRect().height"); assert h < 200, h
+        await pg.screenshot(path=f"{SHOTS}/l5-ask.png"); await pg.click("[data-sladdq]")
         print("settings item 🏷️ ok")
         await b.close()
     assert not errs, errs
