@@ -34,7 +34,7 @@ SK.render=function(){
   const seen=+lsGet("bh_cnt_seen")||0,fresh=S.counts.filter(c=>c.ts>seen).length;
   el.innerHTML=`<h2 class="sec">📦 स्टॉक</h2>
   <div class="skstats"><div><i class="ic">📦</i><b>${T.length}</b><span>सामान</span></div><div class="${low.length?"bad":""}"><i class="ic">⚠️</i><b>${low.length}</b><span>कम स्टॉक</span></div><div class="${xp.length?"warn":""}"><i class="ic">⏰</i><b>${xp.length}</b><span>एक्सपायरी</span></div>
-  ${S.isOwner?`<div><i class="ic">💰</i><b>${rs(val)}</b><span>माल की लागत</span></div>`:""}</div>
+  ${S.isOwner?`<div><i class="ic">💰</i><b style="font-size:clamp(13px,4.2vw,18px)">${rs(Math.round(val))}</b><span>माल की लागत</span></div>`:""}</div>
   ${S.isOwner&&T.some(it=>qOf(it)>0&&!costOf(it))?`<p class="note" style="margin:-4px 0 6px;color:var(--chili)">⚠ ${T.filter(it=>qOf(it)>0&&!costOf(it)).length} सामान का खरीद भाव नहीं भरा — "रेट व सेटिंग" में "खरीद ₹" भरें, या अगली बार "माल आया" में भाव लिखें</p>`:""}
   ${S.isOwner&&mrpVal>0?`<p class="note" style="margin:-4px 0 10px">इसी माल की MRP कीमत ${rs(mrpVal)} · बिकने पर लगभग फायदा ${rs(r2(T.reduce((a,it)=>a+Math.max(0,qOf(it))*((+it.sale||0)-costOf(it)),0)))}</p>`:""}
   <button class="big" data-skstart>🔢 गिनती शुरू करें</button>
@@ -42,11 +42,11 @@ SK.render=function(){
   <div class="row2" style="margin:8px 0 0"><button class="big ghost" data-skwaste>🗑️ खराब / एक्सपायर हटाएँ</button><button class="big ghost" data-skin>📦 माल आया</button></div>
   ${S.isOwner&&S.counts.length?`<div class="card2"><h3>📋 गिनती की रिपोर्ट ${fresh?`<span class="pill red">${fresh} नई</span>`:""}</h3><div class="list" style="margin:0">${S.counts.slice(0,6).map(c=>`<button class="li" data-skview="${esc(c.id)}"><div class="mid"><b>${fdate(c.date)} · ${esc(c.byName||"")}</b><span>${c.n} सामान गिने · ${c.nDiff?c.nDiff+" में फर्क":"सब मिला 👍"}</span></div><div class="rt" style="color:${c.nDiff?"var(--chili)":"var(--leaf)"}">${c.short>0?"−"+rs(c.short):c.nDiff?"फर्क":"✓"}<small>${c.extra>0?"ज़्यादा "+rs(c.extra):""}</small></div></button>`).join("")}</div></div>`:""}
   <div class="card2"><h3>⚠ कम स्टॉक — मँगाना है (${low.length})</h3>
-  ${low.length?`<div class="list" style="margin:0">${low.map(it=>`<div class="li"><div class="mid"><b>${esc(it.name)}</b><span>#${esc(it.code||"")}${it.supplier?" · "+esc(it.supplier):""}</span></div><div class="rt" style="color:var(--chili)">${qOf(it)<=0?"खत्म":"बचे "+fq(qOf(it),it.unit)}<small>मँगाएँ ~${need(it)}</small></div></div>`).join("")}</div>
+  ${low.length?`<div class="list" style="margin:0">${low.map(it=>`<div class="li"><div class="mid"><b>${esc(SE.capNm(it.name))}</b><span>#${esc(it.code||"")}${it.supplier?" · "+esc(it.supplier):""}</span></div><div class="rt" style="color:var(--chili)">${qOf(it)<=0?"खत्म":"बचे "+fq(qOf(it),it.unit)}<small>मँगाएँ ~${need(it)}</small></div></div>`).join("")}</div>
   <button class="big" style="margin-top:8px" data-sodopen>🏪 दुकान-वार ऑर्डर — हर दुकान को उसकी सूची</button>
   <a class="big ghost" style="text-align:center;text-decoration:none;display:block;margin-top:8px" target="_blank" rel="noopener" href="${waLink(orderText(low),ownerPh())}">🟢 पूरी लिस्ट विक्रम जी को</a>`:'<p class="note" style="margin:0">सब सामान पूरा है 👍</p>'}</div>
   <div class="card2"><h3>⏰ एक्सपायरी पास / जाँचना है (${xp.length})</h3>
-  ${xp.length?`<div class="list" style="margin:0">${xp.map(it=>{const e=expInfo(it),bl=window.SF&&SF.batchList?SF.batchList(it):[];return `<div class="li"><div class="mid"><b>${esc(it.name)}</b><span>${bl.filter(b=>b.exp).map(b=>fdate(b.exp)+" · "+fq(b.qty,it.unit)).join(" | ")||"तारीख नहीं लिखी"}</span></div><div class="rt"><span class="xpb ${e.k}">${e.t}</span><small><button class="lnk" data-skw="${esc(it.id)}">हटाएँ</button></small></div></div>`}).join("")}</div>`:'<p class="note" style="margin:0">अगले 30 दिन में कुछ एक्सपायर नहीं हो रहा 👍</p>'}</div>
+  ${xp.length?`<div class="list" style="margin:0">${xp.map(it=>{const e=expInfo(it),bl=window.SF&&SF.batchList?SF.batchList(it):[];return `<div class="li"><div class="mid"><b>${esc(SE.capNm(it.name))}</b><span>${bl.filter(b=>b.exp).map(b=>fdate(b.exp)+" · "+fq(b.qty,it.unit)).join(" | ")||"तारीख नहीं लिखी"}</span></div><div class="rt"><span class="xpb ${e.k}">${e.t}</span><small><button class="lnk" data-skw="${esc(it.id)}">हटाएँ</button></small></div></div>`}).join("")}</div>`:'<p class="note" style="margin:0">अगले 30 दिन में कुछ एक्सपायर नहीं हो रहा 👍</p>'}</div>
   <h3 style="margin:14px 0 6px">सारा पैकेट वाला माल</h3>
   <input class="inp" id="skq" type="search" placeholder="🔍 नाम या कोड" value="${esc(Q)}" autocomplete="off" aria-label="स्टॉक खोजें" style="margin-bottom:8px">
   <div class="list" id="sklist"></div>`;
@@ -56,7 +56,7 @@ function drawList(){
   const box=$("#sklist");if(!box)return;const q=Q.trim().toLowerCase();
   box.innerHTML=tracked().filter(it=>hit(it,q)).map(it=>{const v=qOf(it),e=expInfo(it);
     const pc=Math.max(0,Math.min(100,Math.round(v/(lowOf(it)*3)*100))),lv=v<=0||isLow(it)?"low":pc<60?"mid":"";
-    return `<div class="li"><span class="sith">${SE.photoSrc(it)?`<img src="${esc(SE.photoSrc(it))}" alt="" loading="lazy">`:esc(it.emoji||"📦")}</span><div class="mid"><b>${esc(it.name)}</b><span>#${esc(it.code||"")}${e?` · <span class="xpb ${e.k}">${e.t}</span>`:""}</span><span class="skbar ${lv}"><i style="width:${v<=0?4:Math.max(6,pc)}%"></i></span></div><div class="rt" style="color:${isLow(it)?"var(--chili)":"var(--ink)"}">${v<=0?"खत्म":fq(v,it.unit)}${S.isOwner?`<small>${rs(r2(Math.max(0,v)*costOf(it)))}</small>`:""}</div></div>`}).join("")||'<p class="note">कुछ नहीं मिला</p>';
+    return `<div class="li"><span class="sith">${SE.photoSrc(it)?`<img src="${esc(SE.photoSrc(it))}" alt="" loading="lazy">`:esc(it.emoji||"📦")}</span><div class="mid"><b>${esc(SE.capNm(it.name))}</b><span>#${esc(it.code||"")}${e?` · <span class="xpb ${e.k}">${e.t}</span>`:""}</span><span class="skbar ${lv}"><i style="width:${v<=0?4:Math.max(6,pc)}%"></i></span></div><div class="rt" style="color:${isLow(it)?"var(--chili)":"var(--ink)"}">${v<=0?"खत्म":fq(v,it.unit)}${S.isOwner?`<small>${rs(r2(Math.max(0,v)*costOf(it)))}</small>`:""}</div></div>`}).join("")||'<p class="note">कुछ नहीं मिला</p>';
 }
 function orderText(low){
   return `🛒 *177 MH कैंटीन — ऑर्डर लिस्ट*\n${fdate(today())}\n────────\n`+low.map((it,i)=>`${i+1}. ${it.name}${it.size&&!String(it.name).includes(it.size)?" "+it.size:""} — बचे ${qOf(it)<=0?0:qOf(it)} · मँगाएँ ${need(it)}${it.supplier?" ("+it.supplier+")":""}`).join("\n")+`\n────────\n${biller()?"भेजा: "+biller():""}`;
@@ -82,8 +82,8 @@ function renderCount(el){
 function drawCount(){
   const box=$("#cklist");if(!box)return;const q=Q.trim().toLowerCase();
   box.innerHTML=tracked().filter(it=>hit(it,q)&&(q||!C.rack||it.rack===C.rack||(C.rk&&C.rk[it.id]===C.rack))).map(it=>{const v=C.n[it.id];const has=v!=null;
-    return `<div class="li cntrow ${has?"ok":""}" data-crow="${esc(it.id)}">${tileHTML(it)}<div class="mid"><b>${esc(it.name)}</b><span>#${esc(it.code||"")}${it.size?" · "+esc(it.size):""}${it.rack?" · 🗄️ "+esc(it.rack):""}</span></div>
-    <div class="cstep2"><button type="button" data-cdec="${esc(it.id)}" aria-label="एक कम">−</button><input class="inp" data-cn="${esc(it.id)}" inputmode="numeric" value="${has?v:""}" placeholder="—" aria-label="${esc(it.name)} कितने गिने"><button type="button" data-cinc="${esc(it.id)}" aria-label="एक और">+</button></div></div>`}).join("")||'<p class="note">कुछ नहीं मिला</p>';
+    return `<div class="li cntrow ${has?"ok":""}" data-crow="${esc(it.id)}">${tileHTML(it)}<div class="mid"><b>${esc(SE.capNm(it.name))}</b><span>#${esc(it.code||"")}${it.size?" · "+esc(it.size):""}${it.rack?" · 🗄️ "+esc(it.rack):""}</span></div>
+    <div class="cstep2"><button type="button" data-cdec="${esc(it.id)}" aria-label="एक कम">−</button><input class="inp" data-cn="${esc(it.id)}" inputmode="numeric" value="${has?v:""}" placeholder="—" aria-label="${esc(SE.capNm(it.name))} कितने गिने"><button type="button" data-cinc="${esc(it.id)}" aria-label="एक और">+</button></div></div>`}).join("")||'<p class="note">कुछ नहीं मिला</p>';
 }
 function setCnt(id,v){if(v==null||v==="")delete C.n[id];else{C.n[id]=Math.max(0,r2(num(v)));const it=S.items.find(i=>i.id===id);if(it)setRack(it)}saveC()}
 /* 🗄️ रैक-वार गिनती: रैक चुनकर जो सामान गिनो, वह उसी रैक का हो जाता है (मालिक के लिए अपने-आप सेव) */

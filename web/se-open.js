@@ -42,10 +42,10 @@ SO.render=function(){
   <div class="card2 so-card ${s}">
     <div class="so-ph">${tileHTML(it)}</div>
     <div class="so-ask">विक्रम जी, यह है —</div>
-    <h3 class="so-nm">${esc(it.name)}</h3>
+    <h3 class="so-nm">${esc(SE.capNm(it.name))}</h3>
     <p class="note so-meta">#${esc(it.code||"")}${it.barcode?" · "+esc(String(it.barcode).split(",")[0]):""}${+it.mrp?" · MRP ₹"+(+it.mrp):""} · बिक्री ₹${+it.sale||0}</p>
     <div class="so-q-l">कितने हैं? स्कैन करें या संख्या लिखें</div>
-    <div class="so-q"><button type="button" data-so="dec" aria-label="एक कम">−</button><input class="inp" id="soQ" inputmode="decimal" value="${q!=null?q:""}" placeholder="—" aria-label="${esc(it.name)} कितने हैं" autocomplete="off"><button type="button" data-so="inc" aria-label="एक और">+</button></div>
+    <div class="so-q"><button type="button" data-so="dec" aria-label="एक कम">−</button><input class="inp" id="soQ" inputmode="decimal" value="${q!=null?q:""}" placeholder="—" aria-label="${esc(SE.capNm(it.name))} कितने हैं" autocomplete="off"><button type="button" data-so="inc" aria-label="एक और">+</button></div>
     <div class="row2" style="margin:8px 0 0"><label class="fld">एक्सपायरी (हो तो)<input class="inp" id="soE" type="date" value="${esc(e)}"></label><label class="fld">खरीद भाव ₹<input class="inp" id="soC" inputmode="decimal" value="${esc(String(c))}" placeholder="पता हो तो"></label></div>
     <p class="note so-old">ऐप में पहले: ${fq(qOf(it),it.unit)}${oldExp?" · पुरानी एक्सपायरी "+fdate(oldExp):""}${s==="off"?' · <b style="color:var(--chili)">🚫 बंद किया</b>':""}</p>
     <button class="big" data-so="next">✓ अगला${q!=null?" ("+q+")":""}</button>
@@ -57,7 +57,7 @@ SO.render=function(){
 const foot=(dn,n)=>`<div style="height:120px"></div><div class="cartbar px cntbar"><button class="big ghost" data-so="cancel">रद्द</button><button class="big" data-so="finish">🏁 पूरा करें (${dn}/${n})</button></div>`;
 function drawList(el,L,dn){
   el.innerHTML=`<div class="so-top"><div><h2 class="sec" style="margin:0">🏁 ओपनिंग — सूची</h2><span class="note">${dn} / ${L.length} हुए · किसी पर दबाएँ</span></div><button class="chip" data-so="card">← एक-एक करके</button></div>
-  <div class="list">${L.map((id,i)=>{const it=item(id),s=st(id);return `<button class="li cntrow ${s==="ok"?"ok":""}" data-soi="${i}">${tileHTML(it)}<div class="mid"><b>${esc(it.name)}</b><span>#${esc(it.code||"")}${O.added.includes(id)?" · 🆕 नया":""}</span></div><div class="rt">${s==="off"?"🚫 बंद":s==="zero"?"0":s==="ok"?fq(O.n[id],it.unit):'<span class="note">— बाकी</span>'}</div></button>`}).join("")}</div>${foot(dn,L.length)}`;
+  <div class="list">${L.map((id,i)=>{const it=item(id),s=st(id);return `<button class="li cntrow ${s==="ok"?"ok":""}" data-soi="${i}">${tileHTML(it)}<div class="mid"><b>${esc(SE.capNm(it.name))}</b><span>#${esc(it.code||"")}${O.added.includes(id)?" · 🆕 नया":""}</span></div><div class="rt">${s==="off"?"🚫 बंद":s==="zero"?"0":s==="ok"?fq(O.n[id],it.unit):'<span class="note">— बाकी</span>'}</div></button>`}).join("")}</div>${foot(dn,L.length)}`;
 }
 function keep(){const it=cur();if(!it)return;const q=$("#soQ"),e=$("#soE"),c=$("#soC");
   if(q){const v=String(q.value).trim();if(v==="")delete O.n[it.id];else{O.n[it.id]=Math.max(0,r2(num(v)));delete O.off[it.id]}}
@@ -96,7 +96,7 @@ function finishSheet(){
     <div class="stkmeta"><span>माल की लागत (खरीद भाव से)</span><b>${rs(s.val)}</b></div>
     <div class="stkmeta"><span>इसी माल की MRP कीमत</span><b>${rs(s.mrp)}</b></div>
     ${s.noCost?`<p class="note" style="color:var(--chili)">⚠ ${s.noCost} सामान का खरीद भाव नहीं भरा — उनकी लागत इसमें नहीं जुड़ी (बाद में भी भर सकते हैं)</p>`:""}
-    ${s.left.length?`<div class="warn">⚠ ${s.left.length} सामान अभी नहीं गिने: ${s.left.slice(0,6).map(i=>esc(i.name)).join(", ")}${s.left.length>6?" …":""}</div>
+    ${s.left.length?`<div class="warn">⚠ ${s.left.length} सामान अभी नहीं गिने: ${s.left.slice(0,6).map(i=>esc(SE.capNm(i.name))).join(", ")}${s.left.length>6?" …":""}</div>
       <div class="paym" style="margin:6px 0"><button data-solm="keep" aria-pressed="${leftMode==="keep"}">जैसे हैं वैसे रहने दें</button><button data-solm="zero" aria-pressed="${leftMode==="zero"}">इन्हें 0 मानें</button></div>`:""}
     <p class="note">"पक्का करें" दबाते ही यही नया स्टॉक लग जाएगा। पुराना स्टॉक, पुरानी एक्सपायरी और पुराना खरीद भाव "ओपनिंग रिकॉर्ड" में सुरक्षित रहेंगे — कुछ मिटेगा नहीं।</p>
     <button class="big" data-soapply>✓ पक्का करें — आज से नया स्टॉक</button>

@@ -108,7 +108,7 @@ function matchSheet(code,open){const it=findByCode(code);
   open=[...open].sort((a,b)=>sim(b)-sim(a));
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
   $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop mk-match" style="top:${top}px" role="dialog" aria-label="बारकोड किस सामान का">
-    <div class="qh"><div class="qn"><b>📟 ${esc(code)}</b><span>${it?"ऐप में: "+esc(it.name)+" · ":""}बिल में यह कौन-सा सामान है?</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+    <div class="qh"><div class="qn"><b>📟 ${esc(code)}</b><span>${it?"ऐप में: "+esc(SE.capNm(it.name))+" · ":""}बिल में यह कौन-सा सामान है?</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     <div class="mk-mlist">${open.map(l=>`<button type="button" data-mm="${esc(l.lid)}"><b>${esc(l.name)}</b><span>${l.qty} × ${rs(l.rate)}${l.mrp?" · MRP "+rs(l.mrp):""}</span></button>`).join("")}</div>
     <button class="big ghost" data-mmnew>➕ बिल में नहीं है — नया जोड़ें</button></div>`;
   $("#sheet").onclick=e=>{if(e.target.closest("[data-close]")){closeSheet();return}
@@ -239,7 +239,7 @@ function lineHTML(l){const g=gain(l.rate,l.mrp),dear=l.last&&num(l.rate)>l.last*
     <div class="mk-am"><b>${rs(amt)}</b><button type="button" class="mk-x" data-del aria-label="${esc(l.name)} हटाएँ">✕</button></div></div>`}
 function searchHits(){const q=String(D.q||"").trim().toLowerCase();if(q.length<2)return "";
   const hits=S.items.filter(i=>i.active!==false&&!i.virtual&&(i.name.toLowerCase().includes(q)||String(i.hi||"").includes(D.q.trim())||String(i.code||"")===q||String(i.barcode||"")===q)).slice(0,6);
-  return `<div class="mk-hits">${hits.map(i=>`<button type="button" data-hit="${esc(i.id)}">${tileHTML(i,"mini")}<span>${esc(i.name)}</span></button>`).join("")}<button type="button" class="nw" data-hitnew>➕ "${esc(D.q.trim())}" नया</button></div>`}
+  return `<div class="mk-hits">${hits.map(i=>`<button type="button" data-hit="${esc(i.id)}">${tileHTML(i,"mini")}<span>${esc(SE.capNm(i.name))}</span></button>`).join("")}<button type="button" class="nw" data-hitnew>➕ "${esc(D.q.trim())}" नया</button></div>`}
 function draftHTML(){const L=D.lines,ai=D.ai,unm=L.filter(l=>l.ai&&!l.bar).length,pct=totPct();
   return `<div class="mk-bar1"><button class="mk-back" data-mkback aria-label="वापस">‹</button><div class="mk-id"><b>${esc(D.shop||"नई खरीद")}</b><span>${esc(D.no)} · ${D.loc?"📍✓":"📍✗"} · ${esc(biller())}</span></div>
     <div class="mk-seg" role="tablist"><button role="tab" aria-selected="${D.mode!=="ai"}" data-mode="scan">📟 स्कैन</button><button role="tab" aria-selected="${D.mode==="ai"}" data-mode="ai">🤖 बिल से</button></div></div>

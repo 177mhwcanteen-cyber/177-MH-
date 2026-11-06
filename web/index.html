@@ -1215,7 +1215,7 @@ function clearSearch(){if(S.q){S.q="";$("#q").value="";S.qq=0}}
 /* 💲 नया भाव: पुराना भाव सिर्फ़ सहारा (secondary) — मालिक एक दबाव में "वही रखें" या नया लिखें */
 function priceAsk(it){const o=+it.oldSale||0;
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="भाव पक्का करें"><div class="grab"></div>
-  <div class="sh-head"><div><h3>💲 ${esc(it.name)} — भाव पक्का करें</h3><span class="note">${o?`पहले (पुराने ऐप में) ${rs(o)}${it.unit==="kg"?"/किलो":""} में बिका`:"पहले का भाव नहीं मिला"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  <div class="sh-head"><div><h3>💲 ${esc(SE.capNm(it.name))} — भाव पक्का करें</h3><span class="note">${o?`पहले (पुराने ऐप में) ${rs(o)}${it.unit==="kg"?"/किलो":""} में बिका`:"पहले का भाव नहीं मिला"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
   <label class="fld">अब का भाव ₹${it.unit==="kg"?" / किलो":""}<input class="inp" id="paV" inputmode="decimal" placeholder="${o||""}" style="font-size:22px"></label>
   <div class="row2" style="margin-top:10px">${o?`<button class="big ghost" data-pakeep>✓ ${rs(o)} ही रखें</button>`:""}<button class="big" data-paok>नया भाव लगाएँ</button></div></div></div>`;
   const done=async v=>{if(!(v>0)){toast("भाव लिखें");return}const old=+it.sale||0;it.sale=v;if(it.cat!=="kirana"||!+it.mrp)it.mrp=v;
@@ -1263,7 +1263,7 @@ function cardHTML(it,LL){{
     const id=esc(it.id),pc=isPc(it.unit),xp=expInfo(it),low=left!=null&&(it.track?left<=lowOf(it):left<=0.5);
     const mrp=+it.mrp||0,off=S.mode!=="inst"&&p>0&&mrp>p?Math.round((mrp-p)/mrp*100):0;
     const pkN=packsOf(it).map(x=>+x.perPack||0).filter(Boolean);const sz=[pkN.length?"🔹खुला+📦"+pkN.join("/"):"",it.size,it.code?"#"+it.code:""].filter(Boolean).join(" · ");
-    return `<div class="card ${p>0?"":"off"} ${inCart>0?"in":""}" role="button" tabindex="0" data-item="${id}">${pcIn?`<span class="qbub" aria-hidden="true">${+inCart.toFixed(2)}</span>`:""}${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${xp?`<span class="xp ${xp.k}">${xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(it.name)}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(it.name)} एक कम">−</button><b data-qo="${id}" role="button" aria-label="${esc(it.name)} की गिनती लिखें">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(it.name)} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
+    return `<div class="card ${p>0?"":"off"} ${inCart>0?"in":""}" role="button" tabindex="0" data-item="${id}">${pcIn?`<span class="qbub" aria-hidden="true">${+inCart.toFixed(2)}</span>`:""}${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${xp?`<span class="xp ${xp.k}">${xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(SE.capNm(it.name))}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(SE.capNm(it.name))} एक कम">−</button><b data-qo="${id}" role="button" aria-label="${esc(SE.capNm(it.name))} की गिनती लिखें">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(SE.capNm(it.name))} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
   }}
 /* कार्ट बदला तो सिर्फ़ वही एक कार्ड दोबारा बनाओ — 5000 सामान पर भी झटपट */
 function patchCard(id){const g=$("#grid");const c=g&&g.querySelector('[data-item="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');const it=item(id);if(!c||!it)return false;
@@ -1348,8 +1348,8 @@ function openQty(it,lineIdx){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(
   const board=priceOf(it);let rate=ln&&it.flex?ln.rate:board;const st={qty:ln?ln.qty:0,amt:null};
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
   const chips=kg?[[.25,"¼"],[.5,"½"],[1,"1"]]:it.sub==="tob"?[[1,"1"],[5,"5"],[10,"10"],[20,"20"]]:[[1,"1"],[2,"2"],[3,"3"],[5,"5"]];
-  $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="${esc(it.name)} कितना चाहिए">
-    <div class="qh">${tileHTML(it)}<div class="qn"><b>${esc(it.name)}</b><span>${rs(board)} / ${u}${it.flex?" · भाव बदल सकते हैं":""}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="${esc(SE.capNm(it.name))} कितना चाहिए">
+    <div class="qh">${tileHTML(it)}<div class="qn"><b>${esc(SE.capNm(it.name))}</b><span>${rs(board)} / ${u}${it.flex?" · भाव बदल सकते हैं":""}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     <div class="qrow"><label class="qf"><input id="qIn" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="0" value="${ln?+(+ln.qty).toFixed(3):""}" aria-label="${kg?"किलो":"गिनती"}"><span>${kg?"कि.ग्रा":u}</span></label><span class="or">या</span><label class="qf"><span>₹</span><input id="aIn" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="0" aria-label="कितने रुपये का"></label></div>
     ${it.flex?`<label class="qf" style="border-style:dashed"><span>भाव ₹</span><input id="rtIn" inputmode="decimal" autocomplete="off" value="${rate}" aria-label="इस बार का भाव"><span>/ ${u}</span></label>`:""}
     <div class="qchips2 one">${chips.map(([v,l])=>`<button type="button" data-q="${v}">${l}${kg?" kg":""}</button>`).join("")}${kg?[10,20,50,100].map(v=>`<button type="button" class="rp" data-a="${v}">₹${v}</button>`).join(""):""}</div>
@@ -1798,7 +1798,7 @@ function unknownCode(code){
     <label class="fld">किस में रखें<select class="inp" id="nbSub">${subs.map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
     <button class="big" data-nbsave>✓ सामान जोड़ें${S.scanIn?"":" और बिल में डालें"}</button></div>
   ${own?`<h4 style="margin:4px 0 6px">या पहले से बने सामान में यह बारकोड जोड़ें</h4>
-  <div class="row2"><select class="inp" id="nbAttach" aria-label="सामान चुनें"><option value="">— सामान चुनें —</option>${S.items.filter(i=>!i.virtual).map(i=>`<option value="${esc(i.id)}">${esc(i.name)}${i.code?" #"+esc(i.code):""}</option>`).join("")}</select><button class="big ghost" data-nbattach>जोड़ें</button></div>`:""}
+  <div class="row2"><select class="inp" id="nbAttach" aria-label="सामान चुनें"><option value="">— सामान चुनें —</option>${S.items.filter(i=>!i.virtual).map(i=>`<option value="${esc(i.id)}">${esc(SE.capNm(i.name))}${i.code?" #"+esc(i.code):""}</option>`).join("")}</select><button class="big ghost" data-nbattach>जोड़ें</button></div>`:""}
   </div></div>`;
   pehchanFill(code);
   $("#sheet").onclick=async e=>{
@@ -2206,7 +2206,7 @@ function renderReport(){
   <div class="tblwrap"><table class="t"><thead><tr><th>सामान</th><th class="n">कितना बिका</th><th class="n">किस रेट पर</th><th class="n">फिक्स रेट</th><th class="n">रकम</th><th class="n">मुनाफ़ा</th></tr></thead><tbody>
   ${rows.length?rows.map(o=>{const rates=[...o.rates];const p=o.cost>0?r2(o.amt-o.cost*o.qty):null;return `<tr class="${o.chg?"flag":""}"><td>${esc(o.name)}</td><td class="n">${fq(o.qty,o.unit)}</td><td class="n">${rates.map(r=>rs(r)).join(", ")}</td><td class="n">${rs(o.board)}</td><td class="n">${rs(o.amt)}</td><td class="n">${p==null?"—":rs(p)}</td></tr>`}).join(""):`<tr><td colspan="6" class="note">इस दिन कोई बिक्री नहीं</td></tr>`}
   </tbody></table></div>${noCost>0?`<p class="note" style="margin:-6px 0 12px">${rs(noCost)} की बिक्री ऐसे सामान की है जिसका खरीद रेट नहीं डाला — उनका मुनाफ़ा नहीं जुड़ा।</p>`:""}`),
-    R("short","item","📉","माल में कमी",shortTot>0?rs(shortTot):"कोई नहीं",()=>`${srows.length?`<h3 style="margin:0 0 6px;color:var(--chili)">⚠ माल में कमी (रात के स्टॉक से)</h3><div class="list">${srows.map(r=>`<div class="li"><div class="mid"><b>${esc(r.it.name)}</b><span>आया ${fq(r.open,r.it.unit)} · बिका ${fq(r.sold,r.it.unit)} · खराब ${fq(r.waste,r.it.unit)} · बचा ${fq(r.close,r.it.unit)}</span></div><div class="rt" style="color:var(--chili)">${fq(r.short,r.it.unit)}<small>${rs(r.shortVal)}</small></div></div>`).join("")}</div>`:""}${srows.length?"":`<div class="empty">रात के स्टॉक से कोई कमी नहीं 👍</div>`}`,shortTot>0),
+    R("short","item","📉","माल में कमी",shortTot>0?rs(shortTot):"कोई नहीं",()=>`${srows.length?`<h3 style="margin:0 0 6px;color:var(--chili)">⚠ माल में कमी (रात के स्टॉक से)</h3><div class="list">${srows.map(r=>`<div class="li"><div class="mid"><b>${esc(SE.capNm(r.it.name))}</b><span>आया ${fq(r.open,r.it.unit)} · बिका ${fq(r.sold,r.it.unit)} · खराब ${fq(r.waste,r.it.unit)} · बचा ${fq(r.close,r.it.unit)}</span></div><div class="rt" style="color:var(--chili)">${fq(r.short,r.it.unit)}<small>${rs(r.shortVal)}</small></div></div>`).join("")}</div>`:""}${srows.length?"":`<div class="empty">रात के स्टॉक से कोई कमी नहीं 👍</div>`}`,shortTot>0),
     R("stock","item","🏷️","स्टॉक · कम स्टॉक · एक्सपायरी","",null),
     R("profit","item","💹","सामान-वार मुनाफ़ा (दिन चुनें)","",()=>window.SQ?SQ.html():""),
     R("udhar","party","📒","आज का उधार",ud?rs(ud):"कोई नहीं",()=>(window.SB&&SB.udharHTML?SB.udharHTML():"")||`<div class="empty">आज कोई नया उधार नहीं</div>`),
@@ -2262,21 +2262,21 @@ $("#p-report").addEventListener("click",e=>{const rt=e.target.closest("[data-rta
 /* ---------- settings (owner) ---------- */
 /* ⚙️ सामान और भाव — 2000+ सामान पर भी हल्का: खोज + छाँटना + 40-40 करके; पंक्ति दबाओ तो उसी जगह पूरा संपादन (06-11-2026) */
 function setItemEdit(it){return `<div class="setitem" data-sid="${esc(it.id)}">
-    <div class="tilecol"><button class="tile" data-photo="${esc(it.id)}" style="--h:${+(it.hue??120)}" aria-label="${esc(it.name)} की फोटो बदलें">${SE.photoSrc(it)?`<img src="${esc(SE.photoSrc(it))}" alt="">`:`<span class="em">${esc(it.emoji||"🛒")}</span>`}</button><button class="lnk gem" data-gem="${esc(it.id)}" title="Gemini से सुंदर फोटो बनवाने का प्रॉम्प्ट">🎨 Gemini</button></div>
+    <div class="tilecol"><button class="tile" data-photo="${esc(it.id)}" style="--h:${+(it.hue??120)}" aria-label="${esc(SE.capNm(it.name))} की फोटो बदलें">${SE.photoSrc(it)?`<img src="${esc(SE.photoSrc(it))}" alt="">`:`<span class="em">${esc(it.emoji||"🛒")}</span>`}</button><button class="lnk gem" data-gem="${esc(it.id)}" title="Gemini से सुंदर फोटो बनवाने का प्रॉम्प्ट">🎨 Gemini</button></div>
     <div style="min-width:0"><div class="flds">
-      <label class="fld">नाम<input class="inp" id="n-${esc(it.id)}" data-if="name" value="${esc(it.name)}"></label>
+      <label class="fld">नाम<input class="inp" id="n-${esc(it.id)}" data-if="name" value="${esc(SE.capNm(it.name))}"></label>
       <label class="fld">बिक्री ₹<input class="inp ${(+it.sale)>0?"":"bad"}" id="s-${esc(it.id)}" data-if="sale" inputmode="decimal" value="${it.sale||""}"></label>
       <label class="fld">खरीद ₹<input class="inp" id="c-${esc(it.id)}" data-if="cost" inputmode="decimal" value="${it.cost||""}"></label></div>
       <div class="flds2"><select class="inp" id="u-${esc(it.id)}" data-if="unit" aria-label="इकाई">${Object.entries(UNITS).map(([k,v])=>`<option value="${k}" ${it.unit===k?"selected":""}>${v}</option>`).join("")}</select>
       <select class="inp" id="k-${esc(it.id)}" data-if="cat" aria-label="कैटेगरी">${CATS.slice(1).map(([k,v])=>`<option value="${k}" ${it.cat===k?"selected":""}>${v}</option>`).join("")}</select>
       <input class="inp" id="e-${esc(it.id)}" data-if="emoji" value="${esc(it.emoji||"")}" style="width:56px" aria-label="इमोजी">
       <label class="note"><input type="checkbox" id="a-${esc(it.id)}" data-if="active" ${it.active!==false?"checked":""}> चालू</label>
-      <input class="inp code" id="b-${esc(it.id)}" data-if="barcode" value="${esc(it.barcode||"")}" placeholder="बारकोड" style="width:150px" aria-label="${esc(it.name)} का बारकोड">
+      <input class="inp code" id="b-${esc(it.id)}" data-if="barcode" value="${esc(it.barcode||"")}" placeholder="बारकोड" style="width:150px" aria-label="${esc(SE.capNm(it.name))} का बारकोड">
       <label class="note"><input type="checkbox" id="t-${esc(it.id)}" data-if="track" ${it.track?"checked":""}> स्टॉक गिनें</label>
       <label class="note"><input type="checkbox" id="f-${esc(it.id)}" data-if="flex" ${it.flex?"checked":""}> बिलर भाव बदल सके</label>
-      <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(it.name)} के बारकोड लेबल छापें">🏷️ लेबल</button>
-      <button type="button" class="chip" data-noonline="${esc(it.id)}" aria-pressed="${!it.noOnline}" aria-label="${esc(it.name)} ऑनलाइन दिखे">🌐</button>
-      <button type="button" class="chip" data-favpin="${esc(it.id)}" aria-pressed="${((S.settings.favs||[]).includes(it.id))}" aria-label="${esc(it.name)} फ़ेवरेट">⭐</button></div>
+      <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(SE.capNm(it.name))} के बारकोड लेबल छापें">🏷️ लेबल</button>
+      <button type="button" class="chip" data-noonline="${esc(it.id)}" aria-pressed="${!it.noOnline}" aria-label="${esc(SE.capNm(it.name))} ऑनलाइन दिखे">🌐</button>
+      <button type="button" class="chip" data-favpin="${esc(it.id)}" aria-pressed="${((S.settings.favs||[]).includes(it.id))}" aria-label="${esc(SE.capNm(it.name))} फ़ेवरेट">⭐</button></div>
       <div class="flds3">
       <label class="fld">हिंदी नाम<input class="inp" data-if="hi" value="${esc(it.hi||"")}"></label>
       <label class="fld">MRP ₹<input class="inp" data-if="mrp" inputmode="decimal" value="${it.mrp||""}"></label>

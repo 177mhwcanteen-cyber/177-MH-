@@ -113,7 +113,7 @@ function pPick(){const qq=(P.q||"").trim().toLowerCase().replace(/\s*\d+([.,]\d+
   return S.items.filter(i=>i.active!==false&&!i.virtual&&(!qq||(i.name+" "+(i.hi||"")+" "+(i.alias||"")+" "+i.id+" "+(i.code||"")+" "+(window.SN?SN.en(i):"")).toLowerCase().includes(qq)))}
 function pGridHTML(){
   return pPick().map(it=>{const lr=lastRate(it.id);const inC=P.lines.filter(l=>l.id===it.id).reduce((a,l)=>a+num(l.qty),0);
-    return `<button class="card" data-pitem="${esc(it.id)}">${tileHTML(it)}${inC?`<span class="badge">${fq(inC,it.unit)}</span>`:""}<span class="nm">${esc(it.name)}${window.SN&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span><span class="pr">${lr?`पिछली <b>${rs(lr.rate)}</b>/${uOf(it)}`:"पहली खरीद"}</span></button>`}).join("")
+    return `<button class="card" data-pitem="${esc(it.id)}">${tileHTML(it)}${inC?`<span class="badge">${fq(inC,it.unit)}</span>`:""}<span class="nm">${esc(SE.capNm(it.name))}${window.SN&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span><span class="pr">${lr?`पिछली <b>${rs(lr.rate)}</b>/${uOf(it)}`:"पहली खरीद"}</span></button>`}).join("")
   +`<button class="card addnew" data-pitem=""><span class="tile"><span class="em">📦</span></span><span class="nm">दूसरा सामान<small class="en">पॉलीथीन, रस्सी…</small></span><span class="pr">लिस्ट में नहीं</span></button>`;
 }
 SF.renderKharid=function(force){
@@ -155,8 +155,8 @@ function pItemSheet(id,idx,qty0){
   const q0=ln?ln.qty:(qty0||""),r0=ln?ln.rate:"",pk=it&&isPc(it.unit)&&it.cat!=="fast",e0=ln?(ln.exp||""):"";
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
   const chips=kg&&it?[[5,"5"],[10,"10"],[20,"20"],[50,"50"]]:[[1,"1"],[5,"5"],[10,"10"],[20,"20"]];
-  $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="खरीद: ${it?esc(it.name):"दूसरा सामान"}">
-    <div class="qh">${it?tileHTML(it):'<span class="tile"><span class="em">📦</span></span>'}<div class="qn"><b>${it?esc(it.name):"दूसरा सामान"}</b><span>${lr?`पिछली खरीद ${rs(lr.rate)}/${u}${lr.date?" · "+fdate(lr.date).slice(0,5):""}`:"पहली बार खरीद"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="खरीद: ${it?esc(SE.capNm(it.name)):"दूसरा सामान"}">
+    <div class="qh">${it?tileHTML(it):'<span class="tile"><span class="em">📦</span></span>'}<div class="qn"><b>${it?esc(SE.capNm(it.name)):"दूसरा सामान"}</b><span>${lr?`पिछली खरीद ${rs(lr.rate)}/${u}${lr.date?" · "+fdate(lr.date).slice(0,5):""}`:"पहली बार खरीद"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     ${it?"":`<label class="qf"><input id="piN" autocomplete="off" placeholder="क्या लिया — पॉलीथीन, रस्सी…" value="${esc(ln?ln.name:"")}" style="font-size:20px"></label>`}
     <div class="qrow"><label class="qf"><input id="piQ" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="0" value="${q0}" aria-label="वज़न"><span>${kg&&it?"कि.ग्रा":u}</span></label>
       <span class="or">×</span><label class="qf"><span>₹</span><input id="piR" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="${lr?lr.rate:"भाव"}" value="${r0}" aria-label="भाव"><span>/${kg&&it?"kg":u}</span></label></div>
@@ -431,7 +431,7 @@ function dayRows(){
 SF.missingBuy=function(){if(!S.isOwner)return [];/* सिर्फ़ मालिक — कर्मचारी को बिक्री की मात्रा नहीं दिखती */return dayRows().filter(r=>r.active&&(r.saleQ+r.instQ)>0&&r.avail-(r.saleQ+r.instQ)<-(r.it.unit==="kg"?0.2:0.99)).map(r=>({it:r.it,need:r2((r.saleQ+r.instQ-r.avail)*1000)/1000,avail:r.avail}))};
 SF.missingBuyHTML=function(){const M=SF.missingBuy();if(!M.length)return "";
   return `<div class="card2 mbuy"><h3>🛒 खरीद की एंट्री छूटी? (${M.length})</h3><p class="note" style="margin:0 0 6px">ये सब्ज़ियाँ (कल रात बचा + आज दर्ज खरीद) से ज़्यादा बिकीं — या तो खरीद की एंट्री छूटी है, या कल रात का स्टॉक कम लिखा गया। कर्मचारी को यह नहीं दिखता; पूछना हो तो सिर्फ़ "आज की खरीद पूरी डालें" कहें।</p>
-  <div class="mbuy-l">${M.map(x=>`<span>${esc(x.it.name)} <b>+${fq(x.need,x.it.unit)}</b></span>`).join("")}</div></div>`};
+  <div class="mbuy-l">${M.map(x=>`<span>${esc(SE.capNm(x.it.name))} <b>+${fq(x.need,x.it.unit)}</b></span>`).join("")}</div></div>`};
 /* 📊 विक्रम जी, आज का सार — खरीद कितनी दर्ज, बिक्री कितनी, रात का स्टॉक भरा या नहीं (सिर्फ़ मालिक) */
 SF.ownerBriefHTML=function(){
   if(!S.isOwner)return "";const d=S.billsDate,B=S.dayBills.filter(b=>!b.cancelled),P=livePurch();
@@ -443,7 +443,7 @@ SF.ownerBriefHTML=function(){
   <div><span>🧾 बिक्री</span><b>${rs(tot)}</b><small>${sale.length} बिल · UPI ${rs(upi)} · नकद ${rs(cash)}${ud?" · उधार "+rs(ud):""}${due?" · ⏳ बाकी "+rs(due):""}</small></div>
   <div><span>🏢 संस्था (खरीद भाव)</span><b>${rs(inst)}</b><small>${B.filter(b=>b.mode==="inst").length} चालान</small></div>
   <div><span>🌙 रात का स्टॉक</span><b>${S.stock&&S.stock.nightTs?"✓ भरा":"— अभी नहीं"}</b><small>${S.stock&&S.stock.nightTs?esc(S.stock.nightBy||"")+" · "+ftime(S.stock.nightTs):"दुकान बंद होने पर"}</small></div>${SF.gallaTileHTML()}</div>
-  ${M.length?`<p class="ud-w" style="margin:6px 0 0">⚠ ${M.length} सामान स्टॉक से ज़्यादा बिके (खरीद की एंट्री छूटी?): ${M.map(x=>esc(x.it.name)+" +"+fq(x.need,x.it.unit)).join(", ")}</p>`:""}</div>`;
+  ${M.length?`<p class="ud-w" style="margin:6px 0 0">⚠ ${M.length} सामान स्टॉक से ज़्यादा बिके (खरीद की एंट्री छूटी?): ${M.map(x=>esc(SE.capNm(x.it.name))+" +"+fq(x.need,x.it.unit)).join(", ")}</p>`:""}</div>`;
 };
 document.addEventListener("click",e=>{if(e.target.closest("[data-gokharid]")){closeSheet&&closeSheet();if(typeof setTab==="function")setTab("kharid");else{const t=document.querySelector('[data-tab="kharid"]');if(t)t.click()}}});
 SF.dayStockHTML=function(){
@@ -464,10 +464,10 @@ SF.dayStockHTML=function(){
   <div class="card2"><h3>🌙 रात का स्टॉक</h3>
     <p class="note" style="margin:0">दुकान बंद करते समय बचा माल तौलकर डालें। "होना चाहिए" = कल रात का + आज की खरीद − बिका − संस्था।</p>
     <button class="big" data-night>🌙 रात का स्टॉक डालें</button></div>
-  ${flags.length?`<div class="warn">⚠ ${flags.length} सामान में माल कम निकला: ${flags.map(r=>esc(r.it.name)+" "+fq(r.short,r.it.unit)).join(", ")}</div>`:""}
+  ${flags.length?`<div class="warn">⚠ ${flags.length} सामान में माल कम निकला: ${flags.map(r=>esc(SE.capNm(r.it.name))+" "+fq(r.short,r.it.unit)).join(", ")}</div>`:""}
   <h3 style="margin:0 0 4px">माल का हिसाब (सामान-वार)</h3>
   <div class="list">${rows.map(r=>{const it=r.it,id=esc(it.id);return `<div class="stkrow" data-sid="${id}">${tileHTML(it)}<div style="min-width:0">
-    <div class="stkmeta"><b style="color:var(--ink);font-size:16px">${esc(it.name)}</b><span>${r.rate?`खरीद ${rs(r.rate)}/${UNITS[it.unit]||it.unit}`:""}</span></div>
+    <div class="stkmeta"><b style="color:var(--ink);font-size:16px">${esc(SE.capNm(it.name))}</b><span>${r.rate?`खरीद ${rs(r.rate)}/${UNITS[it.unit]||it.unit}`:""}</span></div>
     <div class="dgrid"><span>कल रात<b>${fq(r.prev,it.unit)}</b></span><span>+ खरीदा<b>${fq(r.buyQ,it.unit)}</b></span><span>− बिका<b>${fq(r.saleQ,it.unit)}</b></span><span>− संस्था<b>${fq(r.instQ,it.unit)}</b></span></div>
     <div class="stkf" style="grid-template-columns:1fr 1fr"><label class="fld">खराब हुआ<input class="inp" id="sw-${id}" data-sk="waste" inputmode="decimal" value="${r.waste||""}"></label>
     <label class="fld">रात बचा (होना चाहिए ${fq(Math.max(0,r.expect),it.unit)})<input class="inp ${r.flag?"bad":""}" id="sc-${id}" data-sk="close" inputmode="decimal" value="${r.close??""}"></label></div>
@@ -538,9 +538,9 @@ function nightSheet(){
     $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px ns2" role="dialog" aria-label="रात का बचा माल"><div class="grab"></div>
     <div class="sh-head"><div><h3>🌙 रात का बचा माल · ${fdate(S.billsDate).slice(0,5)}</h3><span class="note">भरने वाले: <b>${esc(biller()||"—")}</b> · दुकान में जो बचा है, तौलकर/गिनकर डालें</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     <input class="inp" id="nsq" type="search" placeholder="🔍 खोजें — जैसे: मैगी 15 (Enter)" value="${esc(q)}" autocomplete="off" enterkeyhint="done" aria-label="सब्ज़ी खोजें">
-    <div class="ns-grid" id="nsg">${L.slice(0,q?24:60).map(it=>{const v=N[it.id];return `<button class="ns-t ${v!==undefined&&v!==""?"on":""}" data-nst="${esc(it.id)}">${tileHTML(it)}<span>${esc(it.name)}</span>${v!==undefined&&v!==""?`<b>${num(v)>0?fq(num(v),it.unit):"खत्म"}</b>`:""}</button>`}).join("")||'<p class="note">नहीं मिली — दूसरा नाम लिखें</p>'}</div>
+    <div class="ns-grid" id="nsg">${L.slice(0,q?24:60).map(it=>{const v=N[it.id];return `<button class="ns-t ${v!==undefined&&v!==""?"on":""}" data-nst="${esc(it.id)}">${tileHTML(it)}<span>${esc(SE.capNm(it.name))}</span>${v!==undefined&&v!==""?`<b>${num(v)>0?fq(num(v),it.unit):"खत्म"}</b>`:""}</button>`}).join("")||'<p class="note">नहीं मिली — दूसरा नाम लिखें</p>'}</div>
     <h4 style="margin:10px 0 4px">📋 बचा माल (${ent.length})</h4>
-    <div class="ns-l">${ent.length?ent.map(([id,v])=>{const it=item(id);const c=num(SF.costOf(it));return `<div class="ns-r" data-nse="${esc(id)}"><span class="ns-n">${esc(it.name)}</span><b>${num(v)>0?fq(num(v),it.unit):"खत्म (0)"}</b><small>${c>0&&num(v)>0?"₹"+r2(num(v)*c):""}</small><button class="pp-x" data-nsx="${esc(id)}" aria-label="${esc(it.name)} हटाएँ">✕</button></div>`}).join(""):'<p class="note" style="margin:0">ऊपर खोजें या टाइल दबाएँ — जैसे "आलू 15"</p>'}</div>
+    <div class="ns-l">${ent.length?ent.map(([id,v])=>{const it=item(id);const c=num(SF.costOf(it));return `<div class="ns-r" data-nse="${esc(id)}"><span class="ns-n">${esc(SE.capNm(it.name))}</span><b>${num(v)>0?fq(num(v),it.unit):"खत्म (0)"}</b><small>${c>0&&num(v)>0?"₹"+r2(num(v)*c):""}</small><button class="pp-x" data-nsx="${esc(id)}" aria-label="${esc(SE.capNm(it.name))} हटाएँ">✕</button></div>`}).join(""):'<p class="note" style="margin:0">ऊपर खोजें या टाइल दबाएँ — जैसे "आलू 15"</p>'}</div>
     <div class="ns-sum"><span>आज लगभग बचा माल (खरीद भाव से)</span><b>₹${val}</b></div>
     <button class="big" data-nsave ${ent.length?"":"disabled"}>✓ रात का स्टॉक सेव करें · ${ent.length} सामानज़ी</button>
     ${pop?popHTML(pop):""}</div></div>`;
@@ -548,15 +548,15 @@ function nightSheet(){
     if(pop){const f=$("#nsQ");if(f){f.focus();f.select()}}
   };
   const popHTML=id=>{const it=item(id);const kg=it.unit==="kg";const v=N[id];
-    return `<div class="ns-pop" role="dialog" aria-label="${esc(it.name)} कितना बचा"><div class="ns-pb">
-    <div class="qh">${tileHTML(it)}<div class="qn"><b>${esc(it.name)}</b><span>रात को कितना बचा? (${kg?"किलो":"गिनती / पीस"})</span></div><button class="x" data-nspx aria-label="बंद करें">✕</button></div>
+    return `<div class="ns-pop" role="dialog" aria-label="${esc(SE.capNm(it.name))} कितना बचा"><div class="ns-pb">
+    <div class="qh">${tileHTML(it)}<div class="qn"><b>${esc(SE.capNm(it.name))}</b><span>रात को कितना बचा? (${kg?"किलो":"गिनती / पीस"})</span></div><button class="x" data-nspx aria-label="बंद करें">✕</button></div>
     ${kg?`<div class="ns-kg">${KG.map(k=>`<button data-nsk="${k}">${k<1?(k===0.25?"¼":"½"):k} kg</button>`).join("")}</div>`:`<div class="ns-pc"><button data-nsm aria-label="कम">−</button><button data-nsp aria-label="ज़्यादा">+</button></div>`}
     <div class="ns-in"><input class="inp big-in" id="nsQ" inputmode="decimal" value="${v!==undefined&&v!==""?num(v):""}" placeholder="${kg?"किलो":"गिनती"}" aria-label="मात्रा"><span>${kg?"किलो":"पीस"}</span></div>
     <div class="row2" style="margin:8px 0 0"><button class="big ghost" data-ns0>खत्म (0)</button><button class="big" data-nsok>✓ जोड़ें</button></div></div></div>`};
   const setQ=(id,v)=>{if(v===""||v==null||isNaN(v))return false;N[id]=Math.max(0,r2(num(v)*1000)/1000);return true};
   draw();
   const sh=$("#sheet");
-  sh.oninput=e=>{if(e.target.id==="nsq"){q=e.target.value;const g=$("#nsg");const L=match(q);if(g){g.innerHTML=L.slice(0,q?24:60).map(it=>{const v=N[it.id];return `<button class="ns-t ${v!==undefined&&v!==""?"on":""}" data-nst="${esc(it.id)}">${tileHTML(it)}<span>${esc(it.name)}</span>${v!==undefined&&v!==""?`<b>${num(v)>0?fq(num(v),it.unit):"खत्म"}</b>`:""}</button>`}).join("")||'<p class="note">नहीं मिली — दूसरा नाम लिखें</p>'}}};
+  sh.oninput=e=>{if(e.target.id==="nsq"){q=e.target.value;const g=$("#nsg");const L=match(q);if(g){g.innerHTML=L.slice(0,q?24:60).map(it=>{const v=N[it.id];return `<button class="ns-t ${v!==undefined&&v!==""?"on":""}" data-nst="${esc(it.id)}">${tileHTML(it)}<span>${esc(SE.capNm(it.name))}</span>${v!==undefined&&v!==""?`<b>${num(v)>0?fq(num(v),it.unit):"खत्म"}</b>`:""}</button>`}).join("")||'<p class="note">नहीं मिली — दूसरा नाम लिखें</p>'}}};
   sh.onkeydown=e=>{
     if(e.key==="Enter"&&e.target.id==="nsq"){e.preventDefault();const m=/(\d+([.,]\d+)?)\s*(kg|किलो|किग्रा|pc|पीस|नग)?\s*$/i.exec(q);const L=match(q);
       if(L.length===1&&m){setQ(L[0].id,num(m[1]));q="";draw(true);toast("✓ "+L[0].name+" "+fq(N[L[0].id],L[0].unit));return}
@@ -596,14 +596,14 @@ SF.nightDoneSheet=async function(){
 SF.adviceHTML=function(V,own,staff){
   const I=S.stock.items||{};const G={hi:[],mid:[],lo:[]};
   S.items.filter(i=>i.active!==false&&!i.virtual&&!i.track).forEach(it=>{const o=I[it.id];const left=o&&o.close!==undefined&&o.close!==""?num(o.close):0;const a=SF.buyAdvice(it,left,V[it.id]);if(!a)return;if(a.lv==="lo"&&!(V[it.id]>0))return;G[a.lv].push({it,left,a,avg:V[it.id]||0})});
-  const sec=(k,h,cls)=>G[k].length?`<div class="adv ${cls}"><h4>${h} (${G[k].length})</h4>${own?`<div class="adv-t">${G[k].map(x=>`<div><b>${esc(x.it.name)}</b><span>बचा ${fq(x.left,x.it.unit)} · ${x.avg>0?"रोज़ ~"+fq(x.avg,x.it.unit):"7 दिन में नहीं बिकी"}${x.a.cover!=null?" · "+(Math.round(x.a.cover*10)/10)+" दिन का माल":""}${x.a.need?" · लें ~"+fq(x.a.need,x.it.unit):""}</span></div>`).join("")}</div>`:`<p>${G[k].map(x=>esc(x.it.name)+(x.left>0?" ("+fq(x.left,x.it.unit)+" बचा)":"")).join(" · ")}</p>`}</div>`:"";
+  const sec=(k,h,cls)=>G[k].length?`<div class="adv ${cls}"><h4>${h} (${G[k].length})</h4>${own?`<div class="adv-t">${G[k].map(x=>`<div><b>${esc(SE.capNm(x.it.name))}</b><span>बचा ${fq(x.left,x.it.unit)} · ${x.avg>0?"रोज़ ~"+fq(x.avg,x.it.unit):"7 दिन में नहीं बिकी"}${x.a.cover!=null?" · "+(Math.round(x.a.cover*10)/10)+" दिन का माल":""}${x.a.need?" · लें ~"+fq(x.a.need,x.it.unit):""}</span></div>`).join("")}</div>`:`<p>${G[k].map(x=>esc(SE.capNm(x.it.name))+(x.left>0?" ("+fq(x.left,x.it.unit)+" बचा)":"")).join(" · ")}</p>`}</div>`:"";
   const body=sec("hi","🔴 ज़्यादा है — कल मत खरीदें","hi")+sec("mid","🟡 थोड़ा ही लें","mid")+sec("lo","🟢 खरीदना है","lo");
   return body?`<h4 style="margin:8px 0 4px">🛒 कल की खरीद की सलाह</h4>${body}<p class="note" style="margin:4px 0 0">पिछले 7 दिन की बिक्री और सब्ज़ी कितने दिन टिकती है, इसके हिसाब से।</p>`:'<p class="note">सलाह के लिए अभी बिक्री का पूरा आँकड़ा नहीं है।</p>';
 };
 /* 🌅 सुबह: कल रात कर्मचारी ने जो लिखा, वही आज की शुरुआत */
 SF.morningHTML=function(){
   if(S.billsDate!==today())return "";const ps=S.prevStock||{};
-  const L=Object.entries(ps).filter(([id,o])=>o&&o.close!=null&&o.close!==""&&num(o.close)>0).map(([id,o])=>{const it=item(id);return it?`${esc(it.name)} ${fq(num(o.close),it.unit)}`:""}).filter(Boolean);
+  const L=Object.entries(ps).filter(([id,o])=>o&&o.close!=null&&o.close!==""&&num(o.close)>0).map(([id,o])=>{const it=item(id);return it?`${esc(SE.capNm(it.name))} ${fq(num(o.close),it.unit)}`:""}).filter(Boolean);
   if(!L.length)return "";
   return `<div class="morning"><b>🌅 कल रात आपने लिखा था</b><span>${L.join(" · ")}</span><small>आज की खरीद इसमें जुड़ती जाएगी</small></div>`;
 };
@@ -616,7 +616,7 @@ SF.liveStockHTML=function(){
   const val=r2(rows.reduce((a,r)=>a+Math.max(0,r.expect)*num(r.it.sale),0));
   return `<div class="card2 livestk"><h3>📦 अभी दुकान में (लाइव) · ${ftime(Date.now())}</h3>
   <div class="kpis" style="margin:0 0 6px"><div class="kpi"><span>आज अब तक बिक्री</span><b>${rs(amt)}</b></div><div class="kpi"><span>बिल</span><b>${sale.length}</b></div><div class="kpi"><span>दुकान में माल (बिक्री भाव)</span><b>${rs(val)}</b></div></div>
-  ${rows.length?`<div class="lsgrid">${rows.map(r=>`<div><b>${esc(r.it.name)}</b><span>${fq(Math.max(0,r.expect),r.it.unit)}</span><small>बिका ${fq(r.saleQ,r.it.unit)}</small></div>`).join("")}</div>`:'<p class="note" style="margin:0">आज अभी कोई माल नहीं — खरीद डलते ही यहाँ दिखेगा</p>'}
+  ${rows.length?`<div class="lsgrid">${rows.map(r=>`<div><b>${esc(SE.capNm(r.it.name))}</b><span>${fq(Math.max(0,r.expect),r.it.unit)}</span><small>बिका ${fq(r.saleQ,r.it.unit)}</small></div>`).join("")}</div>`:'<p class="note" style="margin:0">आज अभी कोई माल नहीं — खरीद डलते ही यहाँ दिखेगा</p>'}
   <p class="note" style="margin:6px 0 0">= कल रात का + आज खरीदा − बिका − संस्था − खराबी। मौके पर जाकर कभी भी मिलान कर सकते हैं।</p></div>`;
 };
 /* मालिक: रात के स्टॉक में जो सामान नहीं डाला (पर होनी चाहिए थी) + कल की खरीद की सलाह आँकड़ों के साथ */
@@ -625,7 +625,7 @@ SF.nightExtraHTML=function(){
   const miss=dayRows().filter(r=>r.active&&r.avail>0&&r.close==null&&r.expect>(r.it.unit==="kg"?0.2:0.99));
   const V=SF._vel&&SF._vel.date===S.billsDate?SF._vel.m:null;
   if(!V&&!SF._velBusy){SF._velBusy=1;SF.velocity().then(()=>{SF._velBusy=0;if(S.tab==="day")renderDay()}).catch(()=>{SF._velBusy=0})}
-  return `${miss.length?`<div class="warn" style="margin:8px 0 0">📦 <b>रात के स्टॉक में नहीं डाली (${miss.length}):</b> ${miss.map(r=>`${esc(r.it.name)} — होनी चाहिए ${fq(Math.max(0,r.expect),r.it.unit)} (₹${r2(Math.max(0,r.expect)*num(r.rate))})`).join(" · ")}<br><span class="note">कल रात बचा + आज खरीदा − बिका − संस्था के हिसाब से ये बचनी चाहिए थीं। यह सिर्फ़ आपको दिखता है।</span></div>`:""}
+  return `${miss.length?`<div class="warn" style="margin:8px 0 0">📦 <b>रात के स्टॉक में नहीं डाली (${miss.length}):</b> ${miss.map(r=>`${esc(SE.capNm(r.it.name))} — होनी चाहिए ${fq(Math.max(0,r.expect),r.it.unit)} (₹${r2(Math.max(0,r.expect)*num(r.rate))})`).join(" · ")}<br><span class="note">कल रात बचा + आज खरीदा − बिका − संस्था के हिसाब से ये बचनी चाहिए थीं। यह सिर्फ़ आपको दिखता है।</span></div>`:""}
   <p class="note" style="margin:6px 0 0">भरने वाले: <b>${esc(S.stock.nightBy||"")}</b> · ${ftime(S.stock.nightTs)}${S.stock.nightVal!=null?` · बचा माल ₹${r2(S.stock.nightVal)} (खरीद भाव)`:""}</p>
   ${V?SF.adviceHTML(V,true):'<p class="note">⏳ कल की खरीद की सलाह बन रही है…</p>'}`;
 };
@@ -640,7 +640,7 @@ SF._nightReviewCore=function(){
   const msg=`${who}, आज के हिसाब में ${short.map(x=>`${x.r.it.name} लगभग ${fq(x.r.short,x.r.it.unit)}`).join(", ")} कम लग रहा है। कोई सामान खराब हुआ, किसी संस्था/ग्राहक को दिया, या तौल में फर्क रहा क्या? बता दीजिए तो हिसाब में लिख दूँ 🙏`;
   return `<div class="card2 nrev"><h3>🌙 रात का मिलान — आपका फैसला</h3>
   <p class="note" style="margin:0 0 6px">${esc(who)} ने ${ftime(S.stock.nightTs)} पर लिखा · ${D.length} ${D.length>1?"सामानों":"सामान"} में फर्क${tot>0?` · कमी लगभग <b style="color:var(--chili)">${rs(tot)}</b>`:""} · यह सिर्फ़ आपको दिखता है</p>
-  <div class="list" style="margin:0">${D.map(({r,val})=>`<div class="li"><div class="mid"><b>${esc(r.it.name)}</b><span>होना चाहिए ${fq(Math.max(0,r.expect),r.it.unit)} · लिखा ${fq(r.close,r.it.unit)}</span></div><div class="rt" style="color:${r.short>0?"var(--chili)":"var(--leaf)"}">${r.short>0?"कम "+fq(r.short,r.it.unit):"ज़्यादा "+fq(-r.short,r.it.unit)}<small>${rs(Math.abs(val))}</small></div></div>`).join("")}</div>
+  <div class="list" style="margin:0">${D.map(({r,val})=>`<div class="li"><div class="mid"><b>${esc(SE.capNm(r.it.name))}</b><span>होना चाहिए ${fq(Math.max(0,r.expect),r.it.unit)} · लिखा ${fq(r.close,r.it.unit)}</span></div><div class="rt" style="color:${r.short>0?"var(--chili)":"var(--leaf)"}">${r.short>0?"कम "+fq(r.short,r.it.unit):"ज़्यादा "+fq(-r.short,r.it.unit)}<small>${rs(Math.abs(val))}</small></div></div>`).join("")}</div>
   ${rev?`<p class="pill green" style="margin:8px 0 0;display:inline-block">✓ आपने देख लिया · ${ftime(rev.ts)}${rev.note?" · "+esc(rev.note):""}</p>`:""}
   <div class="sp-btns" style="margin-top:8px">${ph?`<a class="big ghost" style="text-align:center;text-decoration:none" href="tel:+91${ph}">📞 कॉल करें</a><a class="big ghost" style="text-align:center;text-decoration:none" target="_blank" rel="noopener" href="${waLink(msg,ph)}">🟢 प्यार से पूछें</a>`:`<span class="note">कर्मचारी का नंबर सेटिंग में नहीं मिला</span><span></span>`}
   <button class="big" data-nrevok>✓ ठीक है, समझ गया</button><button class="big ghost" data-nrevnote>📝 नोट लिखें</button></div></div>`;
@@ -909,7 +909,7 @@ async function printLabels(){
 }
 function pickList(type,qq){
   return S.items.filter(i=>i.active!==false&&(type==="kirana"?isKirana(i):!isKirana(i))&&(!qq||(i.name+" "+(i.alias||"")).toLowerCase().includes(qq))).slice(0,qq?24:60)
-    .map(i=>`<button data-lpick="${esc(i.id)}">${tileHTML(i)}<span>${esc(i.name)}</span></button>`).join("");
+    .map(i=>`<button data-lpick="${esc(i.id)}">${tileHTML(i)}<span>${esc(SE.capNm(i.name))}</span></button>`).join("");
 }
 SF.renderLabel=function(force){
   const el=$("#p-label");if(!el)return;
@@ -925,7 +925,7 @@ SF.renderLabel=function(force){
     ${L.type==="kirana"?SF.batchHTML():""}
     ${L.type==="kirana"&&S.isOwner?SF.kNewHTML():""}`;return}
   const kir=L.type==="kirana";
-  el.innerHTML=head+`<div class="card2"><div class="supsel">${tileHTML(it)}<b>${esc(it.name)}</b><span class="note">${it.code?"#"+esc(it.code)+" · ":""}${ownBar(it)?"अपना बारकोड":it.barcode?"कंपनी बारकोड":"कोड "+(it.plu||"—")} · ${rs(+it.sale||0)}${kir?"":"/"+(UNITS[it.unit]||it.unit)}</span><button class="lnk" data-lpick="">बदलें</button></div>
+  el.innerHTML=head+`<div class="card2"><div class="supsel">${tileHTML(it)}<b>${esc(SE.capNm(it.name))}</b><span class="note">${it.code?"#"+esc(it.code)+" · ":""}${ownBar(it)?"अपना बारकोड":it.barcode?"कंपनी बारकोड":"कोड "+(it.plu||"—")} · ${rs(+it.sale||0)}${kir?"":"/"+(UNITS[it.unit]||it.unit)}</span><button class="lnk" data-lpick="">बदलें</button></div>
     ${kir?`<div class="row2" style="margin:0"><label class="fld">पैकेट की मात्रा<input class="inp" id="lPack" value="${esc(L.pack||it.pack||"")}" placeholder="जैसे 500 ग्राम"></label><label class="fld">कीमत ₹<input class="inp" id="lPrice" inputmode="decimal" value="${esc(L.price||it.sale||"")}"></label></div>
     <div class="row2" style="margin:0"><label class="fld">पैक तारीख (ज़रूरी नहीं)<input class="inp" id="lMfg" type="date" value="${esc(L.mfg)}"></label><label class="fld">एक्सपायरी<input class="inp" id="lExp" type="date" value="${esc(L.exp)}"></label></div>`
     :`<p class="note" style="margin:0">भाव "रेट व सेटिंग" वाला ही छपेगा। भाव बदले तो नया लेबल छापकर पुराने के ऊपर चिपका दें — बारकोड वही रहेगा।</p>`}
@@ -934,7 +934,7 @@ SF.renderLabel=function(force){
     <div class="lprev"><canvas id="lPrev"></canvas></div>
     <div class="paym" style="margin:0"><button data-lout="label" aria-pressed="${(LS.get("se_lout")||"label")==="label"}">🏷️ लेबल प्रिंटर</button><button data-lout="a4" aria-pressed="${LS.get("se_lout")==="a4"}">📄 A4 स्टिकर शीट</button></div>
     <button class="big" data-lprint>🖨️ लेबल छापें</button>
-    <p class="note" style="margin:0">${kir?"बिलिंग में यह पैकेट स्कैन करते ही 1 पैकेट बिल में जुड़ जाएगा।":"बिलिंग में यह बारकोड स्कैन करते ही "+esc(it.name)+" का वज़न पूछेगा।"}</p></div>`;
+    <p class="note" style="margin:0">${kir?"बिलिंग में यह पैकेट स्कैन करते ही 1 पैकेट बिल में जुड़ जाएगा।":"बिलिंग में यह बारकोड स्कैन करते ही "+esc(SE.capNm(it.name))+" का वज़न पूछेगा।"}</p></div>`;
   SF.drawPreview();
 };
 SF.drawPreview=function(){const cv=$("#lPrev");if(!cv)return;const sp=labelSpec();if(!sp)return;const src=SF.labelCanvas(sp,L.size);cv.width=src.width;cv.height=src.height;cv.getContext("2d").drawImage(src,0,0);
