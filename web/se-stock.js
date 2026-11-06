@@ -81,14 +81,14 @@ function renderCount(el){
 }
 function drawCount(){
   const box=$("#cklist");if(!box)return;const q=Q.trim().toLowerCase();
-  box.innerHTML=tracked().filter(it=>hit(it,q)&&(q||!C.rack||it.rack===C.rack||(C.rk&&C.rk[it.id]===C.rack))).map(it=>{const v=C.n[it.id];const has=v!=null;
+  box.innerHTML=tracked().filter(it=>hit(it,q)&&(q||!C.rack||it.rack===C.rack||(/^\d{1,2}$/.test(C.rack)&&String(it.rack||"").startsWith(C.rack+"-"))||(C.rk&&C.rk[it.id]===C.rack))).map(it=>{const v=C.n[it.id];const has=v!=null;
     return `<div class="li cntrow ${has?"ok":""}" data-crow="${esc(it.id)}">${tileHTML(it)}<div class="mid"><b>${esc(SE.capNm(it.name))}</b><span>#${esc(it.code||"")}${it.size?" · "+esc(it.size):""}${it.rack?" · 🗄️ "+esc(it.rack):""}</span></div>
     <div class="cstep2"><button type="button" data-cdec="${esc(it.id)}" aria-label="एक कम">−</button><input class="inp" data-cn="${esc(it.id)}" inputmode="numeric" value="${has?v:""}" placeholder="—" aria-label="${esc(SE.capNm(it.name))} कितने गिने"><button type="button" data-cinc="${esc(it.id)}" aria-label="एक और">+</button></div></div>`}).join("")||'<p class="note">कुछ नहीं मिला</p>';
 }
 function setCnt(id,v){if(v==null||v==="")delete C.n[id];else{C.n[id]=Math.max(0,r2(num(v)));const it=S.items.find(i=>i.id===id);if(it)setRack(it)}saveC()}
 /* 🗄️ रैक-वार गिनती: रैक चुनकर जो सामान गिनो, वह उसी रैक का हो जाता है (मालिक के लिए अपने-आप सेव) */
-const racks=()=>[...new Set(S.items.map(i=>i.rack).filter(Boolean).concat(C&&C.rack?[C.rack]:[]))].sort();
-function setRack(it){if(!C.rack||it.rack===C.rack)return;C.rk=C.rk||{};C.rk[it.id]=C.rack;it.rack=C.rack;if(!S.demo&&S.db)S.db.doc("items/"+it.id).update({rack:C.rack}).catch(()=>{})}
+const racks=()=>[...new Set(S.items.map(i=>{const r=String(i.rack||""),m=/^(\d{1,2})-\d/.exec(r);return m?m[1]:r}).filter(Boolean).concat(C&&C.rack?[C.rack]:[]))].sort((a,b)=>(/^\d+$/.test(a)&&/^\d+$/.test(b))?a-b:String(a).localeCompare(b));/* 📍 11-23 जैसे खाने = रैक 11 की चिप */
+function setRack(it){if(!C.rack||it.rack===C.rack)return;if(/^\d{1,2}$/.test(C.rack)&&String(it.rack||"").startsWith(C.rack+"-"))return;/* 📍 "11" गिनते समय 11-23 वाला खाना नहीं बिगड़ता */C.rk=C.rk||{};C.rk[it.id]=C.rack;it.rack=C.rack;if(!S.demo&&S.db)S.db.doc("items/"+it.id).update({rack:C.rack}).catch(()=>{})}
 SK.scanCount=function(it){
   if(!it.track){toast(it.name+" की गिनती नहीं रखी जाती");return}
   C.n[it.id]=(+C.n[it.id]||0)+1;setRack(it);saveC();toast("✓ "+it.name+" · गिने: "+C.n[it.id]+(C.rack?" · 🗄️ "+C.rack:""));

@@ -1,34 +1,67 @@
-/* 177 MH — 📍 रैक व्यवस्था (window.SRK) — पक्का नियम: docs/रैक-व्यवस्था-प्रॉम्प्ट.txt · जाँच: tests/rack.py
-   हर खाने का नंबर "A3-2" (दीवार + रैक + खाना)। डेटा: items/<id>.rack (se-stock की रैक-वार गिनती वाला ही खाना)।
-   रैक लगाना (स्कैन/खोज), खाने की भाव-पट्टी A4, ऑनलाइन ऑर्डर रैक के क्रम में, बिल की खोज में रैक नंबर। */
+/* 177 MH — 📍 रैक-खाना व्यवस्था (window.SRK) — पक्का नियम: docs/रैक-व्यवस्था-प्रॉम्प्ट.txt · जाँच: tests/rack.py
+   विक्रम जी की फोटो पर लगे नंबर: "11-23" = रैक 11 का खाना 23 (ऊपर-बाएँ से, किताब जैसे)। रैक 1–21 दुकान, 31–35 गोदाम (पटरी ऊपर से), कुल 238।
+   डेटा: items/<id>.rack = दुकान की मुख्य जगह (se-stock की रैक-वार गिनती वाला ही खाना) · items/<id>.grack = गोदाम की जगह (31–35)।
+   रैक लगाना (खाने का स्टिकर/नंबर → सामान स्कैन), खाना खोज, आज की गिनती, खाने के स्टिकर (TSC/A4), भाव-पट्टी, ऑनलाइन ऑर्डर रैक-क्रम में। */
 (()=>{
 const SRK=window.SRK={};
 const LSr={get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const NM=it=>typeof shortNm==="function"?shortNm(it):SE.capNm(it.short||it.name||"");
-const ORDER="ABCDHKMST";
-SRK.norm=v=>String(v||"").toUpperCase().replace(/\s+/g,"").replace(/[–—_]/g,"-").slice(0,12);
-/* क्रम: A→D, H, K, M, S, T, फिर पुराने खुले नाम, बिना रैक सबसे आख़िर */
-SRK.key=r=>{r=SRK.norm(r);if(!r)return "~~";const m=/^([A-Z])(\d*)(?:-(\d+))?/.exec(r);
-  if(!m)return "y"+r;const w=ORDER.indexOf(m[1]);return (w<0?"x":String.fromCharCode(97+w))+String(+m[2]||0).padStart(3,"0")+String(+m[3]||0).padStart(3,"0")+r};
-SRK.wall=r=>{const m=/^([A-Z])\d/.exec(SRK.norm(r));return m?m[1]:""};
+/* [रैक, खाने/पटरी, नाम, क्या रखें] — दूसरी योजना ("हर खाने का एक नंबर", 20 फोटो) से, 238 खाने */
+const MAP=[[1,6,"दरवाज़े के ऊपर","हल्का, कम बिकने वाला"],[2,2,"गुलाबजल रैक","गुलाबजल, छोटी बोतलें"],[3,4,"टँगी लड़ियाँ","A-One कार्ड, शैम्पू-मसाले की लड़ियाँ"],[4,10,"खिड़की के ऊपर","ऊपर का स्टॉक"],
+ [5,7,"काउंटर पीछे (1)","साबूदाना, पोहा, सोया, सूखा सामान"],[6,13,"काउंटर पीछे (2)","सॉस-बोतलें, Everest मसाले, दाल"],[7,13,"काउंटर पीछे (3)","अचार, टमाटर प्यूरी, ड्राई फ्रूट"],[8,12,"काउंटर पीछे (4)","जैम-जार, मसाले, मूँगफली"],
+ [9,33,"कोने की अलमारी","रस्क, बूँदी, टॉफ़ी, गिफ़्ट (सफ़ाई केमिकल नहीं)"],[10,4,"चिप्स रैक","Lays, Kurkure"],[11,63,"बड़ा रैक","बाएँ नमकीन-बिस्किट · दाएँ साबुन-पेस्ट-स्टेशनरी · नीचे स्टॉक"],[12,4,"टँगी रॉड","Haldiram, Kurkure की लड़ियाँ"],
+ [13,12,"खिड़की बाएँ","आटा, बेसन, चना — भारी"],[14,2,"खिड़की ऊपर","हल्का, कप-गिलास"],[15,14,"खिड़की दाएँ","सोयाबीन, पापड़, नमकीन"],[16,1,"काँच का शोकेस","तराज़ू के पास"],[17,3,"चॉकलेट फ्रिज (नीला)","ऊपर से 1, 2, 3"],
+ [18,2,"सफ़ेद डबल फ्रीज़र","1 बायाँ, 2 दायाँ ढक्कन"],[19,2,"Amul आइसक्रीम फ्रीज़र","1 बायाँ, 2 दायाँ ढक्कन"],[20,5,"Coca-Cola फ्रिज","ऊपर से 1–5"],[21,2,"सब्ज़ी-ब्रेड बेंच","1 ब्रेड, 2 सब्ज़ी"],
+ [31,5,"गोदाम अलमारी","नमकीन-बिस्किट का अतिरिक्त स्टॉक"],[32,5,"गोदाम लोहे की रैक","बर्तन, डिब्बे"],[33,5,"गोदाम खंभे के पीछे","बिजली का सामान, कार्टन (फफूँद — खाना नहीं)"],[34,5,"गोदाम टिश्यू-कप","टिश्यू, पेपर कप, पैकिंग"],[35,4,"गोदाम मशीन वाली","मशीनें, मरम्मत"]];
+SRK.MAP=MAP;const RK={};MAP.forEach(([r,n,nm,keep])=>RK[r]={r,n,nm,keep,g:r>=31});SRK.RK=RK;
+SRK.total=()=>MAP.reduce((a,x)=>a+x[1],0);
+const DEV="०१२३४५६७८९";
+SRK.norm=v=>String(v||"").replace(/[०-९]/g,d=>DEV.indexOf(d)).toUpperCase().replace(/\s+/g,"").replace(/[–—_./]/g,"-").replace(/-+/g,"-").slice(0,12);
+SRK.parse=v=>{const r=SRK.norm(v),m=/^(\d{1,2})-(\d{1,2})$/.exec(r);if(!m)return null;const rk=+m[1],k=+m[2],d=RK[rk];return {code:r,rack:rk,k,info:d||null,known:!!(d&&k>=1&&k<=d.n),g:rk>=31}};
+SRK.info=v=>{const p=SRK.parse(v);if(p&&p.info)return p.info.nm+(p.g?" · पटरी "+p.k:" · खाना "+p.k);const m=/^(\d{1,2})$/.exec(SRK.norm(v));return m&&RK[+m[1]]?RK[+m[1]].nm:""};
+/* क्रम: दुकान 1→21, फिर गोदाम 31→35 (रैक, फिर खाना), फिर पुराने खुले नाम, बिना रैक सबसे आख़िर */
+SRK.key=r=>{r=SRK.norm(r);if(!r)return "~~";const m=/^(\d{1,2})(?:-(\d{1,3}))?$/.exec(r);if(m)return "a"+m[1].padStart(3,"0")+String(+m[2]||0).padStart(3,"0");return "y"+r};
 const act=()=>(S.items||[]).filter(i=>i.active!==false&&!i.virtual&&i.id!=="xyz");
-SRK.racks=()=>{const m={};act().forEach(i=>{const r=SRK.norm(i.rack);if(r)m[r]=(m[r]||0)+1});return Object.keys(m).sort((a,b)=>SRK.key(a)<SRK.key(b)?-1:1).map(r=>({r,n:m[r]}))};
-SRK.of=r=>{r=SRK.norm(r);return act().filter(i=>{const x=SRK.norm(i.rack);return x===r||(r.length<=3&&!r.includes("-")&&x.startsWith(r+"-"))})};
+const rk0=c=>{const m=/^(\d{1,2})-/.exec(SRK.norm(c));return m?+m[1]:null};
+SRK.racks=()=>{const m={};act().forEach(i=>[i.rack,i.grack].forEach(c=>{const r=SRK.norm(c);if(r)m[r]=(m[r]||0)+1}));return Object.keys(m).sort((a,b)=>SRK.key(a)<SRK.key(b)?-1:1).map(r=>({r,n:m[r]}))};
+SRK.of=r=>{r=SRK.norm(r);const pre=/^\d{1,2}$/.test(r)||(r.length<=3&&/^[A-Z]\d?$/.test(r));return act().filter(i=>[i.rack,i.grack].some(c=>{const x=SRK.norm(c);return x&&(x===r||(pre&&x.startsWith(r+"-")))}))};
 SRK.sortItems=L=>[...L].sort((a,b)=>{const A=SRK.key((item(a.id)||{}).rack),B=SRK.key((item(b.id)||{}).rack);return A<B?-1:A>B?1:0});
 const isOwn=()=>!!(S.isOwner||S.demo);
+/* 🔢 आज की गिनती: दुकान के जिन रैक में सामान है, उनमें रोज़ एक (क्रम से) — 21 रैक ≈ 3 हफ़्ते में पूरी दुकान */
+SRK.today=()=>{const used=[...new Set(act().map(i=>rk0(i.rack)).filter(r=>r&&r<31))].sort((a,b)=>a-b);const L=used.length?used:MAP.filter(x=>x[0]<31).map(x=>x[0]);
+  const d=Math.floor((Date.now()+5.5*3600e3)/864e5);return L[d%L.length]};
 
 /* ---------- रैक लगाना ---------- */
-async function setRack(id,r){const it=item(id);if(!it)return false;r=SRK.norm(r);
-  if(S.demo||!S.db){it.rack=r;return true}
+async function setLoc(id,r){const it=item(id);if(!it)return false;r=SRK.norm(r);const p=SRK.parse(r),f=p&&p.g?"grack":"rack";
+  if(S.demo||!S.db){it[f]=r;return f}
   if(!S.isOwner){toast("रैक सिर्फ़ विक्रम जी लगा सकते हैं — गिनती में रैक चुनकर गिनें");return false}
-  try{await S.db.doc("items/"+id).update({rack:r});it.rack=r;return true}catch(e){toast("सेव नहीं हुआ");return false}}
-SRK.set=setRack;
+  try{await S.db.doc("items/"+id).update({[f]:r});it[f]=r;return f}catch(e){toast("सेव नहीं हुआ");return false}}
+SRK.set=setLoc;
+async function clearLoc(id,f){const it=item(id);if(!it)return false;if(S.demo||!S.db){it[f]="";return true}if(!S.isOwner)return false;try{await S.db.doc("items/"+id).update({[f]:""});it[f]="";return true}catch(e){return false}}
 const V={rack:LSr.get("srk_cur",""),q:"",sel:"",open:false};
-SRK.scan=function(code){if(!V.open||!$("#srkSheet"))return false;const it=findByCode(code);beep(!!it);
-  if(!it){toast("यह बारकोड किसी सामान में नहीं: "+code);return true}assign(it.id);return true};
-async function assign(id){const it=item(id);if(!it)return;if(!V.rack){toast("पहले ऊपर रैक नंबर लिखें (जैसे A3-2)");const i=$("#srkR");if(i)i.focus();return}
-  const old=SRK.norm(it.rack);if(old===V.rack){toast(NM(it)+" पहले से "+V.rack+" में");return}
-  if(await setRack(id,V.rack)){toast("📍 "+NM(it)+" → "+V.rack+(old?" (पहले "+old+")":""));V.q="";draw()}}
+/* खाने का स्टिकर (R11-23) स्कैन = वही खाना चुनो; सामान स्कैन = उस खाने का */
+SRK.scan=function(code){if(!V.open||!$("#srkSheet"))return false;const c=String(code||"").trim().toUpperCase(),m=/^R(\d{1,2}-\d{1,2})$/.exec(c);
+  if(m){beep(true);V.rack=SRK.norm(m[1]);LSr.set("srk_cur",V.rack);toast("📍 खाना "+V.rack+" — "+SRK.info(V.rack)+" · अब सामान स्कैन करें");draw();return true}
+  const it=findByCode(code);beep(!!it);if(!it){toast("यह बारकोड किसी सामान में नहीं: "+code);return true}assign(it.id);return true};
+async function assign(id){const it=item(id);if(!it)return;if(!V.rack){toast("पहले ऊपर खाने का नंबर लिखें (जैसे 11-23) या खाने का स्टिकर स्कैन करें");const i=$("#srkR");if(i)i.focus();return}
+  const p=SRK.parse(V.rack),f=p&&p.g?"grack":"rack",old=SRK.norm(it[f]);if(old===V.rack){toast(NM(it)+" पहले से "+V.rack+" में");return}
+  if(await setLoc(id,V.rack)){toast("📍 "+NM(it)+" → "+V.rack+(f==="grack"?" (गोदाम)":"")+(old?" · पहले "+old:""));V.q="";draw()}}
+
+/* ---------- खाने के स्टिकर (TSC लेबल प्रिंटर / A4) ---------- */
+SRK.stickerCanvas=function(code){const p=SRK.parse(code)||{code:SRK.norm(code)},W=400,H=200,cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");
+  x.fillStyle="#fff";x.fillRect(0,0,W,H);x.fillStyle="#000";x.textBaseline="alphabetic";x.textAlign="center";
+  let fs=96;x.font=`900 ${fs}px sans-serif`;while(x.measureText(p.code).width>W-40&&fs>40){fs-=6;x.font=`900 ${fs}px sans-serif`}x.fillText(p.code,W/2,24+fs*0.8);
+  const nm=p.info?p.info.nm+(p.g?" · पटरी "+p.k:""):"";x.font="700 24px sans-serif";if(nm)x.fillText(nm.slice(0,28),W/2,24+fs*0.8+40);
+  try{if(window.SL&&SL.barCanvas){const b=SL.barCanvas("R"+p.code,W-60,34,false,0,2);if(b&&b.c){x.imageSmoothingEnabled=false;x.drawImage(b.c,Math.round((W-b.c.width)/2),H-b.c.height-10)}}}catch(e){}
+  return cv};
+SRK.codesOf=r=>{const d=RK[+r];if(!d)return [];return Array.from({length:d.n},(_,i)=>r+"-"+(i+1))};
+SRK.stickers=async function(codes){codes=(codes||[]).map(SRK.norm).filter(Boolean);if(!codes.length)return 0;if(codes.length>300){toast("एक बार में 300 तक");return 0}
+  const pr=window.SF&&SF.labelPrinter||{},nat=SE.isNative&&pr.addr&&typeof SENative!=="undefined";
+  try{if(nat){let all="";for(const c of codes){const cv=SRK.stickerCanvas(c);all+=pr.type==="escpos"?atob(SE.escpos(cv)):atob(SE.tspl(cv,{wmm:50,hmm:25,copies:1}))}
+      await SENative.BtPrinter.print({address:pr.addr,data:btoa(all)})}
+    else await SE.printA4("खानों के स्टिकर · "+codes.length,`<style>.kg{display:flex;flex-wrap:wrap;gap:2mm}.kg img{width:50mm;height:25mm;border:0.2mm dashed #bbb}</style><div class="kg">${codes.map(c=>`<img src="${SRK.stickerCanvas(c).toDataURL("image/png")}">`).join("")}</div>`)}
+  catch(e){toast(e.msg||"प्रिंट नहीं हुआ");return 0}
+  toast("🏷️ "+codes.length+" खानों के स्टिकर छप रहे हैं");return codes.length};
 
 /* ---------- खाने की भाव-पट्टी (A4) ---------- */
 const PR=LSr.get("srk_pr",{});
@@ -48,40 +81,65 @@ SRK.print=async function(L,title){L=(L||[]).filter(Boolean);if(!L.length){toast(
 function hits(q){q=String(q||"").trim().toLowerCase();if(!q)return [];const byC=findByCode(q);
   const L=act().filter(i=>((i.name||"")+" "+(i.hi||"")+" "+(i.short||"")+" "+(i.alias||"")).toLowerCase().includes(q)||String(i.code||"")===q);
   if(byC&&!L.includes(byC))L.unshift(byC);return L.slice(0,10)}
-const row=(it,btn)=>`<div class="srk-r">${tileHTML(it)}<div><b>${esc(NM(it))}</b><span>${SRK.norm(it.rack)?"📍 "+esc(SRK.norm(it.rack)):"<em>रैक नहीं</em>"}${+it.sale>0?" · "+rs(+it.sale):""}${it.code?" · #"+esc(it.code):""}</span></div>${btn||""}</div>`;
-function body(){const R=SRK.racks(),none=act().filter(i=>!SRK.norm(i.rack)).length,ch=SRK.changed();
-  const list=V.sel?SRK.of(V.sel).sort((a,b)=>SRK.key(a.rack)<SRK.key(b.rack)?-1:1):[];
-  return `<div class="srk-k"><div><b>${act().length-none}</b><span>रैक लगा</span></div><div class="${none?"w":""}"><b>${none}</b><span>बाकी</span></div><div><b>${R.length}</b><span>खाने</span></div></div>
-  <div class="srk-as"><label>📍 रैक नंबर<input id="srkR" class="inp code" value="${esc(V.rack)}" placeholder="A3-2" autocomplete="off" aria-label="रैक नंबर"></label>
+const locTxt=it=>{const a=SRK.norm(it.rack),g=SRK.norm(it.grack);return (a?"📍 "+esc(a):"<em>जगह नहीं</em>")+(g?" · 🏬 "+esc(g):"")};
+const row=(it,btn)=>`<div class="srk-r">${tileHTML(it)}<div><b>${esc(NM(it))}</b><span>${locTxt(it)}${+it.sale>0?" · "+rs(+it.sale):""}${it.code?" · #"+esc(it.code):""}</span></div>${btn||""}</div>`;
+const setBtn=i=>`<button type="button" class="srk-b" data-srkset="${esc(i.id)}">→ ${esc(V.rack||"?")}</button>`;
+function codeInfo(){const p=SRK.parse(V.rack);if(!V.rack)return `<span class="note">खाने का नंबर लिखें (11-23) या खाने का स्टिकर स्कैन करें</span>`;
+  if(!p)return `<span class="srk-wn">⚠ नंबर ऐसे लिखें: रैक-खाना, जैसे 11-23</span>`;
+  if(!p.known)return `<span class="srk-wn">⚠ ${esc(p.code)} नक्शे में नहीं${p.info?` — रैक ${p.rack} में ${p.info.n} ${p.g?"पटरी":"खाने"} हैं`:""}</span>`;
+  const L=SRK.of(p.code);return `<span class="srk-ok">✓ ${esc(SRK.info(p.code))}${p.g?" · गोदाम (दूसरी जगह में लगेगा)":""}</span>${L.length?`<div class="srk-in"><b>इस खाने में:</b> ${L.map(i=>esc(NM(i))).join(" · ")}</div>`:`<div class="srk-in">यह खाना अभी खाली है</div>`}`}
+const fill=r=>{const d=RK[r];if(!d)return 0;const f=d.g?"grack":"rack",S2=new Set();act().forEach(i=>{const p=SRK.parse(i[f]);if(p&&p.rack===r&&p.known)S2.add(p.k)});return S2.size};
+function rackChip(d){const n=fill(d.r);return `<button type="button" class="srk-rk${V.sel===String(d.r)?" on":""}${SRK.today()===d.r?" td":""}" data-srksel="${d.r}"><b>${d.r}</b><span>${esc(d.nm)}</span><i>${n}/${d.n}</i></button>`}
+function rackDetail(){const d=RK[+V.sel];if(!d){const L=SRK.of(V.sel);return L.length?`<div class="srk-sel"><b>📍 ${esc(V.sel)} · ${L.length} सामान</b>${L.map(i=>row(i)).join("")}</div>`:""}
+  const f=d.g?"grack":"rack",by={};act().forEach(i=>{const p=SRK.parse(i[f]);if(p&&p.rack===d.r)(by[p.k]=by[p.k]||[]).push(i)});
+  const lines=Array.from({length:d.n},(_,k)=>{const L=by[k+1]||[];return `<div class="srk-kh${L.length?"":" e"}"><code>${d.r}-${k+1}</code><div>${L.length?L.map(i=>`<span>${esc(NM(i))}${isOwn()?`<button type="button" data-srkrm="${esc(i.id)}" data-f="${f}" aria-label="${esc(NM(i))} हटाएँ">✕</button>`:""}</span>`).join(""):"<em>खाली</em>"}</div></div>`}).join("");
+  const extra=act().filter(i=>{const p=SRK.parse(i[f]);return p&&p.rack===d.r&&!p.known});
+  return `<div class="srk-sel"><div class="srk-st"><div><b>${d.g?"🏬":"🗄️"} रैक ${d.r} · ${esc(d.nm)}</b><span class="note" style="display:block">${esc(d.keep)}</span></div></div>
+    ${isOwn()?`<div class="srk-pb2"><button type="button" class="srk-b" data-srkstk="${d.r}">🏷️ ${d.n} खानों के स्टिकर</button>${d.g?"":`<button type="button" class="srk-b pri" data-srkpr="${d.r}">🏷️ भाव-पट्टी</button>`}</div>`:""}
+    ${lines}${extra.length?`<p class="srk-wn">⚠ गलत खाना नंबर: ${extra.map(i=>esc(NM(i))+" ("+esc(i[f])+")").join(", ")}</p>`:""}</div>`}
+function body(){const R=SRK.racks(),none=act().filter(i=>!SRK.norm(i.rack)).length,ch=SRK.changed(),T=SRK.today(),td=RK[T];
+  const filled=MAP.reduce((a,x)=>a+fill(x[0]),0),gd=act().filter(i=>SRK.norm(i.grack)).length;
+  return `<div class="srk-k"><div><b>${act().length-none}</b><span>जगह लगी</span></div><div class="${none?"w":""}"><b>${none}</b><span>बाकी</span></div><div><b>${filled}/${SRK.total()}</b><span>खाने भरे</span></div><div><b>${gd}</b><span>गोदाम</span></div></div>
+  ${td?`<div class="srk-td">🔢 <b>आज गिनें: रैक ${T}</b> — ${esc(td.nm)}<button type="button" class="srk-b pri" data-srkcount="${T}">गिनती खोलें</button></div>`:""}
+  <div class="srk-as"><label>📍 खाना<input id="srkR" class="inp code" value="${esc(V.rack)}" placeholder="11-23" inputmode="text" autocomplete="off" aria-label="खाने का नंबर"></label>
+    <div id="srkInfo">${codeInfo()}</div>
     <div class="srk-q"><input id="srkQ" class="inp" type="search" value="${esc(V.q)}" placeholder="🔍 सामान का नाम / कोड — या बारकोड स्कैन करें" autocomplete="off" aria-label="सामान खोजें"><button type="button" class="scanbtn" data-srkcam aria-label="कैमरे से स्कैन">📷</button></div>
-    <div id="srkHits">${hits(V.q).map(i=>row(i,`<button type="button" class="srk-b" data-srkset="${esc(i.id)}">→ ${esc(V.rack||"?")}</button>`)).join("")}</div>
-    <p class="note" style="margin:4px 0 0">नंबर लिखें, फिर उस खाने का हर सामान स्कैन करें — अपने-आप उसी रैक का हो जाएगा।</p></div>
-  <h4 class="srk-h">🗄️ खाने (${R.length})</h4>
-  <div class="srk-c">${R.map(x=>`<button type="button" class="chip" data-srksel="${esc(x.r)}" aria-pressed="${V.sel===x.r}">${esc(x.r)} <b>${x.n}</b></button>`).join("")||'<span class="note">अभी कोई रैक नहीं लगा</span>'}</div>
-  ${V.sel?`<div class="srk-sel"><div class="srk-st"><b>📍 ${esc(V.sel)} · ${list.length} सामान</b>${isOwn()?`<button type="button" class="srk-b pri" data-srkpr="${esc(V.sel)}">🏷️ इस रैक की पट्टी</button>`:""}</div>${list.map(i=>row(i,isOwn()?`<button type="button" class="srk-b" data-srkrm="${esc(i.id)}" aria-label="${esc(NM(i))} को इस रैक से हटाएँ">✕</button>`:"")).join("")}</div>`:""}
-  ${isOwn()?`<div class="srk-pb"><button type="button" class="big" data-srkall ${R.length?"":"disabled"}>🏷️ सारे खानों की भाव-पट्टी (${act().filter(i=>SRK.norm(i.rack)).length})</button>
-    ${ch.length?`<button type="button" class="big ghost" data-srkch>🔁 भाव बदले — ${ch.length} पट्टी दोबारा छापें</button>`:""}</div>`:""}
-  <details class="srk-lg"><summary>नंबर का तरीका (A, B, C, D, K…)</summary><p class="note">A मुख्य दीवार · B खिड़की वाली दीवार · C दायाँ कोना (C1 सफ़ाई) · D नमकीन-चिप्स · H पाइप की लड़ियाँ · K ठंडा (K1 ड्रिंक, K2 पानी-जूस, K3 डेयरी, K4 आइसक्रीम, K5 फ्रोज़न, K6 कैडबरी) · M मिठाई ट्रे · S स्टोर-रूम · T तम्बाकू दराज़। खाना = ऊपर से गिनती: A3-2।</p></details>`}
+    <div id="srkHits">${hits(V.q).map(i=>row(i,setBtn(i))).join("")}</div>
+    <p class="note" style="margin:4px 0 0">खाने का स्टिकर स्कैन करें (या नंबर लिखें), फिर उस खाने का हर सामान स्कैन करें — अपने-आप उसी खाने का। 31–35 गोदाम = सामान की "गोदाम वाली जगह"।</p></div>
+  <h4 class="srk-h">🗄️ दुकान (रैक 1–21)</h4><div class="srk-g">${MAP.filter(x=>x[0]<31).map(x=>rackChip(RK[x[0]])).join("")}</div>
+  <h4 class="srk-h">🏬 गोदाम (31–35, पटरी ऊपर से)</h4><div class="srk-g">${MAP.filter(x=>x[0]>=31).map(x=>rackChip(RK[x[0]])).join("")}</div>
+  ${R.some(x=>!SRK.parse(x.r))?`<p class="note">पुराने नाम: ${R.filter(x=>!SRK.parse(x.r)).map(x=>`<button type="button" class="chip" data-srksel="${esc(x.r)}">${esc(x.r)} ${x.n}</button>`).join(" ")}</p>`:""}
+  ${V.sel?rackDetail():""}
+  ${isOwn()?`<div class="srk-pb"><button type="button" class="big" data-srkall ${act().some(i=>SRK.norm(i.rack))?"":"disabled"}>🏷️ सारी भाव-पट्टी (${act().filter(i=>SRK.norm(i.rack)).length} सामान)</button>
+    ${ch.length?`<button type="button" class="big ghost" data-srkch>🔁 भाव बदले — ${ch.length} पट्टी दोबारा छापें</button>`:""}
+    <button type="button" class="big ghost" data-srkstkall>🏷️ सारे ${SRK.total()} खानों के स्टिकर (TSC / A4)</button></div>`:""}
+  <details class="srk-lg"><summary>नंबर का तरीका</summary><p class="note">11-23 = रैक 11 का खाना 23। हर रैक में गिनती ऊपर-बाएँ से, किताब पढ़ने जैसे — बाएँ से दाएँ, फिर नीचे की लाइन। 1–21 दुकान, 31–35 गोदाम (वहाँ पटरी गिनें, सबसे ऊपर = 1)। फ्रिज-फ्रीज़र: 16 शोकेस, 17 चॉकलेट फ्रिज, 18 डबल फ्रीज़र, 19 आइसक्रीम, 20 Coca-Cola, 21 सब्ज़ी-ब्रेड बेंच। गोदाम का फ़र्श खाली रहे।</p></details>`}
 function draw(){const b=$("#srkBody");if(!b)return;const a=document.activeElement,id=a&&a.id,pos=a&&a.selectionStart;b.innerHTML=body();if(id){const n=document.getElementById(id);if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}}
+function openCount(r){V.open=false;closeSheet();S.tab="stock";showTab();setTimeout(()=>{let b=document.querySelector("[data-skstart]");if(b)b.click();
+  setTimeout(()=>{const i=document.querySelector("#ckrack");if(i){i.value=String(r);i.dispatchEvent(new Event("input",{bubbles:true}));i.dispatchEvent(new Event("change",{bubbles:true}))}toast("🔢 रैक "+r+" की गिनती — "+(RK[r]?RK[r].nm:""))},120)},120)}
+SRK.openCount=openCount;
 SRK.open=function(sel){V.open=true;if(sel)V.sel=SRK.norm(sel);
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px srk" id="srkSheet" role="dialog" aria-label="रैक व्यवस्था"><div class="grab"></div>
-  <div class="sh-head"><h3 style="font-size:17px">📍 रैक व्यवस्था</h3><button class="x" data-close aria-label="बंद करें">✕</button></div><div id="srkBody"></div></div></div>`;
+  <div class="sh-head"><h3 style="font-size:17px">📍 रैक-खाना व्यवस्था</h3><button class="x" data-close aria-label="बंद करें">✕</button></div><div id="srkBody"></div></div></div>`;
   const sh=$("#sheet");draw();
   sh.onclick=async e=>{const t=e.target;if(t.matches("[data-close]")){V.open=false;closeSheet();refreshCard();return}const g=s=>t.closest(s);let b;
     if((b=g("[data-srkset]"))){await assign(b.dataset.srkset);return}
-    if((b=g("[data-srksel]"))){V.sel=V.sel===b.dataset.srksel?"":b.dataset.srksel;draw();return}
-    if((b=g("[data-srkrm]"))){if(await setRack(b.dataset.srkrm,""))draw();return}
-    if((b=g("[data-srkpr]"))){SRK.print(SRK.of(b.dataset.srkpr),"खाने की भाव-पट्टी · "+b.dataset.srkpr);return}
+    if((b=g("[data-srksel]"))){V.sel=V.sel===b.dataset.srksel?"":b.dataset.srksel;draw();const d=$(".srk-sel");if(d&&V.sel)d.scrollIntoView({block:"nearest"});return}
+    if((b=g("[data-srkrm]"))){if(await clearLoc(b.dataset.srkrm,b.dataset.f||"rack"))draw();return}
+    if((b=g("[data-srkpr]"))){const L=SRK.of(b.dataset.srkpr).filter(i=>SRK.norm(i.rack));SRK.print(L,"खाने की भाव-पट्टी · रैक "+b.dataset.srkpr);return}
+    if((b=g("[data-srkstk]"))){SRK.stickers(SRK.codesOf(+b.dataset.srkstk));return}
+    if(g("[data-srkstkall]")){SRK.stickers(MAP.flatMap(x=>SRK.codesOf(x[0])));return}
+    if((b=g("[data-srkcount]"))){openCount(+b.dataset.srkcount);return}
     if(g("[data-srkall]")){SRK.print(act().filter(i=>SRK.norm(i.rack)),"खाने की भाव-पट्टी · सब");return}
     if(g("[data-srkch]")){SRK.print(SRK.changed(),"भाव बदले — नई पट्टी");return}
     if(g("[data-srkcam]")){if(typeof camOn==="function")camOn();return}};
-  sh.oninput=e=>{const t=e.target;if(t.id==="srkR"){const v=SRK.norm(t.value);if(v!==t.value)t.value=v;V.rack=v;LSr.set("srk_cur",v);const h=$("#srkHits");if(h)h.innerHTML=hits(V.q).map(i=>row(i,`<button type="button" class="srk-b" data-srkset="${esc(i.id)}">→ ${esc(V.rack||"?")}</button>`)).join("");return}
-    if(t.id==="srkQ"){V.q=t.value;const h=$("#srkHits");if(h)h.innerHTML=hits(V.q).map(i=>row(i,`<button type="button" class="srk-b" data-srkset="${esc(i.id)}">→ ${esc(V.rack||"?")}</button>`)).join("")}};
+  sh.oninput=e=>{const t=e.target;if(t.id==="srkR"){const v=SRK.norm(t.value);if(v!==t.value)t.value=v;V.rack=v;LSr.set("srk_cur",v);const n=$("#srkInfo");if(n)n.innerHTML=codeInfo();const h=$("#srkHits");if(h)h.innerHTML=hits(V.q).map(i=>row(i,setBtn(i))).join("");return}
+    if(t.id==="srkQ"){V.q=t.value;const h=$("#srkHits");if(h)h.innerHTML=hits(V.q).map(i=>row(i,setBtn(i))).join("")}};
   sh.onkeydown=e=>{if(e.key==="Enter"&&e.target.id==="srkQ"){const v=e.target.value.trim(),it=findByCode(v)||hits(v)[0];if(it){e.preventDefault();assign(it.id)}}}};
-SRK.settingsHTML=function(){if(!isOwn())return "";const R=SRK.racks(),none=act().filter(i=>!SRK.norm(i.rack)).length,ch=SRK.changed().length;
-  return `<div class="card2" id="srkCard"><h3 style="margin:0 0 4px">📍 रैक व्यवस्था</h3>
-  <p class="note" style="margin:0 0 8px">रैक लगे: <b>${act().length-none}</b> · बाकी: <b>${none}</b> · खाने: <b>${R.length}</b>${ch?` · 🔁 भाव बदले: <b>${ch}</b>`:""}</p>
-  <div class="srk-pb"><button type="button" class="pri" data-srkopen>📍 रैक लगाएँ / पट्टी छापें</button></div></div>`};
+SRK.settingsHTML=function(){if(!isOwn())return "";const none=act().filter(i=>!SRK.norm(i.rack)).length,ch=SRK.changed().length,T=SRK.today(),filled=MAP.reduce((a,x)=>a+fill(x[0]),0);
+  return `<div class="card2" id="srkCard"><h3 style="margin:0 0 4px">📍 रैक-खाना व्यवस्था</h3>
+  <p class="note" style="margin:0 0 8px">जगह लगी: <b>${act().length-none}</b> · बाकी: <b>${none}</b> · खाने भरे: <b>${filled}/${SRK.total()}</b>${ch?` · 🔁 भाव बदले: <b>${ch}</b>`:""}${RK[T]?` · 🔢 आज गिनें: <b>रैक ${T}</b>`:""}</p>
+  <div class="srk-pb"><button type="button" class="pri" data-srkopen>📍 जगह लगाएँ · खाना खोजें · स्टिकर</button></div></div>`};
 function refreshCard(){const c=$("#srkCard");if(c)c.outerHTML=SRK.settingsHTML()}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-srkopen]");if(!b||b.closest("#srkSheet"))return;SRK.open(b.dataset.srkopen||"")});
 
@@ -93,6 +151,11 @@ const css=document.createElement("style");css.textContent=`
 .srk-b{padding:6px 9px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13px;white-space:nowrap}.srk .pri,#srkCard .pri{background:#0f766e;color:#fff;border-color:#0f766e;padding:8px 12px;border-radius:12px;font:inherit}
 .srk-h{margin:10px 0 6px;font-size:14px}.srk-c{display:flex;flex-wrap:wrap;gap:6px}.srk-c b{font-size:11px;opacity:.75;margin-left:2px}
 .srk-sel{margin-top:8px;border:1.5px solid #0f766e55;border-radius:14px;padding:8px}.srk-st{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px}
-.srk-pb{display:flex;flex-direction:column;gap:6px;margin-top:10px}.srk-lg{margin-top:8px}`;
+.srk-pb{display:flex;flex-direction:column;gap:6px;margin-top:10px}.srk-lg{margin-top:8px}.srk-k{grid-template-columns:repeat(4,1fr)!important}
+.srk-td{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:8px 10px;border-radius:12px;background:#0f766e14;border:1.5px solid #0f766e55;font-size:13.5px}.srk-td button{margin-left:auto}
+.srk-wn{color:#b45309;font-size:12.5px;font-weight:700}.srk-ok{color:#0f766e;font-size:12.5px;font-weight:700}.srk-in{font-size:12.5px;margin-top:2px}
+.srk-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}.srk-rk{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 8px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:left;min-width:0}
+.srk-rk b{font:900 18px/1 monospace}.srk-rk span{font-size:11px;line-height:1.2;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}.srk-rk i{font-style:normal;font-size:11px;font-weight:700;color:#0f766e}.srk-rk.on{border-color:#0f766e;box-shadow:0 0 0 2px #0f766e44}.srk-rk.td{border-style:dashed;border-color:#0f766e}
+.srk-kh{display:grid;grid-template-columns:52px 1fr;gap:6px;padding:3px 0;border-bottom:1px solid var(--line);font-size:12.5px;align-items:start}.srk-kh code{font:800 13px monospace}.srk-kh.e{opacity:.55}.srk-kh span{display:inline-flex;align-items:center;gap:2px;margin:0 6px 2px 0}.srk-kh span button{border:0;background:none;color:var(--muted);font-size:11px;padding:0 2px}.srk-pb2{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}`;
 document.head.appendChild(css);
 })();
