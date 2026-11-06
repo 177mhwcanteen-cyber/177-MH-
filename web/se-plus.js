@@ -169,7 +169,7 @@ SX.orderPill=function(){let el=document.getElementById("sxOrd");const n=SX.order
     toast("📥 नया ऑर्डर: "+fresh.map(o=>(o.name||"ग्राहक")+" ("+(o.items||[]).length+" सामान)").join(", ")+" — ऊपर 📥 दबाएँ")}
   else if(n&&!SX._oInit){try{beep(true)}catch(e){}}SX._oInit=1};
 SX.ordersSheet=function(){const L=SX.orders;$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="ऑर्डर"><div class="grab"></div>
-  <div class="sh-head"><div><h3>📥 ग्राहकों के ऑर्डर (${L.length})</h3><span class="note">ऑर्डर-लिंक: ${esc(pubBase()+"o.html")}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  <div class="sh-head"><div><h3>📥 ग्राहकों के ऑर्डर (${L.length})</h3><span class="note">ऑर्डर-लिंक: ${esc(pubBase()+"order/")}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
   ${L.length?L.map(o=>`<div class="card2 sx-o"><div class="rr-h"><b>${esc(o.name||"ग्राहक")} · ${esc(o.phone||"")}</b><small class="note">${ftime(o.ts)}${o.status==="billing"?" · 🧾 बिल बन रहा":""}</small></div>
     ${o.addr?`<p class="note" style="margin:2px 0">📍 ${esc(o.addr)}</p>`:""}<p style="margin:4px 0">${(o.items||[]).map(x=>esc(x.n)+" "+fq(num(x.q),x.u||"kg")).join(", ")}</p>${o.note?`<p class="note" style="margin:0">📝 ${esc(o.note)}</p>`:""}
     <div class="row2" style="margin-top:6px"><button class="big" data-sxobill="${esc(o.id)}">🧾 बिल बनाएँ</button><a class="big ghost" target="_blank" rel="noopener" href="${waLink(`🙏 नमस्ते ${o.name||""} जी, आपका ऑर्डर मिल गया — 177 MH कैंटीन से आपका सामान जल्द पहुँचेगी 🚐🥬`,o.phone||"")}">✓ WhatsApp पुष्टि</a></div>
@@ -208,7 +208,7 @@ SX.poster=async function(){toast("🖼️ भाव-पोस्टर बन �
     x.fillStyle="#e04a00";x.font=`800 ${Math.round(ch*.27)}px "Baloo 2",sans-serif`;const pr="₹"+num(it.sale);x.fillText(pr,tx,cy+pad+ch*.72);const pw=x.measureText(pr).width;
     x.fillStyle="#6e6e73";x.font=`600 ${Math.round(ch*.15)}px "Mukta",sans-serif`;x.fillText("/"+(UNITS[it.unit]||it.unit),tx+pw+4,cy+pad+ch*.72)});
   /* नीचे: ऑर्डर QR */
-  const url=pubBase()+"o.html";let qr=null;try{if(window.QRCode){const d=document.createElement("div");new QRCode(d,{text:url,width:180,height:180,correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,60));qr=d.querySelector("canvas")||await loadImg((d.querySelector("img")||{}).src)}}catch(e){}
+  const url=pubBase()+"order/";let qr=null;try{if(window.QRCode){const d=document.createElement("div");new QRCode(d,{text:url,width:180,height:180,correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,60));qr=d.querySelector("canvas")||await loadImg((d.querySelector("img")||{}).src)}}catch(e){}
   x.fillStyle="#fff";x.fillRect(40,1175,200,200-30);if(qr)x.drawImage(qr,50,1180,160,160);
   x.textAlign="left";x.fillStyle="#fff";x.font='800 40px "Baloo 2",sans-serif';x.fillText("📱 घर बैठे ऑर्डर करें — QR स्कैन करें",270,1235);
   x.font='600 28px "Mukta",sans-serif';x.fillStyle="#cfe0ff";x.fillText("UPI / नकद · आकाशवाणी रोड, बाड़मेर · सामान आपकी गली में 🚐",270,1285);
@@ -300,7 +300,7 @@ document.addEventListener("click",async e=>{const t=e.target;
   const ob=t.closest("[data-sxobill]");if(ob){SX.orderBill(ob.dataset.sxobill);return}
   const od=t.closest("[data-sxodone]");if(od){SX.orderSet(od.dataset.sxodone,"done");closeSheet();return}
   const on=t.closest("[data-sxono]");if(on){if(!on.dataset.sure){on.dataset.sure="1";on.textContent="पक्का रद्द?";return}SX.orderSet(on.dataset.sxono,"cancel");closeSheet();return}
-  if(t.closest("[data-sxolink]")){window.open(waLink("🛒 177 MH कैंटीन — अब घर बैठे ऑर्डर करें! सामान चुनें, भेजें, सामान तैयार मिलेगा 🛒\n"+pubBase()+"o.html",""),"_blank");return}
+  if(t.closest("[data-sxolink]")){window.open(waLink("🛒 177 MH कैंटीन — अब घर बैठे ऑर्डर करें! सामान चुनें, भेजें, सामान तैयार मिलेगा 🛒\n"+pubBase()+"order/",""),"_blank");return}
   if(t.closest("[data-sxposter]")){SX.poster();return}
   if(t.closest("[data-sxbk]")){SX.backupFile();return}
   const mo=t.closest("[data-sxmonth]");if(mo){SX.monthA4(mo.dataset.sxmonth);return}

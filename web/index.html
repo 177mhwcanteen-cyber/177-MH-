@@ -2228,6 +2228,7 @@ function renderSettings(){
   <div class="card2"><h3>🖨️ ब्लूटूथ प्रिंटर</h3>
     <p class="note" style="margin:0">${SE.isNative?(SE.printer.addr?"चुना हुआ: <b>"+esc(SE.printer.name)+"</b> · "+(SE.printer.mm==="100"?"4 इंच · लेबल-भाषा (TSPL)":SE.printer.mm+"mm"):"पहले फोन की Bluetooth सेटिंग में प्रिंटर को pair करें, फिर यहाँ चुनें।"):"प्रिंटर Android ऐप में चुना जाता है। वेब में बिल फोन के प्रिंट से छपेगा।"}</p>
     ${SE.isNative?'<div class="row2" style="margin:0"><button class="big ghost" data-prnpick="58">58mm प्रिंटर चुनें</button><button class="big ghost" data-prnpick="80">80mm प्रिंटर चुनें</button></div><button class="big ghost" data-prnpick="100">4 इंच प्रिंटर (Xprinter XP-D4601B जैसा) चुनें</button><div id="prnList"></div><button class="big ghost" data-prntest>टेस्ट प्रिंट</button>':""}</div>
+  ${window.SON?SON.settingsHTML():""}
   ${window.SA?SA.bkHTML():""}
   ${window.SRc?SRc.settingsHTML():""}
   ${window.SF?SF.labelSettingsHTML():""}
@@ -2251,6 +2252,7 @@ function renderSettings(){
       <label class="note"><input type="checkbox" id="t-${esc(it.id)}" data-if="track" ${it.track?"checked":""}> स्टॉक गिनें</label>
       <label class="note"><input type="checkbox" id="f-${esc(it.id)}" data-if="flex" ${it.flex?"checked":""}> बिलर भाव बदल सके</label>
       <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(it.name)} के बारकोड लेबल छापें">🏷️ लेबल</button>
+      <button type="button" class="chip" data-noonline="${esc(it.id)}" aria-pressed="${!it.noOnline}" aria-label="${esc(it.name)} ऑनलाइन दिखे">🌐</button>
       <button type="button" class="chip" data-favpin="${esc(it.id)}" aria-pressed="${((S.settings.favs||[]).includes(it.id))}" aria-label="${esc(it.name)} फ़ेवरेट">⭐</button></div>
       <div class="flds3">
       <label class="fld">हिंदी नाम<input class="inp" data-if="hi" value="${esc(it.hi||"")}"></label>
@@ -2449,6 +2451,7 @@ boot();
 <script src="se-pay.js"></script>
 <script src="se-bill.js"></script>
 <script src="se-plus.js"></script>
+<script src="se-online.js"></script>
 <script src="se-galla.js"></script>
 <script src="se-open.js"></script>
 <script src="se-return.js"></script>
