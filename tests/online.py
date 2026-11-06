@@ -98,7 +98,8 @@ async def main():
         await c.goto("http://127.0.0.1:8770/order/"); await c.wait_for_selector("#wgo")
         # 👋 खाता: नाम + मोबाइल बिना सामान/भाव नहीं (धुंधला), भरोसे की लाइन
         assert await c.evaluate("document.body.classList.contains('locked')")
-        assert "only to call you about your order" in await c.text_content(".safe")
+        assert "confirm your items and reach your door" in await c.text_content(".safe")
+        assert "never share" not in await c.text_content(".wel")
         await c.screenshot(path=f"{SHOTS}/o0-welcome.png")
         await c.fill("#wnm", "Ramesh"); await c.fill("#wph", "12345"); await c.click("#wgo"); await c.wait_for_timeout(150)
         assert not signups, "गलत नंबर पर खाता नहीं"

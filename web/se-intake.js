@@ -45,17 +45,24 @@ function prompt(){
   return `177 MH WET CANTEEN - PRODUCT ENTRY (batch ${B.id})
 You are helping "177 MH Canteen" (Military Hospital wet canteen, Akashvani Road, Barmer, India) add products to its billing app.
 Source of these goods: ${src}.
-Every following page is ONE product, numbered #N. It has up to 3 photos: FRONT (pack front), PRICE (MRP / expiry / batch label), BARCODE.
-Printed on each page: QTY = pieces received, COST = purchase price per piece (may be blank), SALE = selling price per piece (blank = sell at MRP), BARCODE = digits already read by the app (may be blank).
+Each product is numbered #N and has up to 3 photos: FRONT (pack front), PRICE (MRP / expiry / batch label), BARCODE.
+In a PDF: one page per product. In a ZIP: files NN-front.jpg, NN-mrp.jpg, NN-barcode.jpg and one line per product in items.csv.
+Given for each product: QTY = pieces received, COST = purchase price per piece (may be blank), SALE = selling price per piece (blank = sell at MRP), BARCODE = digits already read by the app (may be blank).
+
+WORK IN TWO STEPS — speed first, research later:
+STEP 1 (do it NOW, fast): go through ALL products one after another without stopping. Only read what is printed in the photos (name, size, MRP, expiry, barcode digits) and copy QTY/COST/SALE. No web search, no long thinking. If something is unclear put null and move on. If you can keep a running table / artifact, add each product to it as you go. Then give the JSON below at once, so the shop can start billing.
+STEP 2 (ONLY when the owner later writes "STEP 2"): calmly research each product on the web — exact official name, brand, pack size, Hindi name — and find the ORIGINAL front-of-pack photo (like Amazon/Blinkit main image; never invent or AI-draw a branded pack). Reply with:
+  a) one json block {"app":"mh177","mode":"fix","items":[{"barcode":"8901719101038","name":"PARLE-G 70G","short":"PARLE-G 70G","hi":"पारले-जी 70 ग्राम","brand":"PARLE","size":"70g"}]}  (only the fields you are sure about; never stock or price)
+  b) ONE ZIP of original photos, each file named <barcode>.jpg (or the product name if no barcode), square, white background.
 
 Read every photo carefully. Reply with ONLY ONE json code block in exactly this shape:
 {"app":"mh177","v":1,"batch":"${B.id}","items":[
- {"n":1,"name":"Parle-G 70g","hi":"<Hindi name in Devanagari>","brand":"Parle","size":"70g","mrp":10,"sale":10,"cost":8,"qty":12,"exp":"2027-03-31","mfg":"2026-09-30","batchNo":"B123","barcode":"8901719101038","cat":"kirana","sub":"sweet","emoji":"<one emoji>","note":""}
+ {"n":1,"name":"PARLE-G 70G","hi":"<Hindi name in Devanagari>","brand":"Parle","size":"70g","mrp":10,"sale":10,"cost":8,"qty":12,"exp":"2027-03-31","mfg":"2026-09-30","batchNo":"B123","barcode":"8901719101038","cat":"kirana","sub":"sweet","emoji":"<one emoji>","note":""}
 ]}
 
 Rules:
 1. One object per page, same order, "n" = page number #N.
-2. name: short English billing name, max 22 characters: Brand + product + size. Example "Lays Magic Masala 52g".
+2. name: short English billing name in CAPITAL letters, max 22 characters: Brand + product + size. Example "LAYS MAGIC MASALA 52G".
 3. hi: simple Hindi name in Devanagari script.
 4. mrp: the MRP printed on the pack in rupees (incl. of all taxes). null if not readable.
 5. sale: use the SALE printed on the page if present, else the same as mrp.
@@ -78,9 +85,9 @@ SI.render=function(el){
   ${n<MAXN?formHTML():`<div class="card2"><b>एक PDF में ${MAXN} सामान हो गए</b><p class="note" style="margin:0">अब PDF बनाकर AI में डालें। अगले सामान नई खेप में।</p></div>`}
   ${n?`<h3 style="margin:14px 0 6px">इस खेप में ${n} सामान</h3><div class="list silist">${E.map(e=>`<div class="li"><span class="sith">${e.th.f?`<img src="${e.th.f}" alt="">`:"📦"}</span><div class="mid"><b>#${e.n} · ${e.match&&item(e.match)?esc(item(e.match).name):"नया / AI बताएगा"}</b><span>${e.qty} पीस${num(e.cost)?" · खरीद ₹"+num(e.cost):""}${num(e.sale)?" · बिक्री ₹"+num(e.sale):""}${e.bar?" · 📟 "+esc(e.bar):""} · ${["f","p","b"].filter(k=>e.has[k]).length} फोटो</span></div><button class="lnk" data-sidel="${e.n}" style="color:var(--chili)">हटाएँ</button></div>`).join("")}</div>`:""}
   <div class="siact">
-    <button class="big" data-sipdf ${n?"":"disabled"}>📄 AI के लिए PDF बनाएँ (${n})</button>
+    <div class="row2" style="margin:0"><button class="big" data-sizip ${n?"":"disabled"}>📦 AI के लिए ZIP (${n})</button><button class="big ghost" data-sipdf ${n?"":"disabled"}>📄 PDF (${n})</button></div>
     <div class="row2" style="margin:0"><button class="big ghost" data-sipaste ${n?"":"disabled"}>📋 AI का जवाब चिपकाएँ</button><button class="big ghost" data-sicopy>🧾 AI निर्देश कॉपी</button></div>
-    <p class="note" style="margin:0">PDF को Claude या Gemini में डालकर लिखें: <b>"PDF के पहले पेज के निर्देश मानो"</b> — फिर उसका जवाब यहाँ चिपकाएँ।</p>
+    <p class="note" style="margin:0">ZIP (या PDF) Claude/Gemini में डालकर लिखें: <b>"READ-ME-FIRST मानो, STEP 1 करो"</b> — वह फटाफट सब लिख देगा, जवाब यहाँ चिपकाएँ। बाद में फुर्सत में लिखें <b>"STEP 2"</b> — असली नाम-फोटो ढूँढेगा (⚙️ 📸 असली फोटो में डालें)।</p>
     ${n?`<button class="lnk" data-sireset style="color:var(--chili);justify-self:start">यह पूरी खेप मिटाएँ</button>`:""}</div>`;
 };
 function formHTML(){
@@ -166,6 +173,31 @@ async function makePdf(){
   SI.render();
 }
 
+/* ---------- 📦 ZIP (Claude को पूरी, साफ़ फोटो दिखती हैं — PDF से बेहतर) ---------- */
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+SI.zipBlob=function(files){/* files: [{name, data:Uint8Array}] — STORE (JPEG पहले से दबी हुई) */
+  const enc=new TextEncoder(),parts=[],cen=[];let off=0;
+  for(const f of files){const nm=enc.encode(f.name),d=f.data,c=crc32(d),h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);h.setUint32(14,c,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nm.length,true);
+    parts.push(h,nm,d);const e=new DataView(new ArrayBuffer(46));e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint16(8,0x0800,true);e.setUint32(16,c,true);e.setUint32(20,d.length,true);e.setUint32(24,d.length,true);e.setUint16(28,nm.length,true);e.setUint32(42,off,true);
+    cen.push(e,nm);off+=30+nm.length+d.length}
+  const cs=cen.reduce((a,x)=>a+(x.byteLength||x.length),0),z=new DataView(new ArrayBuffer(22));z.setUint32(0,0x06054b50,true);z.setUint16(8,files.length,true);z.setUint16(10,files.length,true);z.setUint32(12,cs,true);z.setUint32(16,off,true);
+  return new Blob([...parts,...cen,z],{type:"application/zip"})};
+async function makeZip(){
+  const btn=$("[data-sizip]");if(btn){btn.disabled=true;btn.textContent="⏳ ZIP बन रही है…"}
+  try{const enc=new TextEncoder(),F=[],srcEn=B.src==="mh"?"177 MH transfer":B.src==="shop"?"Shop: "+(B.shop||""):"Opening stock";
+    F.push({name:"00-READ-ME-FIRST.txt",data:enc.encode(prompt()+"\n\nFiles: NN-front.jpg / NN-mrp.jpg / NN-barcode.jpg, details in items.csv.\n")});
+    const csv=["n,qty,cost,sale,barcode,already_in_app_as,source"].concat(B.entries.map(e=>{const it=e.match&&item(e.match);return [e.n,e.qty,e.cost||"",e.sale||"",e.bar||"",it?'"'+String(it.name).replace(/"/g,"'")+'"':"",'"'+srcEn+'"'].join(",")}));
+    F.push({name:"items.csv",data:enc.encode(csv.join("\n"))});
+    for(const e of B.entries)for(const [k,lb] of [["f","front"],["p","mrp"],["b","barcode"]]){if(!e.has[k])continue;const b=await IDB.get(pk(e.n,k));if(b)F.push({name:String(e.n).padStart(2,"0")+"-"+lb+".jpg",data:new Uint8Array(await b.arrayBuffer())})}
+    const zb=SI.zipBlob(F),name="MH177_"+B.id+"_"+B.entries.length+"items.zip";SI._zip=zb;
+    if(window.SENative&&SENative.isNative){const b64=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(zb)});await SENative.BtPrinter.shareBytes({name,data:b64,mime:"application/zip"})}
+    else{const a=document.createElement("a");a.href=URL.createObjectURL(zb);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)}
+    B.pdfAt=Date.now();save();toast("📦 ZIP बन गई — Claude में डालकर लिखें: READ-ME-FIRST मानो");
+  }catch(e){toast("ZIP नहीं बनी: "+(e.message||e))}
+  SI.render()}
+
 /* ---------- 📋 जवाब चिपकाना ---------- */
 function renderPaste(el){
   el.innerHTML=`<div class="sihead"><div><h2 class="sec" style="margin:0">📋 AI का जवाब</h2><span class="note">${esc(B.id)} · ${B.entries.length} सामान · ${SRC[B.src]}</span></div><button class="big ghost" data-siback style="width:auto;padding:8px 14px">‹ वापस</button></div>
@@ -217,7 +249,7 @@ async function apply(){
     else{nNew++;id="i"+uid();const cat=["kirana","fast","sabzi"].includes(r.a.cat)?r.a.cat:"kirana",code=nextCode(cat);
       const bar=/^\d{8,14}$/.test(r.bar)&&!findByCode(r.bar)?r.bar:ean13("2000000"+code+"0");
       const it={name:r.name,hi:r.hi,emoji:r.a.emoji||"📦",cat,sub:(SUBS[cat]||[]).some(([k])=>k===r.a.sub)?r.a.sub:"",unit:"pc",size:r.a.size||"",mrp:r.mrp,sale:r.sale,cost:r.cost||0,code,barcode:bar,track:true,min:5,
-        hue:Math.floor(Math.random()*360),order:S.items.length+1,active:true,src:"photo-ai",addedBy:S.uid||"",addedByName:biller(),addedTs:ts,pending:!S.isOwner,...(r.exp?{exp:r.exp}:{})};
+        hue:Math.floor(Math.random()*360),order:S.items.length+1,active:true,src:"photo-ai",photoSrc:"shop",addedBy:S.uid||"",addedByName:biller(),addedTs:ts,pending:!S.isOwner,...(r.exp?{exp:r.exp}:{})};
       // ऐप में छोटी फोटो (≈6-10 KB)
       try{const big=await IDB.get(pk(r.e.n,"f"));if(big){const sm=await shrink(big,220,.66);photoKB+=sm.size/1024;
         if(S.demo||!S.isOwner){SE.photos[id]=await toURL(sm);it.photo=""}else{it.photo=await SE.savePhoto(id,sm,220,.66)}}}catch(e){}
@@ -269,6 +301,7 @@ SI.bind=function(){
     if(e.target.closest("[data-sinext]")){addEntry();return}
     const dl=e.target.closest("[data-sidel]");if(dl){const n=+dl.dataset.sidel;B.entries=B.entries.filter(x=>x.n!==n);for(const k of "fpb")IDB.tx("readwrite",s=>s.delete(pk(n,k))).catch(()=>{});save();SI.render();return}
     if(e.target.closest("[data-sipdf]")){makePdf();return}
+    if(e.target.closest("[data-sizip]")){makeZip();return}
     if(e.target.closest("[data-sicopy]")){try{await navigator.clipboard.writeText(prompt());toast("🧾 AI निर्देश कॉपी हो गया")}catch(err){toast("कॉपी नहीं हुआ")}return}
     if(e.target.closest("[data-sipaste]")){VIEW="paste";PV=null;SI.render();setTimeout(()=>{const t=$("#siPaste");if(t)t.focus()},80);return}
     if(e.target.closest("[data-siback]")){VIEW="form";PV=null;SI.render();return}

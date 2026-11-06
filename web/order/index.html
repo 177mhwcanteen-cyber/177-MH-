@@ -68,7 +68,7 @@ button{font:inherit;cursor:pointer;color:inherit}input,textarea{font:inherit;col
 .sk{background:linear-gradient(90deg,var(--line),var(--card),var(--line));background-size:200% 100%;animation:sk 1.2s infinite;border-radius:14px;height:190px}@keyframes sk{to{background-position:-200% 0}}
 .locked #m,.locked .cats,.locked .trust{filter:blur(6px);pointer-events:none;user-select:none}.locked .srch{opacity:.5;pointer-events:none}
 .wel{align-items:center}.wel .sheet{border-radius:20px;max-width:440px;margin:12px;padding-bottom:12px}.place.in{position:static;width:100%;margin-top:10px;box-shadow:none}
-.safe{display:flex;gap:8px;background:var(--gbg);color:var(--ink);border-radius:12px;padding:10px;font-size:13px;margin-top:6px}.safe span{line-height:1.35}
+.safe{display:flex;gap:8px;background:var(--gbg);color:var(--ink);border-radius:12px;padding:10px;font-size:13px;margin-top:6px}.safe span{line-height:1.35}.safe.go{background:#fff4e0}
 .acc{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:12px;padding:8px 12px;margin-bottom:6px}.acc div{display:grid}.acc span{font-size:13px;color:var(--mut)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.trust .accs{padding:0;border:0;background:none}.accs:empty{display:none}.accs .lnk{font-size:12px;font-weight:800;background:var(--gbg);border:1px solid var(--g);border-radius:99px;padding:3px 9px}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
@@ -217,7 +217,7 @@ function welcome(change){const A=ACC();lock(!A.ph);
     <div class="box"><p style="margin:0 0 8px">${change?"Change your name or number below.":"Order sweets, snacks and groceries from home. Tell us who you are so we can deliver to you."}</p>
     <input class="f" id="wnm" placeholder="Your name" maxlength="40" autocomplete="name" value="${esc(A.nm||"")}">
     <input class="f" id="wph" placeholder="Mobile number (10 digits)" inputmode="tel" maxlength="14" autocomplete="tel" value="${esc(A.ph||"")}">
-    <div class="safe">🔒 <span>We use your number <b>only to call you about your order</b> — to confirm items and reach your door. We never share it. No spam, no ads.</span></div>
+    <div class="safe">📞 <span>Your number helps us <b>confirm your items and reach your door</b>.</span></div><div class="safe go">🛵 <span>Fresh from our shop, <b>straight to your door</b> — quick and hassle-free.</span></div>
     <button class="place in" id="wgo" type="button">${change?"Save":"Continue →"}</button></div></div></div>`;
   const sc=$("#ov .scrim");sc.addEventListener("click",async e=>{if(e.target.matches("[data-x]")&&ACC().ph){close();return}
     if(!e.target.closest("#wgo"))return;const nm=$("#wnm").value.trim(),ph=$("#wph").value.replace(/\D/g,"").slice(-10);

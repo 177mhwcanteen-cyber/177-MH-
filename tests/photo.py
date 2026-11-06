@@ -3,7 +3,7 @@
 10/15/20 का प्रॉम्प्ट (असली फोटो, फाइल-नाम = id) · ⚙️ कार्ड · ग्राहक-पेज वाली छोटी फोटो (112px)।
 उपयोग: python3 tests/photo.py <www फ़ोल्डर> <स्क्रीनशॉट फ़ोल्डर>"""
 import asyncio, io, os, sys, zipfile, threading, http.server, functools
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 from playwright.async_api import async_playwright
 
 WWW, SHOTS = os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2])
@@ -74,6 +74,47 @@ async def main():
         assert fill["w"] == fill["h"] and fill["w"] >= 200 and fill["fill"] > 0.35, fill
         print("crop ok", fill)
         el = await pg.query_selector("#sphCard"); await el.screenshot(path=f"{SHOTS}/p1-card.png")
+        # 🔍 धुंधली फोटो: अपने-आप सूची में, नई फोटो लगते ही बाहर
+        im = Image.open(io.BytesIO(pack_img(2, 1200, 1200))).filter(ImageFilter.GaussianBlur(10)); bb = io.BytesIO(); im.save(bb, "JPEG", quality=90)
+        zb2 = io.BytesIO()
+        with zipfile.ZipFile(zb2, "w") as z: z.writestr(f"{it[1]['id']}.jpg", bb.getvalue())
+        zp2 = os.path.join(SHOTS, "blur.zip"); open(zp2, "wb").write(zb2.getvalue())
+        await pg.set_input_files("#sphFile", zp2); await pg.wait_for_timeout(2000)
+        n0 = await pg.evaluate("SPH.need().length")
+        await pg.click("[data-sphscan]"); await pg.wait_for_timeout(2500)
+        bad = await pg.evaluate("ids=>ids.map(id=>SPH.isBad(item(id)))", [x["id"] for x in it])
+        assert bad == [False, True, False, False], bad
+        assert await pg.evaluate("SPH.need().length") == n0 + 1
+        t3 = await pg.evaluate("SPH.prompt(SPH.need().filter(x=>x.w===1).map(x=>x.i))")
+        assert "blurry" in t3, "धुंधली फोटो प्रॉम्प्ट में"
+        # 👀 जाली: टैप = ठीक है / बदलवानी है
+        await pg.click("[data-sphview]"); await pg.wait_for_selector(".sphg .sphc")
+        await pg.screenshot(path=f"{SHOTS}/p2-grid.png")
+        await pg.click(f'[data-sphmk="{it[1]["id"]}"]'); await pg.wait_for_timeout(200)
+        assert not await pg.evaluate(f"SPH.isBad(item('{it[1]['id']}'))"), "ठीक है"
+        await pg.click(f'[data-sphmk="{it[0]["id"]}"]'); await pg.wait_for_timeout(200)
+        assert await pg.evaluate(f"SPH.isBad(item('{it[0]['id']}'))"), "बदलवानी है"
+        await pg.evaluate("closeSheet()")
+        # नई फोटो लगी → सूची से अपने-आप बाहर
+        await pg.set_input_files("#sphFile", zp); await pg.wait_for_timeout(4000)
+        assert not await pg.evaluate(f"SPH.isBad(item('{it[0]['id']}'))"), "नई फोटो से सूची पूरी"
+        # 📝 STEP 2 सुधार: सिर्फ़ नाम-जानकारी, भाव/स्टॉक नहीं
+        before = await pg.evaluate(f"(i=>({{sale:i.sale,stock:i.stock}}))(item('{it[2]['id']}'))")
+        await pg.click("[data-sphfix]"); await pg.wait_for_selector("#sphFixT")
+        await pg.fill("#sphFixT", '```json\n{"app":"mh177","mode":"fix","items":[{"barcode":"8901786140503","name":"everest biryani masala 50g","hi":"एवरेस्ट बिरयानी मसाला","brand":"everest","size":"50g","sale":999},{"barcode":"0000","name":"x"}]}\n```')
+        await pg.click("[data-sphfixgo]"); await pg.wait_for_timeout(200); assert "1 सामान" in await pg.text_content("[data-sphfixgo]")
+        await pg.click("[data-sphfixgo]"); await pg.wait_for_timeout(400)
+        after = await pg.evaluate(f"(i=>({{name:i.name,hi:i.hi,brand:i.brand,sale:i.sale,stock:i.stock}}))(item('{it[2]['id']}'))")
+        assert after["name"] == "EVEREST BIRYANI MASALA 50G" and after["brand"] == "EVEREST" and after["hi"].startswith("एवरेस्ट"), after
+        assert after["sale"] == before["sale"] and after["stock"] == before["stock"], (before, after)
+        print("blur/grid/fix ok")
+        # 📦 फोटो से माल → ZIP (READ-ME + items.csv + फोटो), दो कदम वाला निर्देश
+        z = await pg.evaluate("""async()=>{SI.open();const B={};return 1}""")
+        zr = await pg.evaluate("""async()=>{const f=[{name:'a.txt',data:new TextEncoder().encode('hello')},{name:'01-front.jpg',data:new Uint8Array([1,2,3,4])}];
+          const b=SI.zipBlob(f);const u=new Uint8Array(await b.arrayBuffer());return Array.from(u)}""")
+        zf = zipfile.ZipFile(io.BytesIO(bytes(zr))); assert zf.namelist() == ["a.txt", "01-front.jpg"] and zf.read("a.txt") == b"hello" and zf.testzip() is None
+        pr = await pg.evaluate("(()=>{localStorage.setItem('bh_intake',JSON.stringify({open:true,id:'F1106-TEST',src:'opening',entries:[]}));return 1})()")
+        print("zip writer ok")
         # ग्राहक-पेज वाली छोटी कॉपी
         th = await pg.evaluate("""id=>new Promise(res=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=112;c.getContext('2d').drawImage(im,0,0,112,112);res(c.toDataURL('image/jpeg',.62).length*.75/1024)};im.src=SE.photos[id]})""", it[0]["id"])
         assert th < 8, th

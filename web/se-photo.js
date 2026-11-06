@@ -6,6 +6,11 @@
 "use strict";
 const SPH=window.SPH={};
 const MAXB=20*1024,SIDE=320;
+try{const st=document.createElement("style");st.textContent=`.sphg{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:8px}
+.sphc{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px;border:2px solid var(--line,#e5e7eb);border-radius:12px;background:#fff;font:600 10.5px/1.15 inherit;color:var(--ink,#222);text-align:center}
+.sphc img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:8px;background:#fff}.sphc.bad{border-color:var(--chili,#dc2626);box-shadow:0 0 0 2px #fee2e2}
+.sphc i{position:absolute;top:4px;left:4px;font-style:normal;background:var(--chili,#dc2626);color:#fff;border-radius:8px;padding:1px 5px;font-size:10px}
+#sphCard .son-k{grid-template-columns:repeat(4,1fr)}`;document.head.appendChild(st)}catch(e){}
 const LSx={get:k=>{try{return localStorage.getItem(k)||""}catch(e){return ""}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
 const loadImg=src=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=src});
 /* ---------- छोटा + साफ़: किनारा काटो, चौकोर, ≤20 KB ---------- */
@@ -31,10 +36,31 @@ SPH.save=async function(id,blob){const url=await SPH.compress(blob);SE.photos[id
 SE.savePhoto=function(id,blob){return SPH.save(id,blob)};
 
 /* ---------- 📋 10/15/20 सामान का प्रॉम्प्ट ---------- */
-SPH.missing=()=>S.items.filter(i=>i.active!==false&&!i.virtual&&!i.photo&&!(typeof isTob==="function"&&isTob(i)));
+const pub=i=>i.active!==false&&!i.virtual&&!(typeof isTob==="function"&&isTob(i));
+SPH.missing=()=>S.items.filter(i=>pub(i)&&!i.photo);
+/* 🔍 फोटो की जाँच: धुंधली / अंधेरी / खाली — छोटे canvas पर (तेज़), नतीजा इसी फोन में याद (sph_q) */
+const QK="sph_q",qGet=()=>{try{return JSON.parse(LSx.get(QK)||"{}")}catch(e){return {}}};
+SPH.LIMIT=150;/* इससे कम तेज़ी = धुंधली */
+SPH.score=async function(url){const im=await loadImg(url),N=128,c=document.createElement("canvas");c.width=c.height=N;const x=c.getContext("2d",{willReadFrequently:true});
+  x.fillStyle="#fff";x.fillRect(0,0,N,N);x.drawImage(im,0,0,N,N);const d=x.getImageData(0,0,N,N).data,g=new Float32Array(N*N);let lum=0;
+  for(let i=0;i<N*N;i++){g[i]=d[i*4]*.299+d[i*4+1]*.587+d[i*4+2]*.114;lum+=g[i]}lum/=N*N;
+  let n=0,m=0,m2=0,cont=0;for(let y=1;y<N-1;y++)for(let X=1;X<N-1;X++){const i=y*N+X;if(g[i]>245&&g[i-1]>245&&g[i+1]>245)continue;cont++;
+    const L=4*g[i]-g[i-1]-g[i+1]-g[i-N]-g[i+N];n++;m+=L;m2+=L*L}
+  const sharp=n?Math.round(m2/n-(m/n)*(m/n)):0,fill=cont/((N-2)*(N-2));
+  const why=fill<.03?"खाली":lum<55?"अंधेरी":sharp<SPH.LIMIT?"धुंधली":(im.width<120?"बहुत छोटी":"");return {sharp,fill:Math.round(fill*100),lum:Math.round(lum),why}};
+SPH.isBad=i=>!!i.photo&&!i.photoOk&&(!!i.photoBad||!!((qGet()[i.id]||{}).why));
+SPH.isShop=i=>!!i.photo&&i.photoSrc==="shop"&&!i.photoOk&&!["mithai","fast"].includes(i.cat);/* पैकेट वाला सामान, फोटो दुकान में खींची — असली पैकेट फोटो से बदलो */
+/* जिनकी असली फोटो चाहिए: ① फोटो नहीं ② खराब/धुंधली ③ दुकान में खींची (पैकेट) */
+SPH.need=()=>{const A=S.items.filter(pub),r=[];A.forEach(i=>{if(!i.photo)r.push({i,w:0});else if(SPH.isBad(i))r.push({i,w:1});else if(SPH.isShop(i))r.push({i,w:2})});return r};
+SPH.scan=async function(){const A=S.items.filter(i=>pub(i)&&i.photo&&SE.photos&&SE.photos[i.id]),q=qGet();let k=0,bad=0;
+  for(const i of A){const u=SE.photos[i.id];const v=String(u).length;if(!(q[i.id]&&q[i.id].v===v)){try{const r=await SPH.score(u);q[i.id]={v,why:r.why,s:r.sharp}}catch(e){}}
+    if(q[i.id]&&q[i.id].why)bad++;if(++k%25===0){toast(`🔍 ${k}/${A.length} जाँची…`);await new Promise(r=>setTimeout(r,0))}}
+  LSx.set(QK,JSON.stringify(q));return {n:A.length,bad}};
+async function mark(id,p){const it=item(id);if(!it)return;Object.assign(it,p);if(!S.demo&&S.db)try{await S.db.doc("items/"+id).update(p)}catch(e){toast("सेव नहीं हुआ")}}
 SPH.prompt=function(L){const shop="177 MH Canteen, Barmer (India)";
   const rows=L.map((i,k)=>{const br=i.brand?` | brand: ${i.brand}`:"";const bc=String(i.barcode||"").split(",")[0].trim();
-    return `${k+1}. file: ${i.id}.jpg | product: ${SE.capNm(i.name)}${br}${i.size?` | size: ${i.size}`:""}${bc?` | barcode (EAN): ${bc}`:""}${+i.mrp?` | MRP ₹${i.mrp}`:""}${i.hi?` | Hindi: ${i.hi}`:""} | type: ${["mithai","fast"].includes(i.cat)?"loose food (sweet/snack) made in our shop":"packaged product"}`}).join("\n");
+    const why=i.photo?(SPH.isBad(i)?" | NOTE: our current photo is blurry/bad — replace it":" | NOTE: our current photo is a shop snapshot — need the original pack photo"):"";
+    return `${k+1}. file: ${i.id}.jpg${why} | product: ${SE.capNm(i.name)}${br}${i.size?` | size: ${i.size}`:""}${bc?` | barcode (EAN): ${bc}`:""}${+i.mrp?` | MRP ₹${i.mrp}`:""}${i.hi?` | Hindi: ${i.hi}`:""} | type: ${["mithai","fast"].includes(i.cat)?"loose food (sweet/snack) made in our shop":"packaged product"}`}).join("\n");
   return `You are helping ${shop} put REAL product photos in its billing & online-order app.
 
 For each item below, find the ORIGINAL photo of exactly that product — same brand, same variant/flavour, same pack size — like the main image on Amazon, Flipkart, BigBasket, Blinkit or the brand's official website. Search the web using the barcode and the product name.
@@ -46,13 +72,14 @@ Rules:
 4. Name each file EXACTLY as given ("file:" value), e.g. ${L[0]?L[0].id:"item-id"}.jpg — this is how the app matches the photo.
 5. For "loose food (sweet/snack) made in our shop" there is no brand pack: create one realistic, appetising photo of that Indian sweet/snack (top view, on a plain white plate, plain white background, natural light, no text) and name it the same way.
 6. Put all images in ONE ZIP file and give me the download. Also give a short list: FOUND / GENERATED / NOT FOUND.
+7. Work fast: first collect all the photos you can find quickly and give the ZIP; do not spend long on one item. If one is hard, mark it NOT FOUND and move on — I will ask again later.
 
 Items (${L.length}):
 ${rows}`};
 SPH.copy=async function(t){try{await navigator.clipboard.writeText(t);return true}catch(e){}
   try{const a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();const ok=document.execCommand("copy");a.remove();return ok}catch(e){return false}};
 SPH.batch=async function(n){const asked=JSON.parse(LSx.get("sph_ask")||"{}"),now=Date.now();
-  const M=SPH.missing().sort((a,b)=>(asked[a.id]||0)-(asked[b.id]||0)||((+b.mrp>0)-(+a.mrp>0)));/* जो कभी नहीं माँगे, वे पहले */
+  const M=SPH.need().sort((a,b)=>a.w-b.w||(asked[a.i.id]||0)-(asked[b.i.id]||0)||((+b.i.mrp>0)-(+a.i.mrp>0))).map(x=>x.i);/* बिना फोटो → खराब → दुकान वाली; जो कभी नहीं माँगे, वे पहले */
   const L=M.slice(0,n);if(!L.length){toast("सबकी असली फोटो लग चुकी है 🎉");return}
   L.forEach(i=>asked[i.id]=now);LSx.set("sph_ask",JSON.stringify(asked));const t=SPH.prompt(L);SPH._last=t;
   const ok=await SPH.copy(t);
@@ -86,20 +113,56 @@ SPH.importFiles=async function(files){const jobs=[];
   if(!jobs.length){toast("कोई फोटो नहीं मिली");return}
   let ok=0;const miss=[];const tot=jobs.length;
   for(const j of jobs){const it=SPH.match(j.name);if(!it){miss.push(j.name.split("/").pop());continue}
-    try{const tag=await SPH.save(it.id,j.blob);it.photo=tag;if(typeof saveItem==="function")await saveItem(it.id,{photo:tag});ok++;if(ok%5===0)toast(`📸 ${ok}/${tot} लग गईं…`)}catch(e){miss.push(j.name.split("/").pop())}}
+    try{const tag=await SPH.save(it.id,j.blob);const p={photo:tag,photoBad:0,photoOk:0,photoSrc:"web"};Object.assign(it,p);if(!S.demo&&(SE.db||S.db))try{await (SE.db||S.db).doc("items/"+it.id).update(p)}catch(e){}ok++;
+    const q=qGet();delete q[it.id];LSx.set(QK,JSON.stringify(q));if(ok%5===0)toast(`📸 ${ok}/${tot} लग गईं…`)}catch(e){miss.push(j.name.split("/").pop())}}
   try{renderSettings();if(S.tab==="bill")renderBill()}catch(e){}if(window.SON&&SON.publishPhotos)SON.publishPhotos(true);
   toast(`✓ ${ok} असली फोटो लगीं (हर एक ≤20 KB)${miss.length?` · ${miss.length} का सामान नहीं मिला: ${miss.slice(0,4).join(", ")}${miss.length>4?"…":""}`:""}`);return {ok,miss}};
 
 /* ---------- ⚙️ कार्ड ---------- */
-SPH.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const M=SPH.missing(),A=S.items.filter(i=>i.active!==false&&!i.virtual).length,kb=Object.values(SE.photos||{}).reduce((a,u)=>a+String(u).length*.75,0)/1024;
+SPH.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const N=SPH.need(),A=S.items.filter(pub).length,kb=Object.values(SE.photos||{}).reduce((a,u)=>a+String(u).length*.75,0)/1024;
+  const c=[0,1,2].map(w=>N.filter(x=>x.w===w).length);
   return `<div class="card2 sph" id="sphCard"><h3>📸 असली फोटो (Amazon/Blinkit जैसा भरोसा)</h3>
-  <div class="son-k"><div><span>असली फोटो लगी</span><b>${A-M.length}</b></div><div><span>बाकी</span><b style="color:${M.length?"var(--chili)":"var(--leaf)"}">${M.length}</b></div><div><span>सब फोटो का भार</span><b>${kb<1024?Math.round(kb)+" KB":(kb/1024).toFixed(1)+" MB"}</b></div></div>
-  <p class="note" style="margin:0">एक बार में कितने सामान का प्रॉम्प्ट बनाएँ? (जिनका कभी नहीं माँगा, वे पहले)</p>
-  <div class="row2" style="margin:0;grid-template-columns:repeat(3,1fr)">${[10,15,20].map(n=>`<button class="big ghost" data-sphb="${n}" ${M.length?"":"disabled"}>📋 ${n}</button>`).join("")}</div>
+  <div class="son-k"><div><span>अच्छी फोटो</span><b style="color:var(--leaf)">${A-N.length}</b></div><div><span>फोटो नहीं</span><b style="color:${c[0]?"var(--chili)":"var(--leaf)"}">${c[0]}</b></div><div><span>धुंधली/खराब</span><b style="color:${c[1]?"var(--chili)":"var(--leaf)"}">${c[1]}</b></div><div><span>दुकान वाली</span><b>${c[2]}</b></div></div>
+  <p class="note" style="margin:0">सब ${N.length} की सूची अपने-आप बनती है — फोटो लगते ही सामान सूची से हट जाता है। एक बार में कितने का प्रॉम्प्ट? (पहले बिना फोटो, फिर धुंधली) · भार ${kb<1024?Math.round(kb)+" KB":(kb/1024).toFixed(1)+" MB"}</p>
+  <div class="row2" style="margin:0;grid-template-columns:repeat(3,1fr)">${[10,15,20].map(n=>`<button class="big ghost" data-sphb="${n}" ${N.length?"":"disabled"}>📋 ${n}</button>`).join("")}</div>
   <button class="big" data-sphin>📥 ZIP / फोटो डालें</button><input type="file" id="sphFile" accept="image/*,.zip,application/zip,.html,.htm" multiple hidden>
-  <p class="note" style="margin:0">हर फोटो अपने-आप साफ़ कटकर ≤20 KB की बनती है। दुकान में खींची फोटो के लिए: सामान की पंक्ति खोलकर फोटो पर टैप करें।</p></div>`};
+  <div class="row2" style="margin:0"><button class="big ghost" data-sphscan>🔍 धुंधली फोटो ढूँढें</button><button class="big ghost" data-sphview>👀 फोटो देखें</button></div>
+  <button class="big ghost" data-sphfix>📝 AI का सुधार चिपकाएँ (नाम/हिंदी/ब्रांड)</button>
+  <p class="note" style="margin:0">हर फोटो अपने-आप साफ़ कटकर ≤20 KB की बनती है। खराब फोटो पर "👀 फोटो देखें" में टैप करें — वह सूची में आ जाएगी।</p></div>`};
+/* 👀 सब फोटो एक जाली में — टैप: 🔁 बदलवानी है ⇄ ✓ ठीक है */
+SPH.view=function(f){f=f||"all";const q=qGet(),A=S.items.filter(i=>pub(i)&&i.photo&&SE.photos&&SE.photos[i.id]);
+  const L=f==="bad"?A.filter(SPH.isBad):A;
+  $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:56px;max-height:84vh;overflow:auto" role="dialog" aria-label="फोटो देखें">
+    <div class="sl-ah"><b>👀 ${L.length} फोटो</b><span></span><button class="x" data-close aria-label="बंद करें">✕</button></div>
+    <div class="row2" style="margin:0"><button class="big ${f==="all"?"":"ghost"}" data-sphvf="all">सब</button><button class="big ${f==="bad"?"":"ghost"}" data-sphvf="bad">🔁 खराब (${A.filter(SPH.isBad).length})</button></div>
+    <p class="note" style="margin:0">फोटो पर टैप करें: लाल = बदलवानी है (अगले प्रॉम्प्ट में आएगी), फिर टैप = ठीक है।</p>
+    <div class="sphg">${L.map(i=>{const b=SPH.isBad(i),w=(q[i.id]||{}).why||"";return `<button type="button" class="sphc ${b?"bad":""}" data-sphmk="${esc(i.id)}"><img src="${SE.photos[i.id]}" alt="" loading="lazy"><span>${esc(SE.capNm(i.short||i.name).slice(0,18))}</span>${b?`<i>🔁 ${esc(i.photoBad?"बदलो":w)}</i>`:""}</button>`}).join("")||'<p class="note">कोई फोटो नहीं</p>'}</div></div>`;
+  $("#sheet").onclick=async e=>{if(e.target.closest("[data-close]")){closeSheet();try{renderSettings()}catch(x){}return}const v=e.target.closest("[data-sphvf]");if(v){SPH.view(v.dataset.sphvf);return}
+    const m=e.target.closest("[data-sphmk]");if(m){const it=item(m.dataset.sphmk);if(!it)return;await mark(it.id,SPH.isBad(it)?{photoBad:0,photoOk:1}:{photoBad:1,photoOk:0});SPH.view(f)}}};
+/* 📝 STEP 2 का सुधार: {"app":"mh177","mode":"fix","items":[{"barcode"|"id","name","hi","brand","size",...}]} — सिर्फ़ नाम-जानकारी, स्टॉक/भाव नहीं */
+SPH.fix=function(t){let s=String(t||"");const f=s.match(/```(?:json)?\s*([\s\S]*?)```/);if(f)s=f[1];const a=s.indexOf("{"),b=s.lastIndexOf("}");if(a<0||b<a)throw new Error("{ } नहीं मिला");
+  const j=JSON.parse(s.slice(a,b+1).replace(/[“”]/g,'"'));const R=Array.isArray(j)?j:j.items;if(!Array.isArray(R))throw new Error("items नहीं मिले");const out=[];
+  for(const r of R){const it=(r.id&&item(r.id))||(r.barcode&&SPH.match(String(r.barcode).replace(/\D/g,"")))||(r.code&&SPH.match(String(r.code)))||(r.old&&SPH.match(r.old))||null;if(!it){out.push({r,it:null});continue}
+    const p={};const cap=v=>SE.capNm(String(v).trim());
+    if(r.name&&cap(r.name)!==it.name)p.name=cap(r.name).slice(0,40);if(r.short)p.short=cap(r.short).slice(0,24);else if(p.name&&p.name.length>24&&!it.short)p.short=p.name.slice(0,24);
+    if(r.hi&&r.hi!==it.hi)p.hi=String(r.hi).slice(0,40);if(r.brand&&cap(r.brand)!==it.brand)p.brand=cap(r.brand).slice(0,30);if(r.size&&r.size!==it.size)p.size=String(r.size).slice(0,16);
+    if(r.emoji&&!it.emoji)p.emoji=String(r.emoji).slice(0,4);if(+r.mrp>0&&!(+it.mrp))p.mrp=+r.mrp;/* भाव कभी नहीं बदलता — सिर्फ़ खाली MRP भरता है */
+    out.push({r,it,p})}return out};
+SPH.fixSheet=function(){$("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:70px;max-height:80vh;overflow:auto" role="dialog" aria-label="AI का सुधार">
+    <div class="sl-ah"><b>📝 AI का सुधार (STEP 2)</b><span></span><button class="x" data-close aria-label="बंद करें">✕</button></div>
+    <p class="note" style="margin:0">AI ने जो "mode":"fix" वाला जवाब दिया, पूरा यहाँ चिपकाएँ। सिर्फ़ नाम, हिंदी नाम, ब्रांड, साइज़ ठीक होंगे — स्टॉक और भाव वैसे ही रहेंगे।</p>
+    <textarea class="inp" id="sphFixT" rows="8" placeholder='{"app":"mh177","mode":"fix","items":[...]}' style="font:12px monospace"></textarea><div id="sphFixR"></div>
+    <button class="big" data-sphfixgo>🔍 जाँचें</button></div>`;
+  let P=null;$("#sheet").onclick=async e=>{if(e.target.closest("[data-close]")){closeSheet();return}const g=e.target.closest("[data-sphfixgo]");if(!g)return;
+    if(!P){try{P=SPH.fix($("#sphFixT").value)}catch(x){toast("जवाब समझ नहीं आया: "+x.message);return}const ch=P.filter(x=>x.it&&Object.keys(x.p).length),nf=P.filter(x=>!x.it);
+      $("#sphFixR").innerHTML=`<div class="list">${ch.map(x=>`<div class="li"><div class="mid"><b>${esc(x.it.name)}</b><span>${Object.entries(x.p).map(([k,v])=>esc(k+": "+v)).join(" · ")}</span></div></div>`).join("")}</div>${nf.length?`<p class="note">⚠ ${nf.length} का सामान नहीं मिला: ${esc(nf.slice(0,4).map(x=>x.r.barcode||x.r.name||"?").join(", "))}</p>`:""}`;
+      g.textContent=ch.length?`✓ ${ch.length} सामान ठीक करें`:"कुछ बदलना नहीं";if(!ch.length)P=null;return}
+    g.disabled=true;let n=0;for(const x of P)if(x.it&&Object.keys(x.p).length){await mark(x.it.id,x.p);n++}closeSheet();try{renderSettings()}catch(x){}toast(`✓ ${n} सामान की जानकारी ठीक हुई`)}};
 document.addEventListener("click",e=>{const t=e.target;let b;
   if((b=t.closest("[data-sphb]"))){SPH.batch(+b.dataset.sphb);return}
+  if((b=t.closest("[data-sphscan]"))){b.disabled=true;b.textContent="⏳ जाँच रहे हैं…";SPH.scan().then(r=>{toast(`🔍 ${r.n} फोटो जाँची · ${r.bad} धुंधली/खराब`);try{renderSettings()}catch(e){}});return}
+  if(t.closest("[data-sphview]")){SPH.view("all");return}
+  if(t.closest("[data-sphfix]")){SPH.fixSheet();return}
   if(t.closest("[data-sphin]")){const f=document.getElementById("sphFile");if(f){f.value="";f.click()}}});
 document.addEventListener("change",e=>{if(e.target.id==="sphFile"&&e.target.files&&e.target.files.length){toast("📥 फोटो लग रही हैं…");SPH.importFiles([...e.target.files])}});
 })();
