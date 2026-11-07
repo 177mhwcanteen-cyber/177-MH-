@@ -157,6 +157,8 @@ SL.draw=function(d,cfg,sk){
   /* --- ऊपर की लिखाई --- */
   const spare=Math.max(0,topH-used),sp=rows.length?Math.min(spare/(rows.length+1),12*U):0;
   let y=PT+sp+(rows.length?Math.max(0,spare-sp*(rows.length+1))/2:0);
+  /* बड़ी लिखाई में हिंदी की मात्रा/शिरोरेखा अक्षर-डिब्बे से ऊपर निकलती है — पहली पंक्ति को उतना नीचे रखो (बड़े लेबल पर ऊपर से न कटे) */
+  if(rows.length)y=Math.max(y,PT+Math.round(rows[0].h*.16));
   let topEnd=PT;rows.forEach(r=>{r.draw(Math.round(y),r.h);topEnd=Math.round(y+r.h);y+=r.h+gap+sp});cv._top=topEnd;
   /* --- बारकोड: बीच में, नीचे, कभी स्केल नहीं (बार साफ़-धारदार) --- */
   if(d.bc){const bm=SL.barCanvas(d.bc,W-2*PX,bcBlock-digH,digPx>0,digPx,4);
