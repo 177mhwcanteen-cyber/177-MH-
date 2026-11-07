@@ -124,11 +124,19 @@ async def main():
         assert await pg.input_value("#srkTa") == "11-23"
         # 📊 रैक का हिसाब + 🧠 सुझाव (12 दिन के नकली बिल)
         await pg.evaluate(f"""(()=>{{const B={{}};for(let i=1;i<=12;i++){{const d=today(new Date(Date.now()-i*864e5));B[d]=[{{no:'b'+i,byName:i%2?'मुकेश':'मनोहर',lines:[{{id:'{C}',name:'C',qty:5,amt:100,rk:'9-14'}},{{id:'{A}',name:'A',qty:1,amt:20,rk:'11-23'}}]}}]}};SRK._demoBills=B}})()""")
+        await pg.evaluate(f"S.purchHist=[{{id:'pz',date:today(new Date(Date.now()-2*864e5)),byName:'मनोहर',lines:[{{id:'{C}',qty:24,amt:480}}]}}]")
         await pg.click('[data-srkrep="15"]'); await pg.wait_for_timeout(500)
         t = await pg.inner_text("#srkRep"); assert "रैक 9" in t and "पास लाएँ" in t and "ऊपर या अंदर" in t, t[:500]
         await pg.click('[data-srkrk="9"]'); await pg.wait_for_timeout(100)
         assert "मुकेश" in await pg.inner_text("#srkRep")
+        assert "माल आया ₹480" in await pg.inner_text("#srkRep"), "रैक में माल आया"
         await pg.screenshot(path=f"{SHOTS}/r7-report.png")
+        # 📷 रैक की फोटो (≤20 KB, photos/rk_9)
+        await pg.click('[data-srksel="9"]'); await pg.wait_for_timeout(150)
+        await pg.set_input_files('[data-srkph="9"]', os.path.join(SHOTS, "r6-sticker.png")); await pg.wait_for_timeout(1200)
+        assert await pg.evaluate("!!(SE.photos['rk_9']&&SE.photos['rk_9'].length*0.75<=20500)"), "रैक फोटो"
+        assert await pg.query_selector(".srk-ph img")
+        await pg.evaluate("SRK.boards([9])"); assert "data:image" in (await pg.evaluate("window.__pr"))["h"]
         # 📋 चिपकाने की सूची
         await pg.evaluate("SRK.checklist()"); h = (await pg.evaluate("window.__pr"))["h"]; assert "☐ 11-63" in h and "☐ 22-4" in h and "अंदर" in h
         p2 = await ctx.new_page(); await p2.set_content("<html><body>" + h + "</body></html>"); await p2.screenshot(path=f"{SHOTS}/r8-checklist.png", full_page=True); await p2.close()
