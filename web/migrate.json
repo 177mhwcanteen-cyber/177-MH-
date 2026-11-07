@@ -2959,6 +2959,14 @@
     "cost": {
      "from": 0,
      "to": 126.67
+    },
+    "sale": {
+     "from": 0,
+     "to": 160
+    },
+    "mrp": {
+     "from": 144,
+     "to": 160
     }
    },
    "t-nevla": {
@@ -2969,18 +2977,38 @@
     "sale": {
      "from": 0,
      "to": 20
+    },
+    "mrp": {
+     "from": 18,
+     "to": 20
     }
    },
    "t-vimal-pk": {
     "cost": {
      "from": 0,
      "to": 176.36
+    },
+    "sale": {
+     "from": 0,
+     "to": 286
+    },
+    "mrp": {
+     "from": 176,
+     "to": 286
     }
    },
    "t-vimal": {
     "cost": {
      "from": 0,
      "to": 8.02
+    },
+    "sale": {
+     "from": 0,
+     "to": 13
+    },
+    "mrp": {
+     "from": 8,
+     "to": 13
     }
    }
   }
