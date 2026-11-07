@@ -66,6 +66,31 @@ SKJ.importOne=async function(P){const b=P.b,t=Date.now();const pm=b.pay==="udhar
   if(!S.demo&&S.db){const ref=S.db.doc("mbuys/"+P.id);const ok=await S.db.runTransaction?await S.db.runTransaction(async tx=>{const d=await tx.get(ref);if(d.exists)return false;tx.set(ref,doc);return true}).catch(()=>null):null;
     if(ok===false)return "have";if(ok===null){const d=await ref.get().catch(()=>null);if(d&&d.exists)return "have";await ref.set(doc)}}
   SKJ._made=(SKJ._made||[]).concat([{id:P.id,...doc}]);return "ok"};
+/* 🆕 बही से सामान बनाओ (मालिक): बिल की जो लाइन ऐप में नहीं (बारकोड/नाम से) और जिसका बेचने का भाव तय है →
+   पैकेट वाला (pp>1): खुला पीस मुख्य सामान + पैकेट (packOf, perPack, कंपनी बारकोड) · बाकी: एक सामान।
+   🔒 tob: sub "tob" + अपने-आप secret कोड (S-xx, पैकेट S-xxP), घर रैक 5। स्टॉक नहीं छूता (बिलिंग अभी शुरू नहीं)। */
+SKJ.itemPlan=function(bills){const out=[],seen=new Set();(bills||[]).forEach(b=>(b.lines||[]).forEach(l=>{const k=String(l.bc||SE.capNm(l.nm||""));if(!l.nm||seen.has(k))return;seen.add(k);
+    const have=itemFor(l);out.push({l,b,have,ok:!have&&(+l.sale>0||+l.saleOne>0),why:have?"✅ पहले से ऐप में":!(+l.sale>0||+l.saleOne>0)?"💰 बेचने का भाव बही में नहीं":""})}));return out};
+SKJ.makeItems=async function(plan){const r2=n=>Math.round((+n||0)*100)/100;let n=0;const made=[];
+  const nextS=()=>{const mx=(S.items||[]).reduce((a,x)=>{const m=/^S-(\d+)$/.exec(x.secret||"");return m?Math.max(a,+m[1]):a},0);return "S-"+String(mx+1).padStart(2,"0")};
+  for(const P of plan){if(!P.ok)continue;const l=P.l,pp=+l.pp||0,tob=!!l.tob,cat="kirana",ts=Date.now();const base=SE.capNm(String(l.nm).replace(/\s+\d+\s*$/,""));
+    const id="i"+ts.toString(36)+Math.random().toString(36).slice(2,5),code=nextCode(cat);
+    const common={hi:"",alias:"",sub:tob?"tob":"",emoji:tob?"🚬":"🛒",cat,unit:"pc",hue:Math.floor(Math.random()*360),active:true,src:"kharid-bahi",addedTs:ts,addedBy:S.uid||"",...(tob?{rack:"5-1"}:{})};
+    try{if(pp>1){const sec=tob?nextS():"";
+        const pc={...common,name:base+" 1 PC",short:(base+" 1PC").slice(0,24),secret:sec,perPack:pp,code,barcode:ean13("2000000"+code+"0"),track:true,min:pp,mrp:r2((+l.mrp||0)/pp),sale:+l.saleOne||r2((+l.sale||0)/pp),cost:r2((+l.uc||+l.rate||0)/pp),order:(S.items||[]).length+1};
+        if(!S.demo)await S.db.collection("items").doc(id).set(pc);S.items.push({id,...pc});
+        let c2=nextCode(cat);if(c2===code)c2=String(+code+1);const pid=id+"-pk";
+        const pk={...common,name:SE.capNm(l.nm),short:SE.capNm(l.nm).slice(0,24),secret:sec?sec+"P":"",packOf:id,perPack:pp,code:c2,barcode:String(l.bc||ean13("2000000"+c2+"0")),track:false,min:0,mrp:+l.mrp||0,sale:+l.sale||r2((+l.saleOne||0)*pp),cost:r2(+l.uc||+l.rate||0),order:pc.order+0.5};
+        if(!S.demo)await S.db.collection("items").doc(pid).set(pk);S.items.push({id:pid,...pk});made.push(pk.name+" + 1 PC");n+=2}
+      else{const it={...common,name:SE.capNm(l.nm),short:SE.capNm(l.nm).slice(0,24),secret:tob?nextS():"",perPack:0,code,barcode:String(l.bc||ean13("2000000"+code+"0")),track:true,min:5,mrp:+l.mrp||0,sale:+l.sale||+l.saleOne||0,cost:r2(+l.uc||+l.rate||0),order:(S.items||[]).length+1};
+        if(!S.demo)await S.db.collection("items").doc(id).set(it);S.items.push({id,...it});made.push(it.name);n++}
+      P.ok=false;P.why="🆕 बन गया";P.have=id}catch(e){P.why="नहीं बना: "+(e.code||e.message||"")}}
+  return {n,made}};
+/* 🧹 स्टॉक शून्य (मालिक — बिलिंग शुरू करने से पहले): हर सामान का स्टॉक 0, हर बदलाव stockLog में (पुराना हिसाब मिटता नहीं) */
+SKJ.zeroStock=async function(filter){const L=Object.entries(S.pstock||{}).filter(([id,v])=>v&&+v.qty!==0&&item(id)&&(!filter||filter(item(id))));let n=0;const ts=Date.now();
+  for(const [id,v] of L){const q=+v.qty||0;try{if(!S.demo){await S.db.collection("pstock").doc(id).set({qty:0,ts,by:S.uid||"",byName:typeof biller==="function"?biller():"",last:"🧹 स्टॉक शून्य (मालिक)"},{merge:true});
+      S.db.collection("stockLog").doc("z"+ts.toString(36)+n).set({itemId:id,d:-q,why:"🧹 स्टॉक शून्य (मालिक) · पहले "+q,ts,date:today(),by:S.uid||"",byName:typeof biller==="function"?biller():""}).catch(()=>{})}
+    S.pstock[id]={...v,qty:0,ts};n++}catch(e){}}return n};
 const STT={ok:"✅ ऐप में चढ़ा",diff:"⚠ चढ़ा, पर फ़र्क़",missing:"❌ ऐप में नहीं चढ़ा"};
 function resHTML(R){if(!R)return "";const n=k=>R.filter(r=>r.st===k).length;
   return `<div class="skj-k"><div class="ok"><b>${n("ok")}</b><span>✅ सही</span></div><div class="df"><b>${n("diff")}</b><span>⚠ फ़र्क़</span></div><div class="ms"><b>${n("missing")}</b><span>❌ नहीं चढ़े</span></div></div>
@@ -80,8 +105,11 @@ function planHTML(P){if(!P)return "";const n=P.filter(x=>x.st==="new"||x.st==="d
     ${x.st==="block"?`<p class="skj-w" style="margin:2px 0">ये कोड वाले सामान ऐप में नहीं मिले — ⚙️ सामान में "कोड वाला (सिगरेट-तम्बाकू)" बनाकर यही बारकोड डालें, फिर दोबारा "बही से ऐप में चढ़ाओ": ${x.tob.map(l=>esc(l.nm)+(l.bc?" ("+esc(l.bc)+")":"")).join(", ")}</p>`:""}
     ${x.nNew&&x.st!=="have"&&x.st!=="block"?`<p class="note" style="margin:2px 0">🆕 ${x.nNew} सामान ऐप में नहीं मिले — गिनते समय नए बनेंगे: ${x.lines.filter(l=>!l.itemId).map(l=>esc(l.nm)).join(", ")}</p>`:""}${x.err?`<p class="skj-w">${esc(x.err)}</p>`:""}</div>`).join("")}
   ${n?`<button type="button" class="pri big" data-skjgoimp>📥 ${n} बिल ऐप में भेजें — बिलिंग वाला साथी गिनकर पक्का करेगा</button>`:""}`}
+function itemsHTML(I){if(!I)return "";const k=I.filter(x=>x.ok).length;
+  return `<div class="skj-b">${I.map(x=>{const l=x.l,pp=+l.pp||0;return `<div class="skj-l"><b>${l.tob?"🔒 ":""}${esc(SE.capNm(l.nm))}</b> ${pp>1?`<span>खुला 1 PC ₹${esc(l.saleOne||"?")} + पैकेट ${pp} ₹${esc(l.sale||"?")}</span>`:`<span>₹${esc(l.sale||l.saleOne||"?")}</span>`}${l.bc?`<span>${esc(l.bc)}</span>`:""}<i style="font-style:normal;margin-left:4px">${esc(x.why||"🆕 बनेगा")}</i></div>`}).join("")}</div>
+  ${k?`<button type="button" class="pri big" data-skjmk>🆕 ${k} सामान ऐप में बनाओ</button>`:""}`}
 SKJ.text=R=>(R||[]).map(r=>`${STT[r.st]} — ${r.b.sup} #${r.b.no} (${r.b.date}, ₹${r.b.total})${r.m?` · ऐप: ${r.m.kind} ₹${r.m.total} by ${r.m.by}`:""}${r.rows.filter(x=>x.warn.length).map(x=>`\n   • ${x.nm}: ${x.warn.join("; ")}`).join("")}`).join("\n");
-const V={R:null,P:null};
+const V={R:null,P:null,I:null};
 SKJ.open=function(){if(!own()){toast("सिर्फ़ विक्रम जी");return}const B=LS.get("skj_b",[]);
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" id="skjSheet" role="dialog" aria-label="खरीद-जाँच"><div class="grab"></div>
   <div class="sh-head"><h3 style="font-size:17px">🔍 खरीद-जाँच — असली बिल बनाम ऐप</h3><button class="x" data-close aria-label="बंद करें">✕</button></div>
@@ -89,6 +117,7 @@ SKJ.open=function(){if(!own()){toast("सिर्फ़ विक्रम ज�
   <textarea id="skjIn" class="inp" rows="4" placeholder='{"app":"mh177-kharid","bills":[…]}' style="width:100%;font:12px monospace"></textarea>
   <div style="display:flex;gap:6px;margin:6px 0"><button type="button" class="pri big" data-skjgo>🔍 मिलान करें</button>${B.length?`<button type="button" class="big ghost" data-skjold>♻️ याद वाले ${B.length} बिल फिर जाँचें</button>`:""}</div>
   <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 0 6px"><button type="button" class="big" data-skjplan>📥 बही से ऐप में चढ़ाओ</button><button type="button" class="big ghost" data-skjcat>📤 सामान-सूची कॉपी (बही के लिए)</button></div>
+  <button type="button" class="big ghost" data-skjitems style="margin:0 0 6px">🆕 बही से नए सामान बनाओ (भाव, पैकेट, कोड — स्टॉक नहीं छूता)</button><div id="skjItems">${itemsHTML(V.I)}</div>
   <div id="skjPlan">${planHTML(V.P)}</div>
   <div id="skjOut">${resHTML(V.R)}</div></div></div>`;
   const sh=$("#sheet");
@@ -97,11 +126,19 @@ SKJ.open=function(){if(!own()){toast("सिर्फ़ विक्रम ज�
       if(!t.closest("[data-skjold]")){const m={};LS.get("skj_b",[]).concat(bills).forEach(b=>m[b.id||b.sup+b.no]=b);LS.set("skj_b",Object.values(m).slice(-400))}
       $("#skjOut").innerHTML=`<p class="note">⏳ ${bills.length} बिल मिला रहे हैं…</p>`;V.R=await SKJ.check(bills);$("#skjOut").innerHTML=resHTML(V.R);return}
     if(t.closest("[data-skjcat]")){try{await navigator.clipboard.writeText(SKJ.catalogCode());toast("✓ सामान-सूची कॉपी — खरीद-बही → ⚙️ सामान-सूची में चिपकाएँ")}catch(err){toast("कॉपी नहीं हुआ")}return}
+    if(t.closest("[data-skjitems]")){let bills;try{bills=SKJ.parse($("#skjIn").value)}catch(err){toast(err.message);return}V.I=SKJ.itemPlan(bills);$("#skjItems").innerHTML=itemsHTML(V.I);return}
+    if(t.closest("[data-skjmk]")){t.closest("[data-skjmk]").disabled=true;const r=await SKJ.makeItems(V.I||[]);$("#skjItems").innerHTML=itemsHTML(V.I);beep(true);toast("✓ "+r.n+" सामान बने — अब बही में 🧠 याद ताज़ा करें (📤 सामान-सूची कॉपी)");if(typeof renderSettings==="function")setTimeout(()=>{},0);return}
     if(t.closest("[data-skjplan]")){let bills;try{bills=SKJ.parse($("#skjIn").value)}catch(err){toast(err.message);return}$("#skjPlan").innerHTML=`<p class="note">⏳ जाँच रहे हैं…</p>`;V.P=await SKJ.plan(bills);$("#skjPlan").innerHTML=planHTML(V.P);return}
     if(t.closest("[data-skjgoimp]")){const b=t.closest("[data-skjgoimp]");b.disabled=true;let n=0,h=0;for(const P of V.P||[]){const ok=P.st==="new"||(P.st==="dup"&&S.isOwner&&($(`[data-skjforce="${P.id}"]`)||{}).checked);if(!ok)continue;
         try{const r=await SKJ.importOne(P);if(r==="ok"){P.st="made";n++}else{P.st="have";h++}}catch(err){P.err=err.code||err.message}}
       $("#skjPlan").innerHTML=planHTML(V.P);beep(true);toast(`✓ ${n} बिल ऐप में "बाज़ार खरीद" में — बिलिंग वाला गिनकर पक्का करे${h?` · ${h} पहले से थे`:""}`);return}
     if(t.closest("[data-skjcopy]")){const s=SKJ.text(V.R);try{await navigator.clipboard.writeText(s);toast("✓ कॉपी — Claude की चैट में चिपकाएँ")}catch(err){toast("कॉपी नहीं हुआ")}}}};
+SKJ.zeroHTML=()=>own()?`<div class="card2" id="skjZero"><h3 style="margin:0 0 4px">🧹 स्टॉक शून्य करें</h3><p class="note" style="margin:0 0 8px">बिलिंग शुरू करने से पहले — असली गिनती से शुरुआत के लिए। हर सामान का बदलाव स्टॉक-हिसाब में लिखा रहेगा (मिटेगा नहीं)। सिर्फ़ विक्रम जी।</p>
+  <div class="seg" style="margin-bottom:6px"><button class="chip" data-zsel="all" aria-pressed="true">सारे सामान</button><button class="chip" data-zsel="tob" aria-pressed="false">🔒 सिर्फ़ कोड वाले</button></div>
+  <input class="inp" id="zConf" placeholder='पक्का करने के लिए लिखें: शून्य' autocomplete="off"><button type="button" class="big ghost" data-zgo style="margin-top:6px">🧹 स्टॉक 0 करो</button></div>`:"";
+let ZSEL="all";document.addEventListener("click",async e=>{const z=e.target.closest("[data-zsel]");if(z){ZSEL=z.dataset.zsel;document.querySelectorAll("[data-zsel]").forEach(b=>b.setAttribute("aria-pressed",String(b===z)));return}
+  const g=e.target.closest("[data-zgo]");if(!g||!own())return;const c=document.getElementById("zConf");if(!c||c.value.trim()!=="शून्य"){toast('ऊपर "शून्य" लिखें, फिर दबाएँ');return}
+  g.disabled=true;const n=await SKJ.zeroStock(ZSEL==="tob"?(i=>typeof isTob==="function"&&isTob(i)):null);g.disabled=false;c.value="";toast("🧹 "+n+" सामान का स्टॉक 0 — अब असली गिनती चढ़ाएँ")});
 SKJ.settingsHTML=()=>own()?`<div class="card2" id="skjCard"><h3 style="margin:0 0 4px">🔍 खरीद-जाँच</h3><p class="note" style="margin:0 0 8px">Claude की खरीद-बही के असली बिल को साथियों की चढ़ाई खरीद से मिलाएँ — न चढ़ा बिल, अलग भाव/मात्रा, कम बिक्री भाव पकड़ में आएँगे।</p><button type="button" class="pri" data-skjopen>🔍 खरीद-जाँच खोलें</button></div>`:"";
 document.addEventListener("click",e=>{if(e.target.closest("[data-skjopen]"))SKJ.open()});
 const css=document.createElement("style");css.textContent=`.skj-k{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}.skj-k div{border:1.5px solid var(--line);border-radius:12px;padding:6px;text-align:center}.skj-k b{display:block;font-size:18px}.skj-k span{font-size:12px}.skj-k .ms b{color:#b91c1c}.skj-k .df b{color:#b45309}.skj-k .ok b{color:#0f766e}

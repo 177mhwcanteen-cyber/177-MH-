@@ -71,6 +71,23 @@ async def main():
         await pg.evaluate("(()=>{const it=S.items.find(i=>i.active!==false&&!i.virtual&&i.id!==item('%s').id);it.barcode='8901725120610';it.sub='tob';it.secret='S-20'})()" % pid)
         P = await pg.evaluate("SKJ.plan([{id:'kinjal-4812',sup:'KINJAL',no:'4812',date:'2026-11-07',total:4360,lines:[{nm:'CLASSIC DOUBLE BURST 20',qty:10,u:'pkt',rate:436,amt:4360,uc:436,bc:'8901725120610',tob:true}]}]).then(P=>[P[0].st,!!P[0].lines[0].itemId])")
         assert P == ["new", True], P
+        # 🆕 बही से नए सामान: खुला पीस + पैकेट, 🔒 कोड, भाव, स्टॉक नहीं छूता
+        L = """[{id:'k1',sup:'KINJAL',no:'1',date:'2026-11-07',total:1,lines:[{nm:'CLASSIC CONNECT 20',qty:10,u:'pkt',rate:395,amt:3950,uc:395,pp:20,tob:true,bc:'8901725307912',mrp:428,sale:428,saleOne:25},{nm:'GOLD FLAKE SUPER STAR MINT 10',qty:50,u:'pkt',rate:83,uc:83,pp:10,tob:true,bc:'8901725135812',mrp:89,sale:100,saleOne:12},{nm:'PANEER',qty:10,u:'kg',rate:240,uc:240}]}]"""
+        st0 = await pg.evaluate("JSON.stringify(S.pstock)")
+        P = await pg.evaluate("SKJ.itemPlan(%s).map(x=>[x.l.nm,x.ok])" % L)
+        assert P == [["CLASSIC CONNECT 20", True], ["GOLD FLAKE SUPER STAR MINT 10", True], ["PANEER", False]], P
+        r = await pg.evaluate("SKJ.makeItems(SKJ.itemPlan(%s))" % L); assert r["n"] == 4, r
+        pk = await pg.evaluate("(()=>{const p=findByCode('8901725307912');const pc=item(p.packOf);return {p:[p.name,p.perPack,p.sale,p.cost,p.secret,isTob(p),billNm(p)],c:[pc.name,pc.sale,pc.cost,pc.mrp,pc.secret,pc.unit,pc.track,pc.rack]}})()")
+        assert pk["p"][:5] == ["CLASSIC CONNECT 20", 20, 428, 395, pk["c"][4] + "P"] and pk["p"][5] and pk["p"][6].startswith("Misc Item S-"), pk
+        assert pk["c"][:4] == ["CLASSIC CONNECT 1 PC", 25, 19.75, 21.4] and pk["c"][5:] == ["pc", True, "5-1"], pk
+        assert await pg.evaluate("JSON.stringify(S.pstock)") == st0, "स्टॉक नहीं छूना"
+        assert await pg.evaluate("SKJ.itemPlan(%s)[0].ok" % L) is False
+        # 🧹 स्टॉक शून्य (मालिक, "शून्य" लिखकर)
+        await pg.evaluate("closeSheet&&closeSheet();const a=S.items.filter(i=>i.active!==false).slice(0,3);a.forEach((i,k)=>S.pstock[i.id]={qty:5+k});S.tab='set';showTab()")
+        await pg.wait_for_selector("#skjZero"); await pg.click("[data-zgo]"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("Object.values(S.pstock).some(v=>v&&+v.qty>0)"), "बिना शून्य लिखे नहीं"
+        await pg.fill("#zConf", "शून्य"); await pg.click("[data-zgo]"); await pg.wait_for_timeout(400)
+        assert not await pg.evaluate("Object.values(S.pstock).some(v=>v&&+v.qty!==0)")
         cat = await pg.evaluate("JSON.parse(SKJ.catalogCode())"); assert cat["app"] == "mh177-cat" and len(cat["items"]) > 10 and "sale" not in json.dumps(cat)
         # 💵 गल्ले से खरीद के लिए पैसा → 🔁 हिसाब (खरीद + वापस) · फ़र्क · याद
         await pg.evaluate("closeSheet&&closeSheet();S.staff='मनोहर जी';S.billsDate=today()")
