@@ -50,13 +50,15 @@ SKJ.dupOf=function(x,skip){if(!x||!(+x.total>0))return null;const L=[];const add
 SKJ.catalogCode=()=>JSON.stringify({app:"mh177-cat",v:1,ts:Date.now(),items:(S.items||[]).filter(i=>i.active!==false&&!i.virtual&&!["fast","mela"].includes(typeof mcat==="function"?mcat(i):i.cat)).map(i=>({i:i.id,n:SE.capNm(i.short||i.name||""),u:i.unit||"pc",...(+i.perPack>0?{pp:+i.perPack}:{}),...(i.packOf?{pk:i.packOf}:{})}))});
 /* 📥 बही → ऐप: हर बिल एक "बाज़ार-खरीद" (mbuys, status sent) — बिलिंग वाला साथी गिनकर पक्का करे तभी स्टॉक + खरीद बने (एक ही बार) */
 const MID=b=>"KB-"+String(b.id||"").replace(/[^A-Za-z0-9-]/g,"").slice(0,60);
-const itemFor=l=>{if(l.iid&&typeof item==="function"&&item(l.iid))return l.iid;const u=SE.capNm(l.nm||"");const it=(S.items||[]).find(i=>i.active!==false&&!i.virtual&&(SE.capNm(i.short||"")===u||SE.capNm(i.name||"")===u))||(S.items||[]).find(i=>i.active!==false&&!i.virtual&&SKJ.sim(l.nm,i.short||i.name)>=0.85);return it?it.id:""};
+const itemFor=l=>{if(l.iid&&typeof item==="function"&&item(l.iid))return l.iid;if(l.bc&&typeof findByCode==="function"){const b=findByCode(String(l.bc));if(b)return b.id}const u=SE.capNm(l.nm||"");const it=(S.items||[]).find(i=>i.active!==false&&!i.virtual&&(SE.capNm(i.short||"")===u||SE.capNm(i.name||"")===u))||(S.items||[]).find(i=>i.active!==false&&!i.virtual&&SKJ.sim(l.nm,i.short||i.name)>=0.85);return it?it.id:""};
 SKJ.plan=async function(bills){const ex=new Set();try{(window.SM&&SM.all?SM.all():[]).forEach(m=>ex.add(m.id))}catch(e){}(SKJ._made||[]).forEach(m=>ex.add(m.id));
   const out=[];for(const b of bills){const id=MID(b);let have=ex.has(id);if(!have&&!S.demo&&S.db){try{have=(await S.db.doc("mbuys/"+id).get()).exists}catch(e){}}
     const lines=(b.lines||[]).map(l=>({...l,itemId:itemFor(l)}));const dup=have?null:SKJ.dupOf({sup:b.sup,total:b.total,date:b.date,lines});
-    out.push({b,id,st:have?"have":dup?"dup":"new",dup,lines,nNew:lines.filter(l=>!l.itemId).length})}return out};
+    /* 🔒 कोड वाला (सिगरेट-तम्बाकू) सामान ऐप में न हो तो रुको — वरना गिनते समय आम "किराना" बन जाता (छपे बिल पर असली नाम!) */
+    const tob=lines.filter(l=>l.tob&&!l.itemId);
+    out.push({b,id,st:have?"have":tob.length?"block":dup?"dup":"new",dup,lines,tob,nNew:lines.filter(l=>!l.itemId).length})}return out};
 SKJ.importOne=async function(P){const b=P.b,t=Date.now();const pm=b.pay==="udhar"?"udhar":"vikram";
-  const lines=P.lines.map((l,i)=>{const r=Math.round((+l.uc||+l.rate||0)*100)/100,q=+l.qty||0;return {lid:"k"+i,bar:"",itemId:l.itemId||"",name:SE.capNm(l.nm||""),hi:"",qty:q,rate:r,mrp:0,amt:Math.round(q*r*100)/100,f:"",m:"",low:false,last:0,ai:true,seen:0}});
+  const lines=P.lines.map((l,i)=>{const r=Math.round((+l.uc||+l.rate||0)*100)/100,q=+l.qty||0;return {lid:"k"+i,bar:String(l.bc||""),itemId:l.itemId||"",name:SE.capNm(l.nm||""),hi:"",qty:q,rate:r,mrp:0,amt:Math.round(q*r*100)/100,f:"",m:"",low:false,last:0,ai:true,seen:0}});
   const total=Math.round(lines.reduce((a,l)=>a+l.amt,0)*100)/100;
   const doc={no:P.id,date:b.date||today(),ts:t,start:t,by:S.uid||"",byName:(typeof biller==="function"?biller():"")+" (खरीद-बही)",buyer:b.buyer||"",shop:String(b.sup||"").trim(),phone:String(b.phone||"").replace(/\D/g,"").slice(-10),loc:null,
     lines,n:lines.length,total,gain:0,pct:0,low:[],dear:[],bill:"",qr:"",upi:"",pay:{mode:pm,status:pm==="udhar"?"udhar":"paid",amt:total},ai:null,aiKey:"",
@@ -71,11 +73,12 @@ function resHTML(R){if(!R)return "";const n=k=>R.filter(r=>r.st===k).length;
     ${r.m?`<p class="note" style="margin:2px 0">ऐप में: ${esc(r.m.kind)} · ${esc(r.m.sup)} · ${fdate?fdate(r.m.date):r.m.date} · ${rs(r.m.total)} · चढ़ाया ${esc(r.m.by||"—")}${Math.abs(r.m.total-r.b.total)>2?` · <b class="skj-w">रकम में फ़र्क़ ${rs(Math.round((r.m.total-r.b.total)*100)/100)}</b>`:""}</p>`:`<p class="skj-w" style="margin:2px 0">यह बिल किसी साथी ने ऐप में नहीं चढ़ाया — स्टॉक और हिसाब अधूरा है।</p>`}
     ${r.rows.filter(x=>x.warn.length).map(x=>`<div class="skj-l"><b>${esc(x.nm)}</b> ${x.warn.map(w=>`<span>${esc(w)}</span>`).join("")}</div>`).join("")}</div>`).join("")}
   <button type="button" class="big ghost" data-skjcopy>📋 नतीजा कॉपी करें (Claude को भेजें)</button>`}
-const PST={new:"🆕 चढ़ेगा",have:"✅ पहले से ऐप में (दोबारा नहीं)",dup:"⚠ लगता है पहले से चढ़ा",made:"📥 भेज दिया — गिनना बाकी"};
+const PST={block:"🔒 पहले कोड वाला सामान बनाएँ",new:"🆕 चढ़ेगा",have:"✅ पहले से ऐप में (दोबारा नहीं)",dup:"⚠ लगता है पहले से चढ़ा",made:"📥 भेज दिया — गिनना बाकी"};
 function planHTML(P){if(!P)return "";const n=P.filter(x=>x.st==="new"||x.st==="dup").length;
   return `${P.map(x=>`<div class="skj-b ${x.st==="dup"?"diff":x.st==="new"?"":"ok"}"><div class="skj-h"><b>${esc(x.b.sup)} #${esc(x.b.no)}</b><span>${esc(x.b.date)} · ${rs(x.b.total)}${x.b.buyer?" · 🛒 "+esc(x.b.buyer):""}</span><i>${PST[x.st]||""}</i></div>
     ${x.st==="dup"?`<p class="skj-w" style="margin:2px 0">यह बिल ऐप में मिलता-जुलता है: ${esc(x.dup.txt)}</p>${S.isOwner?`<label class="note"><input type="checkbox" data-skjforce="${esc(x.id)}"> फिर भी चढ़ाओ (मालिक की अनुमति)</label>`:""}`:""}
-    ${x.nNew&&x.st!=="have"?`<p class="note" style="margin:2px 0">🆕 ${x.nNew} सामान ऐप में नहीं मिले — गिनते समय नए बनेंगे: ${x.lines.filter(l=>!l.itemId).map(l=>esc(l.nm)).join(", ")}</p>`:""}${x.err?`<p class="skj-w">${esc(x.err)}</p>`:""}</div>`).join("")}
+    ${x.st==="block"?`<p class="skj-w" style="margin:2px 0">ये कोड वाले सामान ऐप में नहीं मिले — ⚙️ सामान में "कोड वाला (सिगरेट-तम्बाकू)" बनाकर यही बारकोड डालें, फिर दोबारा "बही से ऐप में चढ़ाओ": ${x.tob.map(l=>esc(l.nm)+(l.bc?" ("+esc(l.bc)+")":"")).join(", ")}</p>`:""}
+    ${x.nNew&&x.st!=="have"&&x.st!=="block"?`<p class="note" style="margin:2px 0">🆕 ${x.nNew} सामान ऐप में नहीं मिले — गिनते समय नए बनेंगे: ${x.lines.filter(l=>!l.itemId).map(l=>esc(l.nm)).join(", ")}</p>`:""}${x.err?`<p class="skj-w">${esc(x.err)}</p>`:""}</div>`).join("")}
   ${n?`<button type="button" class="pri big" data-skjgoimp>📥 ${n} बिल ऐप में भेजें — बिलिंग वाला साथी गिनकर पक्का करेगा</button>`:""}`}
 SKJ.text=R=>(R||[]).map(r=>`${STT[r.st]} — ${r.b.sup} #${r.b.no} (${r.b.date}, ₹${r.b.total})${r.m?` · ऐप: ${r.m.kind} ₹${r.m.total} by ${r.m.by}`:""}${r.rows.filter(x=>x.warn.length).map(x=>`\n   • ${x.nm}: ${x.warn.join("; ")}`).join("")}`).join("\n");
 const V={R:null,P:null};

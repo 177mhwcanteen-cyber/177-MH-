@@ -65,6 +65,12 @@ async def main():
         # साथी की हाथ वाली खरीद में वही बिल = रुकेगा
         assert await pg.evaluate("!!SKJ.dupOf({sup:'MAJISHA',total:18401,date:'2026-11-05',lines:[]})")
         assert not await pg.evaluate("SKJ.dupOf({sup:'MAJISHA',total:999,date:'2026-11-05',lines:[]})")
+        # 🔒 कोड वाला सामान ऐप में नहीं = रुको · बारकोड से मिल जाए = चढ़े
+        P = await pg.evaluate("SKJ.plan([{id:'kinjal-4812',sup:'KINJAL',no:'4812',date:'2026-11-07',total:4360,lines:[{nm:'CLASSIC DOUBLE BURST 20',qty:10,u:'pkt',rate:436,amt:4360,uc:436,bc:'8901725120610',tob:true}]}]).then(P=>P.map(x=>x.st))")
+        assert P == ["block"], P
+        await pg.evaluate("(()=>{const it=S.items.find(i=>i.active!==false&&!i.virtual&&i.id!==item('%s').id);it.barcode='8901725120610';it.sub='tob';it.secret='S-20'})()" % pid)
+        P = await pg.evaluate("SKJ.plan([{id:'kinjal-4812',sup:'KINJAL',no:'4812',date:'2026-11-07',total:4360,lines:[{nm:'CLASSIC DOUBLE BURST 20',qty:10,u:'pkt',rate:436,amt:4360,uc:436,bc:'8901725120610',tob:true}]}]).then(P=>[P[0].st,!!P[0].lines[0].itemId])")
+        assert P == ["new", True], P
         cat = await pg.evaluate("JSON.parse(SKJ.catalogCode())"); assert cat["app"] == "mh177-cat" and len(cat["items"]) > 10 and "sale" not in json.dumps(cat)
         # 💵 गल्ले से खरीद के लिए पैसा → 🔁 हिसाब (खरीद + वापस) · फ़र्क · याद
         await pg.evaluate("closeSheet&&closeSheet();S.staff='मनोहर जी';S.billsDate=today()")
