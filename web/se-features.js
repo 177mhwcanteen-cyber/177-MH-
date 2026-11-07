@@ -268,6 +268,10 @@ async function savePurchase(){
   if(!sup){const sid="s"+uid(),d={name:shop,phone:ph.length===10?ph:"",ts:Date.now(),lastTs:Date.now(),by:S.uid||"",byName:biller()};
     if(!S.demo)S.db.collection("suppliers").doc(sid).set(d).catch(()=>{});sup={id:sid,...d};S.suppliers.unshift(sup)}
   const net=pNet(),disc=r2(gross-net),f=gross>0?net/gross:1;
+  /* 🛡️ दोहरी एंट्री: यही बिल (दुकान + रकम + 3 दिन) पहले से चढ़ा है? साथी = रुको, मालिक = दोबारा दबाकर ही */
+  {const pd0=P.day==="yday"?dayAdd(today(),-1):today(),dup=window.SKJ&&SKJ.dupOf?SKJ.dupOf({sup:shop,total:net,date:pd0,lines:P.lines.map(l=>({nm:l.id&&item(l.id)?item(l.id).name:l.name}))}):null;
+    if(dup&&!(S.isOwner&&P._dupOk===dup.id)){S.saving=false;if(S.isOwner){P._dupOk=dup.id;toast("⚠ यह बिल शायद पहले से चढ़ा है: "+dup.txt+" — फिर भी चढ़ाना है तो दोबारा दबाएँ")}
+      else toast("⛔ यह बिल पहले से चढ़ा है: "+dup.txt+" — दोबारा सिर्फ़ विक्रम जी की अनुमति से");beep(false);return}}
   const ts=Date.now(),id="p"+uid(),paid=P.pay==="udhar"?Math.min(num(P.paid),net):net;
   // छूट हर सामान में बराबर हिस्से से — ताकि स्टॉक की लागत असली रहे
   const lines=P.lines.map(l=>{const it=l.id?item(l.id):null;const lr=it?lastRate(it.id):null;const amt=lAmt(l);

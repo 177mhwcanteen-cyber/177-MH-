@@ -198,6 +198,7 @@ SM.watch=function(){if(S.demo||!S.db||!S.uid)return;
     if(!un2&&!S.isOwner)un2=S.db.collection("mbuys").where("status","==","sent").limit(40).onSnapshot(s=>set(map(s),2),()=>{})}catch(e){}};
 function all(){const m=new Map();[...LIST,...SENT].forEach(b=>m.set(b.id,b));return [...m.values()].sort((a,b)=>(b.ts||0)-(a.ts||0))}
 SM.pendingPay=()=>LIST.filter(b=>b.pay&&b.pay.status==="pending").length;
+SM.all=()=>all();
 SM.toRecv=()=>all().filter(b=>b.status==="sent"&&(S.isOwner||b.by!==S.uid)).length;
 /* मालिक की लाइव रिपोर्ट के लिए: आज की खरीद में फर्क / कम फायदा / भुगतान बाकी */
 SM.warns=function(date){const w=[];all().filter(b=>b.date===date).forEach(b=>{if(b.recv&&b.recv.diff&&b.recv.diff.length)w.push(`🛍️ ${b.no} (${b.byName||""} → ${b.recv.byName||""}): ${b.recv.diff.join(", ")}`);

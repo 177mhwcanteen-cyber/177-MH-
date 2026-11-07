@@ -48,6 +48,24 @@ async def main():
         assert R == [["5639", "diff", "p1"], ["5703", "missing", None], ["77", "ok", "m1"]], R
         await pg.screenshot(path=f"{SHOTS}/k1-check.png", full_page=True)
         assert await pg.evaluate("JSON.parse(localStorage.getItem('skj_b')).length") == 3
+        # 📥 बही → ऐप (बाज़ार-खरीद, गिनना बाकी) · 🛡️ दोहरी एंट्री रोक
+        await pg.evaluate("S.purchHist=[{id:'p1',date:'2026-11-04',supName:'Majisha Disposal',total:18401,byName:'मनोज',lines:[{name:'PAPER PLATE 8IN'}]}]")
+        await pg.click("[data-skjplan]"); await pg.wait_for_timeout(400)
+        P = await pg.evaluate("SKJ._P=null,(async()=>{const P=await SKJ.plan(%s.bills);return P.map(x=>[x.b.no,x.st,x.lines.map(l=>l.itemId?1:0)])})()" % json.dumps(CODE))
+        assert P[0][:2] == ["5639", "dup"] and P[1][:2] == ["5703", "new"] and P[2][:2] == ["77", "new"] and P[0][2] == [0, 1], P
+        t = await pg.inner_text("#skjPlan"); assert "लगता है पहले से चढ़ा" in t and "फिर भी चढ़ाओ" in t, t[:300]
+        await pg.click("[data-skjgoimp]"); await pg.wait_for_timeout(500)
+        M = await pg.evaluate("SKJ._made.map(m=>[m.no,m.status,m.by===S.uid||m.by===''])")
+        assert M == [["KB-majisha-5703", "sent", True], ["KB-x-1", "sent", True]], M
+        P = await pg.evaluate("SKJ.plan(%s.bills).then(P=>P.map(x=>x.st))" % json.dumps(CODE))
+        assert P == ["dup", "have", "have"], P
+        # मालिक की अनुमति से ही दोहरा
+        await pg.click("[data-skjplan]"); await pg.wait_for_timeout(300); await pg.check('[data-skjforce="KB-majisha-5639"]'); await pg.click("[data-skjgoimp]"); await pg.wait_for_timeout(400)
+        assert await pg.evaluate("SKJ._made.length") == 3
+        # साथी की हाथ वाली खरीद में वही बिल = रुकेगा
+        assert await pg.evaluate("!!SKJ.dupOf({sup:'MAJISHA',total:18401,date:'2026-11-05',lines:[]})")
+        assert not await pg.evaluate("SKJ.dupOf({sup:'MAJISHA',total:999,date:'2026-11-05',lines:[]})")
+        cat = await pg.evaluate("JSON.parse(SKJ.catalogCode())"); assert cat["app"] == "mh177-cat" and len(cat["items"]) > 10 and "sale" not in json.dumps(cat)
         await pg.evaluate("S.isOwner=false;S.demo=false"); assert await pg.evaluate("SKJ.settingsHTML()") == ""
         await br.close()
     assert not errs, errs
