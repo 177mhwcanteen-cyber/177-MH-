@@ -6,10 +6,16 @@
 ## 🔁 दूसरे Claude खाते से काम? पहले `docs/खरीद-बही/README.md` पढ़ें
 खरीद-बही (आर्टिफैक्ट), खरीद-भाव रजिस्टर (Google Sheet), उनके लिंक, ढाँचा, डेटा की नकल (`docs/खरीद-बही/data/`), "अभी की हालत" और "बाकी सवाल" — सब वहीं। काम खत्म करने से पहले वह README और data/ ताज़ा करके push करें।
 
+## 🏢 संस्था-पहरा — 177 MH और भैरव का डेटा कभी न मिले (07-11-2026)
+यह रिपो **177 MH** है (`web/config.js` → `org: "mh177"`, Firebase `mh177-canteen`)। भैरव = रिपो `bhairav-canteen-app` (`org: "bhairav"`)।
+सुधार (कोड) भैरव में ले जा सकते हैं — 3-तरफ़ा merge से, भैरव का नाम/श्रेणी/UPI बचाकर; **डेटा कभी नहीं** (migrate.json, web/data, web/p, docs/खरीद-बही, रैक-नक्शा)।
+`migrate.json._org`, खेप/बही-कोड का `org` — दूसरी संस्था का हो तो ऐप नहीं चढ़ाता; `scripts/org-guard.mjs` build रोकता है; जाँच `tests/org.py`।
+📏 GitHub सीमा: docs/टेस्ट पर build नहीं, APK सिर्फ़ Android बदलने पर, पुरानी रिलीज़ 5 से ज़्यादा नहीं, फोटो ≤20 KB, web/ ≤800 MB।
+
 ## पत्थर के नियम (कभी न तोड़ें)
 1. **पुराना डेटा कभी न मिटे, न बदले।** migrate.json सिर्फ़ जोड़ता है (जो doc है उसे छोड़ता है); भाव भरने हों तो सिर्फ़ "_upd" {from,to} (applyUpd — अभी का मान from हो तभी, priceLog में)। पुराना सामान हटाना हो तो `active:false` (replaces से), delete नहीं।
 2. **काम शुरू करने से पहले `git pull --rebase`** — दूसरा Claude/चैट भी इसी repo में push करता है। push से पहले फिर pull।
-3. **बदलाव के बाद:** `node scripts/build.mjs` → `python3 tests/e2e.py www <shots-dir>` (लेबल छुआ तो `tests/label.py`, बिल की छपाई छुई तो `tests/receipt.py`, फ़ेवरेट/डैशबोर्ड/पॉइंट/याद/AI चाबी छुई तो `tests/quick.py`, ऑनलाइन दुकान छुई तो `tests/online.py`, फोटो छुई तो `tests/photo.py`, बारकोड-पहरा/स्कैन-गिनती छुई तो `tests/bcode.py`, रैक/भाव-पट्टी छुई तो `tests/rack.py`, खरीद-जाँच छुई तो `tests/kharid.py`, GitHub खेप/सामान चढ़ाना छुआ तो `tests/packs.py` भी) — "✅ पूरा टेस्ट पास" आए तभी commit/push। हर टैब बिना JS error खुले।
+3. **बदलाव के बाद:** `node scripts/build.mjs` → `python3 tests/e2e.py www <shots-dir>` (लेबल छुआ तो `tests/label.py`, बिल की छपाई छुई तो `tests/receipt.py`, फ़ेवरेट/डैशबोर्ड/पॉइंट/याद/AI चाबी छुई तो `tests/quick.py`, ऑनलाइन दुकान छुई तो `tests/online.py`, फोटो छुई तो `tests/photo.py`, बारकोड-पहरा/स्कैन-गिनती छुई तो `tests/bcode.py`, रैक/भाव-पट्टी छुई तो `tests/rack.py`, खरीद-जाँच छुई तो `tests/kharid.py`, GitHub खेप/सामान चढ़ाना छुआ तो `tests/packs.py`, संस्था-पहरा छुआ तो `tests/org.py` भी) — "✅ पूरा टेस्ट पास" आए तभी commit/push। हर टैब बिना JS error खुले।
 4. Gemini चाबी कोड/GitHub में कभी नहीं — मालिक की चाबी Firebase `ownerCfg/ai.gk` में (साथी नहीं पढ़ सकते); `settings/main.gk` सिर्फ़ तब जब मालिक "साथियों को सीधा AI" चालू करें या Apps Script न हो।
 11. `S` (index.html) `const` है — दूसरे मॉड्यूल में `window.S` कभी नहीं, `typeof S` से जाँचें (इसी गलती से ऑर्डर/बैकअप बंद पड़े थे)। नया मॉड्यूल नाम चुनने से पहले `grep window.<नाम>` करें।
 5. हर छोटी जगह का अच्छा उपयोग (compact), अच्छे ग्राफिक्स; हर नए सामान की टाइल अपने-आप सुंदर (art()/फोटो)।
