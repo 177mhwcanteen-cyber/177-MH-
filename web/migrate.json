@@ -2411,6 +2411,16 @@
    "lastTs": 1794053000000,
    "by": "",
    "byName": "Claude (खरीद-बही)"
+  },
+  "s-pankaj": {
+   "name": "Pankaj Agency",
+   "phone": "",
+   "upi": "Q56991793@ybl",
+   "addr": "बाड़मेर",
+   "ts": 1794059000000,
+   "lastTs": 1794059000000,
+   "by": "",
+   "byName": "Claude (खरीद-बही)"
   }
  },
  "purchases": {
@@ -2737,6 +2747,50 @@
    "photos": [],
    "photoPending": 0,
    "cancelled": false
+  },
+  "p-pankaj-20261105": {
+   "date": "2026-11-05",
+   "ts": 1794059000000,
+   "by": "",
+   "byName": "Claude (खरीद-बही)",
+   "buyer": "स्वरूप जी",
+   "supId": "s-pankaj",
+   "supName": "Pankaj Agency",
+   "supPhone": "",
+   "lines": [
+    {
+     "id": "t-nevla-pk",
+     "name": "Nevla Tambaku पैकेट (8 पाउच)",
+     "unit": "pc",
+     "qty": 45,
+     "rate": 126.67,
+     "amt": 5700,
+     "billAmt": 5700,
+     "prev": 0
+    },
+    {
+     "id": "t-vimal-pk",
+     "name": "Vimal Pan Masala पैकेट (22 पाउच)",
+     "unit": "pc",
+     "qty": 55,
+     "rate": 176.36,
+     "amt": 9700,
+     "billAmt": 9700,
+     "prev": 0
+    }
+   ],
+   "gross": 15400,
+   "disc": 0,
+   "total": 15400,
+   "pay": "vikram",
+   "paid": 15400,
+   "due": 0,
+   "src": "shop",
+   "noStock": true,
+   "note": "हाथ की पर्ची: नेवला 1 कट्टा ₹5,700 (45 पैकेट × 8 पाउच) + विमल 1 कट्टा ₹9,700 (55 पैकेट × 22 पाउच) · खरीदा: स्वरूप जी · UPI ₹15,400 → Pankaj agency (05-11 3:14 PM) · 📒 Claude खरीद-बही · स्टॉक नहीं जोड़ा",
+   "photos": [],
+   "photoPending": 0,
+   "cancelled": false
   }
  },
  "batches": {
@@ -2899,6 +2953,34 @@
     "cost": {
      "from": 414.82,
      "to": 436
+    }
+   },
+   "t-nevla-pk": {
+    "cost": {
+     "from": 0,
+     "to": 126.67
+    }
+   },
+   "t-nevla": {
+    "cost": {
+     "from": 0,
+     "to": 15.83
+    },
+    "sale": {
+     "from": 0,
+     "to": 20
+    }
+   },
+   "t-vimal-pk": {
+    "cost": {
+     "from": 0,
+     "to": 176.36
+    }
+   },
+   "t-vimal": {
+    "cost": {
+     "from": 0,
+     "to": 8.02
     }
    }
   }

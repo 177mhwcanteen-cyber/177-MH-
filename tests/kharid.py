@@ -71,6 +71,10 @@ async def main():
         await pg.evaluate("(()=>{const it=S.items.find(i=>i.active!==false&&!i.virtual&&i.id!==item('%s').id);it.barcode='8901725120610';it.sub='tob';it.secret='S-20'})()" % pid)
         P = await pg.evaluate("SKJ.plan([{id:'kinjal-4812',sup:'KINJAL',no:'4812',date:'2026-11-07',total:4360,lines:[{nm:'CLASSIC DOUBLE BURST 20',qty:10,u:'pkt',rate:436,amt:4360,uc:436,bc:'8901725120610',tob:true}]}]).then(P=>[P[0].st,!!P[0].lines[0].itemId])")
         assert P == ["new", True], P
+        # 🏷️ बारकोड सबसे पहले: नाम अलग + ग़लत iid हो तब भी बारकोड वाला सामान
+        P = await pg.evaluate("(()=>{const o=S.items.find(i=>i.barcode==='8901725120610'),w=S.items.find(i=>i.active!==false&&!i.virtual&&i.id!==o.id);return SKJ.plan([{id:'zz-1',sup:'OTHER',no:'9',date:'2026-11-07',total:1,lines:[{nm:'WILLS DB TWENTY',iid:w.id,qty:1,u:'pkt',rate:1,amt:1,bc:'8901725120610'}]}]).then(P=>P[0].lines[0].itemId===o.id)})()")
+        assert P is True, P
+        assert await pg.evaluate("JSON.parse(SKJ.catalogCode()).items.some(x=>x.b==='8901725120610')")
         # 🆕 बही से नए सामान: खुला पीस + पैकेट, 🔒 कोड, भाव, स्टॉक नहीं छूता
         L = """[{id:'k1',sup:'KINJAL',no:'1',date:'2026-11-07',total:1,lines:[{nm:'CLASSIC CONNECT 20',qty:10,u:'pkt',rate:395,amt:3950,uc:395,pp:20,tob:true,bc:'8901725307912',mrp:428,sale:428,saleOne:25},{nm:'GOLD FLAKE SUPER STAR MINT 10',qty:50,u:'pkt',rate:83,uc:83,pp:10,tob:true,bc:'8901725135812',mrp:89,sale:100,saleOne:12},{nm:'PANEER',qty:10,u:'kg',rate:240,uc:240}]}]"""
         st0 = await pg.evaluate("JSON.stringify(S.pstock)")
