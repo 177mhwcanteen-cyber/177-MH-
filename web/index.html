@@ -2343,6 +2343,7 @@ function renderSettings(){
   ${window.SRK?SRK.settingsHTML():""}
   ${window.SKJ?SKJ.settingsHTML():""}
   ${window.SKJ&&SKJ.zeroHTML?SKJ.zeroHTML():""}
+  ${window.SPK?SPK.html():""}
   ${window.SA?SA.bkHTML():""}
   ${window.SRc?SRc.settingsHTML():""}
   ${window.SF?SF.labelSettingsHTML():""}
@@ -2366,7 +2367,7 @@ function renderSettings(){
   <input type="file" id="photoIn" accept="image/*" hidden>
   <h3 style="margin:0 0 6px">रेट बदलने का रिकॉर्ड</h3><p class="note" style="margin:0 0 8px">किसने, कब, कौन सा रेट बदला — पिछले 30 बदलाव।</p>
   <div class="list">${S.priceLog.length?S.priceLog.map(l=>`<div class="li"><div class="mid"><b>${esc(l.name)} · ${l.field==="sale"?"बिक्री":"खरीद"} रेट</b><span>${fdate(today(new Date(l.ts)))} ${ftime(l.ts)} · ${esc(l.byName||"")}</span></div><div class="rt">${rs(l.old)} → ${rs(l.new)}</div></div>`).join(""):'<div class="empty">अभी कोई बदलाव दर्ज नहीं</div>'}</div>`;
-;niSubFill();setTimeout(setNav,0)}
+;niSubFill();setTimeout(setNav,0);if(window.SPK)setTimeout(SPK.info,60)}
 /* 🧭 सेटिंग लंबी है — ऊपर "सीधे जाएँ" पट्टी: हर हिस्से का चिह्न + 1-2 शब्द, टैप = वहीं पहुँचें (कुछ छिपता नहीं) */
 function setNav(){const P=$("#p-set");if(!P)return;const old=P.querySelector(".snav");if(old)old.remove();
   const H=[...P.querySelectorAll(":scope > .card2 > h3, :scope > h3, :scope > details > summary")].filter(h=>h.textContent.trim());
@@ -2453,7 +2454,7 @@ function updBoxHTML(){return `<div class="updbox"><button class="big upd" data-u
 async function runUpdate(){const B=[...document.querySelectorAll("[data-updnow]")];if(B.some(b=>b.disabled))return;
   if(S.saving){toast("बिल सेव हो रहा है — एक पल रुकें");return}
   const say=(m,k,pc)=>{document.querySelectorAll(".updbox").forEach(x=>{const ms=x.querySelector(".updmsg"),bar=x.querySelector(".updbar"),bt=x.querySelector("[data-updnow]");if(ms){ms.textContent=m;ms.style.color=k==="bad"?"var(--chili)":k==="ok"?"var(--leaf)":""}if(bar){bar.hidden=pc==null;if(pc!=null)bar.firstElementChild.style.width=pc+"%"}if(bt)bt.disabled=!(k==="bad"||k==="ok")})};
-  await SE.updateNow(say);if(S.isOwner&&!S.demo)autoNewData(true)}
+  await SE.updateNow(say);if(S.isOwner&&!S.demo){autoNewData(true);if(window.SPK)SPK.apply()}}
 /* मालिक का फ़ोन: नए संस्करण में आया नया सामान/खरीद (migrate.json) अपने-आप जोड़ो — सिर्फ़ जोड़ना, पहले वाला कभी नहीं बदलता/मिटता।
    कर्मचारियों के फ़ोन में वही सामान Firebase से तुरंत आ जाता है। */
 /* नई रेट-लिस्ट वाला सामान पुराने को सिर्फ़ छिपाता है (active:false) — मिटता कुछ नहीं, पुराने बिल वैसे ही */
@@ -2527,6 +2528,7 @@ async function boot(){
   if(S.isOwner)db.collection("staff").onSnapshot(s=>{S.staffDocs=s.docs.map(d=>({id:d.id,...d.data()}));setSoon()},()=>{});
   setTimeout(()=>SE.checkUpdate(toast),4000);SE.autoUpdateLoop(toast);if(window.SM)SM.watch();SE.beforeUpdate=()=>{try{syncTab()}catch(e){}};
   if(S.isOwner&&!S.demo)setTimeout(autoNewData,6000);
+  if(S.isOwner&&!S.demo&&window.SPK)setTimeout(()=>SPK.apply(),9000);
   const sortItems=a=>a.sort((x,y)=>(x.order??999)-(y.order??999)||x.name.localeCompare(y.name,"hi"));
   db.collection("items").onSnapshot(s=>{S.items=sortItems(s.docs.map(d=>({id:d.id,...d.data()})));if(window.SR)SR.addVirtual();if(S.isOwner&&window.SF&&S.items.some(i=>!i.plu))SF.ensurePLU();S.cart.forEach(l=>{const it=item(l.id);if(it&&!l.changed&&!l.free){l.board=priceOf(it);l.rate=l.board;l.cost=+it.cost||0;l.amt=r2(l.qty*l.rate)}});paneSoon();renderCart()},()=>toast("सामान की लिस्ट लोड नहीं हुई"));
   db.doc("settings/main").onSnapshot(s=>{S.settings=s.exists?s.data():{};checkLock();if(S.tab!=="set")paneSoon()});
@@ -2573,6 +2575,7 @@ boot();
 <script src="se-bcode.js"></script>
 <script src="se-rack.js"></script>
 <script src="se-kharid.js"></script>
+<script src="se-packs.js"></script>
 <script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>
