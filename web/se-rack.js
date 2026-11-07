@@ -210,6 +210,7 @@ function body(){chk();const R=SRK.racks(),none=act().filter(i=>!SRK.norm(i.rack)
   ${R.some(x=>!SRK.parse(x.r))?`<p class="note">पुराने नाम: ${R.filter(x=>!SRK.parse(x.r)).map(x=>`<button type="button" class="chip" data-srksel="${esc(x.r)}">${esc(x.r)} ${x.n}</button>`).join(" ")}</p>`:""}
   ${V.sel?rackDetail():""}
   ${isOwn()?`<div class="srk-rp"><b>📊 रैक का हिसाब + 🧠 सुझाव</b><div class="srk-tl">${[7,15,30].map(d=>`<button type="button" class="srk-b${V.rep===d?" pri":""}" data-srkrep="${d}">${d} दिन</button>`).join("")}</div><div id="srkRep">${V.repD?repHTML(V.repD):`<p class="note" style="margin:0">दिन चुनें — हर रैक की बिक्री, किस साथी ने बेचा, स्टॉक-मूल्य, और 10 दिन की बिक्री के बाद जगह बदलने के सुझाव।</p>`}</div></div>`:""}
+  ${isOwn()?`<details class="srk-im"${V.imp?" open":""}><summary>📥 AI से आई रैक-सूची चिपकाएँ (ZIP v4.8)</summary><textarea id="srkImp" class="inp" rows="5" placeholder='{"items":[{"barcode":"8901786140503","rack":"6-4"}]}  या हर लाइन: बारकोड,6-4' style="font:12.5px monospace;width:100%">${esc(V.impT||"")}</textarea><button type="button" class="srk-b pri" data-srkimp>📍 जगह लगाएँ</button><div id="srkImpR">${V.impR||""}</div></details>`:""}
   <button type="button" class="big ghost srk-ab" data-srkaud aria-expanded="${V.aud}">🧭 सही जगह — बिखरा सामान एक जगह ${V.aud?"▲":"▼"}</button>${V.aud?audHTML():""}
   ${isOwn()?`<div class="srk-pb"><button type="button" class="big" data-srkall ${act().some(i=>SRK.norm(i.rack))?"":"disabled"}>🏷️ सारी भाव-पट्टी (${act().filter(i=>SRK.norm(i.rack)).length} सामान)</button>
     ${ch.length?`<button type="button" class="big ghost" data-srkch>🔁 भाव बदले — ${ch.length} पट्टी दोबारा छापें</button>`:""}
@@ -257,6 +258,23 @@ SRK.checklistHTML=function(){chk();return `<style>.cl{display:grid;grid-template
   <div class="cl">${RL.map(d=>`<div class="cb"><h3><b>${d.r}</b>${esc(d.nm)}${d.g?" (अंदर)":""}</h3><p>${d.n} ${d.g?"पटरी":"खाने"} · ${esc(d.keep)}</p><div class="g">${SRK.codesOf(d.r).map(c=>`<span>☐ ${c}</span>`).join("")}<span>☐ बोर्ड</span></div></div>`).join("")}</div>
   <p style="font:10pt sans-serif">छूटा खाना मिले तो: ऐप → 📍 रैक → वह रैक → ＋1 → "नए खानों के स्टिकर"।</p>`};
 SRK.checklist=async function(){try{await SE.printA4("चिपकाने की सूची",SRK.checklistHTML())}catch(e){toast("प्रिंट नहीं हुआ");return 0}return 1};
+/* 📥 AI (ZIP v4.8) से आई रैक-सूची: {"items":[{barcode|key|code|name, rack, rackConf}], "racks":[{rack, thumb}]} या "बारकोड,11-23" लाइनें
+   मिलान: बारकोड → 4 अंक कोड → पूरा नाम। सिर्फ़ नक्शे वाले खाने; जिसकी जगह पहले से अलग है उसे बदलता है (मालिक), हर बदलाव meta/rack में। */
+SRK.importText=async function(txt){txt=String(txt||"");let L=[],racks=[];
+  try{let t=txt;const f=t.match(/```(?:json)?\s*([\s\S]*?)```/);if(f)t=f[1];const a=t.indexOf("{"),a2=t.indexOf("["),st=a2>-1&&(a<0||a2<a)?a2:a;if(st<0)throw 0;
+    const j=JSON.parse(t.slice(st,t.lastIndexOf(st===a2?"]":"}")+1).replace(/[“”]/g,'"'));L=Array.isArray(j)?j:(j.items||[]);racks=Array.isArray(j.racks)?j.racks:[]}
+  catch(e){L=txt.split(/\n+/).map(l=>l.split(/[,\t;|]+/).map(x=>x.trim())).filter(x=>x.length>=2).map(x=>({key:x[0],rack:x[x.length-1]}))}
+  const R0={ok:0,same:0,bad:[],miss:[],low:[],ph:0};const log=[];
+  for(const x of L){if(!x)continue;const rc=SRK.canon(x.rack||"");const p=SRK.parse(rc);const nm=String(x.short||x.name||x.key||x.barcode||"").slice(0,40);
+    if(!rc)continue;if(!p||!p.known){R0.bad.push(nm+" ("+(x.rack||"")+")");continue}
+    const keys=[x.barcode,x.key,x.gtin].map(v=>String(v||"").trim()).filter(Boolean);let it=null;for(const k of keys){it=findByCode(k);if(it)break}
+    if(!it&&x.code)it=act().find(i=>String(i.code)===String(x.code));
+    if(!it&&nm){const u=SE.capNm(nm);it=act().find(i=>SE.capNm(i.short||"")===u||SE.capNm(i.name||"")===u)}
+    if(!it){R0.miss.push(nm);continue}if(SRK.canon(it.rack)===p.code){R0.same++;continue}
+    const old=SRK.canon(it.rack);if(await setLoc(it.id,p.code)){R0.ok++;log.push({id:it.id,from:old,to:p.code,src:"ai"});if(String(x.rackConf||"").toLowerCase()==="low")R0.low.push(NM(it)+" "+p.code)}}
+  for(const r of racks){const n=+String(r&&r.rack||"").replace(/\D.*$/,"");const u=r&&r.thumb;if(!RK[n]||!/^data:image\//.test(String(u||"")))continue;
+    try{const sp=String(u).split(","),bin=atob(sp[1]||""),ar=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)ar[i]=bin.charCodeAt(i);const b=new Blob([ar],{type:(sp[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg"});if(window.SPH&&SPH.save){await SPH.save("rk_"+n,b);R0.ph++}}catch(e){}}
+  logMoves(log);return R0};
 function audHTML(){const A=SRK.audit(),n=A.move.length+A.none.length;
   return `<div class="srk-au"><p class="note" style="margin:0 0 6px">हर किस्म का एक पक्का घर (दुनिया के वेयरहाउस/मेडिकल स्टोर जैसा): ग्राहक-साथी को कभी ढूँढना न पड़े। लाल = घर से बाहर रखा सामान।</p>
   ${A.groups.map(g=>`<div class="srk-ag${g.out?" bad":""}"><b>${esc(g.t)}</b><span>${g.n} सामान · घर <button type="button" class="chip" data-srksel="${g.r}">रैक ${g.r}</button>${g.spots>1?` · <i>${g.spots} जगह बिखरा</i>`:""}${g.out?` · <i>${g.out} बाहर</i>`:""}</span></div>`).join("")}
@@ -276,6 +294,8 @@ SRK.open=function(sel){V.open=true;if(sel)V.sel=SRK.norm(sel);
     if((b=g("[data-srkrm]"))){if(await clearLoc(b.dataset.srkrm,b.dataset.f||"rack"))draw();return}
     if((b=g("[data-srkpr]"))){const L=SRK.of(b.dataset.srkpr).filter(i=>SRK.norm(i.rack));SRK.print(L,"खाने की भाव-पट्टी · रैक "+b.dataset.srkpr);return}
     if((b=g("[data-srkstk]"))){SRK.stickers(SRK.codesOf(+b.dataset.srkstk));return}
+    if(g("[data-srkimp]")){V.imp=true;V.impT=$("#srkImp").value;const r=await SRK.importText(V.impT);
+      V.impR=`<p class="srk-ok">✓ ${r.ok} सामान की जगह लगी · ${r.same} पहले से सही${r.ph?` · 📷 ${r.ph} रैक-फोटो`:""}</p>${r.low.length?`<p class="srk-wn">🔎 AI को पक्का नहीं — एक बार देख लें: ${r.low.map(esc).join(" · ")}</p>`:""}${r.miss.length?`<p class="srk-wn">❓ ऐप में नहीं मिले (पहले सामान जोड़ें): ${r.miss.slice(0,30).map(esc).join(" · ")}</p>`:""}${r.bad.length?`<p class="srk-wn">⚠ खाना नक्शे में नहीं: ${r.bad.slice(0,30).map(esc).join(" · ")}</p>`:""}`;draw();return}
     if(g("[data-srkaud]")){V.aud=!V.aud;draw();return}
     if(g("[data-srkmv]")){SE.printA4("सामान सही जगह",SRK.moveHTML()).catch(()=>toast("प्रिंट नहीं हुआ"));return}
     if((b=g("[data-srkbd]"))){SRK.boards([+b.dataset.srkbd]);return}
@@ -336,7 +356,7 @@ const css=document.createElement("style");css.textContent=`
 .srk-rp{margin-top:10px;border:1.5px solid var(--line);border-radius:14px;padding:8px}.srk-rr{border-bottom:1px solid var(--line)}.srk-rh{display:grid;grid-template-columns:62px 1fr auto;gap:6px;align-items:center;width:100%;border:0;background:none;color:var(--ink);font:inherit;padding:6px 0 3px;text-align:left;position:relative}
 .srk-rh span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.srk-rh i{font-style:normal;font-weight:800;font-variant-numeric:tabular-nums}.srk-rh em{position:absolute;left:0;bottom:0;height:3px;border-radius:2px;background:#0f766e}
 .srk-rx{display:none;font-size:12.5px;padding:2px 0 6px}.srk-rr.op .srk-rx{display:block}.srk-in code{font:700 11.5px monospace;color:#0f766e}
-.srk-ab{margin-top:10px}.srk-au{border:1.5px solid var(--line);border-radius:14px;padding:8px;margin-top:6px}.srk-ag{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line);font-size:12.5px}.srk-ag b{min-width:120px}.srk-ag i{font-style:normal;font-weight:700;color:#b45309}.srk-ag.bad b{color:#b91c1c}
+.srk-ab{margin-top:10px}.srk-im{margin-top:10px;border:1.5px solid var(--line);border-radius:14px;padding:8px}.srk-im summary{font-weight:700;cursor:pointer}.srk-im textarea{margin:6px 0}.srk-au{border:1.5px solid var(--line);border-radius:14px;padding:8px;margin-top:6px}.srk-ag{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line);font-size:12.5px}.srk-ag b{min-width:120px}.srk-ag i{font-style:normal;font-weight:700;color:#b45309}.srk-ag.bad b{color:#b91c1c}
 .srk-mv{margin:8px 0;font-size:12.5px;max-height:320px;overflow:auto}.srk-mv div{padding:3px 0;border-bottom:1px dashed var(--line)}.srk-mv code{font:700 12px monospace;color:#b45309}
 .srk-tl{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:4px 0}.srk-tl>span{font-size:12.5px;font-weight:700;min-width:62px}.srk-tl .inp{width:84px;padding:6px 8px;font-size:14px}
 .srk-ed{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0;align-items:center}.srk-ed .inp{flex:1 1 140px;min-width:0;padding:6px 8px}.srk-nr{border:1.5px dashed #0f766e;border-radius:12px;padding:8px;margin-top:6px}.srk-nr #srkNr,.srk-nr #srkNn{flex:0 0 70px}

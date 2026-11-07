@@ -141,6 +141,12 @@ async def main():
         await pg.evaluate("SRK.checklist()"); h = (await pg.evaluate("window.__pr"))["h"]; assert "☐ 11-63" in h and "☐ 22-4" in h and "अंदर" in h
         p2 = await ctx.new_page(); await p2.set_content("<html><body>" + h + "</body></html>"); await p2.screenshot(path=f"{SHOTS}/r8-checklist.png", full_page=True); await p2.close()
         await pg.evaluate("SRK.open()")
+        # 📥 AI से आई रैक-सूची (ZIP v4.8): बारकोड/नाम से मिलान, गलत खाना = चेतावनी, ऐप में नहीं = सूची
+        bA = await pg.evaluate(f"SF.itemCode(item('{A}'))")
+        r = await pg.evaluate(f"""SRK.importText(JSON.stringify({{items:[{{barcode:'{{bA}}'.replace('{{bA}}','{bA}'),rack:'१७-२',rackConf:'low'}},{{name:'NO SUCH ITEM',rack:'6-1'}},{{barcode:'{bA}',rack:'11-99'}}],racks:[{{rack:'17',thumb:document.createElement('canvas').toDataURL('image/png')}}]}}))""")
+        assert r["ok"] == 1 and r["miss"] == ["NO SUCH ITEM"] and len(r["bad"]) == 1 and len(r["low"]) == 1, r
+        assert await pg.evaluate(f"item('{A}').rack") == "17-2"
+        r = await pg.evaluate(f"SRK.importText('{bA},11-23')"); assert r["ok"] == 1 and await pg.evaluate(f"item('{A}').rack") == "11-23", r
         # 🏷️ सामान के लेबल पर रैक
         assert await pg.evaluate(f"SL.dataOf(item('{A}')).rack") == "11-23" and await pg.evaluate("SL.cfg().show.rack")
         # तम्बाकू की पट्टी पर असली नाम नहीं
