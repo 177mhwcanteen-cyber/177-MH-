@@ -4,7 +4,7 @@
 वे सिर्फ़ मोबाइल से काम करते हैं, कोडिंग नहीं जानते। टीम के लोगों को "स्टाफ" न लिखें — नाम से (मुकेश भाई, मनोहर जी…) या "साथी"।
 
 ## पत्थर के नियम (कभी न तोड़ें)
-1. **पुराना डेटा कभी न मिटे, न बदले।** migrate.json सिर्फ़ जोड़ता है (जो doc है उसे छोड़ता है)। पुराना सामान हटाना हो तो `active:false` (replaces से), delete नहीं।
+1. **पुराना डेटा कभी न मिटे, न बदले।** migrate.json सिर्फ़ जोड़ता है (जो doc है उसे छोड़ता है); भाव भरने हों तो सिर्फ़ "_upd" {from,to} (applyUpd — अभी का मान from हो तभी, priceLog में)। पुराना सामान हटाना हो तो `active:false` (replaces से), delete नहीं।
 2. **काम शुरू करने से पहले `git pull --rebase`** — दूसरा Claude/चैट भी इसी repo में push करता है। push से पहले फिर pull।
 3. **बदलाव के बाद:** `node scripts/build.mjs` → `python3 tests/e2e.py www <shots-dir>` (लेबल छुआ तो `tests/label.py`, बिल की छपाई छुई तो `tests/receipt.py`, फ़ेवरेट/डैशबोर्ड/पॉइंट/याद/AI चाबी छुई तो `tests/quick.py`, ऑनलाइन दुकान छुई तो `tests/online.py`, फोटो छुई तो `tests/photo.py`, बारकोड-पहरा/स्कैन-गिनती छुई तो `tests/bcode.py`, रैक/भाव-पट्टी छुई तो `tests/rack.py`, खरीद-जाँच छुई तो `tests/kharid.py` भी) — "✅ पूरा टेस्ट पास" आए तभी commit/push। हर टैब बिना JS error खुले।
 4. Gemini चाबी कोड/GitHub में कभी नहीं — मालिक की चाबी Firebase `ownerCfg/ai.gk` में (साथी नहीं पढ़ सकते); `settings/main.gk` सिर्फ़ तब जब मालिक "साथियों को सीधा AI" चालू करें या Apps Script न हो।
