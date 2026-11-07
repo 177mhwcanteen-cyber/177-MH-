@@ -608,16 +608,24 @@ SE.updateNow=async function(say){
   if(SE.isNative&&v.minNative&&+v.minNative>+(window.SE_NATIVE_MIN||1)){say("नई APK चाहिए — GitHub Releases से mh-wet-canteen.apk डाउनलोड करके इंस्टॉल करें","bad");return}
   if(SE.isNative&&N.CapacitorUpdater){const U=N.CapacitorUpdater;let h=null;
     try{h=await U.addListener("download",e=>{const pc=Math.round(+e.percent||0);say("⬇️ नया संस्करण "+v.version+" आ रहा है… "+pc+"%","busy",pc)})}catch(e){}
-    try{let b=null;try{const l=await U.list();b=(l.bundles||[]).find(x=>x.version===v.version&&x.status!=="error")}catch(e){}
+    /* 🩺 हर कदम का असली कारण पकड़ो (पहले सिर्फ़ "नेटवर्क" लिखा आता था) — Sentry में भी जाता है */
+    const D={to:v.version,from:SE.version,steps:[]};const st=(k,e)=>D.steps.push(k+(e?": "+String(e.message||e.code||e).slice(0,160):""));
+    try{try{const pv=await U.getPluginVersion();D.plugin=pv&&pv.version}catch(e){}try{const c=await U.current();D.cur=c&&c.bundle&&c.bundle.version;D.native=c&&c.native}catch(e){}
+      try{if(U.getFailedUpdate){const f=await U.getFailedUpdate();if(f)D.failed=JSON.stringify(f).slice(0,200)}}catch(e){}
+      let b=null;try{const l=await U.list();D.list=(l.bundles||[]).map(x=>x.version+":"+x.status).join(",").slice(0,200);b=(l.bundles||[]).find(x=>x.version===v.version&&x.status!=="error")}catch(e){st("list",e)}
       if(!b)await _dropBundles(U,v.version);
-      if(!b){const base=new URL(v.url,CFG.updateUrl.replace(/\/?$/,"/")).href;
-        try{b=await U.download({url:base,version:v.version})}
-        catch(e1){say("⬇️ दोबारा कोशिश… (नेटवर्क धीमा)","busy",0);try{const l=await U.list();for(const x of (l.bundles||[]))if(x.version===v.version)try{await U.delete({id:x.id})}catch(e){}}catch(e){}
-          await new Promise(r=>setTimeout(r,2500));b=await U.download({url:base+"?t="+Date.now(),version:v.version})}}
+      if(!b){const base=new URL(v.url,CFG.updateUrl.replace(/\/?$/,"/")).href;D.url=base;
+        try{b=await U.download({url:base,version:v.version});st("download-1 ok")}
+        catch(e1){st("download-1",e1);say("⬇️ दोबारा कोशिश… (नेटवर्क धीमा)","busy",0);await _dropBundles(U,v.version);
+          await new Promise(r=>setTimeout(r,2500));
+          /* दूसरी बार अलग नाम से (पिछला अधूरा/खराब बंडल उसी नाम से अटका न रहे) */
+          try{b=await U.download({url:base+"?t="+Date.now(),version:v.version+"-r"+Date.now().toString(36).slice(-4)});st("download-2 ok")}catch(e2){st("download-2",e2);throw e2}}}
       try{h&&h.remove()}catch(e){}
       say("✨ लग रहा है — ऐप 2 सेकंड में दोबारा खुलेगा","ok",100);try{SE.beforeUpdate&&SE.beforeUpdate()}catch(e){}
-      await new Promise(r=>setTimeout(r,900));_markTry(v.version);await U.set({id:b.id});
-    }catch(e){try{h&&h.remove()}catch(x){}say("अपडेट नहीं हुआ (नेटवर्क) — 1 मिनट बाद दोबारा दबाएँ, या नीचे से पूरा नया ऐप लें","bad");
+      await new Promise(r=>setTimeout(r,900));_markTry(v.version);try{await U.set({id:b.id})}catch(e3){st("set",e3);throw e3}
+    }catch(e){try{h&&h.remove()}catch(x){}const why=D.steps.filter(x=>!/ ok$/.test(x)).pop()||String(e.message||e).slice(0,120);
+      try{window.SEW&&SEW.report("OTA अपडेट नहीं हुआ: "+why,D)}catch(x){}try{ls.set("se_upd_diag",JSON.stringify({...D,ts:Date.now()}))}catch(x){}
+      say("अपडेट नहीं हुआ — कारण: "+why+" · 1 मिनट बाद दोबारा दबाएँ, या नीचे से पूरा नया ऐप लें","bad");
       const bx=document.querySelector(".updbox");if(bx&&!bx.querySelector(".apkl")){const a2=document.createElement("a");a2.className="big ghost apkl";a2.style.cssText="display:block;text-align:center;text-decoration:none;margin-top:8px";a2.href="https://github.com/177mhwcanteen-cyber/177-MH-/releases/latest/download/mh-wet-canteen.apk";a2.target="_blank";a2.rel="noopener";a2.textContent="📲 पूरा नया ऐप (APK) डाउनलोड करें — डेटा सुरक्षित रहेगा";bx.appendChild(a2)}}
     return}
   // वेब (Chrome): पुराना कैश हटाकर नया पेज
