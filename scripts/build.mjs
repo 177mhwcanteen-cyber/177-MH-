@@ -4,6 +4,7 @@ import { build } from "esbuild";
 import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
+import { orgGuard } from "./org-guard.mjs";
 
 const R = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const W = path.join(R, "web"), OUT = path.join(R, "www"), DIST = path.join(R, "dist");
@@ -12,6 +13,7 @@ const VERSION = process.env.SE_VERSION ||
   `${now.getFullYear()}.${p(now.getMonth() + 1)}${p(now.getDate())}.${p(now.getHours())}${p(now.getMinutes())}`;
 const NATIVE_MIN = 1; // जब Android में नई मशीनी सुविधा जुड़े तब बढ़ाएँ — तब नई APK चाहिए
 
+orgGuard(R); // 🏢 दूसरी संस्था का डेटा या GitHub सीमा पार — build यहीं रुके
 const rm = d => fs.rmSync(d, { recursive: true, force: true });
 const cp = (a, b) => { fs.mkdirSync(path.dirname(b), { recursive: true }); fs.cpSync(a, b, { recursive: true }); };
 rm(OUT); rm(DIST); fs.mkdirSync(path.join(OUT, "lib"), { recursive: true });

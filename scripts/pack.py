@@ -14,6 +14,7 @@ R = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 D = os.path.join(R, "web", "data", "items")
 P = os.path.join(R, "web", "p")
 IDX = os.path.join(D, "index.json")
+ORG = (re.search(r'org:\s*"([a-z0-9]+)"', open(os.path.join(R, "web", "config.js"), encoding="utf8").read()) or [None, "mh177"])[1]  # 🏢 संस्था
 KEEP = ["id", "name", "short", "hi", "brand", "size", "alias", "emoji", "cat", "sub", "unit", "code", "barcode", "mrp", "sale", "cost",
         "perPack", "packOf", "track", "min", "rack", "secret", "ph", "open"]
 
@@ -93,10 +94,12 @@ def add(path):
                 x["ph"], n = photo(f, x["id"]); kb += n
         out.append({k: x[k] for k in KEEP if k in x and x[k] not in (None, "")})
     os.makedirs(D, exist_ok=True)
-    doc = {"app": "mh177-pack", "v": 5, "id": pid, "date": src.get("date", ""), "by": src.get("by", ""), "note": src.get("note", ""), "items": out}
+    if src.get("org") and src["org"] != ORG: sys.exit(f"⛔ यह खेप {src['org']} की है, यह रिपो {ORG} का है — नहीं चढ़ेगी")
+    doc = {"app": "mh177-pack", "org": ORG, "v": 5, "id": pid, "date": src.get("date", ""), "by": src.get("by", ""), "note": src.get("note", ""), "items": out}
     txt = json.dumps(doc, ensure_ascii=False, indent=1)
     open(os.path.join(D, pid + ".json"), "w", encoding="utf8").write(txt + "\n")
-    idx = json.load(open(IDX, encoding="utf8")) if os.path.exists(IDX) else {"app": "mh177-packs", "v": 5, "packs": []}
+    idx = json.load(open(IDX, encoding="utf8")) if os.path.exists(IDX) else {"app": "mh177-packs", "org": ORG, "v": 5, "packs": []}
+    idx["org"] = ORG
     sha = hashlib.sha1(txt.encode()).hexdigest()[:10]
     idx["packs"] = [p for p in idx["packs"] if p["id"] != pid] + [{"id": pid, "n": len(out), "sha": sha, "date": doc["date"]}]
     json.dump(idx, open(IDX, "w", encoding="utf8"), ensure_ascii=False, indent=1)

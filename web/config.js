@@ -3,6 +3,7 @@
    जब तक "PASTE…" लिखा है, ऐप बिना Firebase (सिर्फ़ इसी फोन में) चलता है।
    (यह गुप्त नहीं है — डेटा की सुरक्षा firestore.rules से होती है) */
 window.SE_CONFIG = {
+  org: "mh177", // 🏢 संस्था — कभी न बदलें (भैरव का "bhairav")
   firebase: {
     // Firebase प्रोजेक्ट "mh177-canteen" (mdmtradersbmr@gmail.com) — 30-10-2026
     apiKey: "AIzaSyBhvxZD72IquK2VFda9IbtWuDd5kh4EpPY",

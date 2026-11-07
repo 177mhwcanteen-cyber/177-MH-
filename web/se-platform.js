@@ -6,6 +6,12 @@
 const CFG=window.SE_CONFIG||{};
 const N=window.SENative||{isNative:false};
 const SE=window.SE={version:window.SE_BUILD||"dev",isNative:!!N.isNative,cfg:CFG};
+/* 🏢 संस्था-पहरा: हर डेटा (migrate.json, GitHub खेप, खरीद-बही का कोड) पर "org" — दूसरी संस्था का डेटा इस ऐप में कभी नहीं चढ़ता।
+   177 MH = "mh177" · भैरव = "bhairav" (हर रिपो की config.js में; scripts/org-guard.mjs build से पहले जाँचता है)। org न लिखा हो तो उसे "mh177" का माना जाता है। */
+SE.org=CFG.org||"mh177";
+SE.ORGNAME={mh177:"177 MH कैंटीन",bhairav:"भैरव कैंटीन"};
+SE.orgOk=function(o){o=o||"mh177";return o===SE.org};
+SE.orgErr=o=>"⛔ यह "+(SE.ORGNAME[o||"mh177"]||o)+" का डेटा है — "+(SE.ORGNAME[SE.org]||SE.org)+" के ऐप में नहीं चढ़ेगा";
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};

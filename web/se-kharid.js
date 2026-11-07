@@ -12,7 +12,7 @@ const words=s=>W(s).split(" ").filter(w=>w.length>=3);
 SKJ.sim=(a,b)=>{const A=words(a),B=new Set(words(b));if(!A.length||!B.size)return 0;const n=A.filter(w=>B.has(w)||[...B].some(x=>x.startsWith(w.slice(0,4))&&w.length>=4)).length;return n/Math.min(A.length,B.size)};
 const dd=(a,b)=>Math.abs((new Date(a+"T12:00:00")-new Date(b+"T12:00:00"))/864e5);
 SKJ.parse=function(t){t=String(t||"");const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a<0)throw new Error("कोड में { } नहीं");const j=JSON.parse(t.slice(a,b+1));
-  if(j.app!=="mh177-kharid"||!Array.isArray(j.bills))throw new Error("यह खरीद-बही का कोड नहीं");return j.bills};
+  if(j.app!=="mh177-kharid"||!Array.isArray(j.bills))throw new Error("यह खरीद-बही का कोड नहीं");if(!SE.orgOk(j.org))throw new Error(SE.orgErr(j.org));return j.bills};
 async function appBuys(from,to){const L=[];const seen=new Set();const add=(x,k)=>{if(!x||seen.has(k+x.id))return;seen.add(k+x.id);L.push(x)};
   [...(S.purchHist||[]),...(S.purch||[])].forEach(p=>add({id:p.id,kind:"खरीद",date:p.date,sup:p.supName||"",total:+p.total||+p.gross||0,by:p.byName||"",lines:(p.lines||[]).map(l=>({id:l.id||"",name:l.name||"",qty:+l.qty||0,rate:+l.rate||0,amt:+l.amt||+l.billAmt||0})),cancelled:!!p.cancelled,note:p.note||""},"p"));
   if(!S.demo&&S.db){try{const q=await S.db.collection("purchases").where("date",">=",from).get();q.docs.forEach(d=>{const p=d.data();add({id:d.id,kind:"खरीद",date:p.date,sup:p.supName||"",total:+p.total||0,by:p.byName||"",lines:(p.lines||[]).map(l=>({id:l.id||"",name:l.name||"",qty:+l.qty||0,rate:+l.rate||0,amt:+l.amt||0})),cancelled:!!p.cancelled,note:p.note||""},"p")})}catch(e){}
@@ -47,7 +47,7 @@ SKJ.dupOf=function(x,skip){if(!x||!(+x.total>0))return null;const L=[];const add
     const ln=(x.lines||[]).length?(x.lines||[]).filter(l=>y.lines.some(n=>SKJ.sim(l.nm||l.name,n)>=0.6)).length/(x.lines||[]).length:0;
     if(SKJ.sim(x.sup,y.sup)>=0.5||ln>=0.5)return {id:y.id,txt:`${y.kind} · ${y.sup||""} · ${y.date} · ₹${y.total} · ${y.by||""}`}}return null};
 /* 📤 सामान-सूची (खरीद-बही के लिए): AI बिल की लाइन को ऐप के सही सामान से जोड़ सके — भाव नहीं जाते */
-SKJ.catalogCode=()=>JSON.stringify({app:"mh177-cat",v:1,ts:Date.now(),items:(S.items||[]).filter(i=>i.active!==false&&!i.virtual&&!["fast","mela"].includes(typeof mcat==="function"?mcat(i):i.cat)).map(i=>({i:i.id,n:SE.capNm(i.short||i.name||""),u:i.unit||"pc",...(+i.perPack>0?{pp:+i.perPack}:{}),...(i.packOf?{pk:i.packOf}:{}),...(String(i.barcode||"").replace(/\D/g,"").length>=8?{b:String(i.barcode).replace(/\D/g,"")}:{})}))});
+SKJ.catalogCode=()=>JSON.stringify({app:"mh177-cat",org:SE.org,v:1,ts:Date.now(),items:(S.items||[]).filter(i=>i.active!==false&&!i.virtual&&!["fast","mela"].includes(typeof mcat==="function"?mcat(i):i.cat)).map(i=>({i:i.id,n:SE.capNm(i.short||i.name||""),u:i.unit||"pc",...(+i.perPack>0?{pp:+i.perPack}:{}),...(i.packOf?{pk:i.packOf}:{}),...(String(i.barcode||"").replace(/\D/g,"").length>=8?{b:String(i.barcode).replace(/\D/g,"")}:{})}))});
 /* 📥 बही → ऐप: हर बिल एक "बाज़ार-खरीद" (mbuys, status sent) — बिलिंग वाला साथी गिनकर पक्का करे तभी स्टॉक + खरीद बने (एक ही बार) */
 const MID=b=>"KB-"+String(b.id||"").replace(/[^A-Za-z0-9-]/g,"").slice(0,60);
 /* 🏷️ बारकोड सबसे पहले (दुकान नाम कुछ भी लिखे), फिर बही वाला id, फिर नाम */
@@ -76,7 +76,7 @@ SKJ.makeItems=async function(plan){const r2=n=>Math.round((+n||0)*100)/100;let n
   const nextS=()=>{const mx=(S.items||[]).reduce((a,x)=>{const m=/^S-(\d+)$/.exec(x.secret||"");return m?Math.max(a,+m[1]):a},0);return "S-"+String(mx+1).padStart(2,"0")};
   for(const P of plan){if(!P.ok)continue;const l=P.l,pp=+l.pp||0,tob=!!l.tob,cat="kirana",ts=Date.now();const base=SE.capNm(String(l.nm).replace(/\s+\d+\s*$/,""));
     const id="i"+ts.toString(36)+Math.random().toString(36).slice(2,5),code=nextCode(cat);
-    const common={hi:"",alias:"",sub:tob?"tob":"",emoji:tob?"🚬":"🛒",cat,unit:"pc",hue:Math.floor(Math.random()*360),active:true,src:"kharid-bahi",addedTs:ts,addedBy:S.uid||"",...(tob?{rack:"5-1"}:{})};
+    const common={hi:"",alias:"",sub:tob?"tob":"",emoji:tob?"🚬":"🛒",cat,unit:"pc",hue:Math.floor(Math.random()*360),active:true,src:"kharid-bahi",addedTs:ts,addedBy:S.uid||"",...(tob&&SE.org==="mh177"?{rack:"5-1"}:{})};
     try{if(pp>1){const sec=tob?nextS():"";
         const pc={...common,name:base+" 1 PC",short:(base+" 1PC").slice(0,24),secret:sec,perPack:pp,code,barcode:ean13("2000000"+code+"0"),track:true,min:pp,mrp:r2((+l.mrp||0)/pp),sale:+l.saleOne||r2((+l.sale||0)/pp),cost:r2((+l.uc||+l.rate||0)/pp),order:(S.items||[]).length+1};
         if(!S.demo)await S.db.collection("items").doc(id).set(pc);S.items.push({id,...pc});

@@ -47,11 +47,12 @@ SPK.apply=async function(force){
   if(!own()||SPK._busy)return null;SPK._busy=1;const out={packs:0,add:0,fill:0,same:0,cnt:0,bad:0};
   try{
     const r=await fetch(SPK.url("data/items/index.json")+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)return null;
-    const idx=await r.json();const list=(idx&&idx.packs)||[];if(!list.length)return out;
+    const idx=await r.json();if(idx&&!SE.orgOk(idx.org)){say(SE.orgErr(idx.org));return null}const list=(idx&&idx.packs)||[];if(!list.length)return out;
     const ref=S.db.collection("settings").doc("packs");const g=await ref.get();const done=(g.exists&&g.data().done)||{};
     for(const P of list){if(!P||!P.id||(done[P.id]&&!force))continue;
       const rr=await fetch(SPK.url("data/items/"+P.id+".json")+"?v="+encodeURIComponent(P.sha||""),{cache:"no-store"});if(!rr.ok)continue;
       const pk=await rr.json();if(!pk||pk.app!=="mh177-pack"||!Array.isArray(pk.items))continue;
+      if(!SE.orgOk(pk.org)){say(SE.orgErr(pk.org)+" (खेप "+P.id+")");continue}
       const R={add:0,fill:0,same:0,cnt:0,bad:0};
       /* पहले पीस वाले, फिर पैकेट (packOf को पीस मिल जाए) */
       const L=[...pk.items].sort((a,b)=>(a.packOf?1:0)-(b.packOf?1:0));

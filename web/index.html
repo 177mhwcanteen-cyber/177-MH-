@@ -2466,14 +2466,14 @@ async function applyUpd(m){const U=m&&m._upd;if(!U)return 0;let n=0;
     if(!Object.keys(p).length)continue;await ref.update(p);n++;if(col==="items"){const it=item(id);if(it)Object.assign(it,p);for(const k of ["sale","cost","mrp"])if(k in p&&typeof logPrice==="function")logPrice(id,k,cur[k]||0,p[k])}}catch(e){}}
   return n}
 async function autoNewData(force){if(!S.isOwner||S.demo||!S.db)return;if(!force&&lsGet("mh_data_ver")===SE.version)return;
-  try{const r=await fetch("migrate.json",{cache:"no-store"});if(!r.ok)return;const m=await r.json();let n=0;
+  try{const r=await fetch("migrate.json",{cache:"no-store"});if(!r.ok)return;const m=await r.json();let n=0;if(!SE.orgOk(m._org)){toast(SE.orgErr(m._org));return}
     for(const [col,docs] of Object.entries(m)){if(col.startsWith("_"))continue;for(const [id,data] of Object.entries(docs)){
       if(col==="items"&&S.items.some(i=>i.id===id))continue;
       const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists)continue;const d={...data};if(d.by==="")d.by=S.uid||"";await ref.set(d);n++;await hideReplaced(col,id,d)}}
     const u=await applyUpd(m);lsSet("mh_data_ver",SE.version);if(n||u)toast("📦 GitHub से "+n+" नई चीज़ें जुड़ीं"+(u?" · "+u+" सामान के भाव भरे":"")+" (पुराना कुछ नहीं मिटा)")}catch(e){}}
 async function migrateOld(){
   if(!S.isOwner||S.demo){toast("सिर्फ मालिक");return}
-  try{toast("पुराना डेटा ला रहे हैं…");const r=await fetch("migrate.json",{cache:"no-store"});const m=await r.json();let n=0,skip=0;
+  try{toast("पुराना डेटा ला रहे हैं…");const r=await fetch("migrate.json",{cache:"no-store"});const m=await r.json();let n=0,skip=0;if(!SE.orgOk(m._org)){toast(SE.orgErr(m._org));return}
     for(const [col,docs] of Object.entries(m)){if(col.startsWith("_"))continue;for(const [id,data] of Object.entries(docs)){const ref=S.db.collection(col).doc(id);const g=await ref.get();if(g.exists){skip++;continue}const d={...data};if(d.by==="")d.by=S.uid||"";await ref.set(d);n++;await hideReplaced(col,id,d)}}
     const u=await applyUpd(m);toast(`✓ ${n} चीज़ें आईं · ${skip} पहले से थीं (नहीं बदलीं)${u?" · "+u+" सामान के भाव भरे":""}`)}catch(err){
     if(/permission/i.test(err.code||err.message||"")){const d=await SE.ownerDiag();toast(d.ok?"अनुमति अब ठीक है — दोबारा दबाएँ":"सर्वर ने मना किया: "+d.why);return}
