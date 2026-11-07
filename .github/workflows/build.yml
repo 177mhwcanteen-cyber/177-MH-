@@ -35,7 +35,7 @@ jobs:
           B="${{ github.event.before }}"; N=false
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -z "$B" ] || ! git cat-file -e "$B" 2>/dev/null; then N=true
           elif git diff --name-only "$B" "${{ github.sha }}" | grep -Eq '^(android/|capacitor\.config\.json|package(-lock)?\.json|web/src/)'; then N=true
-          elif git diff "$B" "${{ github.sha }}" -- scripts/build.mjs | grep -q 'NATIVE_MIN'; then N=true; fi
+          elif git diff "$B" "${{ github.sha }}" -- scripts/build.mjs | grep -Eq '^[-+].*NATIVE_MIN *='; then N=true; fi
           echo "native=$N" >> "$GITHUB_OUTPUT"; echo "नई APK: $N"
       - uses: actions/setup-node@v5
         with:
