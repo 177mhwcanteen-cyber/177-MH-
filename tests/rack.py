@@ -49,9 +49,11 @@ async def main():
         assert await pg.input_value("#srkR") == "9-14"
         await pg.evaluate(f"handleScan(SF.itemCode(item('{C}')))"); await pg.wait_for_timeout(300)
         assert await pg.evaluate(f"item('{C}').rack") == "9-14"
-        # गोदाम 31-2 = दूसरी जगह (मुख्य जगह वैसी ही)
+        # 31-2 = दुकान का अंदर वाला हिस्सा → मुख्य जगह ही (गोदाम नहीं)
         await pg.fill("#srkR", "31-2"); await pg.evaluate(f"handleScan(SF.itemCode(item('{A}')))"); await pg.wait_for_timeout(300)
-        assert await pg.evaluate(f"[item('{A}').rack,item('{A}').grack]") == ["11-23", "31-2"]
+        assert await pg.evaluate(f"[item('{A}').rack,item('{A}').grack||'']") == ["31-2", ""]
+        await pg.fill("#srkR", "11-23"); await pg.evaluate(f"handleScan(SF.itemCode(item('{A}')))"); await pg.wait_for_timeout(300)
+        assert await pg.evaluate(f"item('{A}').rack") == "11-23"
         await pg.fill("#srkR", "11-99"); await pg.wait_for_timeout(100)
         assert "नक्शे में नहीं" in await pg.inner_text("#srkInfo")
         await pg.evaluate(f"item('{T}').rack='20-1'")
@@ -93,6 +95,44 @@ async def main():
         assert h.count('class="bd"') == 2 and "6-13" in h and "मसाले" in h
         p2 = await ctx.new_page(); await p2.set_content("<html><body>" + h + "</body></html>"); await p2.screenshot(path=f"{SHOTS}/r5-board.png"); await p2.close()
         assert (await pg.evaluate("SRK.homeOf('10-5')")).startswith("मिठाई")
+        # 🏷️ नया स्टिकर: QR (2D) + Code-128 (1D) + बड़ा नंबर
+        assert await pg.evaluate("(()=>{const c=SRK.stickerCanvas('11-23');return c._qr===1&&c._bc>=1})()")
+        p2 = await ctx.new_page(); u = await pg.evaluate("SRK.stickerCanvas('11-23').toDataURL()"); await p2.set_content(f"<img src='{u}' style='border:1px solid #000'><img src='" + await pg.evaluate("SRK.stickerCanvas('31-5').toDataURL()") + "' style='border:1px solid #000'>"); await p2.screenshot(path=f"{SHOTS}/r6-sticker.png"); await p2.close()
+        # 🧩 खाना बढ़ाओ (फोटो में छूटा) → नए खानों के स्टिकर · से–तक · आख़िरी हटाओ
+        await pg.evaluate("SRK.open()"); await pg.click('[data-srksel="5"]'); await pg.wait_for_timeout(150)
+        await pg.click('[data-srkadd="1"]'); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("SRK.RK[5].n") == 8 and await pg.evaluate("S.settings.rk.n['5']") == 8
+        await pg.click(".srk-nf"); await pg.wait_for_timeout(500); h = (await pg.evaluate("window.__pr"))["h"]; assert h.count("<img") == 1, h.count("<img")
+        await pg.fill("#srkFa", "2"); await pg.fill("#srkFb", "4"); await pg.click('.srk-tl [data-srkrange="5"]'); await pg.wait_for_timeout(500)
+        assert (await pg.evaluate("window.__pr"))["h"].count("<img") == 3
+        await pg.click("[data-srkdel]"); await pg.wait_for_timeout(200); assert await pg.evaluate("SRK.RK[5].n") == 7
+        assert await pg.evaluate("SRK.total()") == 238
+        # ➕ नया रैक
+        await pg.click('[data-srknew="0"]'); await pg.wait_for_timeout(150)
+        assert await pg.input_value("#srkNr") == "22"
+        await pg.fill("#srkNn", "4"); await pg.fill("#srkNm", "दरवाज़े के पीछे"); await pg.click("[data-srknrsave]"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("SRK.RK[22]&&SRK.RK[22].n") == 4 and await pg.query_selector('[data-srksel="22"]') and await pg.evaluate("SRK.total()") == 242
+        assert await pg.evaluate("SRK.addRack(2,3,'x')") is False, "मिलाया गया नंबर दोबारा नहीं"
+        # ↔ खाना → खाना, रैक → रैक (कम खाने = रोक)
+        await pg.evaluate(f"SRK.move('11-23','4-2')"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate(f"[item('{A}').rack,item('{B}').rack]") == ["4-2", "4-2"]
+        await pg.evaluate(f"SRK.move('4-2','11-23')"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("SRK.move('9','7')") == 0 and await pg.evaluate(f"item('{C}').rack") == "9-14", "7 में 13 खाने — 9-14 नहीं जा सकता"
+        assert await pg.evaluate("SRK.move('9','11')") == 1 and await pg.evaluate(f"item('{C}').rack") == "11-14"
+        await pg.evaluate("SRK.move('11-14','9-14')")
+        await pg.click('[data-srksel="11"]'); await pg.wait_for_timeout(150); await pg.click('[data-srkfrom="11-23"]'); await pg.wait_for_timeout(100)
+        assert await pg.input_value("#srkTa") == "11-23"
+        # 📊 रैक का हिसाब + 🧠 सुझाव (12 दिन के नकली बिल)
+        await pg.evaluate(f"""(()=>{{const B={{}};for(let i=1;i<=12;i++){{const d=today(new Date(Date.now()-i*864e5));B[d]=[{{no:'b'+i,byName:i%2?'मुकेश':'मनोहर',lines:[{{id:'{C}',name:'C',qty:5,amt:100,rk:'9-14'}},{{id:'{A}',name:'A',qty:1,amt:20,rk:'11-23'}}]}}]}};SRK._demoBills=B}})()""")
+        await pg.click('[data-srkrep="15"]'); await pg.wait_for_timeout(500)
+        t = await pg.inner_text("#srkRep"); assert "रैक 9" in t and "पास लाएँ" in t and "ऊपर या अंदर" in t, t[:500]
+        await pg.click('[data-srkrk="9"]'); await pg.wait_for_timeout(100)
+        assert "मुकेश" in await pg.inner_text("#srkRep")
+        await pg.screenshot(path=f"{SHOTS}/r7-report.png")
+        # 📋 चिपकाने की सूची
+        await pg.evaluate("SRK.checklist()"); h = (await pg.evaluate("window.__pr"))["h"]; assert "☐ 11-63" in h and "☐ 22-4" in h and "अंदर" in h
+        p2 = await ctx.new_page(); await p2.set_content("<html><body>" + h + "</body></html>"); await p2.screenshot(path=f"{SHOTS}/r8-checklist.png", full_page=True); await p2.close()
+        await pg.evaluate("SRK.open()")
         # 🏷️ सामान के लेबल पर रैक
         assert await pg.evaluate(f"SL.dataOf(item('{A}')).rack") == "11-23" and await pg.evaluate("SL.cfg().show.rack")
         # तम्बाकू की पट्टी पर असली नाम नहीं
@@ -136,6 +176,17 @@ async def main():
         # बिना रैक-शीट के खाने का स्टिकर स्कैन = जानकारी (बिल में कुछ न जुड़े)
         n0 = await pg.evaluate("S.cart.length"); await pg.evaluate("handleScan('R11-23')"); await pg.wait_for_timeout(200)
         assert await pg.evaluate("S.cart.length") == n0
+        # 📷 editor: सामान चुना (arm) → खाने का स्टिकर = उसी का खाना
+        await pg.evaluate(f"SRK.arm='{C}';handleScan('R7-3')"); await pg.wait_for_timeout(300)
+        assert await pg.evaluate(f"item('{C}').rack") == "7-3"
+        # नया सामान फ़ॉर्म: रैक खाना + घर का सुझाव
+        if await pg.evaluate("!!document.querySelector('#ni-rack')&&document.querySelector('#ni-rack').offsetParent!==null"):
+            await pg.evaluate("handleScan('R6-4')"); await pg.wait_for_timeout(200)
+            assert await pg.input_value("#ni-rack") == "6-4"
+            await pg.fill("#ni-name", "EVEREST GARAM MASALA"); await pg.select_option("#ni-cat", "kirana"); await pg.wait_for_timeout(100)
+            await pg.evaluate("document.getElementById('ni-sub').value='masala';SRK.niHome()")
+            assert "रैक 6" in await pg.inner_text("#ni-rkhome")
+            print("नया सामान फ़ॉर्म ok")
         await br.close()
     assert not errs, errs
     print("✅ रैक टेस्ट पास")
