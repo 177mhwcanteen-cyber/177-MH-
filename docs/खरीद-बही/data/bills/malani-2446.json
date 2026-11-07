@@ -1,0 +1,27 @@
+{
+ "added": 1794063000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "रोहित",
+ "byName": "विक्रम जी",
+ "date": "2026-10-29",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 1650,
+   "nm": "TIFFIN? (MALANI)",
+   "qty": 3,
+   "rate": 550,
+   "u": "pcs"
+  }
+ ],
+ "no": "2446 (ESTIMATE)",
+ "note": "कच्चा बिल (Estimate); सामान का नाम साफ़ नहीं (टिफिन?)",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "MALANI MARKETING",
+ "total": 1650
+}

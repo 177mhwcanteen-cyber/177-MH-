@@ -1,0 +1,70 @@
+{
+ "added": 1794053000000,
+ "app": "ok",
+ "appNote": "पहले के Claude ने ऐप में चढ़ाया था (उधार — चुकता हुआ हो तो ऐप में 'देना है' में)",
+ "ask": [],
+ "buyer": "—",
+ "date": "2026-10-30",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 11499.6,
+   "bc": "8901725135812",
+   "n": "Gold Flake Super Star Mint 10 पैक",
+   "nm": "GOLD FLAKE SUPER STAR MINT 10",
+   "pp": 10,
+   "qty": 150,
+   "rate": 76.66,
+   "tob": true,
+   "u": "pkt"
+  },
+  {
+   "amt": 5371.8,
+   "bc": "8901725100612",
+   "n": "Gold Flake Premium Mint 10 पैक",
+   "nm": "GOLD FLAKE MINT SWITCH PREMIUM 10",
+   "pp": 10,
+   "qty": 50,
+   "rate": 107.44,
+   "tob": true,
+   "u": "pkt"
+  },
+  {
+   "amt": 4148.2,
+   "bc": "8901725120610",
+   "n": "Classic Double Burst 20 पैक",
+   "nm": "CLASSIC DOUBLE BURST 20",
+   "pp": 20,
+   "qty": 10,
+   "rate": 414.82,
+   "tob": true,
+   "u": "pkt"
+  },
+  {
+   "amt": 3709.44,
+   "bc": "8901725307912",
+   "n": "Classic Connect 20 पैक",
+   "nm": "CLASSIC CONNECT 20",
+   "pp": 20,
+   "qty": 10,
+   "rate": 370.94,
+   "tob": true,
+   "u": "pkt"
+  },
+  {
+   "amt": 1950.96,
+   "n": "(बाकी लाइन)",
+   "nm": "अन्य (पुराने बिल में बिना नाम)",
+   "qty": 1,
+   "rate": 1950.96,
+   "u": "pcs"
+  }
+ ],
+ "no": "SH-09508/26-27",
+ "pay": "udhar",
+ "src": "old-app",
+ "sup": "KINJAL TRADING COMPANY",
+ "supPhone": "9462303939",
+ "total": 26680
+}

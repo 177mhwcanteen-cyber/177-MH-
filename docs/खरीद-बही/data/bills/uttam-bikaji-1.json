@@ -1,0 +1,176 @@
+{
+ "added": 1794061000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [
+  "बिल की तारीख़ और भुगतान?",
+  "₹10 वाली लड़ी में 12 पीस? (₹92 से अंदाज़ा)",
+  "सोन पापड़ी MD/SB और 200g सोया स्टिक का MRP व पीस?"
+ ],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 920,
+   "mrp": 120,
+   "nm": "BIKAJI NUTCRACKER ₹10",
+   "pp": 12,
+   "qty": 10,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 1840,
+   "mrp": 120,
+   "nm": "BIKAJI BHUJIA ₹10",
+   "pp": 12,
+   "qty": 20,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 1840,
+   "mrp": 120,
+   "nm": "BIKAJI SAB KUCH ₹10",
+   "pp": 12,
+   "qty": 20,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 1840,
+   "mrp": 120,
+   "nm": "BIKAJI KUCH KUCH ₹10",
+   "pp": 12,
+   "qty": 20,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 920,
+   "mrp": 120,
+   "nm": "BIKAJI ALOO SEV ₹10",
+   "pp": 12,
+   "qty": 10,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 950,
+   "nm": "BIKAJI SOAN PAPDI MD",
+   "qty": 10,
+   "rate": 95,
+   "u": "pkt"
+  },
+  {
+   "amt": 900,
+   "nm": "BIKAJI SOAN PAPDI SB",
+   "qty": 5,
+   "rate": 180,
+   "u": "pkt"
+  },
+  {
+   "amt": 920,
+   "mrp": 120,
+   "nm": "BIKAJI BOONDI BHUJIA ₹10",
+   "pp": 12,
+   "qty": 10,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 460,
+   "mrp": 120,
+   "nm": "BIKAJI PANEER BHUJIA ₹10",
+   "pp": 12,
+   "qty": 5,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 1370,
+   "mrp": 1800,
+   "nm": "BIKAJI CHIPS TOMATO ₹10",
+   "pp": 180,
+   "qty": 1,
+   "rate": 1370,
+   "saleOne": 10,
+   "u": "ctn"
+  },
+  {
+   "amt": 1370,
+   "mrp": 1800,
+   "nm": "BIKAJI CHIPS SALTED ₹10",
+   "pp": 180,
+   "qty": 1,
+   "rate": 1370,
+   "saleOne": 10,
+   "u": "ctn"
+  },
+  {
+   "amt": 1370,
+   "mrp": 1800,
+   "nm": "BIKAJI CHIPS (नाम कटा) ₹10",
+   "pp": 180,
+   "qty": 1,
+   "rate": 1370,
+   "saleOne": 10,
+   "u": "ctn"
+  },
+  {
+   "amt": 1840,
+   "mrp": 120,
+   "nm": "BIKAJI BHUJIA 35G ₹10",
+   "pp": 12,
+   "qty": 20,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 1840,
+   "mrp": 120,
+   "nm": "BIKAJI KUCH KUCH ₹10",
+   "pp": 12,
+   "qty": 20,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 920,
+   "mrp": 120,
+   "nm": "BIKAJI SOYA STICK ₹10",
+   "pp": 12,
+   "qty": 10,
+   "rate": 92,
+   "saleOne": 10,
+   "u": "ladi"
+  },
+  {
+   "amt": 550,
+   "nm": "BIKAJI SOYA STICK 200G",
+   "qty": 10,
+   "rate": 55,
+   "u": "pkt"
+  }
+ ],
+ "no": "",
+ "note": "हाथ की पर्ची, बीकाजी नमकीन ₹10 MRP; चिप्स 1 कार्टन = 180 पीस (विक्रम जी)",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "UTTAM COMPANY (BIKAJI)",
+ "supAddr": "माल गोदाम रोड, बाड़मेर · 7014134608, 9413526379",
+ "total": 19850
+}

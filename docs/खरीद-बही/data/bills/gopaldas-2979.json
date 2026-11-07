@@ -1,0 +1,62 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज जी",
+ "byName": "विक्रम जी",
+ "date": "2026-10-13",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 1830,
+   "nm": "SINGDANA (MOONGFALI)",
+   "qty": 10,
+   "rate": 183,
+   "u": "kg"
+  },
+  {
+   "amt": 1950,
+   "nm": "KAJU",
+   "qty": 3,
+   "rate": 650,
+   "u": "kg"
+  },
+  {
+   "amt": 1300,
+   "nm": "GARAM DAL (?)",
+   "qty": 10,
+   "rate": 130,
+   "u": "kg"
+  },
+  {
+   "amt": 440,
+   "nm": "METHI DANA",
+   "qty": 5,
+   "rate": 88,
+   "u": "kg"
+  },
+  {
+   "amt": 870,
+   "nm": "SALT",
+   "qty": 30,
+   "rate": 29,
+   "u": "kg"
+  },
+  {
+   "amt": 5.76,
+   "nm": "WAGES (बिल पर)",
+   "qty": 1,
+   "rate": 5.76,
+   "u": "pcs"
+  }
+ ],
+ "no": "Gv/2979/26-27",
+ "note": "",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "GOPALDAS VISHANDAS",
+ "total": 6396
+}

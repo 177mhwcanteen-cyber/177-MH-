@@ -1,0 +1,41 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज जी",
+ "byName": "विक्रम जी",
+ "date": "2026-10-19",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 7177.5,
+   "nm": "SINGDANA (MOONGFALI)",
+   "qty": 49.5,
+   "rate": 145,
+   "u": "kg"
+  },
+  {
+   "amt": 2610,
+   "nm": "GARLIC (LEHSUN)",
+   "qty": 30,
+   "rate": 87,
+   "u": "kg"
+  },
+  {
+   "amt": 8.93,
+   "nm": "WAGES (बिल पर)",
+   "qty": 1,
+   "rate": 8.93,
+   "u": "pcs"
+  }
+ ],
+ "no": "Gv/3066/26-27",
+ "note": "",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "GOPALDAS VISHANDAS",
+ "total": 9797
+}

@@ -1,0 +1,59 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-10-22",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 1532.8,
+   "mrp": 480,
+   "nm": "EVEREST KITCHEN KING 500G",
+   "qty": 4,
+   "rate": 383.1996,
+   "u": "pcs"
+  },
+  {
+   "amt": 1516.84,
+   "mrp": 475,
+   "nm": "EVEREST CHICKEN MASALA 500G",
+   "qty": 4,
+   "rate": 379.2096,
+   "u": "pcs"
+  },
+  {
+   "amt": 1421.04,
+   "mrp": 445,
+   "nm": "EVEREST CHAT MASALA 500G",
+   "qty": 4,
+   "rate": 355.2596,
+   "u": "pcs"
+  },
+  {
+   "amt": 758.42,
+   "mrp": 475,
+   "nm": "EVEREST KASURI METHI 500G",
+   "qty": 2,
+   "rate": 379.2096,
+   "u": "pcs"
+  },
+  {
+   "amt": 0.92,
+   "nm": "ROUND OFF",
+   "qty": 1,
+   "rate": 0.92,
+   "u": "pcs"
+  }
+ ],
+ "no": "1917/26-27",
+ "note": "Everest 500g; 5% छूट, 5% GST",
+ "paid": 0,
+ "pay": "उधार (CREDIT)",
+ "src": "chat",
+ "sup": "MAHESH ENTERPRISES",
+ "total": 5230
+}

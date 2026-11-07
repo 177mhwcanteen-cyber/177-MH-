@@ -1,0 +1,83 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज जी",
+ "byName": "विक्रम जी",
+ "date": "2026-10-22",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 3600,
+   "nm": "SINGDANA (MOONGFALI)",
+   "qty": 25,
+   "rate": 144,
+   "u": "kg"
+  },
+  {
+   "amt": 4050,
+   "nm": "KAJU",
+   "qty": 5,
+   "rate": 810,
+   "u": "kg"
+  },
+  {
+   "amt": 3350,
+   "nm": "KAJU",
+   "qty": 5,
+   "rate": 670,
+   "u": "kg"
+  },
+  {
+   "amt": 870,
+   "nm": "SALT",
+   "qty": 30,
+   "rate": 29,
+   "u": "kg"
+  },
+  {
+   "amt": 700,
+   "nm": "RAJMA",
+   "qty": 5,
+   "rate": 140,
+   "u": "kg"
+  },
+  {
+   "amt": 276,
+   "nm": "CHANA DAL",
+   "qty": 3,
+   "rate": 92,
+   "u": "kg"
+  },
+  {
+   "amt": 900,
+   "nm": "JEERA",
+   "qty": 3,
+   "rate": 300,
+   "u": "kg"
+  },
+  {
+   "amt": 250,
+   "nm": "AJWAIN",
+   "qty": 1,
+   "rate": 250,
+   "u": "kg"
+  },
+  {
+   "amt": 9.62,
+   "nm": "WAGES (बिल पर)",
+   "qty": 1,
+   "rate": 9.62,
+   "u": "pcs"
+  }
+ ],
+ "no": "Gv/3129/26-27",
+ "note": "⚠ उसी दिन बिल 3130 भी — नमक 30kg, राजमा 5kg, चना दाल, मूंगफली, काजू दोनों में; हाथ से 2 कट्टा + 1 नग",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "GOPALDAS VISHANDAS",
+ "total": 14006
+}

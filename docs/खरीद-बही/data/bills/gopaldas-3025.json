@@ -1,0 +1,41 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज जी",
+ "byName": "विक्रम जी",
+ "date": "2026-10-16",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 3150,
+   "nm": "BESAN",
+   "qty": 30,
+   "rate": 105,
+   "u": "kg"
+  },
+  {
+   "amt": 425,
+   "nm": "SAMA (SAMO)",
+   "qty": 5,
+   "rate": 85,
+   "u": "kg"
+  },
+  {
+   "amt": 3,
+   "nm": "WAGES (बिल पर)",
+   "qty": 1,
+   "rate": 3,
+   "u": "pcs"
+  }
+ ],
+ "no": "Gv/3025/26-27",
+ "note": "",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "GOPALDAS VISHANDAS",
+ "total": 3578
+}

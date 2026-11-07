@@ -1,0 +1,35 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "Online",
+ "byName": "विक्रम जी",
+ "date": "2026-10-14",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 9750,
+   "nm": "DAIRY BEST GHEE 15KG TIN",
+   "pp": 15,
+   "qty": 1,
+   "rate": 9750,
+   "u": "tin"
+  },
+  {
+   "amt": -0.03,
+   "nm": "ROUND OFF",
+   "qty": 1,
+   "rate": -0.03,
+   "u": "pcs"
+  }
+ ],
+ "no": "GCM26-27/15432",
+ "note": "⚠ बिल पर पुराना बकाया ₹1,16,907 Dr → अब ₹1,26,657 Dr — यह खाता किसका?",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "GOUTAM CHAND MALOO & CO.",
+ "total": 9750
+}

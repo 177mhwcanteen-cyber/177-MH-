@@ -1,0 +1,34 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-10-09",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 1548.6,
+   "nm": "GUR 27KG BAG",
+   "qty": 26.7,
+   "rate": 58,
+   "u": "kg"
+  },
+  {
+   "amt": 5.4,
+   "nm": "WAGE + ANKAI (बिल पर)",
+   "qty": 1,
+   "rate": 5.4,
+   "u": "pcs"
+  }
+ ],
+ "no": "12005",
+ "note": "GST नहीं; Wage+Ankai ₹5.30",
+ "paid": 0,
+ "pay": "Cash",
+ "src": "chat",
+ "sup": "DHARIWAL TRADING COMPANY",
+ "total": 1554
+}

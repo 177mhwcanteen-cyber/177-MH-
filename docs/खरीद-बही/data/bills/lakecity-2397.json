@@ -1,0 +1,129 @@
+{
+ "added": 1794060000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव का इतिहास, ऐप/स्टॉक में नहीं",
+ "ask": [
+  "यह ₹83,483 कैसे/कब चुकाया?"
+ ],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-10-23",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 16600,
+   "nm": "CASHEW TIN (I WP)",
+   "note": "रेट GST सहित",
+   "qty": 20,
+   "rate": 830,
+   "u": "kg"
+  },
+  {
+   "amt": 3840,
+   "nm": "20-20 CLASSIC KIMIA DATES 500G",
+   "note": "1 kg = 2 पैकेट; रेट GST सहित",
+   "pp": 2,
+   "qty": 12,
+   "rate": 320,
+   "u": "kg"
+  },
+  {
+   "amt": 4850,
+   "nm": "20-20 BLACK RAISINS SEED 250G",
+   "note": "1 kg = 4 पैकेट; रेट GST सहित",
+   "pp": 4,
+   "qty": 10,
+   "rate": 485,
+   "u": "kg"
+  },
+  {
+   "amt": 4980,
+   "nm": "20-20 ANJEER SILVER 500G",
+   "note": "1 kg = 2 पैकेट; रेट GST सहित",
+   "pp": 2,
+   "qty": 6,
+   "rate": 830,
+   "u": "kg"
+  },
+  {
+   "amt": 4350,
+   "nm": "20-20 ANJEER DAILY NEED 250G",
+   "note": "1 kg = 4 पैकेट; रेट GST सहित",
+   "pp": 4,
+   "qty": 6,
+   "rate": 725,
+   "u": "kg"
+  },
+  {
+   "amt": 3600,
+   "nm": "20-20 ABJOSH CLASSIC 250G BOX",
+   "note": "1 kg = 4 पैकेट; रेट GST सहित",
+   "pp": 4,
+   "qty": 6,
+   "rate": 600,
+   "u": "kg"
+  },
+  {
+   "amt": 7080,
+   "nm": "20-20 BRAIN NUT 250G",
+   "note": "1 kg = 4 पैकेट; रेट GST सहित",
+   "pp": 4,
+   "qty": 6,
+   "rate": 1180,
+   "u": "kg"
+  },
+  {
+   "amt": 11160,
+   "nm": "20-20 W-300 POUCH 250G",
+   "note": "1 kg = 4 पैकेट; रेट GST सहित",
+   "pp": 4,
+   "qty": 12,
+   "rate": 930,
+   "u": "kg"
+  },
+  {
+   "amt": 5450,
+   "nm": "20-20 KISHMISH SP (INDIAN) 250G",
+   "note": "1 kg = 4 पैकेट; रेट GST सहित",
+   "pp": 4,
+   "qty": 10,
+   "rate": 545,
+   "u": "kg"
+  },
+  {
+   "amt": 10600,
+   "nm": "20-20 ALMOND ORANGE 500G",
+   "note": "1 kg = 2 पैकेट; रेट GST सहित",
+   "pp": 2,
+   "qty": 10,
+   "rate": 1060,
+   "u": "kg"
+  },
+  {
+   "amt": 10700,
+   "nm": "20-20 ALMOND ORANGE 250G",
+   "note": "1 kg = 4 पैकेट; रेट GST सहित",
+   "pp": 4,
+   "qty": 10,
+   "rate": 1070,
+   "u": "kg"
+  },
+  {
+   "amt": 273,
+   "nm": "LABOUR",
+   "note": "₹260 + 5% GST",
+   "qty": 1,
+   "rate": 273,
+   "u": "pcs"
+  }
+ ],
+ "no": "JU/26-27/2397",
+ "note": "GST बिल 5% (CGST+SGST ₹3,975.38 सहित), e-Way 721683243264, 108 kg, Dispatch NAG 6 via VIRATRA, round off −0.02",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "LAKECITY DRY FRUITS PVT. LTD.",
+ "supAddr": "W-12,13 कृषि उपज मंडी, मंडोर रोड, जोधपुर · GSTIN 08AABCL4708Q2Z1",
+ "total": 83483
+}

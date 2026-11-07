@@ -1,0 +1,83 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-10-01",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 2682.48,
+   "mrp": 112,
+   "nm": "EVEREST GARAM MASALA 100G",
+   "qty": 30,
+   "rate": 89.4159,
+   "u": "pcs"
+  },
+  {
+   "amt": 2490.96,
+   "mrp": 104,
+   "nm": "EVEREST CHICKEN MASALA 100G",
+   "qty": 30,
+   "rate": 83.0319,
+   "u": "pcs"
+  },
+  {
+   "amt": 1484.88,
+   "mrp": 93,
+   "nm": "EVEREST CHAT MASALA 100G",
+   "qty": 20,
+   "rate": 74.2439,
+   "u": "pcs"
+  },
+  {
+   "amt": 830.32,
+   "mrp": 104,
+   "nm": "EVEREST MEAT MASALA 100G",
+   "qty": 10,
+   "rate": 83.0319,
+   "u": "pcs"
+  },
+  {
+   "amt": 878.2,
+   "mrp": 110,
+   "nm": "EVEREST SHAHI PANEER MASALA 100G",
+   "qty": 10,
+   "rate": 87.8199,
+   "u": "pcs"
+  },
+  {
+   "amt": 782.44,
+   "mrp": 98,
+   "nm": "EVEREST CHOLE MASALA 100G",
+   "qty": 10,
+   "rate": 78.2439,
+   "u": "pcs"
+  },
+  {
+   "amt": 814.36,
+   "mrp": 102,
+   "nm": "EVEREST KITCHEN KING 100G",
+   "qty": 10,
+   "rate": 81.4359,
+   "u": "pcs"
+  },
+  {
+   "amt": 0.12,
+   "nm": "ROUND OFF",
+   "qty": 1,
+   "rate": 0.12,
+   "u": "pcs"
+  }
+ ],
+ "no": "1723/26-27",
+ "note": "Everest; बिल 'Vande Bharat Vikram ji Charan' के नाम; 5% छूट, 5% GST",
+ "paid": 0,
+ "pay": "उधार (CREDIT)",
+ "src": "chat",
+ "sup": "MAHESH ENTERPRISES",
+ "total": 9964
+}

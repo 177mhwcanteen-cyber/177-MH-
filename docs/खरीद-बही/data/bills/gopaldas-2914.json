@@ -1,0 +1,104 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज जी",
+ "byName": "विक्रम जी",
+ "date": "2026-10-09",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 730,
+   "nm": "IMLI",
+   "qty": 10,
+   "rate": 73,
+   "u": "kg"
+  },
+  {
+   "amt": 1060,
+   "nm": "BLACK KISHMISH",
+   "qty": 2,
+   "rate": 530,
+   "u": "kg"
+  },
+  {
+   "amt": 260,
+   "nm": "AMCHUR POWDER",
+   "qty": 1,
+   "rate": 260,
+   "u": "kg"
+  },
+  {
+   "amt": 1000,
+   "nm": "DHANIYA",
+   "qty": 5,
+   "rate": 200,
+   "u": "kg"
+  },
+  {
+   "amt": 3150,
+   "nm": "BESAN",
+   "qty": 30,
+   "rate": 105,
+   "u": "kg"
+  },
+  {
+   "amt": 750,
+   "nm": "PISTA",
+   "qty": 1,
+   "rate": 750,
+   "u": "kg"
+  },
+  {
+   "amt": 1325,
+   "nm": "KESAR (1 ग्राम)",
+   "qty": 5,
+   "rate": 265,
+   "u": "g"
+  },
+  {
+   "amt": 3600,
+   "nm": "TUAR DAL",
+   "qty": 30,
+   "rate": 120,
+   "u": "kg"
+  },
+  {
+   "amt": 2100,
+   "nm": "ROASTED CHANA",
+   "qty": 15,
+   "rate": 140,
+   "u": "kg"
+  },
+  {
+   "amt": 1260,
+   "nm": "GOLA (NARIYAL)",
+   "qty": 3,
+   "rate": 420,
+   "u": "kg"
+  },
+  {
+   "amt": 3650,
+   "nm": "ELAICHI",
+   "qty": 1,
+   "rate": 3650,
+   "u": "kg"
+  },
+  {
+   "amt": 14.59,
+   "nm": "WAGES (बिल पर)",
+   "qty": 1,
+   "rate": 14.59,
+   "u": "pcs"
+  }
+ ],
+ "no": "Gv/2914/26-27",
+ "note": "हाथ से: 2 कट्टा + 2 नग = 4 नग; रेट GST सहित; यह फोटो 3 बार आई — एक बार चढ़ाई",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "GOPALDAS VISHANDAS",
+ "total": 18900
+}

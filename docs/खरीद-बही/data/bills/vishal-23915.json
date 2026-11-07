@@ -1,0 +1,34 @@
+{
+ "added": 1794063000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-11-03",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 929,
+   "nm": "FIRST CROP CASHEW REGULAR (PKT)",
+   "qty": 1,
+   "rate": 929,
+   "u": "pcs"
+  },
+  {
+   "amt": 989,
+   "nm": "FIRST CROP ALMOND REGULAR (PKT)",
+   "qty": 1,
+   "rate": 989,
+   "u": "pcs"
+  }
+ ],
+ "no": "HR34060023915",
+ "note": "बाज़ार (रिटेल) भाव से तुलना के लिए; पैकेट का वज़न पक्का करें",
+ "paid": 0,
+ "pay": "UPI",
+ "src": "chat",
+ "sup": "VISHAL MEGA MART",
+ "total": 1918
+}

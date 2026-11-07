@@ -1,0 +1,18 @@
+B=[
+ dict(id="ramesh-879",date="",shop="RAMESHCHAND DEVANAND",no="879",buyer="मनोज",pay="?",total=12040,note="हाथ का GST बिल, तारीख़ साफ़ नहीं (831 के बाद); मजदूरी ₹20 + दूसरा खर्च ₹60 — 831 में भी ऐसे ₹40 + ₹116",
+  lines=[("SUJI? 45KG KATTA",45,2,"bag","1600",""),("MAIDA 45KG KATTA",45,1,"bag","1600",""),("CHAWAL 30KG (बिना GST)",1,30,"kg","100",""),
+   ("CHAWAL 20KG (3)",1,20,"kg","1676.20*1.05/20",""),("CHAWAL 20KG (2)",1,20,"kg","2285.72*1.05/20",""),("MAZDOORI (बिल पर)",1,1,"pcs","20",""),("दूसरा खर्च (बिल पर ₹60 — क्या?)",1,1,"pcs","60","")]),
+ dict(id="laxmi-20261028",date="28-10-2026",shop="LAXMI TRADING COMPANY",no="पर्ची 53",buyer="",pay="UPI 28-10 12:22 PM",total=8580,note="🔒 तम्बाकू; हाथ की पर्ची, मात्रा साफ़ नहीं; UPI ₹8,580 मिलता है",
+  lines=[("TOB: DHARIWAL (10/5)",1,1,"lot","800",""),("TOB: MIRAJ (10/5)",1,1,"lot","800",""),("TOB: 502 (2500?)",1,1,"lot","2100",""),("TOB: TANSEN? (20/5)",1,1,"lot","1000",""),
+   ("TOB: SIGNATURE? (15/2)",1,1,"lot","850",""),("TOB: KUBER? (3)",1,1,"lot","1020",""),("TOB: ? (2 PKT)",1,1,"lot","790",""),("TOB: ? (10)",1,1,"lot","1220","")]),
+ dict(id="malani-2446",date="29-10-2026",shop="MALANI MARKETING",no="2446 (ESTIMATE)",buyer="रोहित",pay="?",total=1650,note="कच्चा बिल (Estimate); सामान का नाम साफ़ नहीं (टिफिन?)",
+  lines=[("TIFFIN? (MALANI)",1,3,"pcs","550","")]),
+ dict(id="vishal-23915",date="03-11-2026",shop="VISHAL MEGA MART",no="HR34060023915",buyer="",pay="UPI",total=1918,note="बाज़ार (रिटेल) भाव से तुलना के लिए; पैकेट का वज़न पक्का करें",
+  lines=[("FIRST CROP CASHEW REGULAR (PKT)",1,1,"pcs","929",""),("FIRST CROP ALMOND REGULAR (PKT)",1,1,"pcs","989","")]),
+ dict(id="mk-033",date="",shop="MK BARMER",no="033",buyer="",pay="?",total=2970,note="हाथ की पर्ची, तारीख़ नहीं, सामान के नाम साफ़ नहीं; 8 दिन बाद ब्याज",
+  lines=[("MK: PUAVI? (12×150)",1,12,"kg?","150",""),("MK: PISTA ...? (3×190)",1,3,"kg?","190",""),("MK: MOTIRAM/SITARAM? (5×120)",1,5,"kg?","120","")]),
+ dict(id="muskan-6266",date="",shop="MUSKAN MARKETING",no="6266 (ESTIMATE)",buyer="",pay="?",total=2592,note="⚠ कच्चा बिल: ₹2,400 पर ₹192 (=8%) अलग जोड़ा — किस बात का?",
+  lines=[("MUSKAN: COLD DRINK? -25",1,1,"lot","1500",""),("MUSKAN: ? 108",1,1,"lot","900",""),("ऊपर से जोड़ा ₹192 (8%?)",1,1,"pcs","192","")]),
+ dict(id="slip-dal-30kg",date="",shop="? (हाथ की पर्ची — दाल-चना)",no="",buyer="",pay="?",total=None,note="हाथ की पर्ची: दुकान/तारीख़ नहीं; कुल पढ़ा नहीं गया (लाइनें जोड़ ₹13,518); नीचे दूसरी गिनती 30×105, 30×87, 30×72, 30×127 + 24 = 11,754 (2960 लिखा पर 30×72 = 2160)",
+  lines=[("CHANA (30KG KATTA)",1,30,"kg","3950/30",""),("CHANA DAL (30KG KATTA)",1,30,"kg","2690/30",""),("MOONG (30KG KATTA)",1,30,"kg","2960/30",""),("URAD (30KG KATTA)",1,30,"kg","3890/30",""),("BHADA/MAZDOORI? (पर्ची पर)",1,1,"pcs","28","")]),
+]

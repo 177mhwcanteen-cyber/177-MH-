@@ -1,0 +1,85 @@
+{
+ "added": 1794063000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-10-28",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 800,
+   "nm": "TOB: DHARIWAL (10/5)",
+   "qty": 1,
+   "rate": 800,
+   "tob": true,
+   "u": "lot"
+  },
+  {
+   "amt": 800,
+   "nm": "TOB: MIRAJ (10/5)",
+   "qty": 1,
+   "rate": 800,
+   "tob": true,
+   "u": "lot"
+  },
+  {
+   "amt": 2100,
+   "nm": "TOB: 502 (2500?)",
+   "qty": 1,
+   "rate": 2100,
+   "tob": true,
+   "u": "lot"
+  },
+  {
+   "amt": 1000,
+   "nm": "TOB: TANSEN? (20/5)",
+   "qty": 1,
+   "rate": 1000,
+   "tob": true,
+   "u": "lot"
+  },
+  {
+   "amt": 850,
+   "nm": "TOB: SIGNATURE? (15/2)",
+   "qty": 1,
+   "rate": 850,
+   "tob": true,
+   "u": "lot"
+  },
+  {
+   "amt": 1020,
+   "nm": "TOB: KUBER? (3)",
+   "qty": 1,
+   "rate": 1020,
+   "tob": true,
+   "u": "lot"
+  },
+  {
+   "amt": 790,
+   "nm": "TOB: ? (2 PKT)",
+   "qty": 1,
+   "rate": 790,
+   "tob": true,
+   "u": "lot"
+  },
+  {
+   "amt": 1220,
+   "nm": "TOB: ? (10)",
+   "qty": 1,
+   "rate": 1220,
+   "tob": true,
+   "u": "lot"
+  }
+ ],
+ "no": "पर्ची 53",
+ "note": "🔒 तम्बाकू; हाथ की पर्ची, मात्रा साफ़ नहीं; UPI ₹8,580 मिलता है",
+ "paid": 0,
+ "pay": "UPI 28-10 12:22 PM",
+ "secret": true,
+ "src": "chat",
+ "sup": "LAXMI TRADING COMPANY",
+ "total": 8580
+}

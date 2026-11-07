@@ -1,0 +1,336 @@
+{
+ "items": [
+  {
+   "i": "ms-kaju-katli",
+   "n": "SHAHI KAJU KATLI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-royal-kaju",
+   "n": "ROYAL KAJU BARFI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-kaju-roll",
+   "n": "KAJU ROLL",
+   "u": "kg"
+  },
+  {
+   "i": "ms-df-katli",
+   "n": "DRY FRUIT KATLI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-df-roll",
+   "n": "DRY FRUIT ROLL",
+   "u": "kg"
+  },
+  {
+   "i": "ms-anjeer",
+   "n": "ANJEER BARFI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-rose-barfi",
+   "n": "ROSE PETAL BARFI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-choco-barfi",
+   "n": "CHOCOLATE BARFI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-coconut",
+   "n": "COCONUT MALAI BARFI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-doda",
+   "n": "DODA BARFI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-besan-barfi",
+   "n": "DG BESAN BARFI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-kalakand",
+   "n": "DANEDAR KALAKAND",
+   "u": "kg"
+  },
+  {
+   "i": "ms-milk-cake",
+   "n": "ALWAR MILK CAKE",
+   "u": "kg"
+  },
+  {
+   "i": "ms-mawa-roll",
+   "n": "MALAI MAWA ROLL",
+   "u": "kg"
+  },
+  {
+   "i": "ms-kesar-peda",
+   "n": "KESARIYA PEDA",
+   "u": "kg"
+  },
+  {
+   "i": "ms-choco-peda",
+   "n": "CHOCOLATE PEDA",
+   "u": "kg"
+  },
+  {
+   "i": "ms-mathura-peda",
+   "n": "MATHURA PEDA",
+   "u": "kg"
+  },
+  {
+   "i": "ms-special-peda",
+   "n": "SPECIAL PEDA",
+   "u": "kg"
+  },
+  {
+   "i": "ms-motichoor",
+   "n": "DG MOTICHOOR LADDU",
+   "u": "kg"
+  },
+  {
+   "i": "ms-besan-laddu",
+   "n": "DG BESAN LADDU",
+   "u": "kg"
+  },
+  {
+   "i": "ms-mysore-pak",
+   "n": "GHEE MYSORE PAK",
+   "u": "kg"
+  },
+  {
+   "i": "ms-mohanthal",
+   "n": "MOHANTHAL",
+   "u": "kg"
+  },
+  {
+   "i": "ms-gud-pak",
+   "n": "DESI GUD PAK",
+   "u": "kg"
+  },
+  {
+   "i": "ms-gulab-jamun",
+   "n": "GULAB JAMUN",
+   "u": "kg"
+  },
+  {
+   "i": "ms-rasmalai",
+   "n": "KESAR RASMALAI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-jalebi",
+   "n": "CRISPY JALEBI",
+   "u": "kg"
+  },
+  {
+   "i": "ms-gajar-halwa",
+   "n": "GAJAR HALWA",
+   "u": "kg"
+  },
+  {
+   "i": "ms-pastry",
+   "n": "CREAM PASTRY",
+   "u": "pc"
+  },
+  {
+   "i": "ms-cake-half",
+   "n": "CAKE 1 POUND (½KG)",
+   "u": "pc"
+  },
+  {
+   "i": "ms-cake-1kg",
+   "n": "CAKE 2 POUND (1KG)",
+   "u": "pc"
+  },
+  {
+   "i": "ms-paneer",
+   "n": "MALAI PANEER",
+   "u": "kg"
+  },
+  {
+   "i": "imvwago8cbnlc",
+   "n": "NIHAR BADAM AMLA 240ML",
+   "u": "pc"
+  },
+  {
+   "i": "t-gfss",
+   "n": "GOLD FLAKE SUPER STAR MINT (1 पीस)",
+   "pp": 10,
+   "u": "pc"
+  },
+  {
+   "i": "t-gfss-pk",
+   "n": "GOLD FLAKE SUPER STAR MINT 10 पैक",
+   "pk": "t-gfss",
+   "pp": 10,
+   "u": "pc"
+  },
+  {
+   "i": "t-gfpm",
+   "n": "GOLD FLAKE PREMIUM MINT (1 पीस)",
+   "pp": 10,
+   "u": "pc"
+  },
+  {
+   "i": "t-gfpm-pk",
+   "n": "GOLD FLAKE PREMIUM MINT 10 पैक",
+   "pk": "t-gfpm",
+   "pp": 10,
+   "u": "pc"
+  },
+  {
+   "i": "t-cldb",
+   "n": "CLASSIC DOUBLE BURST (1 पीस)",
+   "pp": 20,
+   "u": "pc"
+  },
+  {
+   "i": "t-cldb-pk",
+   "n": "CLASSIC DOUBLE BURST 20 पैक",
+   "pk": "t-cldb",
+   "pp": 20,
+   "u": "pc"
+  },
+  {
+   "i": "t-clcn",
+   "n": "CLASSIC CONNECT (1 पीस)",
+   "pp": 20,
+   "u": "pc"
+  },
+  {
+   "i": "t-clcn-pk",
+   "n": "CLASSIC CONNECT 20 पैक",
+   "pk": "t-clcn",
+   "pp": 20,
+   "u": "pc"
+  },
+  {
+   "i": "t-clrt",
+   "n": "CLASSIC REFINED TASTE (BLUE LEAF) (1 पीस",
+   "pp": 20,
+   "u": "pc"
+  },
+  {
+   "i": "t-clrt-pk",
+   "n": "CLASSIC REFINED TASTE (BLUE LEAF) 20 पैक",
+   "pk": "t-clrt",
+   "pp": 20,
+   "u": "pc"
+  },
+  {
+   "i": "t-gfpm-out",
+   "n": "GOLD FLAKE PREMIUM MINT OUTER 50 पैक",
+   "pk": "t-gfpm",
+   "pp": 500,
+   "u": "pc"
+  },
+  {
+   "i": "t-clcn-out",
+   "n": "CLASSIC CONNECT बड़ा पैकेट (10×20)",
+   "pk": "t-clcn",
+   "pp": 200,
+   "u": "pc"
+  },
+  {
+   "i": "t-nevla",
+   "n": "NEVLA TAMBAKU GOLD RIBBON 20G (1 पाउच)",
+   "pp": 8,
+   "u": "pc"
+  },
+  {
+   "i": "t-nevla-pk",
+   "n": "NEVLA TAMBAKU पैकेट (8 पाउच)",
+   "pk": "t-nevla",
+   "pp": 8,
+   "u": "pc"
+  },
+  {
+   "i": "t-nevla-box",
+   "n": "NEVLA TAMBAKU बड़ा डिब्बा (144 पाउच)",
+   "pk": "t-nevla",
+   "pp": 144,
+   "u": "pc"
+  },
+  {
+   "i": "t-sigg",
+   "n": "DB SIGGNATURE PAN MASALA 4G (1 पाउच)",
+   "pp": 35,
+   "u": "pc"
+  },
+  {
+   "i": "t-sigg-pk",
+   "n": "DB SIGGNATURE डिब्बा (35 पाउच)",
+   "pk": "t-sigg",
+   "pp": 35,
+   "u": "pc"
+  },
+  {
+   "i": "t-tansen",
+   "n": "TANSEN BLUES PAN MASALA 9G (1 पाउच)",
+   "pp": 12,
+   "u": "pc"
+  },
+  {
+   "i": "t-tansen-pk",
+   "n": "TANSEN BLUES डिब्बा (11+1 पाउच)",
+   "pk": "t-tansen",
+   "pp": 12,
+   "u": "pc"
+  },
+  {
+   "i": "t-vimal",
+   "n": "VIMAL PAN MASALA JUMBO (1 पाउच)",
+   "pp": 22,
+   "u": "pc"
+  },
+  {
+   "i": "t-vimal-pk",
+   "n": "VIMAL PAN MASALA पैकेट (22 पाउच)",
+   "pk": "t-vimal",
+   "pp": 22,
+   "u": "pc"
+  },
+  {
+   "i": "t-ganesh",
+   "n": "GANESH CHHAP 701 TAMBAKU 12G (1 पाउच)",
+   "u": "pc"
+  },
+  {
+   "i": "t-502",
+   "n": "502 PATAKA BIRI (1 बंडल)",
+   "pp": 25,
+   "u": "pc"
+  },
+  {
+   "i": "t-502-pk",
+   "n": "502 PATAKA BIRI थोक पैक (25 बंडल)",
+   "pk": "t-502",
+   "pp": 25,
+   "u": "pc"
+  },
+  {
+   "i": "t-rajni",
+   "n": "RAJNIGANDHA PAN MASALA ₹20 (1 पाउच)",
+   "u": "pc"
+  },
+  {
+   "i": "k-ev-kking",
+   "n": "EVEREST KITCHEN KING 50G",
+   "u": "pc"
+  },
+  {
+   "i": "k-ev-biryani",
+   "n": "EVEREST BIRYANI MSL 50G",
+   "u": "pc"
+  }
+ ],
+ "ts": 1794052118964
+}

@@ -1,0 +1,50 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "रविंद्र दान",
+ "byName": "विक्रम जी",
+ "date": "2026-10-22",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 14700,
+   "nm": "SOYA OIL TIN PARAMPARA 15KG",
+   "qty": 6,
+   "rate": 2450,
+   "u": "tin"
+  },
+  {
+   "amt": 5544,
+   "nm": "SOYA OIL 800G BOTTLE",
+   "pp": 12,
+   "qty": 3,
+   "rate": 1848,
+   "u": "crt"
+  },
+  {
+   "amt": 4920,
+   "nm": "SARSO OIL 1L BOTTLE",
+   "pp": 12,
+   "qty": 2,
+   "rate": 2460,
+   "u": "crt"
+  },
+  {
+   "amt": 21.86,
+   "nm": "WAGES (बिल पर)",
+   "qty": 1,
+   "rate": 21.86,
+   "u": "pcs"
+  }
+ ],
+ "no": "AOP/26-27/14199",
+ "note": "बिल 'Ravindra Dan Barmer' के नाम; Bolero Camper",
+ "paid": 0,
+ "pay": "online",
+ "src": "chat",
+ "sup": "ARIHANT OIL PRODUCT",
+ "total": 25186
+}

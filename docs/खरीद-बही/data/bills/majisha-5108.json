@@ -1,0 +1,83 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज",
+ "byName": "विक्रम जी",
+ "date": "2026-10-09",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 2100,
+   "nm": "PLASTIC CARRY BAG 9X13",
+   "qty": 15,
+   "rate": 140,
+   "u": "kg"
+  },
+  {
+   "amt": 600,
+   "nm": "THERMOCOL/THUTHA PACK",
+   "qty": 5,
+   "rate": 120,
+   "u": "pcs"
+  },
+  {
+   "amt": 2400,
+   "nm": "CMC PLATE",
+   "qty": 200,
+   "rate": 12,
+   "u": "pcs"
+  },
+  {
+   "amt": 600,
+   "nm": "PAPER PLATE 8 INCH",
+   "qty": 50,
+   "rate": 12,
+   "u": "pcs"
+  },
+  {
+   "amt": 280,
+   "nm": "HADRO",
+   "qty": 1,
+   "rate": 280,
+   "u": "pcs"
+  },
+  {
+   "amt": 250,
+   "nm": "MALMAL KAPDA",
+   "qty": 5,
+   "rate": 50,
+   "u": "pcs"
+  },
+  {
+   "amt": 560,
+   "nm": "SILVER POUCH 6X8",
+   "qty": 7,
+   "rate": 80,
+   "u": "pcs"
+  },
+  {
+   "amt": 300,
+   "nm": "VANILLA ESSENCE",
+   "qty": 2,
+   "rate": 150,
+   "u": "pcs"
+  },
+  {
+   "amt": 175,
+   "nm": "CHERRY TUTTI FRUTTI 400G",
+   "qty": 5,
+   "rate": 35,
+   "u": "pcs"
+  }
+ ],
+ "no": "5108",
+ "note": "⚠ छपे ₹7,265 के नीचे हाथ से +552 = 7817 लिखा — यह 552 किस चीज़ का?",
+ "paid": 0,
+ "pay": "Cash",
+ "src": "chat",
+ "sup": "MAJISHA DISPOSAL & TRADING",
+ "total": 7265
+}

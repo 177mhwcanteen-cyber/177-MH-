@@ -1,0 +1,43 @@
+{
+ "added": 1794026500000,
+ "app": "pending",
+ "appNote": "📲 07-11 ऐप अपडेट से भेजा (p-majisha-5703, स्टॉक नहीं)",
+ "ask": [],
+ "buyer": "Cash Manoj",
+ "date": "2026-11-07",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 400,
+   "n": "Chari Tuti Futi 400 Gm",
+   "nm": "CHERRY TUTTI FRUTTI 400G",
+   "qty": 10,
+   "rate": 40,
+   "u": "pcs"
+  },
+  {
+   "amt": 400,
+   "ask": "\"Pada Chatodi\" क्या सामान है? (नाम पढ़ा नहीं गया)",
+   "n": "Pada Chatodi",
+   "nm": "PADA CHATODI",
+   "qty": 20,
+   "rate": 20,
+   "u": "pcs"
+  },
+  {
+   "amt": 1040,
+   "ask": "4 पीस @ ₹260 — 1 पैकेट में कितने डिब्बे (25/50)?",
+   "n": "CUNTENER PALSTIC 500ML",
+   "nm": "PLASTIC CONTAINER 500ML",
+   "qty": 4,
+   "rate": 260,
+   "u": "pcs"
+  }
+ ],
+ "no": "5703",
+ "sup": "MAJISHA DISPOSAL & TRADING",
+ "supAddr": "लक्ष्मी सिनेमा के पास, स्टेशन रोड, बाड़मेर",
+ "supPhone": "7427821237, 9116471724",
+ "total": 1840
+}

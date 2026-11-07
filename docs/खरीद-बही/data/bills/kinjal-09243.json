@@ -1,0 +1,30 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-10-24",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 3950,
+   "bc": "8901725307912",
+   "mrp": 428,
+   "nm": "CLASSIC CONNECT 20",
+   "pp": 20,
+   "qty": 10,
+   "rate": 395,
+   "u": "pkt"
+  }
+ ],
+ "no": "SH-09243/26-27",
+ "note": "",
+ "paid": 0,
+ "pay": "Cash",
+ "src": "chat",
+ "sup": "KINJAL TRADING COMPANY",
+ "total": 3950
+}

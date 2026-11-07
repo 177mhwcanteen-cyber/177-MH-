@@ -1,0 +1,114 @@
+{
+ "added": 1794026500000,
+ "app": "pending",
+ "appNote": "📲 07-11 ऐप अपडेट से भेजा (p-majisha-5639, रसोई का कच्चा माल, स्टॉक नहीं)",
+ "ask": [
+  "बिल पर खरीदने वाला \"Cash Manoj\" है — क्या मनोज भाई ने यह बिल ऐप में चढ़ाया?"
+ ],
+ "buyer": "Cash Manoj",
+ "date": "2026-11-04",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 900,
+   "ask": "100 पीस @ ₹9 — 1 प्लेट ₹9 या 100 पैकेट? 1 पैकेट में कितनी प्लेट?",
+   "n": "Paper Pleat 8 inch",
+   "nm": "PAPER PLATE 8 INCH",
+   "qty": 100,
+   "rate": 9,
+   "u": "pcs"
+  },
+  {
+   "amt": 1200,
+   "ask": "CMC प्लेट कौन-सी है (साइज़)? 100 पीस या पैकेट?",
+   "n": "C M C Palet",
+   "nm": "CMC PLATE",
+   "qty": 100,
+   "rate": 12,
+   "u": "pcs"
+  },
+  {
+   "amt": 630,
+   "ask": "रबर बैंड — 1 पैकेट कितने ग्राम/कितने पीस?",
+   "n": "Ring Rabar",
+   "nm": "RUBBER BAND (RING)",
+   "qty": 3,
+   "rate": 210,
+   "u": "pcs"
+  },
+  {
+   "amt": 1150,
+   "ask": "कौन-सी कंपनी (McCain / Sumeru)?",
+   "n": "Frinsh Frai 2.5kg",
+   "nm": "FRENCH FRIES 2.5KG",
+   "qty": 5,
+   "rate": 230,
+   "u": "pcs"
+  },
+  {
+   "amt": 2800,
+   "n": "Pastic 13+16",
+   "nm": "PLASTIC CARRY BAG 13X16",
+   "qty": 20,
+   "rate": 140,
+   "u": "kg"
+  },
+  {
+   "amt": 585,
+   "n": "Pastic 20+26",
+   "nm": "PLASTIC CARRY BAG 20X26",
+   "qty": 3,
+   "rate": 195,
+   "u": "kg"
+  },
+  {
+   "amt": 1000,
+   "ask": "1 पैकेट में कितने पाउच?",
+   "n": "Silver Pouch 8+10",
+   "nm": "SILVER POUCH 8X10",
+   "qty": 10,
+   "rate": 100,
+   "u": "pcs"
+  },
+  {
+   "amt": 5520,
+   "ask": "डिब्बा (टिन) है या ताज़ा पैकेट? 48 पीस = 2 कार्टन?",
+   "n": "Musroorom Buttan 800gm",
+   "nm": "MUSHROOM BUTTON 800G",
+   "qty": 48,
+   "rate": 115,
+   "u": "pcs"
+  },
+  {
+   "amt": 1320,
+   "ask": "1 पैकेट कितने ग्राम/किलो?",
+   "n": "Baredh Chora",
+   "nm": "BREAD CRUMBS (CHURA)",
+   "qty": 12,
+   "rate": 110,
+   "u": "pcs"
+  },
+  {
+   "amt": 2496,
+   "n": "Paner",
+   "nm": "PANEER",
+   "qty": 10.4,
+   "rate": 240,
+   "u": "kg"
+  },
+  {
+   "amt": 800,
+   "n": "Garlic 1 Kg",
+   "nm": "GARLIC (LEHSUN)",
+   "qty": 5,
+   "rate": 160,
+   "u": "kg"
+  }
+ ],
+ "no": "5639",
+ "sup": "MAJISHA DISPOSAL & TRADING",
+ "supAddr": "लक्ष्मी सिनेमा के पास, स्टेशन रोड, बाड़मेर",
+ "supPhone": "7427821237, 9116471724",
+ "total": 18401
+}

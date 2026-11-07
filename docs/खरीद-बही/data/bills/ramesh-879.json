@@ -1,0 +1,71 @@
+{
+ "added": 1794063000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज",
+ "byName": "विक्रम जी",
+ "date": "",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 3200,
+   "nm": "SUJI? 45KG KATTA",
+   "pp": 45,
+   "qty": 2,
+   "rate": 1600,
+   "u": "bag"
+  },
+  {
+   "amt": 1600,
+   "nm": "MAIDA 45KG KATTA",
+   "pp": 45,
+   "qty": 1,
+   "rate": 1600,
+   "u": "bag"
+  },
+  {
+   "amt": 3000,
+   "nm": "CHAWAL 30KG (बिना GST)",
+   "qty": 30,
+   "rate": 100,
+   "u": "kg"
+  },
+  {
+   "amt": 1760.01,
+   "nm": "CHAWAL 20KG (3)",
+   "qty": 20,
+   "rate": 88.0005,
+   "u": "kg"
+  },
+  {
+   "amt": 2400.01,
+   "nm": "CHAWAL 20KG (2)",
+   "qty": 20,
+   "rate": 120.0003,
+   "u": "kg"
+  },
+  {
+   "amt": 20,
+   "nm": "MAZDOORI (बिल पर)",
+   "qty": 1,
+   "rate": 20,
+   "u": "pcs"
+  },
+  {
+   "amt": 60,
+   "nm": "दूसरा खर्च (बिल पर ₹60 — क्या?)",
+   "qty": 1,
+   "rate": 60,
+   "u": "pcs"
+  }
+ ],
+ "no": "879",
+ "note": "हाथ का GST बिल, तारीख़ साफ़ नहीं (831 के बाद); मजदूरी ₹20 + दूसरा खर्च ₹60 — 831 में भी ऐसे ₹40 + ₹116",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "RAMESHCHAND DEVANAND",
+ "total": 12040
+}

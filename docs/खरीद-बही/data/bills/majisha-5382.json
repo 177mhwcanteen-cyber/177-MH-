@@ -1,0 +1,62 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज",
+ "byName": "विक्रम जी",
+ "date": "2026-10-23",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 5497,
+   "nm": "PANEER",
+   "qty": 23.9,
+   "rate": 230,
+   "u": "kg"
+  },
+  {
+   "amt": 4550,
+   "nm": "MATAR GREEN PEAS 1KG",
+   "qty": 70,
+   "rate": 65,
+   "u": "kg"
+  },
+  {
+   "amt": 350,
+   "nm": "HING BOX 150ML",
+   "qty": 100,
+   "rate": 3.5,
+   "u": "pcs"
+  },
+  {
+   "amt": 550,
+   "nm": "HING BOX 600ML",
+   "qty": 100,
+   "rate": 5.5,
+   "u": "pcs"
+  },
+  {
+   "amt": 900,
+   "nm": "BUTTER PAPER",
+   "qty": 2,
+   "rate": 450,
+   "u": "pcs"
+  },
+  {
+   "amt": 210,
+   "nm": "RUBBER BAND (RING)",
+   "qty": 1,
+   "rate": 210,
+   "u": "pcs"
+  }
+ ],
+ "no": "5382",
+ "note": "",
+ "paid": 0,
+ "pay": "Cash",
+ "src": "chat",
+ "sup": "MAJISHA DISPOSAL & TRADING",
+ "total": 12057
+}

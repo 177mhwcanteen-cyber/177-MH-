@@ -1,0 +1,71 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज",
+ "byName": "विक्रम जी",
+ "date": "2026-10-22",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 4740,
+   "nm": "MAIDA 45KG KATTA",
+   "pp": 45,
+   "qty": 3,
+   "rate": 1580,
+   "u": "bag"
+  },
+  {
+   "amt": 4740,
+   "nm": "SUJI? 45KG KATTA",
+   "pp": 45,
+   "qty": 3,
+   "rate": 1580,
+   "u": "bag"
+  },
+  {
+   "amt": 3000,
+   "nm": "CHAWAL 30KG (बिना GST)",
+   "qty": 30,
+   "rate": 100,
+   "u": "kg"
+  },
+  {
+   "amt": 2480,
+   "nm": "CHAWAL 20KG (1)",
+   "qty": 20,
+   "rate": 123.9998,
+   "u": "kg"
+  },
+  {
+   "amt": 4720,
+   "nm": "CHAWAL 20KG (2)",
+   "qty": 40,
+   "rate": 118.0001,
+   "u": "kg"
+  },
+  {
+   "amt": 3480,
+   "nm": "CHAWAL 20KG (3)",
+   "qty": 40,
+   "rate": 86.9999,
+   "u": "kg"
+  },
+  {
+   "amt": 40,
+   "nm": "MAZDOORI (बिल पर)",
+   "qty": 1,
+   "rate": 40,
+   "u": "pcs"
+  }
+ ],
+ "no": "831",
+ "note": "⚠ हाथ का बिल: सामान+GST = ₹23,160, मज़दूरी ₹40 — कुल योग 23,316 पढ़ा (पक्का करें); चावल के नाम साफ़ नहीं",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "RAMESHCHAND DEVANAND",
+ "total": 23316
+}

@@ -1,0 +1,110 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-10-20",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 865,
+   "mrp": 200,
+   "nm": "AMUL TRICONE VANILLA 40ML",
+   "pp": 20,
+   "qty": 5,
+   "rate": 173,
+   "u": "box"
+  },
+  {
+   "amt": 1320,
+   "mrp": 400,
+   "nm": "AMUL STK RAJASTHANI KULFI",
+   "pp": 20,
+   "qty": 4,
+   "rate": 330,
+   "u": "box"
+  },
+  {
+   "amt": 1320,
+   "mrp": 400,
+   "nm": "AMUL STK CHOCOBAR 60ML",
+   "pp": 20,
+   "qty": 4,
+   "rate": 330,
+   "u": "box"
+  },
+  {
+   "amt": 2640,
+   "mrp": 800,
+   "nm": "AMUL TRICONE RED VELVET 120ML",
+   "pp": 20,
+   "qty": 4,
+   "rate": 660,
+   "u": "box"
+  },
+  {
+   "amt": 1160,
+   "mrp": 400,
+   "nm": "AMUL STK MANGO DUET GOLD 60ML",
+   "pp": 20,
+   "qty": 4,
+   "rate": 290,
+   "u": "box"
+  },
+  {
+   "amt": 2312,
+   "mrp": 700,
+   "nm": "AMUL STK FROSTIK 70ML",
+   "pp": 20,
+   "qty": 4,
+   "rate": 578,
+   "u": "box"
+  },
+  {
+   "amt": 1320,
+   "mrp": 400,
+   "nm": "AMUL STK KAJU KULFI 60ML",
+   "pp": 20,
+   "qty": 4,
+   "rate": 330,
+   "u": "box"
+  },
+  {
+   "amt": 1320,
+   "mrp": 400,
+   "nm": "AMUL STK KASHMIRI 60ML",
+   "pp": 20,
+   "qty": 4,
+   "rate": 330,
+   "u": "box"
+  },
+  {
+   "amt": 1156,
+   "mrp": 700,
+   "nm": "AMUL TRICONE BUTTERSCOTCH 120ML",
+   "pp": 20,
+   "qty": 2,
+   "rate": 578,
+   "u": "box"
+  },
+  {
+   "amt": 1156,
+   "mrp": 700,
+   "nm": "AMUL TRICONE CHOCOLATE 120ML",
+   "pp": 20,
+   "qty": 2,
+   "rate": 578,
+   "u": "box"
+  }
+ ],
+ "no": "7380",
+ "note": "आइसक्रीम; 1 बॉक्स = 20 पीस",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "MINAXI AGENCY (AMUL)",
+ "total": 14569
+}

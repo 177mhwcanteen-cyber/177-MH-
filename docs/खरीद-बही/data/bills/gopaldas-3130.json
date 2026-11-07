@@ -1,0 +1,195 @@
+{
+ "added": 1794062000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "मनोज जी",
+ "byName": "विक्रम जी",
+ "date": "2026-10-22",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 460,
+   "nm": "KASURI METHI (PCS)",
+   "qty": 20,
+   "rate": 23,
+   "u": "pcs"
+  },
+  {
+   "amt": 2200,
+   "nm": "ELAICHI",
+   "qty": 0.5,
+   "rate": 4400,
+   "u": "kg"
+  },
+  {
+   "amt": 2125,
+   "nm": "SABUDANA",
+   "qty": 25,
+   "rate": 85,
+   "u": "kg"
+  },
+  {
+   "amt": 2800,
+   "nm": "PHOOL MAKHANA",
+   "qty": 4,
+   "rate": 700,
+   "u": "kg"
+  },
+  {
+   "amt": 8650,
+   "nm": "KAJU",
+   "qty": 10,
+   "rate": 865,
+   "u": "kg"
+  },
+  {
+   "amt": 1575,
+   "nm": "MOONG SABUT",
+   "qty": 15,
+   "rate": 105,
+   "u": "kg"
+  },
+  {
+   "amt": 6336,
+   "nm": "SINGDANA (MOONGFALI)",
+   "qty": 44,
+   "rate": 144,
+   "u": "kg"
+  },
+  {
+   "amt": 2640,
+   "nm": "IMLI",
+   "qty": 30,
+   "rate": 88,
+   "u": "kg"
+  },
+  {
+   "amt": 1380,
+   "nm": "CHANA DAL",
+   "qty": 15,
+   "rate": 92,
+   "u": "kg"
+  },
+  {
+   "amt": 700,
+   "nm": "RAJMA",
+   "qty": 5,
+   "rate": 140,
+   "u": "kg"
+  },
+  {
+   "amt": 575,
+   "nm": "ELAICHI",
+   "qty": 0.25,
+   "rate": 2300,
+   "u": "kg"
+  },
+  {
+   "amt": 57.5,
+   "nm": "GOND",
+   "qty": 0.25,
+   "rate": 230,
+   "u": "kg"
+  },
+  {
+   "amt": 375,
+   "nm": "KISHMISH (BUSH)",
+   "qty": 5,
+   "rate": 75,
+   "u": "kg"
+  },
+  {
+   "amt": 710,
+   "nm": "PISTA",
+   "qty": 1,
+   "rate": 710,
+   "u": "kg"
+  },
+  {
+   "amt": 160,
+   "nm": "KISHMISH (BUSH)",
+   "qty": 2,
+   "rate": 80,
+   "u": "kg"
+  },
+  {
+   "amt": 310,
+   "nm": "KISHMISH",
+   "qty": 5,
+   "rate": 62,
+   "u": "kg"
+  },
+  {
+   "amt": 525,
+   "nm": "KISHMISH",
+   "qty": 5,
+   "rate": 105,
+   "u": "kg"
+  },
+  {
+   "amt": 870,
+   "nm": "SALT",
+   "qty": 30,
+   "rate": 29,
+   "u": "kg"
+  },
+  {
+   "amt": 160,
+   "nm": "KISHMISH (BUSH)",
+   "qty": 2,
+   "rate": 80,
+   "u": "kg"
+  },
+  {
+   "amt": 1000,
+   "nm": "BLACK KISHMISH",
+   "qty": 2,
+   "rate": 500,
+   "u": "kg"
+  },
+  {
+   "amt": 3720,
+   "nm": "KAJU",
+   "qty": 4,
+   "rate": 930,
+   "u": "kg"
+  },
+  {
+   "amt": 3520.04,
+   "nm": "KAJU",
+   "qty": 4,
+   "rate": 880.01,
+   "u": "kg"
+  },
+  {
+   "amt": 2010.03,
+   "nm": "KAJU",
+   "qty": 3,
+   "rate": 670.01,
+   "u": "kg"
+  },
+  {
+   "amt": 1720,
+   "nm": "KALI MIRCH",
+   "qty": 4,
+   "rate": 430,
+   "u": "kg"
+  },
+  {
+   "amt": 35,
+   "nm": "WAGES (बिल पर)",
+   "qty": 1,
+   "rate": 35,
+   "u": "pcs"
+  }
+ ],
+ "no": "Gv/3130/26-27",
+ "note": "⚠ पेज 2 नहीं आया (कुल नहीं दिखा); हाथ से 4 कट्टा + 5 नग; उसी दिन बिल 3129 भी",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "GOPALDAS VISHANDAS",
+ "total": 44613.57
+}

@@ -1,0 +1,41 @@
+{
+ "added": 1794063000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 1500,
+   "nm": "MUSKAN: COLD DRINK? -25",
+   "qty": 1,
+   "rate": 1500,
+   "u": "lot"
+  },
+  {
+   "amt": 900,
+   "nm": "MUSKAN: ? 108",
+   "qty": 1,
+   "rate": 900,
+   "u": "lot"
+  },
+  {
+   "amt": 192,
+   "nm": "ऊपर से जोड़ा ₹192 (8%?)",
+   "qty": 1,
+   "rate": 192,
+   "u": "pcs"
+  }
+ ],
+ "no": "6266 (ESTIMATE)",
+ "note": "⚠ कच्चा बिल: ₹2,400 पर ₹192 (=8%) अलग जोड़ा — किस बात का?",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "MUSKAN MARKETING",
+ "total": 2592
+}
