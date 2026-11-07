@@ -69,6 +69,32 @@ async def main():
         h = (await pg.evaluate("window.__pr"))["h"]; assert h.count("<img") == 63, h.count("<img")
         p2 = await ctx.new_page(); await p2.set_content("<html><body>" + h.split('<img')[0] + '<img' + '<img'.join(h.split('<img')[1:4]) + "</div></body></html>"); await p2.screenshot(path=f"{SHOTS}/r3-stickers.png"); await p2.close()
         assert await pg.evaluate("SRK.total()") == 238
+        # छोटी जगहें मिलीं: पुराने फोटो-नंबर → नए, अलग रैक की चिप नहीं
+        assert await pg.evaluate("[SRK.canon('2-1'),SRK.canon('3-4'),SRK.canon('14-2'),SRK.canon('16-1')]") == ["1-7", "12-8", "13-14", "10-5"]
+        assert not await pg.query_selector('[data-srksel="2"]') and not await pg.query_selector('[data-srksel="16"]')
+        await pg.fill("#srkR", "2-1"); await pg.wait_for_timeout(100)
+        assert "अब 1-7" in await pg.inner_text("#srkInfo")
+        await pg.fill("#srkQ", nm[:6]); await pg.wait_for_timeout(150); await pg.click(f'[data-srkset="{B}"]'); await pg.wait_for_timeout(300)
+        assert await pg.evaluate(f"item('{B}').rack") == "1-7", "पुराना नंबर = नया खाना"
+        await pg.fill("#srkR", "11-23"); await pg.fill("#srkQ", nm[:6]); await pg.wait_for_timeout(150); await pg.click(f'[data-srkset="{B}"]'); await pg.wait_for_timeout(300)
+        # 🧭 घर: मसाला → 6, चिप्स → 10, स्टेशनरी → 15
+        assert await pg.evaluate("[SRK.home({name:'EVEREST GARAM MASALA',sub:'masala',cat:'kirana'}).r,SRK.home({name:'LAYS MAGIC MASALA',cat:'kirana',sub:'namkeen'}).r,SRK.home({name:'CELLO PEN',cat:'stationery'}).r]") == [6, 10, 15]
+        await pg.evaluate(f"window.__cc=[item('{C}').sub,item('{C}').cat];item('{C}').sub='masala';item('{C}').cat='kirana'")
+        au = await pg.evaluate("(()=>{const A=SRK.audit();return {m:A.move.map(x=>x.it.id),g:A.groups.find(g=>g.k==='masala')}})()")
+        assert C in au["m"] and au["g"]["r"] == 6, au
+        await pg.click("[data-srkaud]"); await pg.wait_for_timeout(200)
+        t = await pg.inner_text(".srk-au"); assert "मसाले" in t and "रैक 6" in t, t[:300]
+        await pg.screenshot(path=f"{SHOTS}/r4-audit.png", full_page=True)
+        await pg.click("[data-srkmv]"); await pg.wait_for_timeout(200)
+        h = (await pg.evaluate("window.__pr"))["h"]; assert "ले जाएँ" in h and "9-14" in h, h[:300]
+        await pg.evaluate(f"item('{C}').sub=__cc[0];item('{C}').cat=__cc[1]")
+        # 🪧 बोर्ड A4 + स्टिकर पर घर
+        await pg.evaluate("SRK.boards([6,11])"); h = (await pg.evaluate("window.__pr"))["h"]
+        assert h.count('class="bd"') == 2 and "6-13" in h and "मसाले" in h
+        p2 = await ctx.new_page(); await p2.set_content("<html><body>" + h + "</body></html>"); await p2.screenshot(path=f"{SHOTS}/r5-board.png"); await p2.close()
+        assert (await pg.evaluate("SRK.homeOf('10-5')")).startswith("मिठाई")
+        # 🏷️ सामान के लेबल पर रैक
+        assert await pg.evaluate(f"SL.dataOf(item('{A}')).rack") == "11-23" and await pg.evaluate("SL.cfg().show.rack")
         # तम्बाकू की पट्टी पर असली नाम नहीं
         await pg.evaluate(f"SRK.print([item('{T}')])"); h = (await pg.evaluate("window.__pr"))["h"]
         assert await pg.evaluate(f"SE.capNm(item('{T}').name)") not in h, "तम्बाकू का असली नाम पट्टी पर नहीं"
@@ -93,6 +119,7 @@ async def main():
         await pg.evaluate("S.tab='bill';showTab()"); await pg.fill("#q", "11-23"); await pg.wait_for_timeout(300)
         g = await pg.evaluate("[...document.querySelectorAll('#grid [data-item]')].map(x=>x.dataset.item)")
         assert A in g and B in g and C not in g, g
+        assert await pg.query_selector(f'#grid [data-item="{A}"] .rkb'), "टाइल पर 📍"
         await pg.fill("#q", ""); await pg.wait_for_timeout(100)
         await pg.evaluate(f"quickAdd(item('{A}'),1);renderSide&&renderSide()"); await pg.wait_for_timeout(200)
         assert "📍11-23" in (await pg.evaluate("(document.querySelector('#side')||document.body).innerText"))
@@ -106,6 +133,9 @@ async def main():
             await pg.evaluate("closeSheet()")
         # सेटिंग: कार्ड + editor में रैक खाना
         await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_selector("#srkCard")
+        # बिना रैक-शीट के खाने का स्टिकर स्कैन = जानकारी (बिल में कुछ न जुड़े)
+        n0 = await pg.evaluate("S.cart.length"); await pg.evaluate("handleScan('R11-23')"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("S.cart.length") == n0
         await br.close()
     assert not errs, errs
     print("✅ रैक टेस्ट पास")

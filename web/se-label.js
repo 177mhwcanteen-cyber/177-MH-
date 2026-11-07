@@ -20,9 +20,9 @@ const sd=s=>{if(!s)return "";const p=String(s).split("-");return p.length===3?p[
 
 /* ================= सेटिंग (settings/main.lbl — सब फोन पर एक जैसी) ================= */
 const STYLES=[["classic","क्लासिक"],["band","काली पट्टी"],["tag","प्राइस टैग"],["frame","फ्रेम"],["bigprice","बड़ा भाव"],["minimal","सादा"]];
-const SHOW=[["shop","🏪 दुकान का नाम"],["name","📝 सामान का नाम"],["price","₹ भाव"],["mrp","MRP (कटा हुआ)"],["size","⚖️ मात्रा / ml"],["code","# सामान कोड"],["brand","🏭 कंपनी का नाम"],["mfg","📅 पैकिंग तारीख"],["exp","⏳ एक्सपायरी"],["digits","🔢 बारकोड के अंक"],["qr","📱 QR कोड भी"],["extra","💬 नीचे की लाइन"],["caps","🔠 नाम CAPITAL में"]];
+const SHOW=[["shop","🏪 दुकान का नाम"],["name","📝 सामान का नाम"],["price","₹ भाव"],["rack","📍 रैक-खाना"],["mrp","MRP (कटा हुआ)"],["size","⚖️ मात्रा / ml"],["code","# सामान कोड"],["brand","🏭 कंपनी का नाम"],["mfg","📅 पैकिंग तारीख"],["exp","⏳ एक्सपायरी"],["digits","🔢 बारकोड के अंक"],["qr","📱 QR कोड भी"],["extra","💬 नीचे की लाइन"],["caps","🔠 नाम CAPITAL में"]];
 const DEF={shop:"177 MH वेट कैंटीन · बाड़मेर",style:"classic",extra:"धन्यवाद · फिर पधारें",
-  show:{shop:1,name:1,price:1,mrp:0,size:0,code:0,brand:0,mfg:0,exp:0,digits:1,qr:0,extra:0,caps:0}};
+  show:{shop:1,name:1,price:1,rack:1,mrp:0,size:0,code:0,brand:0,mfg:0,exp:0,digits:1,qr:0,extra:0,caps:0}};
 SL.STYLES=STYLES;SL.SHOW=SHOW;
 SL.cfg=function(){const s=(S.settings&&S.settings.lbl)||{};return {...DEF,...s,show:{...DEF.show,...(s.show||{})}}};
 let saveT=0;
@@ -44,7 +44,7 @@ function nameParts(it){
 }
 SL.dataOf=function(it,o){o=o||{};const p=nameParts(it);
   return {it,name:p.plain,size:p.size,price:num(o.price)||+it.sale||0,mrp:+it.mrp||0,code:String(it.code||""),brand:String(it.brand||"").trim(),
-    mrpOn:!!o.mrp,mfg:o.mfg||today(),exp:o.exp||it.exp||"",bc:window.SF&&SF.itemCode?SF.itemCode(it):String(it.barcode||"").split(",")[0].trim()}};
+    rack:String(it.rack||"").trim().toUpperCase(),mrpOn:!!o.mrp,mfg:o.mfg||today(),exp:o.exp||it.exp||"",bc:window.SF&&SF.itemCode?SF.itemCode(it):String(it.barcode||"").split(",")[0].trim()}};
 
 /* ================= बारकोड (स्कैन होने लायक पक्का) ================= */
 function ean13ok(c){if(!/^\d{13}$/.test(c))return false;let s=0;for(let i=0;i<12;i++)s+=(+c[i])*(i%2?3:1);return (10-s%10)%10===+c[12]}
@@ -79,7 +79,7 @@ SL.draw=function(d,cfg,sk){
   x.fillStyle="#fff";x.fillRect(0,0,W,H);x.fillStyle="#000";x.textBaseline="middle";
   const shop=sh.shop&&cfg.shop?String(cfg.shop).trim():"",brand=sh.brand&&d.brand?d.brand:"",extra=sh.extra&&cfg.extra?String(cfg.extra).trim():"";
   const name=sh.name&&d.name?(sh.caps?d.name.toLocaleUpperCase("en-IN"):d.name):"";
-  const meta=[sh.size&&d.size,sh.code&&d.code&&"#"+d.code].filter(Boolean).join("  ·  ");
+  const meta=[sh.rack&&d.rack&&"रैक "+d.rack,sh.size&&d.size,sh.code&&d.code&&"#"+d.code].filter(Boolean).join("  ·  ");
   const price=sh.price&&d.price>0?"₹"+fmtP(d.price):"",mrp=(sh.mrp||d.mrpOn)&&d.mrp>d.price?"MRP ₹"+fmtP(d.mrp):"";
   const dates=[sh.mfg&&d.mfg?"पैक: "+sd(d.mfg):"",sh.exp&&d.exp?"एक्सपायरी: "+sd(d.exp):""].filter(Boolean).join("    ");
   const X0=PX;let X1=W-PX;
