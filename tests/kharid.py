@@ -66,6 +66,23 @@ async def main():
         assert await pg.evaluate("!!SKJ.dupOf({sup:'MAJISHA',total:18401,date:'2026-11-05',lines:[]})")
         assert not await pg.evaluate("SKJ.dupOf({sup:'MAJISHA',total:999,date:'2026-11-05',lines:[]})")
         cat = await pg.evaluate("JSON.parse(SKJ.catalogCode())"); assert cat["app"] == "mh177-cat" and len(cat["items"]) > 10 and "sale" not in json.dumps(cat)
+        # 💵 गल्ले से खरीद के लिए पैसा → 🔁 हिसाब (खरीद + वापस) · फ़र्क · याद
+        await pg.evaluate("closeSheet&&closeSheet();S.staff='मनोहर जी';S.billsDate=today()")
+        await pg.evaluate("SG.sheet('out')"); await pg.wait_for_timeout(200)
+        await pg.click('[data-sgto="🛒 खरीद के लिए साथी को"]'); await pg.wait_for_timeout(100)
+        await pg.fill("#sgAmt", "3000"); await pg.fill("#sgPer", "रविंद्र जी"); await pg.fill("#sgNote", "मजीशा"); await pg.click("[data-sgsave]"); await pg.wait_for_timeout(300)
+        assert await pg.evaluate("SG.openAdv().map(x=>[x.person,x.total])") == [["रविंद्र जी", 3000]]
+        assert await pg.evaluate("SG.expAt(Date.now()+1).out") == 3000
+        await pg.evaluate("SG.openAdv()[0].ts-=3*36e5;S.isOwner=false;SG.nag(true)"); await pg.wait_for_timeout(100)
+        assert "रविंद्र जी को ₹3,000" in await pg.inner_text("#sgNag"), await pg.inner_text("#sgNag")
+        await pg.click('[data-sgnag="back"]'); await pg.wait_for_timeout(200)
+        await pg.fill("#sgBuy", "1840"); await pg.fill("#sgBack", "1100"); await pg.wait_for_timeout(100)
+        assert "60" in await pg.inner_text("#sgF")
+        await pg.click("[data-sgbsave]"); await pg.wait_for_timeout(300)
+        assert await pg.evaluate("SG.openAdv().length") == 0
+        g = await pg.evaluate("SG.list().find(x=>x.kind==='back')"); assert g["fark"] == 60 and g["buy"] == 1840, g
+        assert await pg.evaluate("SG.expAt(Date.now()+1).out") == 1900
+        await pg.evaluate("S.isOwner=true"); assert "हिसाब में फ़र्क" in await pg.evaluate("SG.ownerLine()")
         await pg.evaluate("S.isOwner=false;S.demo=false"); assert await pg.evaluate("SKJ.settingsHTML()") == ""
         await br.close()
     assert not errs, errs
