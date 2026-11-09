@@ -21,10 +21,25 @@ function match(x){
   if(x.barcode&&typeof findByCode==="function"){it=findByCode(String(x.barcode));if(it)return it}
   return null}
 /* एक सामान: नया बनाओ या खाली खाने भरो */
+/* 📍 वही सामान दूसरे खाने में भी (विक्रम जी, 10-11-2026: "रोकिए मत, यह अलग खाने में है") — खेप में {id/appId, xloc:{"6-15":10}}:
+   स्टॉक में +गिनती (stockLog) और खाने-वार हिसाब items.rkx (SRX)। एक खेप एक बार ही (done), इसलिए दोबारा नहीं जुड़ता। */
+async function xloc(it,X,pk,R){if(!own())return;const nm=typeof biller==="function"?biller():"",ts=Date.now();
+  const mark="xl_"+pk+"_"+it.id;try{const g=await S.db.collection("openings").doc(mark).get();if(g.exists){R.same++;return}}catch(e){}
+  let add=0;const rk={...(it.rkx||{})},main=String(it.rack||"").toUpperCase();
+  for(const [k0,q0] of Object.entries(X)){const k=window.SRK&&SRK.canon?SRK.canon(k0):String(k0).toUpperCase(),q=+q0||0;if(!k||!(q>0))continue;add+=q;if(k!==main)rk[k]=Math.round(((+rk[k]||0)+q)*1000)/1000}
+  if(!add)return;const cur=(S.pstock||{})[it.id];let base=cur&&isFinite(+cur.qty)?+cur.qty:0;
+  if(!cur){/* पहली खेप की गिनती अभी स्टॉक नहीं बनी (एक साथ चढ़ीं) → वह भी जोड़ो, ताकि कुछ न छूटे */
+    try{const o=await S.db.collection("openings").where("itemId","==",it.id).get();for(const d of o.docs){const v=d.data()||{};if(v.kind==="count"&&!v.done){base+=+v.qty||0;await d.ref.update({done:true,doneTs:ts,auto:true})}}}catch(e){}}
+  const q=base+add;
+  await S.db.collection("pstock").doc(it.id).set({qty:q,ts,by:S.uid||"",byName:nm,last:"📦 दूसरे खाने की गिनती"},{merge:true});
+  S.db.collection("stockLog").doc("x"+ts.toString(36)+it.id.slice(-4)).set({itemId:it.id,d:add,why:"📦 दूसरे खाने की गिनती ("+pk+") · 📍 "+Object.keys(X).join(", "),ts,date:today(),by:S.uid||"",byName:nm}).catch(()=>{});
+  await S.db.doc("items/"+it.id).update({rkx:rk,rkxTs:ts});it.rkx=rk;it.rkxTs=ts;S.pstock=S.pstock||{};S.pstock[it.id]={...(cur||{}),qty:q,ts};
+  await S.db.collection("openings").doc(mark).set({kind:"xloc",itemId:it.id,pack:pk,x:X,add,ts,done:true});R.cnt++}
 async function one(x,pk,R){
   if(!x||!x.id||!x.name){R.bad++;return}
   const name=window.SE&&SE.capNm?SE.capNm(x.name):String(x.name).toUpperCase();
   const ex=match(x),ts=Date.now();
+  if(ex&&x.xloc&&typeof x.xloc==="object"){await xloc(ex,x.xloc,pk,R);return}
   if(!ex){
     const d={name,short:String(x.short?SE.capNm(x.short):name).slice(0,24),hi:x.hi||"",brand:x.brand||"",size:x.size||"",alias:x.alias||"",
       emoji:x.emoji||(x.sub==="tob"?"🚬":"🛒"),cat:x.cat||"kirana",sub:x.sub||"",unit:x.unit||"pc",

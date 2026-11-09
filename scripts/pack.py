@@ -16,7 +16,7 @@ P = os.path.join(R, "web", "p")
 IDX = os.path.join(D, "index.json")
 ORG = (re.search(r'org:\s*"([a-z0-9]+)"', open(os.path.join(R, "web", "config.js"), encoding="utf8").read()) or [None, "mh177"])[1]  # 🏢 संस्था
 KEEP = ["id", "name", "short", "hi", "brand", "size", "alias", "emoji", "cat", "sub", "unit", "code", "barcode", "mrp", "sale", "cost",
-        "perPack", "packOf", "track", "min", "rack", "secret", "ph", "mfr", "fotos", "ctn", "open", "offer", "packMrp", "subtitle"]
+        "perPack", "packOf", "track", "min", "rack", "secret", "ph", "mfr", "fotos", "ctn", "open", "offer", "packMrp", "subtitle", "xloc"]
 CKEEP = ["id", "name", "phone", "care", "email", "web", "addr", "city", "fssai", "gst", "brands", "dist", "note"]
 
 

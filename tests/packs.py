@@ -109,6 +109,16 @@ async def main():
         await pg.fill('[data-cn="b8901786140503"]', "5"); await pg.dispatch_event('[data-cn="b8901786140503"]', "input"); await pg.wait_for_timeout(200)
         t = await pg.inner_text('[data-crow="b8901786140503"]'); assert "(-2)" in t, t
         await pg.screenshot(path=f"{SHOTS}/pk-count.png")
+        # 📍 वही सामान दूसरे खाने में भी (xloc): स्टॉक में +5, खाने-वार हिसाब, दोबारा नहीं
+        json.dump({"app": "mh177-pack", "org": "mh177", "v": 5, "id": "S-TEST-02", "items": [{"id": "g-test-pc", "name": "X", "xloc": {"6-11": 5}}]},
+                  open(os.path.join(WWW, "data/items/S-TEST-02.json"), "w"), ensure_ascii=False)
+        json.dump({"app": "mh177-packs", "v": 5, "packs": [{"id": "S-TEST-01", "n": 4, "sha": "x1"}, {"id": "S-TEST-02", "n": 1, "sha": "x2"}]},
+                  open(os.path.join(WWW, "data/items/index.json"), "w"))
+        q0 = await pg.evaluate("S.pstock['g-test-pc'].qty")
+        r3 = await pg.evaluate("SPK.apply()"); assert r3["packs"] == 1 and r3["cnt"] == 1, r3
+        assert await pg.evaluate("S.pstock['g-test-pc'].qty") == q0 + 5
+        assert (await pg.evaluate("SRX.locs(item('g-test-pc')).map(l=>[l.k,l.q])"))[1] == ["6-11", 5]
+        await pg.evaluate("SPK.apply(true)"); assert await pg.evaluate("S.pstock['g-test-pc'].qty") == q0 + 5
         await br.close()
     assert not errs, errs
     print("✅ खेप टेस्ट पास")
