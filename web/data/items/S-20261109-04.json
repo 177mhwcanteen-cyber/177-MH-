@@ -1,0 +1,1471 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261109-04",
+ "date": "2026-11-09",
+ "by": "विक्रम जी",
+ "note": "रैक 5 और 6 (6-1 से 6-7 तक) — फोटो 09-11-2026, 15:38–18:11। पानी पूरी मसाला (4 डिब्बे, एक्सपायर) विक्रम जी के कहने पर हटाया — इसमें नहीं। · किट v6",
+ "items": [
+  {
+   "id": "b8900019951367",
+   "name": "RAJBHOG MAKHANA 250 G",
+   "short": "RAJBHOG MAKHANA 250G",
+   "hi": "राजभोग मखाना 250 ग्राम",
+   "brand": "RAJBHOG",
+   "size": "250g",
+   "alias": "makhana makhane phool makhana मखाना मखाने फूल मखाना rajbhog राजभोग",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8900019951367",
+   "mrp": 0,
+   "sale": 260,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-1",
+   "ph": "874e62f7",
+   "mfr": "c-tanay",
+   "fotos": [
+    "r5/20261109-16f79099.jpg",
+    "r5/20261109-4106cc45.jpg",
+    "r5/20261109-40065d44.jpg",
+    "r5/20261109-82843964.jpg"
+   ],
+   "open": {
+    "qty": 11,
+    "exp": "2027-09-30",
+    "batchNo": "RKP-10"
+   }
+  },
+  {
+   "id": "b8906020731943",
+   "name": "SAVOUR ROASTED SEVIYAN LONG CUT 125 G",
+   "short": "SAVOUR SEVIYAN 125G",
+   "hi": "सेवर भुनी सेवइयाँ लंबी 125 ग्राम",
+   "brand": "SAVOUR",
+   "size": "125g",
+   "alias": "seviyan sevaiyan vermicelli savour सेवइयां सेवई सेवइयाँ",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "8906020731943",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-2",
+   "ph": "771cb111",
+   "fotos": [
+    "r5/20261109-106bfd47.jpg",
+    "r5/20261109-92800663.jpg",
+    "r5/20261109-0e5648d7.jpg",
+    "r5/20261109-7f20b512.jpg"
+   ],
+   "open": {
+    "qty": 50,
+    "exp": "2027-08-04",
+    "batchNo": "SNC"
+   }
+  },
+  {
+   "id": "g-toor-dal-500-g-packed",
+   "name": "TOOR DAL 500 G (PACKED)",
+   "short": "TOOR DAL 500G",
+   "hi": "तूर दाल (अरहर) 500 ग्राम",
+   "size": "500g",
+   "alias": "toor tuar tur arhar dal तूर तुअर अरहर दाल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 70,
+   "cost": 60,
+   "perPack": 0,
+   "rack": "5-4",
+   "ph": "af53f6bc",
+   "fotos": [
+    "r5/20261109-bedd5b19.jpg"
+   ],
+   "open": {
+    "qty": 50,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-555-toofan-chai",
+   "name": "555 TOOFAN CHAI",
+   "short": "555 TOOFAN CHAI",
+   "hi": "555 तूफान चाय",
+   "brand": "555 TOOFAN",
+   "alias": "toofan tufan chai tea 555 तूफान तूफ़ान चाय पत्ती",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 170,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-4",
+   "ph": "a70d24f5",
+   "fotos": [
+    "r5/20261109-47290004.jpg",
+    "r5/20261109-0847a816.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-chana-dal-500-g-packed",
+   "name": "CHANA DAL 500 G (PACKED)",
+   "short": "CHANA DAL 500G",
+   "hi": "चना दाल 500 ग्राम",
+   "size": "500g",
+   "alias": "chana dal channa chane ki dal चना दाल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 50,
+   "cost": 46,
+   "perPack": 0,
+   "rack": "5-5",
+   "ph": "7d9eea43",
+   "fotos": [
+    "r5/20261109-2ae684e3.jpg"
+   ],
+   "open": {
+    "qty": 37,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-masoor-dal-500-g-packed",
+   "name": "MASOOR DAL 500 G (PACKED)",
+   "short": "MASOOR DAL 500G",
+   "hi": "मसूर दाल 500 ग्राम",
+   "size": "500g",
+   "alias": "masoor masur dal lentil मसूर दाल लाल दाल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 45,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-5",
+   "ph": "527a1af8",
+   "fotos": [
+    "r5/20261109-4c23b07d.jpg"
+   ],
+   "open": {
+    "qty": 49,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-urad-sabut-kali-500-g-packed",
+   "name": "URAD SABUT KALI 500 G (PACKED)",
+   "short": "URAD SABUT KALI 500G",
+   "hi": "साबुत काली उड़द 500 ग्राम",
+   "size": "500g",
+   "alias": "urad sabut kali whole black urad udad उड़द साबुत काली उड़द माह",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 70,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-5",
+   "ph": "67c59539",
+   "fotos": [
+    "r5/20261109-c5e2750b.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-urad-dal-dhuli-500-g-packed",
+   "name": "URAD DAL DHULI 500 G (PACKED)",
+   "short": "URAD DAL DHULI 500G",
+   "hi": "धुली उड़द दाल 500 ग्राम",
+   "size": "500g",
+   "alias": "urad dhuli white urad dal udad उड़द धुली सफ़ेद दाल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-6",
+   "ph": "11986e54",
+   "fotos": [
+    "r5/20261109-637bb90e.jpg"
+   ],
+   "open": {
+    "qty": 53,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b690225101134",
+   "name": "INDIA GATE DUBAR BASMATI RICE 1 KG",
+   "short": "INDIA GATE DUBAR 1KG",
+   "hi": "इंडिया गेट दुबार बासमती चावल 1 किलो",
+   "brand": "INDIA GATE",
+   "size": "1kg",
+   "alias": "india gate dubar basmati rice chawal इंडिया गेट दुबार बासमती चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225101134",
+   "mrp": 167,
+   "sale": 140,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-6",
+   "ph": "b98ea460",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r5/20261109-2a27284e.jpg",
+    "r5/20261109-ca8876e1.jpg",
+    "r5/20261109-a096d955.jpg",
+    "r5/20261109-69a8c0fa.jpg",
+    "r5/20261109-07ffdddc.jpg",
+    "r5/20261109-bbd3634d.jpg"
+   ],
+   "open": {
+    "qty": 38,
+    "exp": "2029-09-27",
+    "batchNo": "GW40F3340-O"
+   }
+  },
+  {
+   "id": "b690225103626",
+   "name": "INDIA GATE FEAST ROZZANA BASMATI RICE 1 KG",
+   "short": "INDIA GATE ROZZANA 1KG",
+   "hi": "इंडिया गेट फीस्ट रोज़ाना बासमती चावल 1 किलो",
+   "brand": "INDIA GATE",
+   "size": "1kg",
+   "alias": "india gate feast rozzana rozana basmati rice chawal रोज़ाना रोजाना चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225103626",
+   "mrp": 125,
+   "sale": 110,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-7",
+   "ph": "0d185089",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r5/20261109-d701950c.jpg",
+    "r5/20261109-a00ede4c.jpg",
+    "r5/20261109-601163dd.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2029-09-15",
+    "batchNo": "GW38F2500-O"
+   }
+  },
+  {
+   "id": "b690225106092",
+   "name": "INDIA GATE MOGRA BASMATI RICE 5 KG",
+   "short": "INDIA GATE MOGRA 5KG",
+   "hi": "इंडिया गेट मोगरा बासमती चावल 5 किलो",
+   "brand": "INDIA GATE",
+   "size": "5kg",
+   "alias": "india gate mogra basmati rice 5kg मोगरा चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225106092",
+   "mrp": 490,
+   "sale": 370,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-8",
+   "ph": "eadea33b",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r5/20261109-7760a994.jpg",
+    "r5/20261109-24c75984.jpg",
+    "r5/20261109-fea690dc.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "2029-04-21",
+    "batchNo": "BW17F3920O"
+   }
+  },
+  {
+   "id": "b690225106788",
+   "name": "INDIA GATE MINI MOGRA II BASMATI RICE 5 KG",
+   "short": "IG MINI MOGRA II 5KG",
+   "hi": "इंडिया गेट मिनी मोगरा II चावल 5 किलो",
+   "brand": "INDIA GATE",
+   "size": "5kg",
+   "alias": "india gate mini mogra 2 ii rice मिनी मोगरा चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225106788",
+   "mrp": 308,
+   "sale": 214,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-8",
+   "ph": "7a4daa41",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r5/20261109-11cdb9c1.jpg",
+    "r5/20261109-85af1f36.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2029-08-07",
+    "batchNo": "BW32F24640"
+   }
+  },
+  {
+   "id": "b690225106771",
+   "name": "INDIA GATE MINI MOGRA BASMATI RICE 5 KG",
+   "short": "IG MINI MOGRA 5KG",
+   "hi": "इंडिया गेट मिनी मोगरा चावल 5 किलो (बैंगनी)",
+   "brand": "INDIA GATE",
+   "size": "5kg",
+   "alias": "india gate mini mogra rice purple मिनी मोगरा चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225106771",
+   "mrp": 385,
+   "sale": 261,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "5-8",
+   "ph": "6a69b645",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r5/20261109-5385c1ae.jpg",
+    "r5/20261109-323a954d.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2029-07-06",
+    "batchNo": "BW28F30600"
+   }
+  },
+  {
+   "id": "b8906007288095",
+   "name": "FORTUNE KACHI GHANI MUSTARD OIL 1 L",
+   "short": "FORTUNE KACHI GHANI 1L",
+   "hi": "फॉर्च्यून कच्ची घानी सरसों तेल 1 लीटर",
+   "brand": "FORTUNE",
+   "size": "1L",
+   "alias": "fortune kachi ghani mustard oil sarson tel फॉर्च्यून सरसों तेल",
+   "cat": "kirana",
+   "sub": "oil",
+   "unit": "pc",
+   "barcode": "8906007288095",
+   "mrp": 230,
+   "sale": 220,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-2",
+   "ph": "d32ad2f3",
+   "mfr": "c-awl",
+   "fotos": [
+    "r6/20261109-3f65fef9.jpg",
+    "r6/20261109-fc7e60c1.jpg",
+    "r6/20261109-f48e42cc.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-09-16",
+    "batchNo": "(GN)KM090260"
+   }
+  },
+  {
+   "id": "b8906013663923",
+   "name": "TILONI TIL KA TEL (SESAME OIL) 500 ML",
+   "short": "TILONI TIL OIL 500ML",
+   "hi": "तिलोनी तिल का तेल 500 मि.ली.",
+   "brand": "TILONI",
+   "size": "500ml",
+   "alias": "tiloni til tel sesame oil gingelly तिलोनी तिल का तेल",
+   "cat": "kirana",
+   "sub": "oil",
+   "unit": "pc",
+   "barcode": "8906013663923",
+   "mrp": 180,
+   "sale": 150,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-2",
+   "ph": "5c72f5f1",
+   "mfr": "c-eskay-herbal",
+   "fotos": [
+    "r6/20261109-192e1366.jpg",
+    "r6/20261109-1734cabc.jpg",
+    "r6/20261109-d09c0fe3.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906061250168",
+   "name": "VIBHOR PREMIUM KACHI GHANI MUSTARD OIL 800 G",
+   "short": "VIBHOR KACHI GHANI 800G",
+   "hi": "विभोर कच्ची घानी सरसों तेल 800 ग्राम",
+   "brand": "VIBHOR",
+   "size": "800g",
+   "alias": "vibhor kachi ghani mustard oil sarson tel विभोर सरसों तेल",
+   "cat": "kirana",
+   "sub": "oil",
+   "unit": "pc",
+   "barcode": "8906061250168",
+   "mrp": 212,
+   "sale": 210,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-2",
+   "ph": "91cf9d26",
+   "fotos": [
+    "r6/20261109-ee884ca2.jpg",
+    "r6/20261109-2322b8a0.jpg",
+    "r6/20261109-549b9b21.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906015340013",
+   "name": "EVEREST CONTINENTAL SAUCE 950 G",
+   "short": "EVEREST CONTINENTAL 950G",
+   "hi": "एवरेस्ट कॉन्टिनेंटल सॉस 950 ग्राम",
+   "brand": "EVEREST",
+   "size": "950g",
+   "alias": "everest continental sauce ketchup tomato सॉस केचप",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015340013",
+   "mrp": 92,
+   "sale": 90,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-2",
+   "ph": "b2e629c0",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r6/20261109-62e988c7.jpg",
+    "r6/20261109-81ab7563.jpg",
+    "r6/20261109-a7e1b75d.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-10-13",
+    "batchNo": "84"
+   }
+  },
+  {
+   "id": "b8903553851377",
+   "name": "TEMPTIN TOMATO KETCHUP POUCH 80 G",
+   "short": "TEMPTIN KETCHUP 80G",
+   "hi": "टेम्पटिन टोमैटो केचप पाउच 80 ग्राम",
+   "brand": "TEMPTIN",
+   "size": "80g",
+   "alias": "temptin tomato ketchup pouch chhota bheem केचप सॉस पाउच",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553851377",
+   "mrp": 15,
+   "sale": 15,
+   "cost": 0,
+   "perPack": 16,
+   "rack": "6-2",
+   "ph": "0394c133",
+   "mfr": "c-empire",
+   "fotos": [
+    "r6/20261109-6ea2838b.jpg",
+    "r6/20261109-2ef7fc18.jpg",
+    "r6/20261109-08a5e335.jpg",
+    "r6/20261109-1d72f4e1.jpg",
+    "r6/20261109-a9014a33.jpg",
+    "r6/20261109-42d4c65f.jpg"
+   ],
+   "open": {
+    "qty": 63,
+    "exp": "",
+    "batchNo": "I7I2612"
+   }
+  },
+  {
+   "id": "b8906015342468",
+   "name": "EVEREST ROOH-E-TASQEEN SYRUP 750 ML",
+   "short": "EVEREST ROOH E TASQEEN",
+   "hi": "एवरेस्ट रूह-ए-तस्कीन शरबत 750 मि.ली.",
+   "brand": "EVEREST",
+   "size": "750ml",
+   "alias": "rooh e tasqeen rooh afza sharbat syrup रूह अफ़ज़ा शरबत",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8906015342468",
+   "mrp": 150,
+   "sale": 140,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-4",
+   "ph": "fd80e11a",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r6/20261109-6a9db7fb.jpg",
+    "r6/20261109-93c738a0.jpg",
+    "r6/20261109-7e4c4765.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "2027-07-19",
+    "batchNo": "92"
+   }
+  },
+  {
+   "id": "b8901044670841",
+   "name": "MAPRO ROSE SHARBAT 750 ML",
+   "short": "MAPRO ROSE SHARBAT 750ML",
+   "hi": "मैप्रो रोज़ शरबत 750 मि.ली.",
+   "brand": "MAPRO",
+   "size": "750ml",
+   "alias": "mapro rose sharbat gulab syrup मैप्रो गुलाब शरबत",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901044670841",
+   "mrp": 180,
+   "sale": 170,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-4",
+   "ph": "03a406be",
+   "mfr": "c-mapro",
+   "fotos": [
+    "r6/20261109-c381544e.jpg",
+    "r6/20261109-c782219f.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "2027-10-31",
+    "batchNo": "S.03A"
+   }
+  },
+  {
+   "id": "b8906007280044",
+   "name": "FORTUNE SOYA HEALTH REFINED SOYABEAN OIL 800 G",
+   "short": "FORTUNE SOYA HEALTH 800G",
+   "hi": "फॉर्च्यून सोया हेल्थ रिफाइंड सोयाबीन तेल 800 ग्राम",
+   "brand": "FORTUNE",
+   "size": "800g",
+   "alias": "fortune soya health soyabean oil refined सोयाबीन तेल फॉर्च्यून",
+   "cat": "kirana",
+   "sub": "oil",
+   "unit": "pc",
+   "barcode": "8906007280044",
+   "mrp": 190,
+   "sale": 185,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-4",
+   "ph": "ea929a5c",
+   "mfr": "c-awl",
+   "fotos": [
+    "r6/20261109-4de38a05.jpg",
+    "r6/20261109-a5807703.jpg",
+    "r6/20261109-6138d379.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-03-09",
+    "batchNo": "(A0)SBG4003A"
+   }
+  },
+  {
+   "id": "b8906015340075",
+   "name": "EVEREST GREEN CHILLI SAUCE 650 G",
+   "short": "EVEREST GRN CHILLI 650G",
+   "hi": "एवरेस्ट ग्रीन चिली सॉस 650 ग्राम",
+   "brand": "EVEREST",
+   "size": "650g",
+   "alias": "everest green chilli sauce hari mirch sos ग्रीन चिली सॉस",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015340075",
+   "mrp": 88,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-5",
+   "ph": "efe8f830",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r6/20261109-ce7fb58d.jpg",
+    "r6/20261109-4e462fda.jpg",
+    "r6/20261109-b536ca47.jpg"
+   ],
+   "open": {
+    "qty": 21,
+    "exp": "2027-06-13",
+    "batchNo": "V326"
+   }
+  },
+  {
+   "id": "b8906002000494",
+   "name": "DR. OETKER FUNFOODS VEG MAYONNAISE ORIGINAL 250 G",
+   "short": "FUNFOODS VEG MAYO 250G",
+   "hi": "फनफूड्स वेज मेयोनेज़ ओरिजिनल 250 ग्राम",
+   "brand": "FUNFOODS",
+   "size": "250g",
+   "alias": "funfoods veg mayonnaise mayo dr oetker मेयोनीज़ मेयो",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906002000494",
+   "mrp": 0,
+   "sale": 95,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-5",
+   "ph": "0f851a76",
+   "mfr": "c-dr-oetker",
+   "fotos": [
+    "r6/20261109-5243dcc3.jpg",
+    "r6/20261109-bc81bfe1.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-wheel-brand-white-rose-food-essence-20-m",
+   "name": "WHEEL BRAND WHITE ROSE FOOD ESSENCE 20 ML",
+   "short": "WHEEL WHITE ROSE 20ML",
+   "hi": "व्हील ब्रांड व्हाइट रोज़ एसेंस 20 मि.ली.",
+   "brand": "WHEEL BRAND",
+   "size": "20ml",
+   "alias": "white rose essence wheel brand keva rose flavour एसेंस गुलाब",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 32,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "ffbb5e7d",
+   "mfr": "c-keva",
+   "fotos": [
+    "r6/20261109-ba567b2a.jpg",
+    "r6/20261109-afe61889.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2029-01-02",
+    "batchNo": "000671989"
+   }
+  },
+  {
+   "id": "g-wheel-brand-kewra-wb-food-essence-20-ml",
+   "name": "WHEEL BRAND KEWRA WB FOOD ESSENCE 20 ML",
+   "short": "WHEEL KEWRA ESS 20ML",
+   "hi": "व्हील ब्रांड केवड़ा एसेंस 20 मि.ली.",
+   "brand": "WHEEL BRAND",
+   "size": "20ml",
+   "alias": "kewra kevda essence wheel brand keva केवड़ा एसेंस",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "b6aa06b7",
+   "mfr": "c-keva",
+   "fotos": [
+    "r6/20261109-367b5ac5.jpg",
+    "r6/20261109-4bedc820.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2029-05-20",
+    "batchNo": "000722423"
+   }
+  },
+  {
+   "id": "g-wheel-brand-vanilla-wb-food-essence-20-m",
+   "name": "WHEEL BRAND VANILLA WB FOOD ESSENCE 20 ML",
+   "short": "WHEEL VANILLA ESS 20ML",
+   "hi": "व्हील ब्रांड वनीला एसेंस 20 मि.ली.",
+   "brand": "WHEEL BRAND",
+   "size": "20ml",
+   "alias": "vanilla essence wheel brand keva cake वनीला एसेंस",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "0e3b513f",
+   "mfr": "c-keva",
+   "fotos": [
+    "r6/20261109-24e13904.jpg",
+    "r6/20261109-c55b1bc2.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2029-05-25",
+    "batchNo": "000726069"
+   }
+  },
+  {
+   "id": "b8906002001118",
+   "name": "DR. OETKER FUNFOODS PASTA & PIZZA RED SAUCE 315 G",
+   "short": "FUNFOODS PASTA SCE 315G",
+   "hi": "फनफूड्स पास्ता और पिज़्ज़ा रेड सॉस 315 ग्राम",
+   "brand": "FUNFOODS",
+   "size": "315g",
+   "alias": "funfoods pasta pizza red sauce dr oetker पास्ता पिज़्ज़ा सॉस",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906002001118",
+   "mrp": 99,
+   "sale": 95,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "199d396f",
+   "mfr": "c-dr-oetker",
+   "fotos": [
+    "r6/20261109-58b48a7d.jpg",
+    "r6/20261109-f0fb7f66.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2026-12-25",
+    "batchNo": "K11013 B4"
+   }
+  },
+  {
+   "id": "b8906002006243",
+   "name": "DR. OETKER FUNFOODS PEANUT BUTTER CRUNCHY 450 G",
+   "short": "FUNFOODS PEANUT BTR 450G",
+   "hi": "फनफूड्स पीनट बटर क्रंची 450 ग्राम",
+   "brand": "FUNFOODS",
+   "size": "450g",
+   "alias": "peanut butter crunchy funfoods dr oetker पीनट बटर मूंगफली",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906002006243",
+   "mrp": 139,
+   "sale": 135,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "a87a1b5d",
+   "mfr": "c-dr-oetker",
+   "fotos": [
+    "r6/20261109-b7f8552d.jpg",
+    "r6/20261109-0f9d5ca4.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-10-08",
+    "batchNo": "197"
+   }
+  },
+  {
+   "id": "g-20-20-cardamom-kitchen-elaichi-50-g",
+   "name": "20-20 CARDAMOM KITCHEN (ELAICHI) 50 G",
+   "short": "20-20 CARDAMOM 50G",
+   "hi": "20-20 इलायची (कार्डमम किचन) 50 ग्राम",
+   "brand": "20-20",
+   "size": "50g",
+   "alias": "cardamom elaichi ilaichi ilayachi 20-20 इलायची छोटी इलायची",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 399,
+   "sale": 290,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "d4cf9ce5",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r6/20261109-2a5dbb8f.jpg",
+    "r6/20261109-bdf5eb5e.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "2027-08",
+    "batchNo": "26AD1216"
+   }
+  },
+  {
+   "id": "b8906030065496",
+   "name": "FRUTIN'S OREGANO LEAVES 30 G",
+   "short": "FRUTINS OREGANO 30G",
+   "hi": "फ्रूटिन्स ओरिगेनो पत्ते 30 ग्राम",
+   "brand": "FRUTIN'S",
+   "size": "30g",
+   "alias": "oregano frutins pizza herbs ओरिगेनो पिज़्ज़ा मसाला",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8906030065496",
+   "mrp": 0,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "29f6924d",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r6/20261109-67b7d1b6.jpg",
+    "r6/20261109-affe9048.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906030065502",
+   "name": "FRUTIN'S CHILLI FLAKES 40 G",
+   "short": "FRUTINS CHILI FLAKE 40G",
+   "hi": "फ्रूटिन्स चिली फ्लेक्स 40 ग्राम",
+   "brand": "FRUTIN'S",
+   "size": "40g",
+   "alias": "chilli flakes frutins red chilli pizza चिली फ्लेक्स कुटी मिर्च",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8906030065502",
+   "mrp": 0,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "918b9790",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r6/20261109-0f1c6299.jpg",
+    "r6/20261109-a6c93676.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8902188811060",
+   "name": "RAMDEV HING SUPER (COMPOUNDED ASAFOETIDA) 100 G",
+   "short": "RAMDEV HING SUPER 100G",
+   "hi": "रामदेव हींग सुपर (संयुक्त बांधाकी) 100 ग्राम",
+   "brand": "RAMDEV",
+   "size": "100g",
+   "alias": "ramdev hing heeng asafoetida super रामदेव हींग",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8902188811060",
+   "mrp": 250,
+   "sale": 240,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "6f817a44",
+   "mfr": "c-ramdev",
+   "fotos": [
+    "r6/20261109-d00a752d.jpg",
+    "r6/20261109-ae0030ec.jpg",
+    "r6/20261109-7c514a4e.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2027-11-03",
+    "batchNo": "07/O"
+   }
+  },
+  {
+   "id": "b8902188811053",
+   "name": "RAMDEV HING SUPER (COMPOUNDED ASAFOETIDA) 50 G",
+   "short": "RAMDEV HING SUPER 50G",
+   "hi": "रामदेव हींग सुपर 50 ग्राम",
+   "brand": "RAMDEV",
+   "size": "50g",
+   "alias": "ramdev hing heeng asafoetida super 50g रामदेव हींग",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8902188811053",
+   "mrp": 130,
+   "sale": 130,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "9cd269ee",
+   "mfr": "c-ramdev",
+   "fotos": [
+    "r6/20261109-4da36647.jpg",
+    "r6/20261109-e0c45a7b.jpg",
+    "r6/20261109-79025501.jpg"
+   ],
+   "open": {
+    "qty": 12,
+    "exp": "2028-03-21",
+    "batchNo": "21-A/O"
+   }
+  },
+  {
+   "id": "b8901571010790",
+   "name": "ENO FRUIT SALT LEMON SIXER PACK (6 X 5 G)",
+   "short": "ENO LEMON SIXER 6X5G",
+   "hi": "ईनो फ्रूट सॉल्ट लेमन सिक्सर पैक (6 पाउच)",
+   "brand": "ENO",
+   "size": "6 x 5g",
+   "alias": "eno fruit salt lemon acidity gas ईनो एनो",
+   "cat": "daily",
+   "sub": "personal",
+   "unit": "pc",
+   "barcode": "8901571010790",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "37ec066a",
+   "mfr": "c-haleon",
+   "fotos": [
+    "r6/20261109-1e077b9b.jpg",
+    "r6/20261109-d78da003.jpg",
+    "r6/20261109-43c23ae8.jpg"
+   ],
+   "open": {
+    "qty": 19,
+    "exp": "2028-06-30",
+    "batchNo": "L261347"
+   }
+  },
+  {
+   "id": "b8901262071246",
+   "name": "AMUL CHOCOLATE SYRUP 250 G",
+   "short": "AMUL CHOCO SYRUP 250G",
+   "hi": "अमूल चॉकलेट सिरप 250 ग्राम",
+   "brand": "AMUL",
+   "size": "250g",
+   "alias": "amul chocolate syrup choco sauce अमूल चॉकलेट सिरप",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8901262071246",
+   "mrp": 65,
+   "sale": 65,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "d900ce50",
+   "mfr": "c-amul",
+   "fotos": [
+    "r6/20261109-f45f3956.jpg",
+    "r6/20261109-21de5252.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-05-11",
+    "batchNo": "KIF1311"
+   }
+  },
+  {
+   "id": "b8906030065519",
+   "name": "FRUTIN'S PIZZA SPICE MIX 50 G",
+   "short": "FRUTINS PIZZA SPICE 50G",
+   "hi": "फ्रूटिन्स पिज़्ज़ा स्पाइस मिक्स 50 ग्राम",
+   "brand": "FRUTIN'S",
+   "size": "50g",
+   "alias": "pizza spice mix seasoning frutins पिज़्ज़ा मसाला",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8906030065519",
+   "mrp": 0,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "d2ceedec",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r6/20261109-899425a5.jpg",
+    "r6/20261109-939d9e09.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b89009758",
+   "name": "NESCAFE CLASSIC INSTANT COFFEE JAR",
+   "short": "NESCAFE CLASSIC JAR",
+   "hi": "नेसकैफ़े क्लासिक कॉफ़ी जार",
+   "brand": "NESCAFE",
+   "alias": "nescafe classic coffee instant कॉफी नेसकैफे",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "89009758",
+   "mrp": 0,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "717edc2a",
+   "fotos": [
+    "r6/20261109-137f5052.jpg",
+    "r6/20261109-d5562ebe.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-weikfield-baking-soda",
+   "name": "WEIKFIELD BAKING SODA",
+   "short": "WEIKFIELD BAKING SODA",
+   "hi": "वीकफील्ड बेकिंग सोडा",
+   "brand": "WEIKFIELD",
+   "alias": "baking soda meetha soda khane ka soda weikfield बेकिंग सोडा खाने का सोडा",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 36,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "18e34963",
+   "mfr": "c-weikfield",
+   "fotos": [
+    "r6/20261109-20d54cae.jpg",
+    "r6/20261109-6c313142.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901808000020",
+   "name": "WEIKFIELD BAKING POWDER 100 G",
+   "short": "WEIKFLD BAKING PWD 100G",
+   "hi": "वीकफील्ड बेकिंग पाउडर 100 ग्राम",
+   "brand": "WEIKFIELD",
+   "size": "100g",
+   "alias": "baking powder weikfield cake बेकिंग पाउडर",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901808000020",
+   "mrp": 38,
+   "sale": 38,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "731950f2",
+   "mfr": "c-weikfield",
+   "fotos": [
+    "r6/20261109-ee0bb06a.jpg",
+    "r6/20261109-9c26a483.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "2027-11-30",
+    "batchNo": "5N1166"
+   }
+  },
+  {
+   "id": "b8901808000785",
+   "name": "WEIKFIELD COCOA POWDER UNSWEETENED 50 G",
+   "short": "WEIKFIELD COCOA PWD 50G",
+   "hi": "वीकफील्ड कोको पाउडर (बिना चीनी) 50 ग्राम",
+   "brand": "WEIKFIELD",
+   "size": "50g",
+   "alias": "cocoa powder weikfield chocolate cake कोको पाउडर",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901808000785",
+   "mrp": 98,
+   "sale": 95,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-6",
+   "ph": "f78cd9d6",
+   "mfr": "c-weikfield",
+   "fotos": [
+    "r6/20261109-204567f8.jpg",
+    "r6/20261109-d5ee43c7.jpg",
+    "r6/20261109-929fa37c.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "2028-05-31",
+    "batchNo": "6N205"
+   }
+  },
+  {
+   "id": "b8901786270507",
+   "name": "EVEREST DRY MANGO (AMCHUR) POWDER 50 G",
+   "short": "EVEREST AMCHUR 50G",
+   "hi": "एवरेस्ट अमचूर पाउडर 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "amchur amchoor dry mango powder everest अमचूर",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786270507",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "d43f77e0",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-23fcfb20.jpg",
+    "r6/20261109-f4cc5b45.jpg",
+    "r6/20261109-c5ab290c.jpg"
+   ],
+   "open": {
+    "qty": 16,
+    "exp": "2027-11-30",
+    "batchNo": "U26D786711"
+   }
+  },
+  {
+   "id": "b8901786151004",
+   "name": "EVEREST MEAT MASALA 100 G",
+   "short": "EVEREST MEAT MSL 100G",
+   "hi": "एवरेस्ट मीट मसाला 100 ग्राम",
+   "brand": "EVEREST",
+   "size": "100g",
+   "alias": "meat masala mutton chicken everest मीट मसाला",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786151004",
+   "mrp": 98,
+   "sale": 95,
+   "cost": 83.03,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "8e65cb4c",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-d78b18e7.jpg",
+    "r6/20261109-c36271fb.jpg",
+    "r6/20261109-3db31d53.jpg"
+   ],
+   "open": {
+    "qty": 14,
+    "exp": "2027-03-31",
+    "batchNo": "U15D700366"
+   }
+  },
+  {
+   "id": "b8901786240500",
+   "name": "EVEREST CUMIN (JEERA) POWDER 50 G",
+   "short": "EVEREST JEERA PWD 50G",
+   "hi": "एवरेस्ट जीरा पाउडर 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "jeera cumin powder everest जीरा पाउडर",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786240500",
+   "mrp": 48,
+   "sale": 48,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "93546ed3",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-d3389daf.jpg",
+    "r6/20261109-8ed5b37a.jpg",
+    "r6/20261109-fda00c71.jpg"
+   ],
+   "open": {
+    "qty": 18,
+    "exp": "2028-02-29",
+    "batchNo": "U17D782552"
+   }
+  },
+  {
+   "id": "b8901786020508",
+   "name": "EVEREST TEA MASALA 50 G",
+   "short": "EVEREST TEA MSL 50G",
+   "hi": "एवरेस्ट चाय मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "tea masala chai masala everest चाय मसाला",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786020508",
+   "mrp": 74,
+   "sale": 74,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "f33704c2",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-2c9b3db8.jpg",
+    "r6/20261109-9823e52a.jpg",
+    "r6/20261109-ef502b19.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "2027-11-30",
+    "batchNo": "U24D785797"
+   }
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-tanay",
+   "name": "TANAY ENTERPRISES (RAJBHOG MAKHANA)",
+   "email": "tanayentfbg@gmail.com",
+   "web": "www.makhana.co.in",
+   "addr": "Forbesganj, Bihar-854318",
+   "city": "Forbesganj",
+   "fssai": "10425360000086",
+   "brands": [
+    "RAJBHOG"
+   ],
+   "note": "स्रोत: फोटो r5-0002.jpg (Marketed by)। Mfd by: R.K PRODUCTS, Forbesganj, Bihar-854318"
+  },
+  {
+   "id": "c-krbl",
+   "name": "KRBL LIMITED (INDIA GATE)",
+   "phone": "8448893199",
+   "email": "customercare@krblindia.com",
+   "addr": "C-32, Sec-62, Noida-201301, Gautam Budh Nagar (UP); Regd. Office: 5190, Lahori Gate, Delhi-110006",
+   "city": "Noida",
+   "fssai": "10018011005090",
+   "brands": [
+    "INDIA GATE"
+   ],
+   "note": "स्रोत: फोटो r5-0019/r5-0021.jpg (Manufactured & Marketed by, +91 8448893199)"
+  },
+  {
+   "id": "c-awl",
+   "name": "AWL AGRI BUSINESS LIMITED (FORTUNE) — पहले ADANI WILMAR",
+   "care": "18005729999",
+   "email": "care@awl.in",
+   "web": "fortunefoods.com",
+   "addr": "Fortune House, Near Navrangpura Railway Crossing, Ahmedabad-380009, Gujarat",
+   "city": "Ahmedabad",
+   "fssai": "10013021000661",
+   "brands": [
+    "FORTUNE"
+   ],
+   "note": "स्रोत: फोटो r6-0002/r6-0003.jpg, r6-0029.jpg (Marketed by, toll-free 1800 572 9999)"
+  },
+  {
+   "id": "c-eskay-herbal",
+   "name": "ESKAY HERBAL FORMULATIONS PVT. LTD. (TILONI)",
+   "addr": "Shivaji Nagar, Jalgaon, Maharashtra-425001",
+   "city": "Jalgaon",
+   "fssai": "10016022005241",
+   "brands": [
+    "TILONI"
+   ],
+   "note": "स्रोत: फोटो r6-0006.jpg (Mfd, Packed & Mktd by)। Customer care नंबर फोटो में कटा (0257-2…) — पूरा नहीं लिखा"
+  },
+  {
+   "id": "c-everest-bev",
+   "name": "EVEREST BEVERAGES & FOOD INDUSTRIES PVT. LTD.",
+   "phone": "7252838333",
+   "email": "ebfi.consumercell@gmail.com",
+   "addr": "Industrial Plot No. 19 & 20, Sector 8, Vedvyaspuri, Meerut (U.P.)-250103",
+   "city": "Meerut",
+   "fssai": "10018051002359",
+   "brands": [
+    "EVEREST (सॉस/शरबत)"
+   ],
+   "note": "स्रोत: फोटो r6-0008.jpg, r6-0014.jpg (Manufactured by)। Rooh-E-Tasqeen: Mfd by Vijay Vallabh Agro Foods Pvt Ltd, Partapur, Meerut (r6-0024.jpg)"
+  },
+  {
+   "id": "c-empire",
+   "name": "EMPIRE SPICES & FOODS LTD. (TEMPTIN / RAM BANDHU)",
+   "phone": "8805580055",
+   "email": "customercare@esfl.co.in",
+   "web": "www.esfl.co.in",
+   "addr": "A-305, Damji Shamji Corporate Square, Laxmi Nagar, Ghatkopar (E), Mumbai-400075",
+   "city": "Mumbai",
+   "fssai": "11521999000277",
+   "brands": [
+    "TEMPTIN"
+   ],
+   "note": "स्रोत: फोटो r6-0017.jpg, r6-0021.jpg (Marketed by, Toll Free +91-88055 80055)। Mfg: Talegaon (Dindori), Nashik"
+  },
+  {
+   "id": "c-mapro",
+   "name": "MAPRO FOODS PVT. LTD.",
+   "phone": "8805004000",
+   "email": "connect@mapro.com",
+   "addr": "122, Shendurjane, Wai (MH)-415536",
+   "city": "Wai",
+   "fssai": "10012022000206",
+   "brands": [
+    "MAPRO"
+   ],
+   "note": "स्रोत: फोटो r6-0026.jpg (Mfg. by & Consumer care, +91 8805004000 WhatsApp)"
+  },
+  {
+   "id": "c-keva",
+   "name": "KEVA FLAVOURS PVT. LTD. (WHEEL BRAND)",
+   "care": "+91 22 2164 3300",
+   "addr": "C/o S.H. Kelkar and Company, Village Vashivali Vadgaon, Taluka Khalapur, Dist. Raigad (MH)",
+   "city": "Raigad",
+   "brands": [
+    "WHEEL BRAND"
+   ],
+   "note": "स्रोत: फोटो r6-0035.jpg, r6-0039.jpg (लेबल का छोटा अक्षर, ईमेल पूरा नहीं पढ़ा)"
+  },
+  {
+   "id": "c-dr-oetker",
+   "name": "DR. OETKER INDIA PVT. LTD. (FUNFOODS)",
+   "care": "18002700481",
+   "email": "care@oetker.in",
+   "web": "www.oetker.in",
+   "addr": "SP-3 & 4, Ind. Area Kaharani, Bhiwadi Ext., Alwar, Rajasthan-301019",
+   "city": "Bhiwadi",
+   "fssai": "10016013001106",
+   "brands": [
+    "FUNFOODS"
+   ],
+   "note": "स्रोत: फोटो r6-0042.jpg, r6-0044.jpg (Mkt by)। Peanut Butter Mfd by Elvita Foods Pvt Ltd, Jamnagar"
+  },
+  {
+   "id": "c-lakecity",
+   "name": "LAKE CITY DRY FRUITS PVT. LTD. (20-20)",
+   "addr": "Mehsana Highway, Gujarat",
+   "fssai": "12222999000428",
+   "brands": [
+    "20-20"
+   ],
+   "dist": "खरीद: LAKECITY DRY FRUITS PVT. LTD. (बिल JU/26-27/2397, 10-खरीद-भाव)",
+   "note": "स्रोत: फोटो r6-0046.jpg (Marketed by)। Consumer care नंबर/ईमेल धुंधले — नहीं लिखे"
+  },
+  {
+   "id": "c-ramdev",
+   "name": "RAMDEV FOOD PRODUCTS PVT. LTD.",
+   "phone": "9099341234",
+   "email": "info@ramdev.co.in",
+   "web": "www.ramdev.co.in",
+   "addr": "Ramdev Spice World, Sarkhej-Bavla Highway, Changodar-382213, Ahmedabad, Gujarat",
+   "city": "Ahmedabad",
+   "brands": [
+    "RAMDEV"
+   ],
+   "note": "स्रोत: फोटो r6-0051.jpg (Manufactured by, Consumer Care +91 90993 41234)"
+  },
+  {
+   "id": "c-haleon",
+   "name": "HALEON INDIA PVT. LTD. (ENO)",
+   "care": "000 800 442 0168",
+   "email": "mystory.in@haleon.com",
+   "web": "www.eno.co.in",
+   "addr": "226, Square One, Saket, New Delhi-110017",
+   "city": "New Delhi",
+   "brands": [
+    "ENO"
+   ],
+   "note": "स्रोत: फोटो r6-0058.jpg (Mfd for)। Mfd at: Legacy Foods Pvt Ltd, Baddi, Solan (HP)"
+  },
+  {
+   "id": "c-amul",
+   "name": "GUJARAT CO-OPERATIVE MILK MARKETING FEDERATION LTD. (AMUL)",
+   "care": "1800 258 3333",
+   "email": "customercare@amul.coop",
+   "web": "www.amul.com",
+   "addr": "Amul Dairy Road, Anand-388001, Gujarat",
+   "city": "Anand",
+   "brands": [
+    "AMUL"
+   ],
+   "note": "स्रोत: फोटो r6-0061.jpg (Marketed by)। Mfd by Kaira District Co-op Milk Producers' Union, Mogar"
+  },
+  {
+   "id": "c-weikfield",
+   "name": "WEIKFIELD FOODS PVT. LTD.",
+   "care": "1800 209 0663",
+   "email": "qa_mgr@weikfield.com",
+   "addr": "Weikfield Estate, Gat No. 485, Lonikand, Nagar Road, Taluka Haveli, Dist. Pune-412216, Maharashtra",
+   "city": "Pune",
+   "brands": [
+    "WEIKFIELD"
+   ],
+   "note": "स्रोत: फोटो r6-0069.jpg, r6-0071.jpg (Manufactured & Marketed by, Tel 1800 209 0663)"
+  },
+  {
+   "id": "c-everest",
+   "name": "S. NARENDRAKUMAR & CO. (EVEREST मसाले)",
+   "brands": [
+    "EVEREST"
+   ],
+   "note": "स्रोत: फोटो r6-0074.jpg — डिब्बे पर पता/नंबर नहीं छपा ('Smart Consumer app से स्कैन करें')। नंबर बाद में भरें"
+  }
+ ]
+}

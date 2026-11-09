@@ -100,7 +100,10 @@
   "brands": [
    "FORTUNE"
   ],
-  "note": "स्रोत: बेसन पैक की फोटो। टोल-फ्री 1800 572 9… (अधूरा पढ़ा)"
+  "note": "स्रोत: बेसन पैक की फोटो। टोल-फ्री 1800 572 9… (अधूरा पढ़ा)",
+  "care": "18005729999",
+  "web": "fortunefoods.com",
+  "fssai": "10013021000661"
  },
  {
   "id": "c-tata-consumer",
@@ -154,7 +157,7 @@
   "brands": [
    "20-20"
   ],
-  "dist": "",
+  "dist": "खरीद: LAKECITY DRY FRUITS PVT. LTD. (बिल JU/26-27/2397, 10-खरीद-भाव)",
   "note": "स्रोत: पैक पर 'Imported/Packed & Marketed by' (r7-0013, r7-0049, r8-0071)। Consumer Care +91 702 308 0003। खरीद बिल JU/26-27/2397 (LAKECITY DRY FRUITS)"
  },
  {
@@ -178,7 +181,7 @@
  {
   "id": "c-empire",
   "name": "EMPIRE SPICES & FOODS LTD. (RAM BANDHU, TEMPTIN)",
-  "phone": "",
+  "phone": "8805580055",
   "care": "8805580055",
   "email": "customercare@esfl.co.in",
   "web": "www.esfl.co.in",
@@ -294,5 +297,175 @@
   ],
   "dist": "",
   "note": "स्रोत: r8-0051 लोगो; पता/नंबर वाली साइड की फोटो नहीं"
+ },
+ {
+  "name": "TANAY ENTERPRISES (RAJBHOG MAKHANA)",
+  "email": "tanayentfbg@gmail.com",
+  "web": "www.makhana.co.in",
+  "addr": "Forbesganj, Bihar-854318",
+  "city": "Forbesganj",
+  "fssai": "10425360000086",
+  "brands": [
+   "RAJBHOG"
+  ],
+  "note": "स्रोत: फोटो r5-0002.jpg (Marketed by)। Mfd by: R.K PRODUCTS, Forbesganj, Bihar-854318",
+  "id": "c-tanay",
+  "phone": "",
+  "care": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "KRBL LIMITED (INDIA GATE)",
+  "phone": "8448893199",
+  "email": "customercare@krblindia.com",
+  "addr": "C-32, Sec-62, Noida-201301, Gautam Budh Nagar (UP); Regd. Office: 5190, Lahori Gate, Delhi-110006",
+  "city": "Noida",
+  "fssai": "10018011005090",
+  "brands": [
+   "INDIA GATE"
+  ],
+  "note": "स्रोत: फोटो r5-0019/r5-0021.jpg (Manufactured & Marketed by, +91 8448893199)",
+  "id": "c-krbl",
+  "care": "",
+  "web": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "ESKAY HERBAL FORMULATIONS PVT. LTD. (TILONI)",
+  "addr": "Shivaji Nagar, Jalgaon, Maharashtra-425001",
+  "city": "Jalgaon",
+  "fssai": "10016022005241",
+  "brands": [
+   "TILONI"
+  ],
+  "note": "स्रोत: फोटो r6-0006.jpg (Mfd, Packed & Mktd by)। Customer care नंबर फोटो में कटा (0257-2…) — पूरा नहीं लिखा",
+  "id": "c-eskay-herbal",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "MAPRO FOODS PVT. LTD.",
+  "phone": "8805004000",
+  "email": "connect@mapro.com",
+  "addr": "122, Shendurjane, Wai (MH)-415536",
+  "city": "Wai",
+  "fssai": "10012022000206",
+  "brands": [
+   "MAPRO"
+  ],
+  "note": "स्रोत: फोटो r6-0026.jpg (Mfg. by & Consumer care, +91 8805004000 WhatsApp)",
+  "id": "c-mapro",
+  "care": "",
+  "web": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "KEVA FLAVOURS PVT. LTD. (WHEEL BRAND)",
+  "care": "+91 22 2164 3300",
+  "addr": "C/o S.H. Kelkar and Company, Village Vashivali Vadgaon, Taluka Khalapur, Dist. Raigad (MH)",
+  "city": "Raigad",
+  "brands": [
+   "WHEEL BRAND"
+  ],
+  "note": "स्रोत: फोटो r6-0035.jpg, r6-0039.jpg (लेबल का छोटा अक्षर, ईमेल पूरा नहीं पढ़ा)",
+  "id": "c-keva",
+  "phone": "",
+  "email": "",
+  "web": "",
+  "fssai": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "DR. OETKER INDIA PVT. LTD. (FUNFOODS)",
+  "care": "18002700481",
+  "email": "care@oetker.in",
+  "web": "www.oetker.in",
+  "addr": "SP-3 & 4, Ind. Area Kaharani, Bhiwadi Ext., Alwar, Rajasthan-301019",
+  "city": "Bhiwadi",
+  "fssai": "10016013001106",
+  "brands": [
+   "FUNFOODS"
+  ],
+  "note": "स्रोत: फोटो r6-0042.jpg, r6-0044.jpg (Mkt by)। Peanut Butter Mfd by Elvita Foods Pvt Ltd, Jamnagar",
+  "id": "c-dr-oetker",
+  "phone": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "RAMDEV FOOD PRODUCTS PVT. LTD.",
+  "phone": "9099341234",
+  "email": "info@ramdev.co.in",
+  "web": "www.ramdev.co.in",
+  "addr": "Ramdev Spice World, Sarkhej-Bavla Highway, Changodar-382213, Ahmedabad, Gujarat",
+  "city": "Ahmedabad",
+  "brands": [
+   "RAMDEV"
+  ],
+  "note": "स्रोत: फोटो r6-0051.jpg (Manufactured by, Consumer Care +91 90993 41234)",
+  "id": "c-ramdev",
+  "care": "",
+  "fssai": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "HALEON INDIA PVT. LTD. (ENO)",
+  "care": "000 800 442 0168",
+  "email": "mystory.in@haleon.com",
+  "web": "www.eno.co.in",
+  "addr": "226, Square One, Saket, New Delhi-110017",
+  "city": "New Delhi",
+  "brands": [
+   "ENO"
+  ],
+  "note": "स्रोत: फोटो r6-0058.jpg (Mfd for)। Mfd at: Legacy Foods Pvt Ltd, Baddi, Solan (HP)",
+  "id": "c-haleon",
+  "phone": "",
+  "fssai": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "GUJARAT CO-OPERATIVE MILK MARKETING FEDERATION LTD. (AMUL)",
+  "care": "1800 258 3333",
+  "email": "customercare@amul.coop",
+  "web": "www.amul.com",
+  "addr": "Amul Dairy Road, Anand-388001, Gujarat",
+  "city": "Anand",
+  "brands": [
+   "AMUL"
+  ],
+  "note": "स्रोत: फोटो r6-0061.jpg (Marketed by)। Mfd by Kaira District Co-op Milk Producers' Union, Mogar",
+  "id": "c-amul",
+  "phone": "",
+  "fssai": "",
+  "gst": "",
+  "dist": ""
+ },
+ {
+  "name": "S. NARENDRAKUMAR & CO. (EVEREST मसाले)",
+  "brands": [
+   "EVEREST"
+  ],
+  "note": "स्रोत: फोटो r6-0074.jpg — डिब्बे पर पता/नंबर नहीं छपा ('Smart Consumer app से स्कैन करें')। नंबर बाद में भरें",
+  "id": "c-everest",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "",
+  "fssai": "",
+  "gst": "",
+  "dist": ""
  }
 ]
