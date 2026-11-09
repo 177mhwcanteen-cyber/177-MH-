@@ -1,1 +1,129 @@
-[]
+[
+ {
+  "id": "c-taparia-masala",
+  "name": "TAPARIA MASALA UDHYOG",
+  "care": "18003306868",
+  "web": "",
+  "email": "vinay9962@gmail.com",
+  "addr": "OFFICE: N-14 KRISHI UPAJ MANDI, BARMER · FACTORY: KHASRA 736/309, AATI FAATA, GRAM MARUDI",
+  "city": "BARMER",
+  "fssai": "12223014000017",
+  "brands": [
+   "TAPARIA"
+  ],
+  "dist": "बाड़मेर की ही कंपनी — सीधा मँगा सकते हैं",
+  "note": "स्रोत: पैक की फोटो (मसाले)। ऑफिस/मार्केटिंग: 02982-221119"
+ },
+ {
+  "id": "c-taparia-food",
+  "name": "TAPARIA FOOD PRODUCTS",
+  "web": "",
+  "addr": "736/309 AATI FAATA, GRAM MARUDI / G1-221 RIICO IND. AREA 2ND PHASE",
+  "city": "BARMER",
+  "brands": [
+   "TAPARIA"
+  ],
+  "dist": "बाड़मेर की ही कंपनी — सीधा मँगा सकते हैं",
+  "note": "स्रोत: पैक की फोटो (मैदा, बेसन, सेवइयाँ)। फोन (पैक पर): 02982-221119"
+ },
+ {
+  "id": "c-vidya-sagar",
+  "name": "VIDYA SAGAR FOODS PVT. LTD. (FRUTIN'S)",
+  "phone": "9999645655",
+  "email": "info@vidyasagarfoods.com",
+  "web": "www.frutins.com",
+  "addr": "A-2, LAWRENCE ROAD",
+  "city": "NEW DELHI",
+  "fssai": "10018011005140",
+  "brands": [
+   "FRUTIN'S"
+  ],
+  "note": "स्रोत: कस्टर्ड पैक की फोटो (Customer Care +91-9999645655)"
+ },
+ {
+  "id": "c-savour",
+  "name": "SAVOUR INDIA PVT. LTD.",
+  "email": "admin@savourindia.com",
+  "addr": "G-1/383-384, PHASE II, RIICO INDUSTRIAL AREA, BHIWADI (ALWAR)",
+  "city": "BHIWADI",
+  "fssai": "10014013000714",
+  "brands": [
+   "SAVOUR"
+  ],
+  "note": "स्रोत: मैकरोनी/पास्ता पैक की फोटो। फोन पैक पर धुंधला — पक्का नहीं"
+ },
+ {
+  "id": "c-bhagya-laxmi",
+  "name": "BHAGYA LAXMI INDUSTRIES (YUMMINO)",
+  "phone": "9166067845",
+  "care": "8769927485, 9799669906",
+  "addr": "MARUDI, KHASRA NO 726/259",
+  "city": "BARMER",
+  "fssai": "12221014000120",
+  "brands": [
+   "YUMMINO"
+  ],
+  "dist": "बाड़मेर की ही — सीधा मँगा सकते हैं",
+  "note": "स्रोत: सेवइयाँ पैक की फोटो"
+ },
+ {
+  "id": "c-royal-ratan",
+  "name": "ROYAL RATAN INDUSTRIES PVT. LTD. (SACHAMOTI)",
+  "addr": "400/1/2, BADIYAKIMA, TEHSIL & DISTRICT INDORE",
+  "city": "INDORE",
+  "fssai": "10021026000159",
+  "brands": [
+   "ROYAL RATAN",
+   "SACHAMOTI"
+  ],
+  "note": "स्रोत: साबूदाना पैक की फोटो। care 0731-424…(अधूरा पढ़ा)"
+ },
+ {
+  "id": "c-mahesh-ent",
+  "name": "MAHESH ENTERPRISES (MAHI)",
+  "phone": "9001414161",
+  "addr": "KHASRA NO. 2624/2050, RIICO INDUSTRIAL AREA",
+  "city": "BARMER",
+  "brands": [
+   "MAHI"
+  ],
+  "dist": "बाड़मेर की ही — सीधा मँगा सकते हैं",
+  "note": "स्रोत: सूजी पैक की फोटो"
+ },
+ {
+  "id": "c-awl",
+  "name": "AWL AGRI BUSINESS LTD. (FORTUNE)",
+  "email": "care@awl.in",
+  "addr": "FORTUNE HOUSE, NEAR NAVRANGPURA RAILWAY CROSSING",
+  "city": "AHMEDABAD",
+  "brands": [
+   "FORTUNE"
+  ],
+  "note": "स्रोत: बेसन पैक की फोटो। टोल-फ्री 1800 572 9… (अधूरा पढ़ा)"
+ },
+ {
+  "id": "c-tata-consumer",
+  "name": "TATA CONSUMER PRODUCTS LTD.",
+  "phone": "9571617161",
+  "care": "18001084488",
+  "email": "care@tataconsumer.com",
+  "addr": "TATA CENTRE, 43 J.L. NEHRU ROAD",
+  "city": "KOLKATA",
+  "brands": [
+   "TATA SALT"
+  ],
+  "note": "स्रोत: नमक पैक की फोटो (WhatsApp 9571617161)"
+ },
+ {
+  "id": "c-shri-arihant",
+  "name": "SHRI ARIHANT TRADING COMPANY (KESARI)",
+  "care": "02914056879",
+  "addr": "D-1A, MANDORE MANDI",
+  "city": "JODHPUR",
+  "fssai": "12218032000537",
+  "brands": [
+   "KESARI"
+  ],
+  "note": "स्रोत: कसूरी मेथी पैक की फोटो"
+ }
+]

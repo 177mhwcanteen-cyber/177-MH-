@@ -1,0 +1,773 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261109-01",
+ "date": "2026-11-09",
+ "by": "विक्रम जी",
+ "note": "रैक 13 + 15 (पहली खेप)",
+ "items": [
+  {
+   "id": "b8906030063461",
+   "name": "FRUTIN'S CUSTARD POWDER VANILLA 1KG",
+   "short": "FRUTINS CUSTARD PWD 1KG",
+   "hi": "फ्रूटिन्स कस्टर्ड पाउडर",
+   "brand": "FRUTIN'S",
+   "size": "1KG",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 225,
+   "sale": 225,
+   "cost": 185,
+   "perPack": 0,
+   "rack": "13-1",
+   "fotos": [
+    "r13/20261109-62d160aa.jpg",
+    "r13/20261109-31c456d9.jpg",
+    "r13/20261109-9f3a506a.jpg",
+    "r13/20261109-8d8b17fb.jpg"
+   ],
+   "mfr": "c-vidya-sagar",
+   "open": {
+    "qty": 12,
+    "exp": "2028-04-20",
+    "batchNo": "260421"
+   },
+   "barcode": "8906030063461",
+   "geminiPrompt": "Product photo of FRUTIN'S Custard Powder 1 kg pouch, cream pouch with red Frutin's logo, custard bowl with berries on front, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": "पुराना Vyapar खरीद भाव (बारकोड से)"
+  },
+  {
+   "id": "b8906020731905",
+   "name": "SAVOUR MACARONI 400G",
+   "short": "SAVOUR MACARONI 400G",
+   "hi": "सेवर मैकरोनी",
+   "brand": "SAVOUR",
+   "size": "400G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-2",
+   "fotos": [
+    "r13/20261109-73eefae1.jpg",
+    "r13/20261109-5378413d.jpg",
+    "r13/20261109-915fade1.jpg",
+    "r13/20261109-6988d0ff.jpg"
+   ],
+   "mfr": "c-savour",
+   "open": {
+    "qty": 13,
+    "exp": "2027-08-04",
+    "batchNo": "SA0508"
+   },
+   "barcode": "8906020731905",
+   "geminiPrompt": "Product photo of SAVOUR Macaroni 400 g pouch, orange and yellow pouch with red Macaroni text and macaroni dish, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "g-yummino-vermicelli-1kg",
+   "name": "YUMMINO VERMICELLI 1KG",
+   "short": "YUMMINO VERMICELLI 1KG",
+   "hi": "यम्मीनो सेवइयाँ",
+   "brand": "YUMMINO",
+   "size": "1KG",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-3",
+   "fotos": [
+    "r13/20261109-04c6113c.jpg",
+    "r13/20261109-e2c55c57.jpg",
+    "r13/20261109-334b310f.jpg"
+   ],
+   "mfr": "c-bhagya-laxmi",
+   "open": {
+    "qty": 6,
+    "exp": "",
+    "batchNo": ""
+   },
+   "geminiPrompt": "Product photo of YUMMINO Vermicelli 1 kg pouch, orange pouch with green leaf logo, yellow VERMICELLI label and bowl of vermicelli, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "b8906020730809",
+   "name": "SAVOUR PASTA SPIRAL 500G",
+   "short": "SAVOUR PASTA SPIRAL 500G",
+   "hi": "सेवर पास्ता",
+   "brand": "SAVOUR",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 95,
+   "sale": 90,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-4",
+   "fotos": [
+    "r13/20261109-17104f68.jpg",
+    "r13/20261109-13a6ca87.jpg",
+    "r13/20261109-f9bff965.jpg"
+   ],
+   "mfr": "c-savour",
+   "open": {
+    "qty": 7,
+    "exp": "",
+    "batchNo": ""
+   },
+   "barcode": "8906020730809",
+   "geminiPrompt": "Product photo of SAVOUR Pasta Spiral 500 g pack, white and gold pouch with green Pasta text and spiral pasta window, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "b8908002879148",
+   "name": "ROYAL RATAN SACHAMOTI SABUDANA 500G",
+   "short": "R.RATAN SABUDANA 500G",
+   "hi": "रॉयल रतन साबूदाना",
+   "brand": "ROYAL RATAN",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 75,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-5",
+   "fotos": [
+    "r13/20261109-cfef5654.jpg",
+    "r13/20261109-620a585a.jpg",
+    "r13/20261109-b50ce21e.jpg",
+    "r13/20261109-911e1a0e.jpg"
+   ],
+   "mfr": "c-royal-ratan",
+   "open": {
+    "qty": 46,
+    "exp": "2028-06",
+    "batchNo": ""
+   },
+   "barcode": "8908002879148",
+   "geminiPrompt": "Product photo of ROYAL RATAN Sachamoti Sabudana 500 g pack, red top with gold diamond, black band, white sago pearls visible, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "g-taparia-vermicelli-500g",
+   "name": "TAPARIA VERMICELLI 500G",
+   "short": "TAPARIA VERMICELLI 500G",
+   "hi": "तापड़िया सेवइयाँ",
+   "brand": "TAPARIA",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 52,
+   "sale": 40,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-6",
+   "fotos": [
+    "r13/20261109-af0a6c2c.jpg",
+    "r13/20261109-b078373e.jpg",
+    "r13/20261109-28d955b8.jpg"
+   ],
+   "mfr": "c-taparia-food",
+   "open": {
+    "qty": 30,
+    "exp": "2027-10",
+    "batchNo": ""
+   },
+   "geminiPrompt": "Product photo of TAPARIA Vermicelli 500 g pouch, red and cream pouch with ornate Taparia badge and vermicelli bowl, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "g-mahi-suji-500g",
+   "name": "MAHI PREMIUM SUJI 500G",
+   "short": "MAHI SUJI 500G",
+   "hi": "माही सूजी",
+   "brand": "MAHI",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 35,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-7",
+   "fotos": [
+    "r13/20261109-31ff5f4f.jpg",
+    "r13/20261109-4712d14d.jpg",
+    "r13/20261109-0f63c5fd.jpg",
+    "r13/20261109-f397c724.jpg"
+   ],
+   "mfr": "c-mahesh-ent",
+   "open": {
+    "qty": 26,
+    "exp": "2027-01-29",
+    "batchNo": "RUH126"
+   },
+   "geminiPrompt": "Product photo of MAHI Premium Quality Suji Semolina 500 g pouch, pale yellow pouch with red Mahi logo and halwa bowl, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "b8906007285018",
+   "name": "FORTUNE BESAN 500G",
+   "short": "FORTUNE BESAN 500G",
+   "hi": "फॉर्च्यून बेसन",
+   "brand": "FORTUNE",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 85,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-8",
+   "fotos": [
+    "r13/20261109-b372d593.jpg",
+    "r13/20261109-bb153004.jpg",
+    "r13/20261109-82ecf4d2.jpg",
+    "r13/20261109-e73e4f37.jpg"
+   ],
+   "mfr": "c-awl",
+   "open": {
+    "qty": 16,
+    "exp": "2027-01-20",
+    "batchNo": "AEBG550236"
+   },
+   "barcode": "8906007285018",
+   "geminiPrompt": "Product photo of FORTUNE Besan gram flour 500 g pouch, yellow pouch with orange Fortune logo and pakora image, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "g-taparia-maida-1kg",
+   "name": "TAPARIA MAIDA 1KG",
+   "short": "TAPARIA MAIDA 1KG",
+   "hi": "तापड़िया मैदा",
+   "brand": "TAPARIA",
+   "size": "1KG",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 80,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-9",
+   "fotos": [
+    "r13/20261109-2ebb4a79.jpg",
+    "r13/20261109-3b6bd15b.jpg",
+    "r13/20261109-8d818399.jpg",
+    "r13/20261109-6e04d48d.jpg",
+    "r13/20261109-9125026b.jpg"
+   ],
+   "mfr": "c-taparia-food",
+   "open": {
+    "qty": 24,
+    "exp": "",
+    "batchNo": ""
+   },
+   "geminiPrompt": "Product photo of TAPARIA Maida 1 kg pouch, white and red pouch with orange MAIDA label and samosa image, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "g-taparia-classic-besan-500g",
+   "name": "TAPARIA CLASSIC BESAN 500G",
+   "short": "TAPARIA BESAN 500G",
+   "hi": "तापड़िया बेसन",
+   "brand": "TAPARIA",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 70,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-10",
+   "fotos": [
+    "r13/20261109-bce99101.jpg",
+    "r13/20261109-cc668dd0.jpg",
+    "r13/20261109-18b55e21.jpg",
+    "r13/20261109-10de730a.jpg",
+    "r13/20261109-5b01b95d.jpg",
+    "r13/20261109-cdb23d52.jpg",
+    "r13/20261109-4c76e3e5.jpg"
+   ],
+   "mfr": "c-taparia-food",
+   "open": {
+    "qty": 64,
+    "exp": "2027-01-19",
+    "batchNo": "20TFP"
+   },
+   "geminiPrompt": "Product photo of TAPARIA Classic Besan 500 g pouch, yellow and brown ornate pouch with red Taparia logo and dhokla laddoo image, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "racks": "दो खाने: 13-10 (32) + 13-12 (32)",
+   "costSrc": ""
+  },
+  {
+   "id": "b8980800494358",
+   "name": "TAPARIA MAIDA 500G",
+   "short": "TAPARIA MAIDA 500G",
+   "hi": "तापड़िया मैदा",
+   "brand": "TAPARIA",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 40,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "13-11",
+   "fotos": [
+    "r13/20261109-596fd396.jpg",
+    "r13/20261109-756e4cc5.jpg",
+    "r13/20261109-0feec9a2.jpg",
+    "r13/20261109-f3ae5f31.jpg",
+    "r13/20261109-0b984552.jpg"
+   ],
+   "mfr": "c-taparia-food",
+   "open": {
+    "qty": 10,
+    "exp": "2026-12-12",
+    "batchNo": "13TFP"
+   },
+   "barcode": "8980800494358",
+   "geminiPrompt": "Product photo of TAPARIA Maida 500 g pouch, white and red pouch with orange MAIDA label and samosa image, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "b8908004942055",
+   "name": "TAPARIA DHANIYA POWDER 200G",
+   "short": "TAPARIA DHANIYA 200G",
+   "hi": "तापड़िया धनिया पाउडर",
+   "brand": "TAPARIA",
+   "size": "200G",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 80,
+   "sale": 70,
+   "cost": 55,
+   "perPack": 0,
+   "rack": "15-14",
+   "fotos": [
+    "r15/20261109-c63bd51f.jpg",
+    "r15/20261109-ec85c45e.jpg",
+    "r15/20261109-af942cba.jpg",
+    "r15/20261109-1cadadfa.jpg",
+    "r15/20261109-4a3ee596.jpg"
+   ],
+   "mfr": "c-taparia-masala",
+   "open": {
+    "qty": 37,
+    "exp": "",
+    "batchNo": ""
+   },
+   "barcode": "8908004942055",
+   "geminiPrompt": "Product photo of TAPARIA Coriander Powder 200 g pouch, white pouch with red Taparia band, green-gold edges and coriander powder heap, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": "पुराना Vyapar खरीद भाव (बारकोड से)"
+  },
+  {
+   "id": "b8908004942062",
+   "name": "TAPARIA CHILLI POWDER 500G",
+   "short": "TAPARIA CHILLI PWD 500G",
+   "hi": "तापड़िया मिर्च पाउडर",
+   "brand": "TAPARIA",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 220,
+   "sale": 195,
+   "cost": 150,
+   "perPack": 0,
+   "rack": "15-9",
+   "fotos": [
+    "r15/20261109-bf95b0a1.jpg",
+    "r15/20261109-a1016ee3.jpg",
+    "r15/20261109-4135b024.jpg",
+    "r15/20261109-4f14f236.jpg",
+    "r15/20261109-9e456ac8.jpg",
+    "r15/20261109-49f8a147.jpg",
+    "r15/20261109-2a19d3b0.jpg",
+    "r15/20261109-4c8f5763.jpg",
+    "r15/20261109-5a5c7702.jpg",
+    "r15/20261109-b7e83ba6.jpg"
+   ],
+   "mfr": "c-taparia-masala",
+   "open": {
+    "qty": 46,
+    "exp": "2027-05-10",
+    "batchNo": "16"
+   },
+   "barcode": "8908004942062",
+   "geminiPrompt": "Product photo of TAPARIA Chilli Powder 500 g pouch, white pouch with red Taparia band and red chilli powder heap, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "racks": "दो खाने: 15-9 (42) + 15-13 (4)",
+   "costSrc": "पुराना Vyapar खरीद भाव (बारकोड से)"
+  },
+  {
+   "id": "b8908004942000",
+   "name": "TAPARIA CHILLI POWDER 100G",
+   "short": "TAPARIA CHILLI PWD 100G",
+   "hi": "तापड़िया मिर्च पाउडर",
+   "brand": "TAPARIA",
+   "size": "100G",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 50,
+   "sale": 40,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "15-13",
+   "fotos": [
+    "r15/20261109-55f605f1.jpg",
+    "r15/20261109-09980898.jpg",
+    "r15/20261109-c47c1e39.jpg",
+    "r15/20261109-b6d934b5.jpg",
+    "r15/20261109-b2ba32bc.jpg"
+   ],
+   "mfr": "c-taparia-masala",
+   "open": {
+    "qty": 35,
+    "exp": "",
+    "batchNo": ""
+   },
+   "barcode": "8908004942000",
+   "geminiPrompt": "Product photo of TAPARIA Chilli Powder 100 g small pouch, white pouch with red Taparia band and red chilli powder heap, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  },
+  {
+   "id": "b8908004942031",
+   "name": "TAPARIA CHILLI POWDER 200G",
+   "short": "TAPARIA CHILLI PWD 200G",
+   "hi": "तापड़िया मिर्च पाउडर",
+   "brand": "TAPARIA",
+   "size": "200G",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 100,
+   "sale": 80,
+   "cost": 65,
+   "perPack": 0,
+   "rack": "15-13",
+   "fotos": [
+    "r15/20261109-d39f9be0.jpg",
+    "r15/20261109-8ffb9cf6.jpg",
+    "r15/20261109-c9fd324c.jpg",
+    "r15/20261109-544a185e.jpg"
+   ],
+   "mfr": "c-taparia-masala",
+   "open": {
+    "qty": 6,
+    "exp": "2027-04-15",
+    "batchNo": ""
+   },
+   "barcode": "8908004942031",
+   "geminiPrompt": "Product photo of TAPARIA Chilli Powder 200 g pouch, white pouch with red Taparia band and red chilli powder heap, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": "पुराना Vyapar खरीद भाव (बारकोड से)"
+  },
+  {
+   "id": "b8908004942086",
+   "name": "TAPARIA DHANIYA POWDER 500G",
+   "short": "TAPARIA DHANIYA 500G",
+   "hi": "तापड़िया धनिया पाउडर",
+   "brand": "TAPARIA",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 200,
+   "sale": 160,
+   "cost": 115,
+   "perPack": 0,
+   "rack": "15-8",
+   "fotos": [
+    "r15/20261109-d490ab41.jpg",
+    "r15/20261109-63f28f85.jpg",
+    "r15/20261109-9f3818cc.jpg",
+    "r15/20261109-ac6360b8.jpg",
+    "r15/20261109-84c50453.jpg",
+    "r15/20261109-69b6e5d4.jpg",
+    "r15/20261109-cb6dad83.jpg"
+   ],
+   "mfr": "c-taparia-masala",
+   "open": {
+    "qty": 82,
+    "exp": "2027-06-15",
+    "batchNo": "20"
+   },
+   "barcode": "8908004942086",
+   "geminiPrompt": "Product photo of TAPARIA Coriander Powder 500 g pouch, white pouch with red Taparia band, green-gold edges and coriander powder heap, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "racks": "दो खाने: 15-8 (42) + 15-11 (40)",
+   "costSrc": "पुराना Vyapar खरीद भाव (बारकोड से)"
+  },
+  {
+   "id": "b8908004942079",
+   "name": "TAPARIA HALDI POWDER 500G",
+   "short": "TAPARIA HALDI 500G",
+   "hi": "तापड़िया हल्दी पाउडर",
+   "brand": "TAPARIA",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 180,
+   "sale": 130,
+   "cost": 125,
+   "perPack": 0,
+   "rack": "15-12",
+   "fotos": [
+    "r15/20261109-dbe781d8.jpg",
+    "r15/20261109-227547a6.jpg",
+    "r15/20261109-c8d06e11.jpg",
+    "r15/20261109-4be4b4e3.jpg",
+    "r15/20261109-91d56c36.jpg",
+    "r15/20261109-f8b9e89f.jpg",
+    "r15/20261109-8406270a.jpg",
+    "r15/20261109-18897382.jpg"
+   ],
+   "mfr": "c-taparia-masala",
+   "open": {
+    "qty": 42,
+    "exp": "2027-05-19",
+    "batchNo": "18"
+   },
+   "barcode": "8908004942079",
+   "geminiPrompt": "Product photo of TAPARIA Turmeric Powder 500 g pouch, white pouch with red Taparia band, golden-orange edges and turmeric powder heap, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "racks": "दो खाने: 15-12 (26) + 15-10 (16)",
+   "costSrc": "पुराना Vyapar खरीद भाव (बारकोड से)"
+  },
+  {
+   "id": "b8908004942048",
+   "name": "TAPARIA HALDI POWDER 200G",
+   "short": "TAPARIA HALDI 200G",
+   "hi": "तापड़िया हल्दी पाउडर",
+   "brand": "TAPARIA",
+   "size": "200G",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 76,
+   "sale": 52,
+   "cost": 50,
+   "perPack": 0,
+   "rack": "15-12",
+   "fotos": [
+    "r15/20261109-8400dfea.jpg",
+    "r15/20261109-fb9f050f.jpg",
+    "r15/20261109-f488b6f0.jpg"
+   ],
+   "mfr": "c-taparia-masala",
+   "open": {
+    "qty": 11,
+    "exp": "2027-06-14",
+    "batchNo": "21"
+   },
+   "barcode": "8908004942048",
+   "geminiPrompt": "Product photo of TAPARIA Turmeric Powder 200 g pouch, white pouch with red Taparia band, yellow edges and turmeric powder heap, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": "पुराना Vyapar खरीद भाव (बारकोड से)"
+  },
+  {
+   "id": "b8904043901015",
+   "name": "TATA SALT 1KG",
+   "short": "TATA SALT 1KG",
+   "hi": "टाटा नमक",
+   "brand": "TATA",
+   "size": "1KG",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 32,
+   "sale": 32,
+   "cost": 29,
+   "perPack": 0,
+   "rack": "15-7",
+   "fotos": [
+    "r15/20261109-c69c3d7b.jpg",
+    "r15/20261109-eb11d50d.jpg",
+    "r15/20261109-4c54815b.jpg",
+    "r15/20261109-7b055db4.jpg"
+   ],
+   "mfr": "c-tata-consumer",
+   "open": {
+    "qty": 28,
+    "exp": "2028-08",
+    "batchNo": "JA"
+   },
+   "barcode": "8904043901015",
+   "geminiPrompt": "Product photo of TATA Salt 1 kg pouch, orange and white pouch with hanging kitchen utensils and black circle TATA Salt logo, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": "पुराना Vyapar खरीद भाव (बारकोड से)"
+  },
+  {
+   "id": "g-kesari-kasuri-methi-100g",
+   "name": "KESARI KASURI METHI 100G",
+   "short": "KESARI KASURI METHI 100G",
+   "hi": "केसरी कसूरी मेथी",
+   "brand": "KESARI",
+   "size": "100G",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "15-5",
+   "fotos": [
+    "r15/20261109-4cc470c7.jpg",
+    "r15/20261109-52a0521a.jpg",
+    "r15/20261109-089ac6a4.jpg"
+   ],
+   "mfr": "c-shri-arihant",
+   "open": {
+    "qty": 7,
+    "exp": "",
+    "batchNo": ""
+   },
+   "geminiPrompt": "Product photo of KESARI Kasuri Methi 100 g pouch, green and white pouch with red Kesari logo and bowl of dried fenugreek leaves, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "costSrc": ""
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-taparia-masala",
+   "name": "TAPARIA MASALA UDHYOG",
+   "care": "18003306868",
+   "web": "",
+   "email": "vinay9962@gmail.com",
+   "addr": "OFFICE: N-14 KRISHI UPAJ MANDI, BARMER · FACTORY: KHASRA 736/309, AATI FAATA, GRAM MARUDI",
+   "city": "BARMER",
+   "fssai": "12223014000017",
+   "brands": [
+    "TAPARIA"
+   ],
+   "dist": "बाड़मेर की ही कंपनी — सीधा मँगा सकते हैं",
+   "note": "स्रोत: पैक की फोटो (मसाले)। ऑफिस/मार्केटिंग: 02982-221119"
+  },
+  {
+   "id": "c-taparia-food",
+   "name": "TAPARIA FOOD PRODUCTS",
+   "web": "",
+   "addr": "736/309 AATI FAATA, GRAM MARUDI / G1-221 RIICO IND. AREA 2ND PHASE",
+   "city": "BARMER",
+   "brands": [
+    "TAPARIA"
+   ],
+   "dist": "बाड़मेर की ही कंपनी — सीधा मँगा सकते हैं",
+   "note": "स्रोत: पैक की फोटो (मैदा, बेसन, सेवइयाँ)। फोन (पैक पर): 02982-221119"
+  },
+  {
+   "id": "c-vidya-sagar",
+   "name": "VIDYA SAGAR FOODS PVT. LTD. (FRUTIN'S)",
+   "phone": "9999645655",
+   "email": "info@vidyasagarfoods.com",
+   "web": "www.frutins.com",
+   "addr": "A-2, LAWRENCE ROAD",
+   "city": "NEW DELHI",
+   "fssai": "10018011005140",
+   "brands": [
+    "FRUTIN'S"
+   ],
+   "note": "स्रोत: कस्टर्ड पैक की फोटो (Customer Care +91-9999645655)"
+  },
+  {
+   "id": "c-savour",
+   "name": "SAVOUR INDIA PVT. LTD.",
+   "email": "admin@savourindia.com",
+   "addr": "G-1/383-384, PHASE II, RIICO INDUSTRIAL AREA, BHIWADI (ALWAR)",
+   "city": "BHIWADI",
+   "fssai": "10014013000714",
+   "brands": [
+    "SAVOUR"
+   ],
+   "note": "स्रोत: मैकरोनी/पास्ता पैक की फोटो। फोन पैक पर धुंधला — पक्का नहीं"
+  },
+  {
+   "id": "c-bhagya-laxmi",
+   "name": "BHAGYA LAXMI INDUSTRIES (YUMMINO)",
+   "phone": "9166067845",
+   "care": "8769927485, 9799669906",
+   "addr": "MARUDI, KHASRA NO 726/259",
+   "city": "BARMER",
+   "fssai": "12221014000120",
+   "brands": [
+    "YUMMINO"
+   ],
+   "dist": "बाड़मेर की ही — सीधा मँगा सकते हैं",
+   "note": "स्रोत: सेवइयाँ पैक की फोटो"
+  },
+  {
+   "id": "c-royal-ratan",
+   "name": "ROYAL RATAN INDUSTRIES PVT. LTD. (SACHAMOTI)",
+   "addr": "400/1/2, BADIYAKIMA, TEHSIL & DISTRICT INDORE",
+   "city": "INDORE",
+   "fssai": "10021026000159",
+   "brands": [
+    "ROYAL RATAN",
+    "SACHAMOTI"
+   ],
+   "note": "स्रोत: साबूदाना पैक की फोटो। care 0731-424…(अधूरा पढ़ा)"
+  },
+  {
+   "id": "c-mahesh-ent",
+   "name": "MAHESH ENTERPRISES (MAHI)",
+   "phone": "9001414161",
+   "addr": "KHASRA NO. 2624/2050, RIICO INDUSTRIAL AREA",
+   "city": "BARMER",
+   "brands": [
+    "MAHI"
+   ],
+   "dist": "बाड़मेर की ही — सीधा मँगा सकते हैं",
+   "note": "स्रोत: सूजी पैक की फोटो"
+  },
+  {
+   "id": "c-awl",
+   "name": "AWL AGRI BUSINESS LTD. (FORTUNE)",
+   "email": "care@awl.in",
+   "addr": "FORTUNE HOUSE, NEAR NAVRANGPURA RAILWAY CROSSING",
+   "city": "AHMEDABAD",
+   "brands": [
+    "FORTUNE"
+   ],
+   "note": "स्रोत: बेसन पैक की फोटो। टोल-फ्री 1800 572 9… (अधूरा पढ़ा)"
+  },
+  {
+   "id": "c-tata-consumer",
+   "name": "TATA CONSUMER PRODUCTS LTD.",
+   "phone": "9571617161",
+   "care": "18001084488",
+   "email": "care@tataconsumer.com",
+   "addr": "TATA CENTRE, 43 J.L. NEHRU ROAD",
+   "city": "KOLKATA",
+   "brands": [
+    "TATA SALT"
+   ],
+   "note": "स्रोत: नमक पैक की फोटो (WhatsApp 9571617161)"
+  },
+  {
+   "id": "c-shri-arihant",
+   "name": "SHRI ARIHANT TRADING COMPANY (KESARI)",
+   "care": "02914056879",
+   "addr": "D-1A, MANDORE MANDI",
+   "city": "JODHPUR",
+   "fssai": "12218032000537",
+   "brands": [
+    "KESARI"
+   ],
+   "note": "स्रोत: कसूरी मेथी पैक की फोटो"
+  }
+ ]
+}
