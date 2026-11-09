@@ -11,7 +11,7 @@ const own=()=>typeof S!=="undefined"&&S&&S.isOwner&&!S.demo&&S.db;
 const base=()=>{const u=(window.SE&&SE.cfg&&SE.cfg.updateUrl)||"";return (window.SE&&SE.isNative&&u)?u.replace(/\/?$/,"/"):""};
 SPK.url=p=>base()+p;
 const empty=v=>v==null||v===""||v===0||v==="0";
-const FILL=["mfr","ctn","rack","mrp","sale","cost","barcode","ph","hi","brand","size","alias","emoji","sub","secret","perPack","packOf","unit"];
+const FILL=["offer","packMrp","subtitle","mfr","ctn","rack","mrp","sale","cost","barcode","ph","hi","brand","size","alias","emoji","sub","secret","perPack","packOf","unit"];
 const PRICE=["mrp","sale","cost"];
 const say=m=>{try{toast(m)}catch(e){}};
 /* कोड: index.html का nextCode (4 अंक, किस्म-वार) — यह सिर्फ़ बचाव */

@@ -133,6 +133,9 @@ async def main():
         await pg.click("[data-slmark]"); await pg.wait_for_timeout(200)
         assert await pg.evaluate("SL.list().length") == 0 and await pg.evaluate(f"!!SL.doneOf(item('{ids[1]}'))")
         print("label dup-guard ok")
+        # 🎁 Buy 1 Get 1: लेबल पर सिंगल पीस का भाव + "1+1 · पैक MRP ₹230 (2 पीस)"
+        h = await pg.evaluate(f"(()=>{{const i=item('{ids[2]}');i.offer='1+1';i.packMrp=230;i.sale=115;i.mrp=115;const T=[],P=CanvasRenderingContext2D.prototype,f=P.fillText;P.fillText=function(t,...a){{T.push(String(t));return f.call(this,t,...a)}};try{{SL.draw(SL.dataOf(i),SL.cfg())}}finally{{P.fillText=f}}delete i.offer;delete i.packMrp;return T.join(' | ')}})()")
+        assert "1+1 · पैक MRP ₹230" in h and "115" in h, h[:300]
         # सब्ज़ी वाला पुराना लेबल अभी भी खुले
         await pg.click('[data-ltype="sabzi"]'); await pg.wait_for_timeout(100)
         assert await pg.locator("#p-label .ppick, #p-label #lPrev").count() >= 1

@@ -16,7 +16,7 @@ P = os.path.join(R, "web", "p")
 IDX = os.path.join(D, "index.json")
 ORG = (re.search(r'org:\s*"([a-z0-9]+)"', open(os.path.join(R, "web", "config.js"), encoding="utf8").read()) or [None, "mh177"])[1]  # 🏢 संस्था
 KEEP = ["id", "name", "short", "hi", "brand", "size", "alias", "emoji", "cat", "sub", "unit", "code", "barcode", "mrp", "sale", "cost",
-        "perPack", "packOf", "track", "min", "rack", "secret", "ph", "mfr", "fotos", "ctn", "open"]
+        "perPack", "packOf", "track", "min", "rack", "secret", "ph", "mfr", "fotos", "ctn", "open", "offer", "packMrp", "subtitle"]
 CKEEP = ["id", "name", "phone", "care", "email", "web", "addr", "city", "fssai", "gst", "brands", "dist", "note"]
 
 
@@ -58,7 +58,8 @@ def from_stock(it):
             "cat": it.get("cat") or "kirana", "sub": it.get("sub", ""), "unit": it.get("unit") or "pc", "barcode": it.get("barcode", ""),
             "mrp": it.get("mrp") or 0, "sale": it.get("sale") or 0, "cost": it.get("cost") or 0, "rack": it.get("rack", ""),
             "secret": it.get("secret", ""), "alias": " ".join(it.get("searchWords") or []) if isinstance(it.get("searchWords"), list) else it.get("searchWords", ""),
-            "short": cap(it.get("short", "")), "mfr": it.get("mfrId", ""), "fotos": it.get("fotos") or [], "ctn": int(it.get("caseQty") or 0) or ""}
+            "short": cap(it.get("short", "")), "mfr": it.get("mfrId", ""), "fotos": it.get("fotos") or [], "ctn": int(it.get("caseQty") or 0) or "",
+            "offer": it.get("offer") or "", "packMrp": it.get("packMrp") or "", "subtitle": it.get("subtitle") if it.get("offer") else ""}
     ph = (it.get("photoFile") or (it.get("photos") or [None])[0])
     op = {"qty": it.get("qty"), "exp": it.get("exp", ""), "batchNo": it.get("batchNo", "")} if it.get("qty") not in (None, "") else None
     if pp > 1 and it.get("sell") in ("both", "pack"):

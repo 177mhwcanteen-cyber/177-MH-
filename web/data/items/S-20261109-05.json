@@ -1,0 +1,1510 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261109-05",
+ "date": "2026-11-09",
+ "by": "विक्रम जी (फोटो: दिनेश जी)",
+ "note": "रैक 6 (6-7 से 6-15) + Amul फ्रीज़र — फोटो 09-11-2026, 20:27–23:40। बैच S-20261109-01 के बाद का सारा। यह S-20261109-02 की जगह है (उसमें छोले 100g बारकोड/सोनू सुधार नहीं थे) — -02 न चढ़ाएँ, चढ़ गई हो तो यह सिर्फ़ खाली खाने भरेगी। 🆕 रैक 6 में अब 15 खाने (6-14, 6-15 नए बने — 08-रैक-नक्शा में 13 है, ऐप में 15 करें)। 🆕 स्थायी नियम (विक्रम जी 23:25): 'Buy 1 Get 1' वाला सामान सिंगल पीस बिकता है, भाव = पैक MRP ÷ 2; ग्राहक-पेज/लेबल पर साफ़ लिखें 'सिंगल पीस ₹X · पैक पर MRP दो पीस का (1+1 फ्री)' — items में offer:'1+1', packMrp, subtitle। आइसक्रीम का फ्रीज़र-खाना (19-1/19-2) अभी नहीं बताया — rack खाली, rackHint में। · किट v6",
+ "items": [
+  {
+   "id": "b8901786171002",
+   "name": "EVEREST TANDOORI CHICKEN MASALA 100 G",
+   "short": "EVEREST TANDOORI 100G",
+   "hi": "एवरेस्ट तंदूरी चिकन मसाला 100 ग्राम",
+   "brand": "EVEREST",
+   "size": "100g",
+   "alias": "tandoori chicken masala tandori everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786171002",
+   "mrp": 94,
+   "sale": 94,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "29f04345",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-4d4b722f.jpg",
+    "r6/20261109-83231a77.jpg",
+    "r6/20261109-6c9ad98b.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-04-30",
+    "batchNo": "U24D714103"
+   }
+  },
+  {
+   "id": "b8908001744171",
+   "name": "SONU CHHACH MASALA 100 G",
+   "short": "SONU CHHACH MASALA 100G",
+   "hi": "सोनू छाछ मसाला 100 ग्राम",
+   "brand": "SONU",
+   "size": "100g",
+   "alias": "chhach chaas masala sonu छाछ मसाला",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8908001744171",
+   "mrp": 55,
+   "sale": 55,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "2e90359f",
+   "fotos": [
+    "r6/20261109-66ce2dc9.jpg",
+    "r6/20261109-fce21b77.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901786141012",
+   "name": "EVEREST SHAHI BIRYANI MASALA 100 G",
+   "short": "EVEREST BIRYANI MSL 100G",
+   "hi": "एवरेस्ट शाही बिरयानी मसाला 100 ग्राम",
+   "brand": "EVEREST",
+   "size": "100g",
+   "alias": "biryani biriyani masala jar everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786141012",
+   "mrp": 175,
+   "sale": 175,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "a362ad1a",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-e2d597b2.jpg",
+    "r6/20261109-7bdd033c.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2027-04-30",
+    "batchNo": "U07D707251"
+   }
+  },
+  {
+   "id": "b8901808000044",
+   "name": "WEIKFIELD CORN STARCH 100 G",
+   "short": "WEIKFIELD CORNSTRCH 100G",
+   "hi": "वीकफील्ड कॉर्न स्टार्च 100 ग्राम",
+   "brand": "WEIKFIELD",
+   "size": "100g",
+   "alias": "corn starch cornflour corn flour weikfield कॉर्न फ्लोर",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901808000044",
+   "mrp": 33,
+   "sale": 33,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "6d7285be",
+   "mfr": "c-weikfield",
+   "fotos": [
+    "r6/20261109-0216a11c.jpg",
+    "r6/20261109-c8e94013.jpg",
+    "r6/20261109-5bfbbb54.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2028-02-29",
+    "batchNo": "6N224"
+   }
+  },
+  {
+   "id": "b8901786410507",
+   "name": "EVEREST KASHMIRILAL CHILLI POWDER 50 G",
+   "short": "EVEREST KASHMIRILAL 50G",
+   "hi": "एवरेस्ट कश्मीरीलाल मिर्च पाउडर 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "kashmiri lal mirch chilli kashmirilal everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786410507",
+   "mrp": 68,
+   "sale": 68,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-7",
+   "ph": "47490cf5",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-84b096de.jpg",
+    "r6/20261109-7cb26556.jpg",
+    "r6/20261109-a3e3c583.jpg"
+   ],
+   "open": {
+    "qty": 17,
+    "exp": "2027-09-30",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901786160501",
+   "name": "EVEREST CHICKEN MASALA 50 G",
+   "short": "EVEREST CHICKEN MSL 50G",
+   "hi": "एवरेस्ट चिकन मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "chicken masala murga everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786160501",
+   "mrp": 54,
+   "sale": 54,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-8",
+   "ph": "6a5a24f1",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-dd2f983d.jpg",
+    "r6/20261109-8f9a09ba.jpg",
+    "r6/20261109-1e9cd363.jpg"
+   ],
+   "open": {
+    "qty": 25,
+    "exp": "2027-10-31",
+    "batchNo": "U24D773194"
+   }
+  },
+  {
+   "id": "b8901786530502",
+   "name": "EVEREST SHAHI PANEER MASALA 50 G",
+   "short": "EVEREST SHAHI PANEER 50G",
+   "hi": "एवरेस्ट शाही पनीर मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "shahi paneer masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786530502",
+   "mrp": 57,
+   "sale": 57,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-8",
+   "ph": "615bc795",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-0d3d03f3.jpg",
+    "r6/20261109-98281016.jpg",
+    "r6/20261109-cd5571c4.jpg"
+   ],
+   "open": {
+    "qty": 32,
+    "exp": "2027-12-31",
+    "batchNo": "U16D794936"
+   }
+  },
+  {
+   "id": "b8901786100507",
+   "name": "EVEREST GARAM MASALA 50 G",
+   "short": "EVEREST GARAM MSL 50G",
+   "hi": "एवरेस्ट गरम मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "garam masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786100507",
+   "mrp": 58,
+   "sale": 58,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-8",
+   "ph": "35929cea",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-8f8a0826.jpg",
+    "r6/20261109-638d1810.jpg",
+    "r6/20261109-5130a633.jpg"
+   ],
+   "open": {
+    "qty": 31,
+    "exp": "2027-11-30",
+    "batchNo": "U23D785121"
+   }
+  },
+  {
+   "id": "b8901786330508",
+   "name": "EVEREST WHITE PEPPER POWDER 50 G",
+   "short": "EVEREST WHITE PEPPER 50G",
+   "hi": "एवरेस्ट व्हाइट पेपर (सफ़ेद मिर्च) 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "white pepper safed mirch everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786330508",
+   "mrp": 115,
+   "sale": 115,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-8",
+   "ph": "99f9cb94",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-c27e7144.jpg",
+    "r6/20261109-e9460c81.jpg",
+    "r6/20261109-512d1ddd.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-04-30",
+    "batchNo": "U15N680772"
+   }
+  },
+  {
+   "id": "k-ev-biryani",
+   "name": "EVEREST SHAHI BIRYANI MASALA 50 G",
+   "short": "EVEREST BIRYANI MSL 50G",
+   "hi": "एवरेस्ट शाही बिरयानी मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "biryani biriyani masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786140503",
+   "mrp": 90,
+   "sale": 90,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-8",
+   "ph": "0d2c6390",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-c181f799.jpg",
+    "r6/20261109-60840fbd.jpg",
+    "r6/20261109-3659cfad.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2027-12-31",
+    "batchNo": "U17D795250"
+   }
+  },
+  {
+   "id": "b8901786091003",
+   "name": "EVEREST CHHOLE MASALA 100 G",
+   "short": "EVEREST CHHOLE MSL 100G",
+   "hi": "एवरेस्ट छोले मसाला 100 ग्राम",
+   "brand": "EVEREST",
+   "size": "100g",
+   "alias": "chole chhole chana masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786091003",
+   "mrp": 98,
+   "sale": 98,
+   "cost": 78.24,
+   "perPack": 0,
+   "rack": "6-8",
+   "ph": "3ad3a220",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-89fab454.jpg",
+    "r6/20261109-51806b0d.jpg",
+    "r6/20261109-fd024b5f.jpg",
+    "r6/20261109-0fbfb2d3.jpg",
+    "r6/20261109-c72a6364.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-06-30",
+    "batchNo": "U27D763341"
+   }
+  },
+  {
+   "id": "b8901786490509",
+   "name": "EVEREST FISH CURRY MASALA 50 G",
+   "short": "EVEREST FISH CURRY 50G",
+   "hi": "एवरेस्ट फिश करी मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "fish curry masala machli everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786490509",
+   "mrp": 52,
+   "sale": 52,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-8",
+   "ph": "a9385978",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-4536048c.jpg",
+    "r6/20261109-c315643b.jpg",
+    "r6/20261109-b2cc7110.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-05-31",
+    "batchNo": "U20D751405"
+   }
+  },
+  {
+   "id": "k-ev-kking",
+   "name": "EVEREST KITCHEN KING MASALA 50 G",
+   "short": "EVEREST KITCHEN KING 50G",
+   "hi": "एवरेस्ट किचन किंग मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "kitchen king masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786120505",
+   "mrp": 53,
+   "sale": 53,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "b5b1f1e3",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-7d7f1eb1.jpg",
+    "r6/20261109-5aa87fc7.jpg",
+    "r6/20261109-b0711fa2.jpg"
+   ],
+   "open": {
+    "qty": 23,
+    "exp": "2027-12-31",
+    "batchNo": "U15N794747"
+   }
+  },
+  {
+   "id": "g-everest-kitchen-king-masala-50-g-old-mrp",
+   "name": "EVEREST KITCHEN KING MASALA 50 G (OLD MRP 48)",
+   "short": "EVEREST KK 50G MRP48",
+   "hi": "एवरेस्ट किचन किंग 50 ग्राम (पुराना, ₹48)",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "kitchen king old 48 किचन किंग",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 48,
+   "sale": 48,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "60fc8b32",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-0e407901.jpg",
+    "r6/20261109-639b16f4.jpg",
+    "r6/20261109-7c5efa87.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-07-31",
+    "batchNo": "U30D744893"
+   }
+  },
+  {
+   "id": "g-everest-kitchen-king-masala-50-g-old-mrp",
+   "name": "EVEREST KITCHEN KING MASALA 50 G (OLD MRP 51)",
+   "short": "EVEREST KK 50G MRP51",
+   "hi": "एवरेस्ट किचन किंग 50 ग्राम (पुराना, ₹51)",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "kitchen king old 51 किचन किंग",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 51,
+   "sale": 51,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "60fc8b32",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-0e407901.jpg",
+    "r6/20261109-639b16f4.jpg",
+    "r6/20261109-7c5efa87.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901786130504",
+   "name": "EVEREST SABJI MASALA 50 G",
+   "short": "EVEREST SABJI MSL 50G",
+   "hi": "एवरेस्ट सब्ज़ी मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "sabji sabzi masala vegetable everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786130504",
+   "mrp": 0,
+   "sale": 39,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "c485e2d6",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-cfaf250b.jpg",
+    "r6/20261109-d8b8f0fd.jpg",
+    "r6/20261109-2ae9ace1.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901786080502",
+   "name": "EVEREST SAMBHAR MASALA 50 G",
+   "short": "EVEREST SAMBHAR MSL 50G",
+   "hi": "एवरेस्ट सांभर मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "sambhar sambar masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786080502",
+   "mrp": 48,
+   "sale": 48,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "a3b7a8cf",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-b834bcb0.jpg",
+    "r6/20261109-defbc863.jpg",
+    "r6/20261109-6fea91f6.jpg"
+   ],
+   "open": {
+    "qty": 25,
+    "exp": "2027-08-31",
+    "batchNo": "U21D784051"
+   }
+  },
+  {
+   "id": "b8901786260508",
+   "name": "EVEREST BLACK PEPPER POWDER 50 G",
+   "short": "EVEREST BLACK PEPPER 50G",
+   "hi": "एवरेस्ट काली मिर्च पाउडर 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "black pepper kali mirch everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786260508",
+   "mrp": 95,
+   "sale": 95,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "d5262de5",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-c4375842.jpg",
+    "r6/20261109-a82f84b4.jpg",
+    "r6/20261109-4d3fd2ce.jpg"
+   ],
+   "open": {
+    "qty": 25,
+    "exp": "2028-02-29",
+    "batchNo": "U17N782906"
+   }
+  },
+  {
+   "id": "b8902167001116",
+   "name": "MDH SHAHI PANEER MASALA 50 G",
+   "short": "MDH SHAHI PANEER 50G",
+   "hi": "MDH शाही पनीर मसाला 50 ग्राम",
+   "brand": "MDH",
+   "size": "50g",
+   "alias": "mdh shahi paneer masala एमडीएच शाही पनीर",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8902167001116",
+   "mrp": 56,
+   "sale": 56,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "7d1b60a7",
+   "fotos": [
+    "r6/20261109-31c6df71.jpg",
+    "r6/20261109-c3ae4ca8.jpg",
+    "r6/20261109-92acd329.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-06-30",
+    "batchNo": "FD-158"
+   }
+  },
+  {
+   "id": "b8901786060504",
+   "name": "EVEREST CHAAT MASALA 50 G",
+   "short": "EVEREST CHAAT MSL 50G",
+   "hi": "एवरेस्ट चाट मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "chaat chat masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786060504",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "af624127",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-db8dc047.jpg",
+    "r6/20261109-83c86307.jpg",
+    "r6/20261109-46f410ac.jpg"
+   ],
+   "open": {
+    "qty": 26,
+    "exp": "2028-02-29",
+    "batchNo": "U25N786630"
+   }
+  },
+  {
+   "id": "b8901786070503",
+   "name": "EVEREST PAV BHAJI MASALA 50 G",
+   "short": "EVEREST PAVBHAJI MSL 50G",
+   "hi": "एवरेस्ट पाव भाजी मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "pav bhaji masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786070503",
+   "mrp": 53,
+   "sale": 53,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "3f48f059",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-d55574a8.jpg",
+    "r6/20261109-cd1a3a2b.jpg",
+    "r6/20261109-f2555aa3.jpg"
+   ],
+   "open": {
+    "qty": 11,
+    "exp": "2027-11-30",
+    "batchNo": "U12D780981"
+   }
+  },
+  {
+   "id": "b8901786090501",
+   "name": "EVEREST CHHOLE MASALA 50 G",
+   "short": "EVEREST CHHOLE MSL 50G",
+   "hi": "एवरेस्ट छोले मसाला 50 ग्राम",
+   "brand": "EVEREST",
+   "size": "50g",
+   "alias": "chole chhole chana masala everest एवरेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786090501",
+   "mrp": 51,
+   "sale": 51,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-9",
+   "ph": "209bfb00",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261109-a3171e36.jpg",
+    "r6/20261109-943fec50.jpg",
+    "r6/20261109-6aba4de7.jpg",
+    "r6/20261109-02d7919d.jpg",
+    "r6/20261109-f7c5bd37.jpg",
+    "r6/20261109-eb1ae9ef.jpg"
+   ],
+   "open": {
+    "qty": 20,
+    "exp": "2027-09-30",
+    "batchNo": "U17D795327"
+   }
+  },
+  {
+   "id": "g-rajma-red-kidney-beans-500-g-packed",
+   "name": "RAJMA (RED KIDNEY BEANS) 500 G (PACKED)",
+   "short": "RAJMA 500G",
+   "hi": "राजमा 500 ग्राम",
+   "size": "500g",
+   "alias": "rajma rajmah kidney beans राजमा",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 95,
+   "cost": 70,
+   "perPack": 0,
+   "rack": "6-10",
+   "ph": "3f0670fa",
+   "fotos": [
+    "r6/20261109-ee0331ea.jpg",
+    "r6/20261109-a145db0c.jpg"
+   ],
+   "open": {
+    "qty": 14,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-chitra-rajma-500-g-packed",
+   "name": "CHITRA RAJMA 500 G (PACKED)",
+   "short": "CHITRA RAJMA 500G",
+   "hi": "चित्रा राजमा 500 ग्राम",
+   "size": "500g",
+   "alias": "chitra rajma jammu rajma pinto राजमा चित्रा",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-10",
+   "ph": "7ec99eb0",
+   "fotos": [
+    "r6/20261109-e731725f.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906014888882",
+   "name": "TRUE STORY ORGANIC BROWN SUGAR 500 G",
+   "short": "TRUESTORY BRWN SUGR 500G",
+   "hi": "ट्रू स्टोरी ऑर्गेनिक ब्राउन शुगर 500 ग्राम",
+   "brand": "TRUE STORY",
+   "size": "500g",
+   "alias": "brown sugar organic true story ब्राउन शुगर चीनी",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "8906014888882",
+   "mrp": 90,
+   "sale": 90,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-10",
+   "ph": "d0a17f74",
+   "mfr": "c-gulab-true-story",
+   "fotos": [
+    "r6/20261109-7bc51105.jpg",
+    "r6/20261109-09543f8a.jpg",
+    "r6/20261109-8836c8bb.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-08-05",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906014888868",
+   "name": "TRUE STORY ORGANIC JAGGERY POWDER 500 G",
+   "short": "TRUE STORY GUD PWD 500G",
+   "hi": "ट्रू स्टोरी ऑर्गेनिक गुड़ पाउडर 500 ग्राम",
+   "brand": "TRUE STORY",
+   "size": "500g",
+   "alias": "jaggery powder gud gur organic गुड़ पाउडर",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "8906014888868",
+   "mrp": 90,
+   "sale": 90,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-10",
+   "ph": "7c820527",
+   "mfr": "c-gulab-true-story",
+   "fotos": [
+    "r6/20261109-712d77aa.jpg",
+    "r6/20261109-b04c24c9.jpg",
+    "r6/20261109-e4313cda.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-07-27",
+    "batchNo": "GFJP030726650745"
+   }
+  },
+  {
+   "id": "b8906014889674",
+   "name": "TRUE STORY HIMALAYAN ROCK SALT 1 KG",
+   "short": "TRUE STORY ROCK SALT 1KG",
+   "hi": "ट्रू स्टोरी सेंधा नमक 1 किलो",
+   "brand": "TRUE STORY",
+   "size": "1kg",
+   "alias": "sendha namak rock salt himalayan pink salt सेंधा नमक",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "8906014889674",
+   "mrp": 110,
+   "sale": 110,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-10",
+   "ph": "55611f92",
+   "mfr": "c-gulab-true-story",
+   "fotos": [
+    "r6/20261109-8c776760.jpg",
+    "r6/20261109-46ce199a.jpg",
+    "r6/20261109-74450d3a.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2028-07-19",
+    "batchNo": "BLAF04200726"
+   }
+  },
+  {
+   "id": "b690225106467",
+   "name": "INDIA GATE SONA MASOORI RICE 5 KG",
+   "short": "INDIA GATE SONA MSR 5KG",
+   "hi": "इंडिया गेट सोना मसूरी 5 किलो",
+   "brand": "INDIA GATE",
+   "size": "5kg",
+   "alias": "india gate sona masoori rice rice chawal चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225106467",
+   "mrp": 430,
+   "sale": 400,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-12",
+   "ph": "59726169",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r6/20261109-e0eb5604.jpg",
+    "r6/20261109-e8d86a13.jpg",
+    "r6/20261109-37522c06.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2028-02-20",
+    "batchNo": "HW08F3440N"
+   }
+  },
+  {
+   "id": "b690225103138",
+   "name": "INDIA GATE DUBAR BASMATI RICE 5 KG",
+   "short": "INDIA GATE DUBAR 5KG",
+   "hi": "इंडिया गेट दुबार बासमती 5 किलो",
+   "brand": "INDIA GATE",
+   "size": "5kg",
+   "alias": "india gate dubar basmati rice rice chawal चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225103138",
+   "mrp": 830,
+   "sale": 750,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-12",
+   "ph": "478df072",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r6/20261109-bf7f4b65.jpg",
+    "r6/20261109-385e8089.jpg",
+    "r6/20261109-d3233af1.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2029-08-17",
+    "batchNo": "GW34F3320-0"
+   }
+  },
+  {
+   "id": "b690225101127",
+   "name": "INDIA GATE TIBAR BASMATI RICE 1 KG",
+   "short": "INDIA GATE TIBAR 1KG",
+   "hi": "इंडिया गेट तिबार बासमती 1 किलो",
+   "brand": "INDIA GATE",
+   "size": "1kg",
+   "alias": "india gate tibar basmati rice rice chawal चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225101127",
+   "mrp": 175,
+   "sale": 150,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-13",
+   "ph": "852bf3b9",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r6/20261109-7e753908.jpg",
+    "r6/20261109-eb9e3631.jpg",
+    "r6/20261109-62db9263.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "2029-08-13",
+    "batchNo": "BW33F3500O"
+   }
+  },
+  {
+   "id": "b690225103633",
+   "name": "INDIA GATE FEAST ROZZANA BASMATI RICE 5 KG",
+   "short": "INDIA GATE ROZZANA 5KG",
+   "hi": "इंडिया गेट फीस्ट रोज़ाना बासमती 5 किलो",
+   "brand": "INDIA GATE",
+   "size": "5kg",
+   "alias": "india gate feast rozzana basmati rice rice chawal चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225103633",
+   "mrp": 680,
+   "sale": 460,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-13",
+   "ph": "07a3aa24",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r6/20261109-9c5e7e13.jpg",
+    "r6/20261109-52974852.jpg",
+    "r6/20261109-644268b9.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2029-10-15",
+    "batchNo": "BW42F27200"
+   }
+  },
+  {
+   "id": "b690225104197",
+   "name": "INDIA GATE MINI MOGRA BASMATI RICE 10 KG",
+   "short": "IG MINI MOGRA 10KG",
+   "hi": "इंडिया गेट मिनी मोगरा 10 किलो",
+   "brand": "INDIA GATE",
+   "size": "10kg",
+   "alias": "india gate mini mogra basmati rice rice chawal चावल",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225104197",
+   "mrp": 735,
+   "sale": 590,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-14",
+   "ph": "aef1b10e",
+   "mfr": "c-krbl",
+   "fotos": [
+    "r6/20261109-f3bedbd2.jpg",
+    "r6/20261109-c743e0bd.jpg",
+    "r6/20261109-4ff398cc.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2029-04-04",
+    "batchNo": "BM04F07350"
+   }
+  },
+  {
+   "id": "b8901262300506",
+   "name": "AMUL CHOCOCHIPS GOLD ICE CREAM CUP 125 ML",
+   "short": "AMUL CHOCOCHIP GLD 125ML",
+   "hi": "अमूल चोकोचिप्स गोल्ड कप 125 मि.ली.",
+   "brand": "AMUL",
+   "size": "125ml",
+   "alias": "amul ice cream icecream chocochips gold ice cream cup 125 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262300506",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "0e1b21c3",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-d17b3e2f.jpg",
+    "rx/20261109-979a5bba.jpg",
+    "rx/20261109-f87dc620.jpg",
+    "rx/20261109-12cfa7ca.jpg",
+    "rx/20261109-2a9f84c0.jpg"
+   ],
+   "ctn": 8,
+   "open": {
+    "qty": 24,
+    "exp": "2027-06-29",
+    "batchNo": "EDF2751"
+   }
+  },
+  {
+   "id": "b8901262177436",
+   "name": "AMUL CHOCOLATE SUNDAE ICE CREAM CUP 125 ML",
+   "short": "AMUL CHOCO SUNDAE 125ML",
+   "hi": "अमूल चॉकलेट संडे कप 125 मि.ली.",
+   "brand": "AMUL",
+   "size": "125ml",
+   "alias": "amul ice cream icecream chocolate sundae ice cream cup 125 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262177436",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "62ab9252",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-d2f9ee6f.jpg",
+    "rx/20261109-6ddb9403.jpg",
+    "rx/20261109-7ab42630.jpg",
+    "rx/20261109-ed4187d3.jpg"
+   ],
+   "ctn": 8,
+   "open": {
+    "qty": 24,
+    "exp": "2027-07-04",
+    "batchNo": "UBF1851"
+   }
+  },
+  {
+   "id": "b8901262173964",
+   "name": "AMUL CREME RICH CARAMEL ICE CREAM CUP 125 ML",
+   "short": "AMUL CREMERICH CRM 125ML",
+   "hi": "अमूल क्रीम रिच कैरामेल कप 125 मि.ली.",
+   "brand": "AMUL",
+   "size": "125ml",
+   "alias": "amul ice cream icecream creme rich caramel ice cream cup 125 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262173964",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "10fd0719",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-8f1d2530.jpg",
+    "rx/20261109-dd8fecd4.jpg",
+    "rx/20261109-5d3ca9da.jpg",
+    "rx/20261109-a0fb5360.jpg"
+   ],
+   "ctn": 8,
+   "open": {
+    "qty": 24,
+    "exp": "2027-07-08",
+    "batchNo": "GAF1891"
+   }
+  },
+  {
+   "id": "b8901262175845",
+   "name": "AMUL RAJBHOG ICE CREAM CUP 125 ML",
+   "short": "AMUL RAJBHOG CUP 125ML",
+   "hi": "अमूल राजभोग कप 125 मि.ली.",
+   "brand": "AMUL",
+   "size": "125ml",
+   "alias": "amul ice cream icecream rajbhog ice cream cup 125 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262175845",
+   "mrp": 40,
+   "sale": 40,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "dfb29773",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-e3e091d3.jpg",
+    "rx/20261109-bf3228ca.jpg",
+    "rx/20261109-8e14d0c8.jpg"
+   ],
+   "ctn": 8,
+   "open": {
+    "qty": 24,
+    "exp": "2027-06-26",
+    "batchNo": "EDF2721"
+   }
+  },
+  {
+   "id": "b8901262300612",
+   "name": "AMUL TRU TENDER COCONUT ICE CREAM CUP 125 ML",
+   "short": "AMUL TRU COCONUT 125ML",
+   "hi": "अमूल ट्रू टेंडर कोकोनट कप 125 मि.ली.",
+   "brand": "AMUL",
+   "size": "125ml",
+   "alias": "amul ice cream icecream tru tender coconut ice cream cup 125 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262300612",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "9b4b9ab1",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-594ac3eb.jpg",
+    "rx/20261109-863dd051.jpg",
+    "rx/20261109-a84c178e.jpg",
+    "rx/20261109-68c8e154.jpg"
+   ],
+   "ctn": 8,
+   "open": {
+    "qty": 22,
+    "exp": "2027-06-21",
+    "batchNo": "EDF2671"
+   }
+  },
+  {
+   "id": "b8901262175838",
+   "name": "AMUL FRUIT N NUT FANTASY ICE CREAM CUP 125 ML",
+   "short": "AMUL FRUIT N NUT 125ML",
+   "hi": "अमूल फ्रूट एन नट फैंटेसी कप 125 मि.ली.",
+   "brand": "AMUL",
+   "size": "125ml",
+   "alias": "amul ice cream icecream fruit n nut fantasy ice cream cup 125 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262175838",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "af4e2b5f",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-d6037eac.jpg",
+    "rx/20261109-9913d81a.jpg",
+    "rx/20261109-c17d1061.jpg"
+   ],
+   "ctn": 8,
+   "open": {
+    "qty": 24,
+    "exp": "2027-06-19",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262175821",
+   "name": "AMUL BUTTERSCOTCH BLISS ICE CREAM CUP 125 ML",
+   "short": "AMUL BTRSCOTCH CUP 125ML",
+   "hi": "अमूल बटरस्कॉच ब्लिस कप 125 मि.ली.",
+   "brand": "AMUL",
+   "size": "125ml",
+   "alias": "amul ice cream icecream butterscotch bliss ice cream cup 125 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262175821",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "41000d01",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-93fd2966.jpg",
+    "rx/20261109-48c24395.jpg",
+    "rx/20261109-f079bdf7.jpg"
+   ],
+   "ctn": 8,
+   "open": {
+    "qty": 24,
+    "exp": "2027-07-07",
+    "batchNo": "EDF2831"
+   }
+  },
+  {
+   "id": "b8901262301459",
+   "name": "AMUL CASSATTA GOLD ICE CREAM",
+   "short": "AMUL CASSATTA GOLD",
+   "hi": "अमूल कसाटा गोल्ड",
+   "brand": "AMUL",
+   "size": "150ml",
+   "alias": "amul ice cream icecream cassatta gold ice cream अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262301459",
+   "mrp": 65,
+   "sale": 65,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "d71907b2",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-513b8aea.jpg",
+    "rx/20261109-841957a7.jpg",
+    "rx/20261109-b05fc4fe.jpg"
+   ],
+   "ctn": 12,
+   "open": {
+    "qty": 24,
+    "exp": "2027-09-17",
+    "batchNo": "DRF2601"
+   }
+  },
+  {
+   "id": "b8901262174619",
+   "name": "AMUL AMERICAN NUTS ICE CREAM CUP 125 ML",
+   "short": "AMUL AMERICAN NUTS 125ML",
+   "hi": "अमूल अमेरिकन नट्स कप 125 मि.ली.",
+   "brand": "AMUL",
+   "size": "125ml",
+   "alias": "amul ice cream icecream american nuts ice cream cup 125 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262174619",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "04189bee",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-d54daeb9.jpg",
+    "rx/20261109-46b0dab4.jpg",
+    "rx/20261109-7779e7e6.jpg"
+   ],
+   "ctn": 8,
+   "open": {
+    "qty": 32,
+    "exp": "2027-07-08",
+    "batchNo": "EDF2841"
+   }
+  },
+  {
+   "id": "b8901262173216",
+   "name": "AMUL VANILLA ROYALE 750 ML (BUY 1 GET 1 — SINGLE PC)",
+   "short": "AMUL VANILLA ROYALE 1PC",
+   "hi": "अमूल वनीला रॉयल 750 मि.ली. (सिंगल पीस)",
+   "brand": "AMUL",
+   "size": "750ml",
+   "alias": "amul ice cream icecream vanilla royale 750 ml (buy 1 get 1 — single pc) अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262173216",
+   "mrp": 115.0,
+   "sale": 115.0,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "9f215a1b",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-952df1f7.jpg",
+    "rx/20261109-a968c109.jpg",
+    "rx/20261109-7d07a490.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-10-04",
+    "batchNo": "TBF2771"
+   },
+   "offer": "1+1",
+   "packMrp": 230,
+   "subtitle": "सिंगल पीस ₹115 · पैक पर MRP ₹230 दो पीस का (1+1 फ्री)"
+  },
+  {
+   "id": "b8901262171090",
+   "name": "AMUL RAJBHOG 750 ML (BUY 1 GET 1 — SINGLE PC)",
+   "short": "AMUL RAJBHOG BRICK 1PC",
+   "hi": "अमूल राजभोग 750 मि.ली. (सिंगल पीस)",
+   "brand": "AMUL",
+   "size": "750ml",
+   "alias": "amul ice cream icecream rajbhog 750 ml (buy 1 get 1 — single pc) अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262171090",
+   "mrp": 190.0,
+   "sale": 190.0,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "df75992b",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-16e08882.jpg",
+    "rx/20261109-a7e714d4.jpg",
+    "rx/20261109-bc919ac7.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-06-17",
+    "batchNo": "EDF2631"
+   },
+   "offer": "1+1",
+   "packMrp": 380,
+   "subtitle": "सिंगल पीस ₹190 · पैक पर MRP ₹380 दो पीस का (1+1 फ्री)"
+  },
+  {
+   "id": "b8901262170956",
+   "name": "AMUL BUTTERSCOTCH 750 ML (BUY 1 GET 1 — SINGLE PC)",
+   "short": "AMUL BTRSCOTCH BRICK 1PC",
+   "hi": "अमूल बटरस्कॉच 750 मि.ली. (सिंगल पीस)",
+   "brand": "AMUL",
+   "size": "750ml",
+   "alias": "amul ice cream icecream butterscotch 750 ml (buy 1 get 1 — single pc) अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262170956",
+   "mrp": 135.0,
+   "sale": 135.0,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "29e10a36",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-68d57f18.jpg",
+    "rx/20261109-ec5a8383.jpg",
+    "rx/20261109-7f905a8c.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "",
+    "batchNo": "EDF2631"
+   },
+   "offer": "1+1",
+   "packMrp": 270,
+   "subtitle": "सिंगल पीस ₹135 · पैक पर MRP ₹270 दो पीस का (1+1 फ्री)"
+  },
+  {
+   "id": "g-raj-sarovar-cafe-matka-kulfi",
+   "name": "RAJ SAROVAR CAFE MATKA KULFI",
+   "short": "RAJ SAROVAR MATKA KULFI",
+   "hi": "राज सरोवर मटका कुल्फ़ी",
+   "brand": "RAJ SAROVAR CAFE",
+   "alias": "matka kulfi kulfee raj sarovar मटका कुल्फी",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "c96868cc",
+   "fotos": [
+    "rx/20261109-7ae98c0d.jpg",
+    "rx/20261109-366a0f3f.jpg",
+    "rx/20261109-2f1dedaf.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2026-12-30",
+    "batchNo": "A1"
+   }
+  },
+  {
+   "id": "b8901262302609",
+   "name": "AMUL CAKE MAGIC BLACK FOREST ICE CREAM CAKE 500 ML",
+   "short": "AMUL CAKE MAGIC BF 500ML",
+   "hi": "अमूल केक मैजिक ब्लैक फ़ॉरेस्ट आइसक्रीम केक 500 मि.ली.",
+   "brand": "AMUL",
+   "size": "500ml",
+   "alias": "amul ice cream icecream cake magic black forest ice cream cake 500 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262302609",
+   "mrp": 350,
+   "sale": 350,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "48a5f117",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-82d133e7.jpg",
+    "rx/20261109-b374ad1d.jpg",
+    "rx/20261109-0d1e9456.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-03-21",
+    "batchNo": "TBF1751"
+   }
+  },
+  {
+   "id": "b8901262302630",
+   "name": "AMUL CAKE MAGIC AMERICAN NUTS ICE CREAM CAKE 500 ML",
+   "short": "AMUL CAKE MAGIC AN 500ML",
+   "hi": "अमूल केक मैजिक अमेरिकन नट्स आइसक्रीम केक 500 मि.ली.",
+   "brand": "AMUL",
+   "size": "500ml",
+   "alias": "amul ice cream icecream cake magic american nuts ice cream cake 500 ml अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262302630",
+   "mrp": 325,
+   "sale": 325,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "27a22e34",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-ea9986ab.jpg",
+    "rx/20261109-029472b9.jpg",
+    "rx/20261109-d3a3d46c.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-03-31",
+    "batchNo": "TBF1851"
+   }
+  },
+  {
+   "id": "b8901262173605",
+   "name": "AMUL AMERICAN NUTS ICE CREAM 500 ML + 250 ML FREE",
+   "short": "AMUL AMERICAN NUTS 750ML",
+   "hi": "अमूल अमेरिकन नट्स 500+250 मि.ली. (50% एक्स्ट्रा)",
+   "brand": "AMUL",
+   "size": "750ml",
+   "alias": "amul ice cream icecream american nuts ice cream 500 ml + 250 ml free अमूल आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262173605",
+   "mrp": 160,
+   "sale": 160,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "54942945",
+   "mfr": "c-amul",
+   "fotos": [
+    "rx/20261109-f97aad5c.jpg",
+    "rx/20261109-857d0770.jpg",
+    "rx/20261109-1f1d3549.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2027-06-14",
+    "batchNo": "EDF2601"
+   }
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-everest",
+   "name": "S. NARENDRAKUMAR & CO. (EVEREST मसाले)",
+   "brands": [
+    "EVEREST"
+   ],
+   "dist": "खरीद: MAHESH ENTERPRISES (बिल 1723/26-27, 10-खरीद-भाव)",
+   "note": "स्रोत: डिब्बों पर पता/नंबर नहीं छपा ('Smart Consumer app')। बैच -01 में भी यही id"
+  },
+  {
+   "id": "c-weikfield",
+   "name": "WEIKFIELD FOODS PVT. LTD.",
+   "care": "1800 209 0663",
+   "email": "qa_mgr@weikfield.com",
+   "addr": "Weikfield Estate, Gat No. 485, Lonikand, Nagar Road, Taluka Haveli, Dist. Pune-412216",
+   "city": "Pune",
+   "brands": [
+    "WEIKFIELD"
+   ],
+   "note": "स्रोत: बैच -01 फोटो r6-0069/r6-0071 (वही id)"
+  },
+  {
+   "id": "c-krbl",
+   "name": "KRBL LIMITED (INDIA GATE)",
+   "phone": "8448893199",
+   "care": "1800 102 5290",
+   "email": "customercare@krblindia.com",
+   "addr": "C-32, Sec-62, Noida-201301 (UP); Regd: 5190 Lahori Gate, Delhi-110006",
+   "city": "Noida",
+   "fssai": "10018011005090",
+   "brands": [
+    "INDIA GATE"
+   ],
+   "note": "स्रोत: बैच -01 फोटो r5-0019; toll free 1800 102 5290 फोटो r6-0166 (सोना मसूरी)"
+  },
+  {
+   "id": "c-amul",
+   "name": "GUJARAT CO-OPERATIVE MILK MARKETING FEDERATION LTD. (AMUL)",
+   "care": "1800 258 3333",
+   "email": "customercare@amul.coop",
+   "web": "www.amulicecream.in",
+   "addr": "Amul Dairy Road, Anand-388001, Gujarat",
+   "city": "Anand",
+   "fssai": "10012021000071",
+   "brands": [
+    "AMUL"
+   ],
+   "dist": "आइसक्रीम खरीद: MINAXI AGENCY (AMUL) (10-खरीद-भाव)",
+   "note": "स्रोत: फोटो r19-0005, r19-0009, r19-0050 (Marketed by, toll free 6AM-9PM, आइसक्रीम FSSAI 10012021000071)"
+  },
+  {
+   "id": "c-gulab-true-story",
+   "name": "GULAB OIL & FOODS (AHMEDABAD) PVT. LTD. (TRUE STORY)",
+   "phone": "9925125251",
+   "care": "079 22131151",
+   "addr": "Ahmedabad, Gujarat; यूनिट: Veraval (Shapar), Rajkot (02827 254247, FSSAI 10017021002708)",
+   "city": "Ahmedabad",
+   "fssai": "10722999001121",
+   "brands": [
+    "TRUE STORY"
+   ],
+   "note": "स्रोत: फोटो r6-0160, r6-0163 (Marketed/Mfd by)। पूरा पता फोटो में आधा पढ़ा"
+  }
+ ]
+}

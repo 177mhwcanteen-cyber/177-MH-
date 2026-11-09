@@ -44,7 +44,7 @@ function nameParts(it){
 }
 SL.dataOf=function(it,o){o=o||{};const p=nameParts(it);
   return {it,name:p.plain,size:p.size,price:num(o.price)||+it.sale||0,mrp:+it.mrp||0,code:String(it.code||""),brand:String(it.brand||"").trim(),
-    rack:String(it.rack||"").trim().toUpperCase(),mrpOn:!!o.mrp,mfg:o.mfg||today(),exp:o.exp||it.exp||"",bc:window.SF&&SF.itemCode?SF.itemCode(it):String(it.barcode||"").split(",")[0].trim()}};
+    offer:String(it.offer||""),pmrp:+it.packMrp||0,rack:String(it.rack||"").trim().toUpperCase(),mrpOn:!!o.mrp,mfg:o.mfg||today(),exp:o.exp||it.exp||"",bc:window.SF&&SF.itemCode?SF.itemCode(it):String(it.barcode||"").split(",")[0].trim()}};
 
 /* ================= बारकोड (स्कैन होने लायक पक्का) ================= */
 function ean13ok(c){if(!/^\d{13}$/.test(c))return false;let s=0;for(let i=0;i<12;i++)s+=(+c[i])*(i%2?3:1);return (10-s%10)%10===+c[12]}
@@ -80,7 +80,7 @@ SL.draw=function(d,cfg,sk){
   const shop=sh.shop&&cfg.shop?String(cfg.shop).trim():"",brand=sh.brand&&d.brand?d.brand:"",extra=sh.extra&&cfg.extra?String(cfg.extra).trim():"";
   const name=sh.name&&d.name?(sh.caps?d.name.toLocaleUpperCase("en-IN"):d.name):"";
   const meta=[sh.rack&&d.rack&&"रैक "+d.rack,sh.size&&d.size,sh.code&&d.code&&"#"+d.code].filter(Boolean).join("  ·  ");
-  const price=sh.price&&d.price>0?"₹"+fmtP(d.price):"",mrp=(sh.mrp||d.mrpOn)&&d.mrp>d.price?"MRP ₹"+fmtP(d.mrp):"";
+  const price=sh.price&&d.price>0?"₹"+fmtP(d.price):"",mrp=d.offer&&d.pmrp>0?d.offer+" · पैक MRP ₹"+fmtP(d.pmrp)+" (2 पीस)":(sh.mrp||d.mrpOn)&&d.mrp>d.price?"MRP ₹"+fmtP(d.mrp):"";/* 🎁 Buy 1 Get 1: सिंगल पीस का भाव, पैक MRP दो पीस का */
   const dates=[sh.mfg&&d.mfg?"पैक: "+sd(d.mfg):"",sh.exp&&d.exp?"एक्सपायरी: "+sd(d.exp):""].filter(Boolean).join("    ");
   const X0=PX;let X1=W-PX;
   const fitF=(t,px,maxW,w)=>{let s=Math.max(9,Math.round(px));for(;s>9;s--){x.font=`${w} ${s}px ${F}`;if(x.measureText(t).width<=maxW)break}x.font=`${w} ${s}px ${F}`;return s};
