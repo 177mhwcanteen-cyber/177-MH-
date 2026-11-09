@@ -75,8 +75,8 @@ SBC.attach=async function(id,code){const it=item(id);code=String(code||"").repla
   if(SBC.codes(it).includes(code)){toast("यह बारकोड पहले से लगा है");return true}
   BC[id]=code;LSb.set("sbc_bc",BC);
   if(isOwn()){const ok=await itemUp(id,{barcode:[...SBC.codes(it),code].join(",")});if(!ok){toast("सेव नहीं हुआ");return false}}
-  else put({["bc_"+id]:code},1);
-  toast("✓ "+NM(it)+" — कंपनी बारकोड "+code+" जुड़ गया");SBC.refresh();return true};
+  else{put({["bc_"+id]:code},1);it.barcode=[...SBC.codes(it),code].join(",")}/* साथी के फोन पर तुरंत स्कैन चले; मालिक का ऐप items में लिखेगा */
+  toast("✓ "+NM(it)+" — कंपनी बारकोड "+code+" जुड़ गया (दुकान का लेबल भी चलेगा)");SBC.refresh();return true};
 /* मालिक का ऐप: साथियों के ✅ और स्कैन किए बारकोड items में लिखे (पिछले 14 दिन) */
 SBC.sync=async function(){if(!S.isOwner||S.demo||!S.db)return;const D=await loadDays(14);let n=0;
   for(const {v} of D)for(const [k,x] of Object.entries(v||{})){

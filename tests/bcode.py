@@ -27,7 +27,7 @@ async def main():
         br = await p.chromium.launch()
         ctx = await br.new_context(viewport={"width": 400, "height": 860}, service_workers="block")
         pg = await ctx.new_page()
-        pg.on("pageerror", lambda e: errs.append(str(e)))
+        pg.on("pageerror", lambda e: errs.append(str(e)+" @ "+str(e.stack)[:400]))
         pg.on("console", lambda m: m.type == "error" and "Failed to load resource" not in m.text and errs.append(m.text))
         await pg.add_init_script("window.__MOCK__={};window.__USERS__={};localStorage.clear();")
         await pg.route("**/lib/vendor.js", lambda r: r.fulfill(body=MOCK, content_type="application/javascript"))
@@ -68,7 +68,7 @@ async def main():
         bc = await pg.evaluate(f"item('{C}').barcode"); assert bc.startswith(old + ",") and bc.endswith(ean("890600000002")), bc
         assert C not in await pg.evaluate("SBC.list().map(i=>i.id)")
         # 🤖 AI (नकली जवाब): D = कंपनी पैकेट + सुझाव → "AI वाला लगाएँ"
-        await pg.evaluate("""([D,H])=>{SE.aiReady=()=>true;SE.ai=async p=>({ok:true,r:p.items.map(x=>({id:x.id,k:x.id===D?'pack':'loose',ean:x.id===D?H:'123'}))})}""", [D, HINT])
+        await pg.evaluate("""([D,H])=>{SE.aiReady=()=>true;SE.ai=async p=>({ok:true,r:(p.items||[]).map(x=>({id:x.id,k:x.id===D?'pack':'loose',ean:x.id===D?H:'123'}))})}""", [D, HINT])
         await pg.click("[data-sbcai]"); await pg.wait_for_timeout(600)
         d = await pg.evaluate(f"({{k:item('{D}').bcAI,h:item('{D}').bcHint,b:item('{B}').bcAI,bh:item('{B}').bcHint||''}})"); assert d == {"k": "pack", "h": HINT, "b": "loose", "bh": ""}, d
         assert "कंपनी पैकेट" in await pg.inner_text("#sbcSheet")
@@ -101,6 +101,16 @@ async def main():
         await pg.evaluate("S.tab='label';showTab()"); await pg.wait_for_timeout(300)
         assert await pg.query_selector("#p-label .sbc-bar")
         await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_selector("#sbcCard")
+        # 🔗 दुकान का लेबल लग चुका, फिर कंपनी का बारकोड मिला → दोनों बारकोड से वही सामान (09-11-2026, 555 चाय वाला मामला)
+        await pg.evaluate("closeSheet&&closeSheet()")
+        own_id = await pg.evaluate("""(()=>{const i=S.items.find(i=>!i.virtual&&i.active!==false&&isPc(i.unit)&&!isTob(i));i.barcode='2000000107509';i.short='555 TOOFAN CHAI 250G';SL.markDone([{id:i.id,n:8}]);return i.id})()""")
+        await pg.evaluate("handleScan('8939119455734')"); await pg.wait_for_timeout(300)
+        assert await pg.locator(f'#nbHits [data-nbpick="{own_id}"]').count() == 1, "लेबल छपा सामान ऊपर दिखे"
+        await pg.fill("#nbFind", "toofan"); await pg.wait_for_timeout(100)
+        await pg.click(f'#nbHits [data-nbpick="{own_id}"]'); await pg.wait_for_timeout(300)
+        assert await pg.evaluate(f"item('{own_id}').barcode") == "2000000107509,8939119455734"
+        assert await pg.evaluate(f"[findByCode('8939119455734').id,findByCode('2000000107509').id]") == [own_id, own_id]
+        assert await pg.evaluate(f"SF.itemCode(item('{own_id}'))") == "2000000107509", "लेबल पर दुकान वाला ही छपे"
         await br.close()
     assert not errs, errs
     print("✅ बारकोड-पहरा टेस्ट पास")
