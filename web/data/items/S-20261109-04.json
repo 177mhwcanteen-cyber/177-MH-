@@ -19,7 +19,7 @@
    "sub": "dryfruit",
    "unit": "pc",
    "barcode": "8900019951367",
-   "mrp": 0,
+   "mrp": 600,
    "sale": 260,
    "cost": 0,
    "perPack": 0,
@@ -95,9 +95,9 @@
   },
   {
    "id": "g-555-toofan-chai",
-   "name": "555 TOOFAN CHAI",
-   "short": "555 TOOFAN CHAI",
-   "hi": "555 तूफान चाय",
+   "name": "555 TOOFAN CHAI 250 G",
+   "short": "555 TOOFAN CHAI 250G",
+   "hi": "555 तूफान चाय 250 ग्राम",
    "brand": "555 TOOFAN",
    "alias": "toofan tufan chai tea 555 तूफान तूफ़ान चाय पत्ती",
    "cat": "kirana",
@@ -117,7 +117,8 @@
     "qty": 8,
     "exp": "",
     "batchNo": ""
-   }
+   },
+   "size": "250g"
   },
   {
    "id": "g-chana-dal-500-g-packed",
