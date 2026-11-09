@@ -1,0 +1,112 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-02",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "सिर्फ़ खाली खाने भरना (पहले चढ़ चुकी खेपों के बाद के जवाब): आइसक्रीम = फ्रीज़र 19-1, RAJBHOG मखाना MRP 600",
+ "items": [
+  {
+   "id": "b8901262300506",
+   "name": "AMUL CHOCOCHIPS GOLD ICE CREAM CUP 125 ML",
+   "barcode": "8901262300506",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262177436",
+   "name": "AMUL CHOCOLATE SUNDAE ICE CREAM CUP 125 ML",
+   "barcode": "8901262177436",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262173964",
+   "name": "AMUL CREME RICH CARAMEL ICE CREAM CUP 125 ML",
+   "barcode": "8901262173964",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262175845",
+   "name": "AMUL RAJBHOG ICE CREAM CUP 125 ML",
+   "barcode": "8901262175845",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262300612",
+   "name": "AMUL TRU TENDER COCONUT ICE CREAM CUP 125 ML",
+   "barcode": "8901262300612",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262175838",
+   "name": "AMUL FRUIT N NUT FANTASY ICE CREAM CUP 125 ML",
+   "barcode": "8901262175838",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262175821",
+   "name": "AMUL BUTTERSCOTCH BLISS ICE CREAM CUP 125 ML",
+   "barcode": "8901262175821",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262301459",
+   "name": "AMUL CASSATTA GOLD ICE CREAM",
+   "barcode": "8901262301459",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262174619",
+   "name": "AMUL AMERICAN NUTS ICE CREAM CUP 125 ML",
+   "barcode": "8901262174619",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262173216",
+   "name": "AMUL VANILLA ROYALE 750 ML (BUY 1 GET 1 — SINGLE PC)",
+   "barcode": "8901262173216",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262171090",
+   "name": "AMUL RAJBHOG 750 ML (BUY 1 GET 1 — SINGLE PC)",
+   "barcode": "8901262171090",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262170956",
+   "name": "AMUL BUTTERSCOTCH 750 ML (BUY 1 GET 1 — SINGLE PC)",
+   "barcode": "8901262170956",
+   "rack": "19-1"
+  },
+  {
+   "id": "g-raj-sarovar-cafe-matka-kulfi",
+   "name": "RAJ SAROVAR CAFE MATKA KULFI",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262302609",
+   "name": "AMUL CAKE MAGIC BLACK FOREST ICE CREAM CAKE 500 ML",
+   "barcode": "8901262302609",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262302630",
+   "name": "AMUL CAKE MAGIC AMERICAN NUTS ICE CREAM CAKE 500 ML",
+   "barcode": "8901262302630",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8901262173605",
+   "name": "AMUL AMERICAN NUTS ICE CREAM 500 ML + 250 ML FREE",
+   "barcode": "8901262173605",
+   "rack": "19-1"
+  },
+  {
+   "id": "b8900019951367",
+   "name": "RAJBHOG MAKHANA 250G",
+   "barcode": "8900019951367",
+   "mrp": 600
+  }
+ ]
+}
