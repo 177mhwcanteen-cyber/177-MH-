@@ -110,7 +110,7 @@ async def main():
         # 📋 ऐप की खरीद → Claude (कोड)
         await pg.evaluate("S.purch=[{id:'p1',date:today(),ts:Date.now(),supName:'X',total:2400,byName:'मनोहर जी',lines:[{id:'"+pid+"',name:'Y',qty:120,rate:20,amt:2400,unit:'pc',ctn:{n:5,per:24,rm:'ctn',r:480}}]}]")
         j = json.loads(await pg.evaluate("SKJ.appCode(7)"))
-        assert j["app"] == "mh177-appbuys" and j["org"] == "mh177" and j["n"] >= 1 and j["buys"][0]["ln"][0]["c"]["per"] == 24, j
+        assert j["app"] == "mh177-appbuys" and j["org"] == await pg.evaluate("SE.org") and j["n"] >= 1 and j["buys"][0]["ln"][0]["c"]["per"] == 24, j
     srv.shutdown()
     assert not errs, errs
     print("✅ गल्ला-प्रबंधन टेस्ट पास")
