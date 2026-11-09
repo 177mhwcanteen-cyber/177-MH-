@@ -57,7 +57,7 @@ SPK.apply=async function(force){
   if(!own()||SPK._busy)return null;SPK._busy=1;const out={packs:0,add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0};
   try{
     const r=await fetch(SPK.url("data/items/index.json")+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)return null;
-    const idx=await r.json();if(idx&&!SE.orgOk(idx.org)){say(SE.orgErr(idx.org));return null}const list=(idx&&idx.packs)||[];if(!list.length)return out;
+    const idx=await r.json();if(idx&&!SE.orgOk(idx.org)){say(SE.orgErr(idx.org));return null}const list=(idx&&idx.packs)||[];if(!list.length){out.stock=await SPK.autoStock();return out}
     const ref=S.db.collection("settings").doc("packs");const g=await ref.get();const done=(g.exists&&g.data().done)||{};
     for(const P of list){if(!P||!P.id||(done[P.id]&&!force))continue;
       const rr=await fetch(SPK.url("data/items/"+P.id+".json")+"?v="+encodeURIComponent(P.sha||""),{cache:"no-store"});if(!rr.ok)continue;
@@ -70,10 +70,22 @@ SPK.apply=async function(force){
       for(const x of L)try{await one(x,P.id,R)}catch(e){R.bad++}
       await ref.set({done:{[P.id]:{ts:Date.now(),by:S.uid||"",n:L.length,...R}}},{merge:true});
       out.packs++;for(const k in R)out[k]+=R[k]}
+    out.stock=await SPK.autoStock();
     if(out.packs){try{typeof setSoon==="function"&&setSoon()}catch(e){}
       say(`📦 ${out.packs} खेप: ${out.add} नए सामान, ${out.fill} में भाव/रैक/फोटो भरे${out.cnt?`, ${out.cnt} की गिनती (अभी स्टॉक नहीं)`:""}${out.co?`, 🏭 ${out.co} कंपनी`:""}${out.lbl?` · 🏷️ ${out.lbl} का अपना बारकोड तैयार — "बारकोड पहरा" में रैक चुनकर छापें`:""}${out.bad?` · ⚠ ${out.bad} अधूरे`:""}`)}
     return out}
   catch(e){return null}finally{SPK._busy=0}};
+/* 📦→📊 गिनती अपने-आप स्टॉक (विक्रम जी, 09-11-2026: "जो मैं स्टॉक दे रहा हूँ वो ऑटोमेटिक स्टॉक अपडेट कर दो"):
+   जिस सामान का ऐप में अभी कोई स्टॉक-खाता नहीं, उसकी खेप वाली गिनती सीधे स्टॉक (pstock + stockLog)। जिसका स्टॉक पहले से है,
+   उसका स्टॉक नहीं बदलते — गिनती "बाकी" में रहती है, ▶ से या 🔢 स्टॉक-गिनती (रैक-वार) से मिलाएँ। बिलिंग का "चालू" (settings.live) अलग है। */
+SPK.autoStock=async function(){if(!own())return 0;let L=[];try{L=await SPK.counts()}catch(e){return 0}const ts=Date.now(),nm=typeof biller==="function"?biller():"";let n=0;
+  for(const c of L){if((S.pstock||{})[c.itemId])continue;const q=+c.qty||0;
+    try{await S.db.collection("pstock").doc(c.itemId).set({qty:q,ts,by:S.uid||"",byName:nm,last:"📦 खेप की गिनती"},{merge:true});
+      S.db.collection("stockLog").doc("a"+ts.toString(36)+n).set({itemId:c.itemId,d:q,why:"📦 खेप की गिनती ("+(c.pack||"")+")"+(c.rack?" · 📍 "+c.rack:""),ts,date:today(),by:S.uid||"",byName:nm}).catch(()=>{});
+      await S.db.collection("openings").doc(c.id).update({done:true,doneTs:ts,auto:true});
+      S.pstock=S.pstock||{};S.pstock[c.itemId]={qty:q,ts};n++}catch(e){}}
+  if(n)say("📦 "+n+" सामान की गिनती स्टॉक में जुड़ गई — 🔢 स्टॉक → गिनती (रैक चुनकर) से कभी भी मिलाएँ");
+  return n};
 /* ▶ बिलिंग चालू / गिनती को स्टॉक बनाओ */
 SPK.counts=async function(){if(!own())return [];const s=await S.db.collection("openings").where("kind","==","count").get();return s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x.done&&item(x.itemId))};
 SPK.goLive=async function(){
@@ -87,15 +99,15 @@ SPK.goLive=async function(){
   return n};
 SPK.html=()=>{if(!own())return "";const live=(S.settings||{}).live;
   return `<div class="card2" id="spkCard"><h3 style="margin:0 0 4px">📦 GitHub से सामान ${live?"· ✅ बिलिंग चालू":"· ⏸ बिलिंग अभी बंद"}</h3>
-  <p class="note" style="margin:0 0 8px">Claude जो सामान (फोटो, भाव, रैक) GitHub में रखता है, वह "ऐप अपडेट करें" पर अपने-आप आता है। गिनती तब तक स्टॉक नहीं बनती जब तक आप नीचे पक्का न करें।</p>
+  <p class="note" style="margin:0 0 8px">Claude जो सामान (फोटो, भाव, रैक, गिनती) GitHub में रखता है, वह "ऐप अपडेट करें" पर अपने-आप आता है। नए सामान की गिनती अपने-आप स्टॉक बनती है; जिसका स्टॉक पहले से है उसकी गिनती नीचे "बाकी" में रुकती है।</p>
   <div id="spkInfo" class="note">⏳ देख रहे हैं…</div>
   <button type="button" class="big ghost" data-spkapply style="margin-top:6px">🔄 अभी नई खेपें लाओ</button>
-  <input class="inp" id="spkConf" placeholder='गिनती को स्टॉक बनाने के लिए लिखें: चालू' autocomplete="off" style="margin-top:8px">
-  <button type="button" class="big" data-spklive style="margin-top:6px">▶ ${live?"नई गिनती को स्टॉक बनाओ":"बिलिंग चालू — गिनती को स्टॉक बनाओ"}</button></div>`};
+  <input class="inp" id="spkConf" placeholder='बाकी गिनती से पुराना स्टॉक बदलने के लिए लिखें: चालू' autocomplete="off" style="margin-top:8px">
+  <button type="button" class="big" data-spklive style="margin-top:6px">▶ ${live?"बाकी गिनती को स्टॉक बनाओ":"बिलिंग चालू — बाकी गिनती को स्टॉक बनाओ"}</button></div>`};
 SPK.info=async function(){const el=document.getElementById("spkInfo");if(!el||!own())return;
   try{const g=await S.db.collection("settings").doc("packs").get();const d=(g.exists&&g.data().done)||{};const ks=Object.keys(d).sort();
     const nItems=(S.items||[]).filter(i=>String(i.src||"").startsWith("pack:")).length;const L=await SPK.counts();
-    el.innerHTML=`खेपें चढ़ीं: <b>${ks.length}</b>${ks.length?` (आख़िरी ${ks[ks.length-1]})`:""} · GitHub वाले सामान: <b>${nItems}</b> · स्टॉक बनने को बाकी गिनती: <b>${L.length}</b>`}catch(e){el.textContent="—"}};
+    el.innerHTML=`खेपें चढ़ीं: <b>${ks.length}</b>${ks.length?` (आख़िरी ${ks[ks.length-1]})`:""} · GitHub वाले सामान: <b>${nItems}</b> · बाकी गिनती (स्टॉक पहले से था): <b>${L.length}</b>`}catch(e){el.textContent="—"}};
 document.addEventListener("click",async e=>{
   if(e.target.closest("[data-spkapply]")){const b=e.target.closest("[data-spkapply]");b.disabled=true;const r=await SPK.apply();b.disabled=false;if(r&&!r.packs)say("✅ कोई नई खेप नहीं");SPK.info();return}
   const g=e.target.closest("[data-spklive]");if(!g||!own())return;const c=document.getElementById("spkConf");if(!c||c.value.trim()!=="चालू"){say('ऊपर "चालू" लिखें, फिर दबाएँ');return}

@@ -49,9 +49,21 @@ async def main():
         await pg.evaluate("SBC.open('need','7')"); await pg.wait_for_timeout(700)
         ids = await pg.evaluate("SBC.curList().map(i=>i.id)")
         assert "g-test-pc" in ids and "b8901786140503" not in ids, ids
-        assert await pg.evaluate("SBC.cnt['g-test-pc']") == 120
+        assert await pg.evaluate("SBC.stock(item('g-test-pc'))") == 120
         t = await pg.inner_text("#sbcSheet"); assert "रैक 7 के लिस्ट में" in t and "📍 7" in t, t[:400]
         await pg.click("[data-sbcall]"); assert await pg.evaluate("SL.count()") >= 120
+        # 🖨️ छप गए ↔ बाकी ↔ ✅ लग गए (↩ से वापस)
+        has = lambda f: pg.evaluate(f"SBC.{f}().some(i=>i.id==='g-test-pc')")
+        assert await has("todoList") and not await has("prList")
+        await pg.evaluate("SBC.setPr('g-test-pc',120)"); assert not await has("todoList") and await has("prList")
+        t = await pg.inner_text("#sbcSheet .sbc-tabs"); assert "छप गए 1" in t.replace("\n", " "), t
+        await pg.click('[data-sbctab="pr"]'); await pg.wait_for_timeout(300); assert await pg.locator('[data-sbcback="g-test-pc"]').count() == 1
+        await pg.screenshot(path=f"{SHOTS}/pk-printed.png")
+        await pg.click('[data-sbcback="g-test-pc"]'); await pg.wait_for_timeout(300); assert await has("todoList") and not await has("prList")
+        await pg.evaluate("SBC.setPr('g-test-pc',5)"); await pg.evaluate("SBC.mark('g-test-pc','tap')")
+        assert await has("okList") and not await has("prList") and not await has("todoList")
+        await pg.evaluate("SBC.unOk('g-test-pc')"); assert await has("prList") and not await has("okList")
+        await pg.click('[data-sbctab="need"]'); await pg.wait_for_timeout(200)
         await pg.evaluate("closeSheet()")
         co = await pg.evaluate("S.suppliers.find(s=>s.id==='c-everest')")
         assert co and co["kind"] == "company" and co["phone"] == "9876543210" and co["care"] == "18002091234", co
@@ -67,23 +79,36 @@ async def main():
         assert await pg.evaluate("SE.photoSrc(item('b8901786140503'))") == "p/b8901786140503.jpg?v=abc12345"
         ok = await pg.evaluate("new Promise(r=>{const i=new Image();i.onload=()=>r(i.width>0);i.onerror=()=>r(false);i.src=SE.photoSrc(item('b8901786140503'))})")
         assert ok
-        # गिनती अभी स्टॉक नहीं
-        q = await pg.evaluate("+((S.pstock||{})['b8901786140503']||{}).qty||0")
-        assert q == 0, q
-        # दोबारा चलाने पर कुछ नहीं
-        r2 = await pg.evaluate("SPK.apply()")
-        assert r2["packs"] == 0, r2
-        # सेटिंग कार्ड + "चालू"
-        await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_selector("#spkCard"); await pg.wait_for_timeout(300)
-        t = await pg.inner_text("#spkInfo"); assert "खेपें चढ़ीं: 1" in t and "बाकी गिनती: 2" in t, t
-        await pg.click("[data-spklive]"); await pg.wait_for_timeout(200)
-        assert await pg.evaluate("+((S.pstock||{})['b8901786140503']||{}).qty||0") == 0  # बिना "चालू" लिखे कुछ नहीं
-        await pg.fill("#spkConf", "चालू"); await pg.click("[data-spklive]"); await pg.wait_for_timeout(600)
+        # 📦→📊 नए सामान की गिनती अपने-आप स्टॉक (बिलिंग "चालू" नहीं)
         assert await pg.evaluate("S.pstock['b8901786140503'].qty") == 10
         assert await pg.evaluate("S.pstock['g-test-pc'].qty") == 120
-        assert await pg.evaluate("!!(S.settings.live&&S.settings.live.ts)")
+        assert r["stock"] == 2, r
+        assert not await pg.evaluate("!!(S.settings.live&&S.settings.live.ts)")
+        lg = await pg.evaluate("Object.values(window.__MOCK__['stockLog']||{}).filter(x=>String(x.why).includes('खेप की गिनती')).length"); assert lg == 2, lg
+        assert len(await pg.evaluate("SPK.counts()")) == 0
+        # दोबारा चलाने पर कुछ नहीं
+        r2 = await pg.evaluate("SPK.apply()")
+        assert r2["packs"] == 0 and r2["stock"] == 0, r2
+        # जिसका स्टॉक पहले से है: गिनती रुकी रहे, ▶ "चालू" से ही बदले
+        await pg.evaluate("window.__MOCK__['openings']=window.__MOCK__['openings']||{};window.__MOCK__['openings']['cnt_b8901786140503']={kind:'count',itemId:'b8901786140503',qty:7,done:false,pack:'X'}")
+        assert await pg.evaluate("SPK.autoStock()") == 0
+        assert await pg.evaluate("S.pstock['b8901786140503'].qty") == 10
+        await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_selector("#spkCard"); await pg.wait_for_timeout(300)
+        t = await pg.inner_text("#spkInfo"); assert "खेपें चढ़ीं: 1" in t and "बाकी गिनती (स्टॉक पहले से था): 1" in t, t
+        await pg.click("[data-spklive]"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("S.pstock['b8901786140503'].qty") == 10  # बिना "चालू" लिखे कुछ नहीं
+        await pg.fill("#spkConf", "चालू"); await pg.click("[data-spklive]"); await pg.wait_for_timeout(600)
+        assert await pg.evaluate("S.pstock['b8901786140503'].qty") == 7
         assert len(await pg.evaluate("SPK.counts()")) == 0
         await pg.screenshot(path=f"{SHOTS}/pk1.png", full_page=True)
+        # 🔍 रैक-वार जाँच: मालिक को ऐप का स्टॉक + फ़र्क
+        await pg.evaluate("S.tab='stock';showTab()"); await pg.wait_for_timeout(300)
+        await pg.click("[data-skstart]"); await pg.wait_for_timeout(300)
+        await pg.fill("#ckrack", "6"); await pg.dispatch_event("#ckrack", "input"); await pg.wait_for_timeout(300)
+        t = await pg.inner_text("#cklist"); assert "ऐप में 7" in t and "TEST" not in t.upper().split("EVEREST")[0][:0] , t[:300]
+        await pg.fill('[data-cn="b8901786140503"]', "5"); await pg.dispatch_event('[data-cn="b8901786140503"]', "input"); await pg.wait_for_timeout(200)
+        t = await pg.inner_text('[data-crow="b8901786140503"]'); assert "(-2)" in t, t
+        await pg.screenshot(path=f"{SHOTS}/pk-count.png")
         await br.close()
     assert not errs, errs
     print("✅ खेप टेस्ट पास")
