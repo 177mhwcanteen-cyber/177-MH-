@@ -1,0 +1,1536 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261109-03",
+ "date": "2026-11-09",
+ "by": "विक्रम जी",
+ "note": "रैक 7 और 8 — दूसरे Claude से (फोटो 09-11-2026)। रैक नक्शा: रैक 7 में नीचे 2 नए खाने 7-14, 7-15 (विक्रम जी); 7-2 और 7-3 एक ही खाना — 7-3 हटाएँ, सामान 7-2 में। · किट v6",
+ "items": [
+  {
+   "id": "b8908004942529",
+   "name": "TAPARIA WHOLE WHEAT CHAKKI FRESH ATTA 5 KG",
+   "short": "TAPARIA ATTA 5KG",
+   "hi": "तापड़िया चक्की फ्रेश आटा 5 किलो",
+   "brand": "TAPARIA",
+   "size": "5kg",
+   "alias": "atta aata aataa गेहूं आटा chakki taparia tapariya",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "8908004942529",
+   "mrp": 240,
+   "sale": 195,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-15",
+   "ph": "3c64c143",
+   "mfr": "c-taparia-food",
+   "fotos": [
+    "r7/20261109-dea3531f.jpg",
+    "r7/20261109-e7369576.jpg",
+    "r7/20261109-5c8c27a6.jpg",
+    "r7/20261109-194ac45a.jpg"
+   ],
+   "open": {
+    "qty": 12,
+    "exp": "2026-12-18",
+    "batchNo": "04TFP"
+   }
+  },
+  {
+   "id": "g-kala-chana-black-chickpeas-500-g-loose-p",
+   "name": "KALA CHANA (BLACK CHICKPEAS) 500 G LOOSE PACK",
+   "short": "KALA CHANA 500G",
+   "hi": "काला चना 500 ग्राम (खुला पैक)",
+   "size": "500g",
+   "alias": "kala chana black chana chickpeas चना देसी चना",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 55,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-13",
+   "ph": "b8ef67ea",
+   "fotos": [
+    "r7/20261109-84d9e907.jpg"
+   ],
+   "open": {
+    "qty": 21,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-moongfali-dana-raw-peanuts-500-g-loose-p",
+   "name": "MOONGFALI DANA (RAW PEANUTS) 500 G LOOSE PACK",
+   "short": "MOONGFALI DANA 500G",
+   "hi": "मूंगफली दाना 500 ग्राम (खुला पैक)",
+   "size": "500g",
+   "alias": "moongfali mungfali singdana peanut groundnut मूंगफली सींगदाना",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 89,
+   "cost": 72,
+   "perPack": 0,
+   "rack": "7-12",
+   "ph": "a2da0997",
+   "fotos": [
+    "r7/20261109-ed4ea338.jpg",
+    "r7/20261109-639b5fef.jpg"
+   ],
+   "open": {
+    "qty": 70,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-bakery-assorted-mix-cookies-box-tutti-fr",
+   "name": "BAKERY ASSORTED MIX COOKIES BOX (TUTTI FRUTTI, NANKHATAI, JEERA)",
+   "short": "BAKERY MIX COOKIES BOX",
+   "hi": "बेकरी मिक्स कुकीज़ डिब्बा (टूटी-फ्रूटी, नानखटाई, जीरा)",
+   "size": "1 box",
+   "alias": "cookies biscuit bakery nankhatai tutti frutti कुकीज़ बिस्कुट नानखटाई",
+   "cat": "mithai",
+   "sub": "bakery",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-11",
+   "ph": "af1c2b26",
+   "fotos": [
+    "r7/20261109-761a4d88.jpg",
+    "r7/20261109-98807bb9.jpg"
+   ],
+   "open": {
+    "qty": 12,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-coloured-fryums-papad-ready-to-fry-350-g",
+   "name": "COLOURED FRYUMS PAPAD (READY TO FRY) 350 G",
+   "short": "COLOUR FRYUMS 350G",
+   "hi": "रंगीन फ्रायम्स पापड़ (तलने वाले) 350 ग्राम",
+   "size": "350g",
+   "alias": "fryums fryms papad kachri रंगीन पापड़ फ्रायम्स गोली",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-10",
+   "ph": "30be0afd",
+   "fotos": [
+    "r7/20261109-538cefb1.jpg",
+    "r7/20261109-c096f3d0.jpg"
+   ],
+   "open": {
+    "qty": 26,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079510261",
+   "name": "20-20 CASHEW CHOICE PREMIUM QUALITY 250 G",
+   "short": "20-20 CASHEW CHOICE 250G",
+   "hi": "20-20 काजू चॉइस 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "kaju cashew kaju 20-20 काजू W300",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510261",
+   "mrp": 599,
+   "sale": 325,
+   "cost": 232.5,
+   "perPack": 0,
+   "rack": "7-9",
+   "ph": "452e22c6",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-9725cd4f.jpg",
+    "r7/20261109-a412891f.jpg",
+    "r7/20261109-e957a1a1.jpg"
+   ],
+   "open": {
+    "qty": 16,
+    "exp": "2027-02",
+    "batchNo": "300/26AD1301"
+   }
+  },
+  {
+   "id": "b8908011263297",
+   "name": "NUT MASTER CASHEW NUTS W320 250 G",
+   "short": "NUT MASTER CASHEW 250G",
+   "hi": "नट मास्टर काजू W320 250 ग्राम",
+   "brand": "NUT MASTER",
+   "size": "250g",
+   "alias": "kaju cashew nutmaster nut master काजू",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8908011263297",
+   "mrp": 390,
+   "sale": 290,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-9",
+   "ph": "fa411f6f",
+   "mfr": "c-sunco",
+   "fotos": [
+    "r7/20261109-669ba534.jpg",
+    "r7/20261109-69dc4008.jpg",
+    "r7/20261109-6ae627c3.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-04",
+    "batchNo": "A/10"
+   }
+  },
+  {
+   "id": "g-vinayak-cashews-w320-250-g",
+   "name": "VINAYAK CASHEWS W320 250 G",
+   "short": "VINAYAK CASHEW 250G",
+   "hi": "विनायक काजू W320 250 ग्राम",
+   "brand": "VINAYAK",
+   "size": "250g",
+   "alias": "kaju cashew vinayak काजू",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 330,
+   "sale": 270,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-9",
+   "ph": "d0d46185",
+   "mfr": "c-vinayak",
+   "fotos": [
+    "r7/20261109-27cd094b.jpg",
+    "r7/20261109-480abd52.jpg",
+    "r7/20261109-4824e30d.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "2027-04",
+    "batchNo": "OCT26-1"
+   }
+  },
+  {
+   "id": "b8906079511121",
+   "name": "20-20 CALIFORNIA ALMONDS 250 G (YELLOW POUCH)",
+   "short": "20-20 ALMOND 250G YLW",
+   "hi": "20-20 कैलिफ़ोर्निया बादाम 250 ग्राम (पीला पैक)",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "badam almond california 20-20 बादाम",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079511121",
+   "mrp": 0,
+   "sale": 375,
+   "cost": 267.5,
+   "perPack": 0,
+   "rack": "7-8",
+   "ph": "652b84ec",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-eda99729.jpg",
+    "r7/20261109-b3eb41f4.jpg",
+    "r7/20261109-64375048.jpg"
+   ],
+   "open": {
+    "qty": 21,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079511138",
+   "name": "20-20 CALIFORNIA ALMONDS 500 G",
+   "short": "20-20 ALMOND 500G",
+   "hi": "20-20 कैलिफ़ोर्निया बादाम 500 ग्राम",
+   "brand": "20-20",
+   "size": "500g",
+   "alias": "badam almond california 20-20 बादाम",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079511138",
+   "mrp": 0,
+   "sale": 740,
+   "cost": 530,
+   "perPack": 0,
+   "rack": "7-7",
+   "ph": "5cb0c6c0",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-dc4d01a9.jpg",
+    "r7/20261109-13b0cfc5.jpg",
+    "r7/20261109-09b2b312.jpg"
+   ],
+   "open": {
+    "qty": 17,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079510001",
+   "name": "20-20 CALIFORNIA ALMONDS GLUTEN FREE SNACK 250 G (BLUE POUCH)",
+   "short": "20-20 ALMOND 250G BLUE",
+   "hi": "20-20 कैलिफ़ोर्निया बादाम 250 ग्राम (नीला पैक)",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "badam almond california 20-20 बादाम gluten free",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510001",
+   "mrp": 0,
+   "sale": 415,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-7",
+   "ph": "133758ae",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-989984b7.jpg",
+    "r7/20261109-339e06f9.jpg",
+    "r7/20261109-0c1d9319.jpg"
+   ],
+   "open": {
+    "qty": 22,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079510803",
+   "name": "20-20 PUMPKIN SEED 200 G JAR",
+   "short": "20-20 PUMPKIN SEED 200G",
+   "hi": "20-20 कद्दू के बीज 200 ग्राम",
+   "brand": "20-20",
+   "size": "200g",
+   "alias": "pumpkin seed kaddu beej कद्दू बीज",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510803",
+   "mrp": 399,
+   "sale": 209,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-6",
+   "ph": "f5dd8b26",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-be7f387c.jpg",
+    "r7/20261109-88fa09b6.jpg",
+    "r7/20261109-daf5a800.jpg"
+   ],
+   "open": {
+    "qty": 17,
+    "exp": "2027-08",
+    "batchNo": "26AD1205"
+   }
+  },
+  {
+   "id": "b8906079510841",
+   "name": "20-20 SUNFLOWER SEED 200 G JAR",
+   "short": "20-20 SUNFLOWER SD 200G",
+   "hi": "20-20 सूरजमुखी के बीज 200 ग्राम",
+   "brand": "20-20",
+   "size": "200g",
+   "alias": "sunflower seed surajmukhi beej सूरजमुखी बीज",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510841",
+   "mrp": 399,
+   "sale": 149,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-6",
+   "ph": "2a817ff2",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-661fddd9.jpg",
+    "r7/20261109-86ba265b.jpg",
+    "r7/20261109-b9974e71.jpg"
+   ],
+   "open": {
+    "qty": 24,
+    "exp": "2027-07",
+    "batchNo": "26AD1056"
+   }
+  },
+  {
+   "id": "b8906079510834",
+   "name": "20-20 CHIA SEED 200 G JAR",
+   "short": "20-20 CHIA SEED 200G",
+   "hi": "20-20 चिया बीज 200 ग्राम",
+   "brand": "20-20",
+   "size": "200g",
+   "alias": "chia seed chiya beej चिया बीज sabja",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510834",
+   "mrp": 349,
+   "sale": 198,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-6",
+   "ph": "bf377d4a",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-1989090c.jpg",
+    "r7/20261109-5362ab71.jpg",
+    "r7/20261109-7c2ad1b2.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2027-07",
+    "batchNo": "26AD958"
+   }
+  },
+  {
+   "id": "b38612261457",
+   "name": "20-20 FLAX SEED 200 G JAR",
+   "short": "20-20 FLAX SEED 200G",
+   "hi": "20-20 अलसी के बीज 200 ग्राम",
+   "brand": "20-20",
+   "size": "200g",
+   "alias": "flax seed alsi alasi अलसी",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "38612261457",
+   "mrp": 299,
+   "sale": 180,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-6",
+   "ph": "dc6dc14f",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-70f2b809.jpg",
+    "r7/20261109-544501b5.jpg",
+    "r7/20261109-66e3e4f7.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2027-05",
+    "batchNo": "26AD58S"
+   }
+  },
+  {
+   "id": "b8906015340082",
+   "name": "EVEREST RED CHILLI SAUCE HOT & SPICY 650 G",
+   "short": "EVEREST RED CHILLI 650G",
+   "hi": "एवरेस्ट रेड चिली सॉस 650 ग्राम",
+   "brand": "EVEREST",
+   "size": "650g",
+   "alias": "red chilli sauce lal mirch sauce everest चिली सॉस",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015340082",
+   "mrp": 88,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-5",
+   "ph": "7e4b3b00",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r7/20261109-5c63c4d2.jpg",
+    "r7/20261109-a3aa1554.jpg"
+   ],
+   "open": {
+    "qty": 11,
+    "exp": "2027-07-02",
+    "batchNo": "V137"
+   }
+  },
+  {
+   "id": "b8906015342338",
+   "name": "EVEREST DARK SOYA SAUCE 200 G",
+   "short": "EVEREST DARK SOYA 200G",
+   "hi": "एवरेस्ट डार्क सोया सॉस 200 ग्राम",
+   "brand": "EVEREST",
+   "size": "200g",
+   "alias": "soya sauce soy sauce dark everest सोया सॉस",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015342338",
+   "mrp": 60,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-5",
+   "ph": "f3a7de53",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r7/20261109-f738a169.jpg",
+    "r7/20261109-e03e745d.jpg",
+    "r7/20261109-74e83fa0.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2027-08-03",
+    "batchNo": "V161"
+   }
+  },
+  {
+   "id": "b8906079510520",
+   "name": "20-20 ANJEER DAILY NEEDS DRY FIG 250 G BOX",
+   "short": "20-20 ANJEER 250G",
+   "hi": "20-20 अंजीर डेली नीड्स 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "anjeer anjir fig dry fig अंजीर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510520",
+   "mrp": 549,
+   "sale": 249,
+   "cost": 181.25,
+   "perPack": 0,
+   "rack": "7-4",
+   "ph": "d5b138b9",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r7/20261109-bbccf154.jpg",
+    "r7/20261109-8fb37bec.jpg",
+    "r7/20261109-86557211.jpg"
+   ],
+   "open": {
+    "qty": 21,
+    "exp": "2027-07",
+    "batchNo": "26AD1065"
+   }
+  },
+  {
+   "id": "b8906015345070",
+   "name": "EVEREST VINEGAR PLAIN (NON-FRUIT) 700 ML",
+   "short": "EVEREST VINEGAR 700ML",
+   "hi": "एवरेस्ट सिरका 700 मि.ली.",
+   "brand": "EVEREST",
+   "size": "700ml",
+   "alias": "vinegar sirka सिरका everest",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015345070",
+   "mrp": 53,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-2",
+   "ph": "e865cd51",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r7/20261109-0b4e7ef6.jpg",
+    "r7/20261109-fcab00a6.jpg",
+    "r7/20261109-f3044f5b.jpg"
+   ],
+   "open": {
+    "qty": 18,
+    "exp": "2028-02-13",
+    "batchNo": "V933"
+   }
+  },
+  {
+   "id": "b8906030060583",
+   "name": "FRUTIN'S GREEN CHILLI SAUCE 650 G",
+   "short": "FRUTINS GRN CHILLI 650G",
+   "hi": "फ्रूटिन्स ग्रीन चिली सॉस 650 ग्राम",
+   "brand": "FRUTIN'S",
+   "size": "650g",
+   "alias": "green chilli sauce hari mirch sauce frutins फ्रूटिन्स",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906030060583",
+   "mrp": 80,
+   "sale": 70,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-2",
+   "ph": "a0eefc59",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r7/20261109-fc6afdcf.jpg",
+    "r7/20261109-7a8a8ba5.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "2027-07-15",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906030060590",
+   "name": "FRUTIN'S SOYA SAUCE 650 G",
+   "short": "FRUTINS SOYA SAUCE 650G",
+   "hi": "फ्रूटिन्स सोया सॉस 650 ग्राम",
+   "brand": "FRUTIN'S",
+   "size": "650g",
+   "alias": "soya sauce soy frutins सोया सॉस",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906030060590",
+   "mrp": 80,
+   "sale": 70,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-2",
+   "ph": "2d8a4b30",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r7/20261109-a5015073.jpg",
+    "r7/20261109-e7b8fc74.jpg",
+    "r7/20261109-9f4b60fb.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2027-05-06",
+    "batchNo": "VSS507EBFAR"
+   }
+  },
+  {
+   "id": "b8906015345056",
+   "name": "EVERPLUS HOME STYLE MIXED PICKLE 4.5 KG JAR",
+   "short": "EVERPLUS MIX PKL 4.5KG",
+   "hi": "एवरप्लस मिक्स अचार 4.5 किलो जार",
+   "brand": "EVERPLUS",
+   "size": "4.5kg",
+   "alias": "mix achar mixed pickle everplus everest अचार",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015345056",
+   "mrp": 350,
+   "sale": 299,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-1",
+   "ph": "5bed1732",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r7/20261109-72c5f868.jpg",
+    "r7/20261109-ab8964fe.jpg",
+    "r7/20261109-b5d24a7f.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2027-08-28",
+    "batchNo": "B5P93"
+   }
+  },
+  {
+   "id": "b8906015342345",
+   "name": "EVEREST SOYA DRESSING CULINARY SAUCE 750 G",
+   "short": "EVEREST SOYA DRSG 750G",
+   "hi": "एवरेस्ट सोया ड्रेसिंग 750 ग्राम",
+   "brand": "EVEREST",
+   "size": "750g",
+   "alias": "soya dressing soya sauce everest सोया",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015342345",
+   "mrp": 88,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-1",
+   "ph": "a87d77e7",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r8/20261109-42436b8c.jpg",
+    "r8/20261109-a9992fae.jpg"
+   ],
+   "open": {
+    "qty": 20,
+    "exp": "2027-09-22",
+    "batchNo": "V59"
+   }
+  },
+  {
+   "id": "b8903553645495",
+   "name": "RAM BANDHU MIXED PICKLE 500 G JAR",
+   "short": "RAMBANDHU MIX PKL 500G",
+   "hi": "राम बंधु मिक्स अचार 500 ग्राम",
+   "brand": "RAM BANDHU",
+   "size": "500g",
+   "alias": "mix achar mixed pickle ram bandhu राम बंधु अचार",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553645495",
+   "mrp": 140,
+   "sale": 119,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-2",
+   "ph": "55e03d98",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-e92b67b6.jpg",
+    "r8/20261109-3832bdf6.jpg",
+    "r8/20261109-d3447d4f.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2027-03-14",
+    "batchNo": "DN D15F2614"
+   }
+  },
+  {
+   "id": "b8903553601491",
+   "name": "RAM BANDHU MANGO PICKLE 500 G JAR",
+   "short": "RAMBANDHU MANGO PKL 500G",
+   "hi": "राम बंधु आम का अचार 500 ग्राम",
+   "brand": "RAM BANDHU",
+   "size": "500g",
+   "alias": "aam ka achar mango pickle ram bandhu आम अचार कैरी",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553601491",
+   "mrp": 140,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-2",
+   "ph": "4e0091a3",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-f085522b.jpg",
+    "r8/20261109-2e61275b.jpg",
+    "r8/20261109-a9f57dd7.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "2027-05-15",
+    "batchNo": "DN D16H2621"
+   }
+  },
+  {
+   "id": "b8908013486403",
+   "name": "GAYATRI KER SANGARI PICKLE 500 G JAR",
+   "short": "GAYATRI KER SANGRI 500G",
+   "hi": "गायत्री केर सांगरी अचार 500 ग्राम",
+   "brand": "GAYATRI",
+   "size": "500g",
+   "alias": "ker sangri sangari kair achar rajasthani केर सांगरी अचार",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8908013486403",
+   "mrp": 320,
+   "sale": 298,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-2",
+   "ph": "e1b40914",
+   "mfr": "c-gayatri",
+   "fotos": [
+    "r8/20261109-2689be31.jpg",
+    "r8/20261109-dd448e93.jpg",
+    "r8/20261109-9f4ea552.jpg",
+    "r8/20261109-28ae9fb0.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-09",
+    "batchNo": "PR-02"
+   }
+  },
+  {
+   "id": "g-gayatri-lahsun-achar-garlic-pickle-300-g",
+   "name": "GAYATRI LAHSUN ACHAR (GARLIC PICKLE) 300 G JAR",
+   "short": "GAYATRI LAHSUN PKL 300G",
+   "hi": "गायत्री लहसुन अचार 300 ग्राम",
+   "brand": "GAYATRI",
+   "size": "300g",
+   "alias": "lahsun achar garlic pickle lehsun लहसुन अचार",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "mrp": 145,
+   "sale": 142,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-2",
+   "ph": "3f1702b4",
+   "mfr": "c-gayatri",
+   "fotos": [
+    "r8/20261109-9597a269.jpg",
+    "r8/20261109-7efe6be8.jpg",
+    "r8/20261109-84837616.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2027-07",
+    "batchNo": "LA-99"
+   }
+  },
+  {
+   "id": "b8903553823442",
+   "name": "TEMPTIN SCHEZWAN DIP & SPREAD 250 G",
+   "short": "TEMPTIN SCHEZWAN 250G",
+   "hi": "टेम्प्टिन शेजवान डिप एंड स्प्रेड 250 ग्राम",
+   "brand": "TEMPTIN",
+   "size": "250g",
+   "alias": "schezwan sezwan chutney dip temptin शेजवान",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553823442",
+   "mrp": 80,
+   "sale": 76,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-2",
+   "ph": "3fc70c06",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-cfa420b3.jpg",
+    "r8/20261109-57677169.jpg",
+    "r8/20261109-d3ba5705.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-05-05",
+    "batchNo": "K6E2664"
+   }
+  },
+  {
+   "id": "b8903553648434",
+   "name": "RAM BANDHU CHILLI PICKLE 200 G JAR",
+   "short": "RAMBANDHU MIRCH PKL 200G",
+   "hi": "राम बंधु मिर्च का अचार 200 ग्राम",
+   "brand": "RAM BANDHU",
+   "size": "200g",
+   "alias": "mirchi achar chilli pickle hari mirch ram bandhu मिर्च अचार",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553648434",
+   "mrp": 75,
+   "sale": 72,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-2",
+   "ph": "cfbc95ef",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-0bcaa419.jpg",
+    "r8/20261109-6d908cbe.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-03-03",
+    "batchNo": "DN D4F2625"
+   }
+  },
+  {
+   "id": "b8903553645433",
+   "name": "RAM BANDHU MIXED PICKLE 200 G JAR",
+   "short": "RAMBANDHU MIX PKL 200G",
+   "hi": "राम बंधु मिक्स अचार 200 ग्राम",
+   "brand": "RAM BANDHU",
+   "size": "200g",
+   "alias": "mix achar mixed pickle ram bandhu अचार",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553645433",
+   "mrp": 75,
+   "sale": 69,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-2",
+   "ph": "6d0e726a",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-ee50b42d.jpg",
+    "r8/20261109-3e510bf1.jpg",
+    "r8/20261109-e8a86245.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "2027-02-07",
+    "batchNo": "DN D8E2667"
+   }
+  },
+  {
+   "id": "b8903553601439",
+   "name": "RAM BANDHU MANGO PICKLE 200 G JAR",
+   "short": "RAMBANDHU MANGO PKL 200G",
+   "hi": "राम बंधु आम का अचार 200 ग्राम",
+   "brand": "RAM BANDHU",
+   "size": "200g",
+   "alias": "aam achar mango pickle ram bandhu कैरी आम अचार",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553601439",
+   "mrp": 75,
+   "sale": 69,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-2",
+   "ph": "04abf83b",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-4b1332e5.jpg",
+    "r8/20261109-5faf03a4.jpg",
+    "r8/20261109-ac6fb931.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "2027-03-08",
+    "batchNo": "DN D8F26108"
+   }
+  },
+  {
+   "id": "b8906079510872",
+   "name": "20-20 BRAIN NUT WALNUT KERNELS 250 G BOX",
+   "short": "20-20 WALNUT KERNEL 250G",
+   "hi": "20-20 ब्रेन नट अखरोट गिरी 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "akhrot walnut giri brain nut अखरोट",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510872",
+   "mrp": 599,
+   "sale": 413,
+   "cost": 295,
+   "perPack": 0,
+   "rack": "8-3",
+   "ph": "9968249f",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-546e8e48.jpg",
+    "r8/20261109-5ad96bdb.jpg",
+    "r8/20261109-19ce0837.jpg",
+    "r8/20261109-6152bc7f.jpg"
+   ],
+   "open": {
+    "qty": 27,
+    "exp": "2027-03",
+    "batchNo": "26AD1607"
+   }
+  },
+  {
+   "id": "b8901689702860",
+   "name": "MALA'S TOMATO KETCHUP 900 G POUCH",
+   "short": "MALAS KETCHUP 900G",
+   "hi": "माला'ज़ टोमेटो कैचप 900 ग्राम पाउच",
+   "brand": "MALA'S",
+   "size": "900g",
+   "alias": "ketchup tomato sauce malas tamatar सॉस कैचप",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8901689702860",
+   "mrp": 115,
+   "sale": 110,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-4",
+   "ph": "b66a833a",
+   "mfr": "c-malas",
+   "fotos": [
+    "r8/20261109-678acd2d.jpg",
+    "r8/20261109-6e6f8eab.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-02-28",
+    "batchNo": "B05176-06"
+   }
+  },
+  {
+   "id": "b8901808004165",
+   "name": "WEIKFIELD TOMATO KETCHUP 1 KG BOTTLE",
+   "short": "WEIKFIELD KETCHUP 1KG",
+   "hi": "वीकफ़ील्ड टोमेटो कैचप 1 किलो",
+   "brand": "WEIKFIELD",
+   "size": "1kg",
+   "alias": "ketchup tomato sauce weikfield कैचप",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8901808004165",
+   "mrp": 140,
+   "sale": 138,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-4",
+   "ph": "e286dba5",
+   "mfr": "c-weikfield",
+   "fotos": [
+    "r8/20261109-9abea642.jpg",
+    "r8/20261109-f6d420dc.jpg",
+    "r8/20261109-a2aa7abd.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-01-12",
+    "batchNo": "6C20"
+   }
+  },
+  {
+   "id": "b8903553004131",
+   "name": "RAM BANDHU GINGER GARLIC PASTE 100 G POUCH",
+   "short": "RAMBANDHU GG PASTE 100G",
+   "hi": "राम बंधु अदरक लहसुन पेस्ट 100 ग्राम",
+   "brand": "RAM BANDHU",
+   "size": "100g",
+   "alias": "ginger garlic paste adrak lahsun पेस्ट",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8903553004131",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-4",
+   "ph": "a3964163",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-e0bb67fe.jpg",
+    "r8/20261109-23fa3024.jpg",
+    "r8/20261109-be58246b.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "2027-08-08",
+    "batchNo": "L9H2631"
+   }
+  },
+  {
+   "id": "b8903553831379",
+   "name": "TEMPTIN IMLI SAUCE 80 G POUCH",
+   "short": "TEMPTIN IMLI SAUCE 80G",
+   "hi": "टेम्प्टिन इमली सॉस 80 ग्राम",
+   "brand": "TEMPTIN",
+   "size": "80g",
+   "alias": "imli sauce tamarind chutney meethi chutney इमली",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553831379",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-4",
+   "ph": "780517d7",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-6fce01f7.jpg",
+    "r8/20261109-d0c0da4a.jpg",
+    "r8/20261109-2ddab41a.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2027-03-28",
+    "batchNo": "J29F269"
+   }
+  },
+  {
+   "id": "b8903553002847",
+   "name": "RAM BANDHU HIRVI MIRCHI THECHA GREEN CHILLI GARLIC CHUTNEY 100 G",
+   "short": "RAM BANDHU THECHA 100G",
+   "hi": "राम बंधु हिरवी मिर्ची ठेचा (हरी मिर्च लहसुन चटनी) 100 ग्राम",
+   "brand": "RAM BANDHU",
+   "size": "100g",
+   "alias": "thecha mirchi thecha green chutney hari chutney ठेचा",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8903553002847",
+   "mrp": 30,
+   "sale": 28,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-4",
+   "ph": "a24411e2",
+   "mfr": "c-empire",
+   "fotos": [
+    "r8/20261109-83ccfa1d.jpg",
+    "r8/20261109-39345637.jpg",
+    "r8/20261109-2bd84731.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-01-23",
+    "batchNo": "K24D2629"
+   }
+  },
+  {
+   "id": "b8908013486021",
+   "name": "GAYATRI ATHANA MIRCHI ACHAR (GREEN) 200 G POUCH",
+   "short": "GAYATRI ATHANA HARI 200G",
+   "hi": "गायत्री अथाना मिर्ची अचार (हरी) 200 ग्राम",
+   "brand": "GAYATRI",
+   "size": "200g",
+   "alias": "athana mirchi bharwa mirch achar भरवां मिर्च अथाना",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8908013486021",
+   "mrp": 55,
+   "sale": 49,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-4",
+   "ph": "fbd98981",
+   "mfr": "c-gayatri",
+   "fotos": [
+    "r8/20261109-640591f8.jpg",
+    "r8/20261109-0e995e3d.jpg",
+    "r8/20261109-d487f1b9.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-01",
+    "batchNo": "KA06"
+   }
+  },
+  {
+   "id": "b8908013486045",
+   "name": "GAYATRI ATHANA LAL MIRCHI ACHAR (RED) 200 G POUCH",
+   "short": "GAYATRI ATHANA LAL 200G",
+   "hi": "गायत्री अथाना लाल मिर्ची अचार 200 ग्राम",
+   "brand": "GAYATRI",
+   "size": "200g",
+   "alias": "athana lal mirch bharwa lal mirchi achar लाल मिर्च अथाना",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8908013486045",
+   "mrp": 65,
+   "sale": 59,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-4",
+   "ph": "dec59f78",
+   "mfr": "c-gayatri",
+   "fotos": [
+    "r8/20261109-df7c8d24.jpg",
+    "r8/20261109-663c5e68.jpg",
+    "r8/20261109-bcdea8d6.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2027-02",
+    "batchNo": "KA07"
+   }
+  },
+  {
+   "id": "b0648564085189",
+   "name": "GAJVAR ORIGINAL KIMIA DATES (IRAN) 500 G BOX",
+   "short": "GAJVAR KIMIA DATES 500G",
+   "hi": "गजवार किमिया खजूर (ईरान) 500 ग्राम",
+   "brand": "GAJVAR",
+   "size": "500g",
+   "alias": "khajur kimia dates khajoor खजूर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "0648564085189",
+   "mrp": 0,
+   "sale": 220,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-5",
+   "ph": "e6bd0163",
+   "mfr": "c-gajvar",
+   "fotos": [
+    "r8/20261109-035e6757.jpg",
+    "r8/20261109-fcc691c1.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079510452",
+   "name": "20-20 HEALTHY RAISINS ABJOSH CLASSIC 250 G BOX",
+   "short": "20-20 ABJOSH RAISIN 250G",
+   "hi": "20-20 किशमिश अबजोश क्लासिक 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "kishmish raisins abjosh munakka किशमिश",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510452",
+   "mrp": 0,
+   "sale": 209,
+   "cost": 150,
+   "perPack": 0,
+   "rack": "8-5",
+   "ph": "9f3e034b",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-79ab54fc.jpg",
+    "r8/20261109-84775880.jpg",
+    "r8/20261109-79bc06e2.jpg"
+   ],
+   "open": {
+    "qty": 23,
+    "exp": "2027-03",
+    "batchNo": "26AD1494"
+   }
+  },
+  {
+   "id": "g-20-20-roasted-makhana-peri-peri-70-g-jar",
+   "name": "20-20 ROASTED MAKHANA PERI PERI 70 G JAR",
+   "short": "20-20 MAKHANA PERI 70G",
+   "hi": "20-20 भुना मखाना पेरी-पेरी 70 ग्राम",
+   "brand": "20-20",
+   "size": "70g",
+   "alias": "makhana phool makhana fox nut lotus seed roasted peri peri मखाना",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 299,
+   "sale": 179,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-5",
+   "ph": "a9d23aee",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-0a7116d6.jpg",
+    "r8/20261109-10f9f913.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-08",
+    "batchNo": "26AD1227"
+   }
+  },
+  {
+   "id": "g-20-20-roasted-makhana-mint-masala-70-g-j",
+   "name": "20-20 ROASTED MAKHANA MINT MASALA 70 G JAR",
+   "short": "20-20 MAKHANA MINT 70G",
+   "hi": "20-20 भुना मखाना मिंट मसाला 70 ग्राम",
+   "brand": "20-20",
+   "size": "70g",
+   "alias": "makhana phool makhana fox nut lotus seed roasted mint masala मखाना",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 299,
+   "sale": 179,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-5",
+   "ph": "8498b8c8",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-c37bb164.jpg",
+    "r8/20261109-9c38e26e.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-08",
+    "batchNo": "26AD1227"
+   }
+  },
+  {
+   "id": "g-20-20-roasted-makhana-black-pepper-70-g-",
+   "name": "20-20 ROASTED MAKHANA BLACK PEPPER 70 G JAR",
+   "short": "20-20 MAKHANA PEPPER 70G",
+   "hi": "20-20 भुना मखाना काली मिर्च 70 ग्राम",
+   "brand": "20-20",
+   "size": "70g",
+   "alias": "makhana phool makhana fox nut lotus seed roasted black pepper मखाना",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 299,
+   "sale": 179,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-5",
+   "ph": "70456d32",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-5e69fc40.jpg",
+    "r8/20261109-6eef4cee.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-08",
+    "batchNo": "26AD1227"
+   }
+  },
+  {
+   "id": "b8906079510698",
+   "name": "20-20 BLACK RAISINS SEED 250 G POUCH",
+   "short": "20-20 BLACK RAISIN 250G",
+   "hi": "20-20 काली किशमिश (बीज वाली) 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "kali kishmish black raisins munakka काली किशमिश",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510698",
+   "mrp": 0,
+   "sale": 198,
+   "cost": 121.25,
+   "perPack": 0,
+   "rack": "8-6",
+   "ph": "1cbf0c05",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-7d075d1f.jpg",
+    "r8/20261109-c9458dda.jpg",
+    "r8/20261109-34aaaa2b.jpg"
+   ],
+   "open": {
+    "qty": 42,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079510322",
+   "name": "20-20 DIVINE ROASTED CASHEW SALTED 200 G POUCH",
+   "short": "20-20 ROAST CASHEW 200G",
+   "hi": "20-20 डिवाइन रोस्टेड काजू नमकीन 200 ग्राम",
+   "brand": "20-20",
+   "size": "200g",
+   "alias": "roasted kaju salted cashew namkeen kaju भुना काजू",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510322",
+   "mrp": 0,
+   "sale": 290,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-6",
+   "ph": "5303254b",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-bd4c6131.jpg",
+    "r8/20261109-231ea4f9.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2027-03",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079510063",
+   "name": "20-20 ANJEER SILVER PREMIUM DRY FIG 500 G BOX",
+   "short": "20-20 ANJEER SILVER 500G",
+   "hi": "20-20 अंजीर सिल्वर 500 ग्राम",
+   "brand": "20-20",
+   "size": "500g",
+   "alias": "anjeer anjir fig silver अंजीर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510063",
+   "mrp": 1299,
+   "sale": 598,
+   "cost": 415,
+   "perPack": 0,
+   "rack": "8-7",
+   "ph": "3eb68ddd",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-7e4e6d01.jpg",
+    "r8/20261109-ccd1ab9e.jpg",
+    "r8/20261109-edbd85fe.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2027-09",
+    "batchNo": "26AD1455"
+   }
+  },
+  {
+   "id": "b8906079510407",
+   "name": "20-20 DIVINE ROASTED & SALTED PISTACHIOS CALIFORNIA JUMBO 250 G",
+   "short": "20-20 PISTA SALTED 250G",
+   "hi": "20-20 रोस्टेड नमकीन पिस्ता 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "pista pistachio salted pista पिस्ता",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510407",
+   "mrp": 0,
+   "sale": 598,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-8",
+   "ph": "7d55ac50",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-bab30667.jpg",
+    "r8/20261109-cdf85556.jpg",
+    "r8/20261109-ff64fdea.jpg",
+    "r8/20261109-0c6e4313.jpg"
+   ],
+   "open": {
+    "qty": 14,
+    "exp": "2027-08",
+    "batchNo": "25AD1324"
+   }
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-lakecity",
+   "name": "LAKE CITY DRY FRUITS PVT. LTD. (20-20 DRY FRUITS)",
+   "phone": "7023080003",
+   "email": "enquiry@lcdf.co.in",
+   "web": "www.2020dryfruits.com",
+   "addr": "R.S. No. 176, C9JV+VWH, Mehsana Highway, Mandali",
+   "city": "Mehsana, Gujarat 384130",
+   "fssai": "12222999000428",
+   "brands": [
+    "20-20"
+   ],
+   "note": "स्रोत: पैक पर 'Imported/Packed & Marketed by' (r7-0013, r7-0049, r8-0071)। Consumer Care +91 702 308 0003। खरीद बिल JU/26-27/2397 (LAKECITY DRY FRUITS)"
+  },
+  {
+   "id": "c-everest-bev",
+   "name": "EVEREST BEVERAGES & FOOD INDUSTRIES PVT. LTD.",
+   "phone": "7252838333",
+   "email": "ebfi.consumercell@gmail.com",
+   "addr": "Industrial Plot No. 19 & 20, Sector 8, Vedvyaspuri",
+   "city": "Meerut, U.P. 250103",
+   "fssai": "10018051002359",
+   "brands": [
+    "EVEREST",
+    "EVERPLUS"
+   ],
+   "note": "स्रोत: r7-0044, r7-0046, r7-0052 (Marketed by)। दूसरी यूनिट: B-39 Industrial Estate Partapur Meerut, Lic 10013051000533; Vijay Vallabh Agro Foods (D) Lic 10020051003369। (मसाले वाली S. Narendrakumar Everest से अलग कंपनी)"
+  },
+  {
+   "id": "c-empire",
+   "name": "EMPIRE SPICES & FOODS LTD. (RAM BANDHU, TEMPTIN)",
+   "care": "8805580055",
+   "email": "customercare@esfl.co.in",
+   "web": "www.esfl.co.in",
+   "addr": "A-305, Damji Shamji Corporate Square, Laxmi Nagar, Ghatkopar (E)",
+   "city": "Mumbai 400075",
+   "fssai": "11521999000277",
+   "brands": [
+    "RAM BANDHU",
+    "TEMPTIN"
+   ],
+   "note": "स्रोत: r8-0004, r8-0017, r8-0036 (Marketed by), Toll free +91-88 05 58 00 55। Mfg: Talegaon Dindori Nashik, Lic 10018022007423"
+  },
+  {
+   "id": "c-gayatri",
+   "name": "GAYATRI MAHILA GRAH UDHYOG",
+   "phone": "8890609060",
+   "care": "02960-222781",
+   "email": "marwadipickles@gmail.com",
+   "addr": "Khasra No. 360/1, Lundawas Road",
+   "city": "Sojat City 306104, Dist. Pali, Rajasthan",
+   "fssai": "12214036000306",
+   "brands": [
+    "GAYATRI"
+   ],
+   "note": "स्रोत: r8-0012 (+91 8890609060), r8-0014 (Help Line 02960-222781)"
+  },
+  {
+   "id": "c-weikfield",
+   "name": "WEIKFIELD FOODS PVT. LTD.",
+   "phone": "7719093333",
+   "care": "18002090663",
+   "email": "qa_mgr@weikfield.com",
+   "web": "www.weikfield.com",
+   "addr": "Weikfield Estate, Gat No. 485, Lonikand, Nagar Road, Taluka Haveli",
+   "city": "Pune 412216, Maharashtra",
+   "fssai": "10012022001051",
+   "brands": [
+    "WEIKFIELD"
+   ],
+   "note": "स्रोत: r8-0033/0034 — Tel 1800 209 0663, WhatsApp 77190 93333, info@weikfield.com"
+  },
+  {
+   "id": "c-sunco",
+   "name": "SUNCO AGRO FOOD PRIVATE LIMITED (NUT MASTER)",
+   "phone": "9265678522",
+   "email": "sales@nutmaster.in",
+   "addr": "Survey No. 291, Sadarpur-Songadh Road, Po. Sadarpur",
+   "city": "Palanpur 385001, North Gujarat",
+   "fssai": "10722999000177",
+   "brands": [
+    "NUT MASTER"
+   ],
+   "note": "स्रोत: r7-0017 (Mfd, Packed & Marketed by)। ईमेल/नंबर छोटे अक्षर — एक बार पक्का करें"
+  },
+  {
+   "id": "c-malas",
+   "name": "MALA'S FRUIT PRODUCTS",
+   "web": "www.malasfruit.com",
+   "brands": [
+    "MALA'S"
+   ],
+   "note": "स्रोत: r8-0031 सिर्फ़ वेबसाइट दिखी; पता वाली साइड की फोटो नहीं"
+  },
+  {
+   "id": "c-vinayak",
+   "name": "VINAYAK CASHEWS",
+   "city": "Odisha",
+   "brands": [
+    "VINAYAK"
+   ],
+   "note": "स्रोत: r7-0019 'Processed, Packed & Marketed by Vinayak Cashews, Odisha'; FSSAI धुंधला"
+  },
+  {
+   "id": "c-gajvar",
+   "name": "GAJVAR FOOD PRODUCTS",
+   "brands": [
+    "GAJVAR"
+   ],
+   "note": "स्रोत: r8-0051 लोगो; पता/नंबर वाली साइड की फोटो नहीं"
+  }
+ ]
+}

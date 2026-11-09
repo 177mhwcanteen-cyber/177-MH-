@@ -33,6 +33,12 @@ def main():
     if d.get("org") != ORG: sys.exit(f"⛔ यह ZIP '{d.get('org')}' की है, यह रिपो '{ORG}' का — नहीं चढ़ेगी")
     if d.get("app") != "mh177-stock": sys.exit("❌ app mh177-stock नहीं")
     batch = d.get("batch") or "S-" + datetime.date.today().strftime("%Y%m%d") + "-01"
+    # 🔁 इसी नाम की खेप पहले से (जैसे इस ऐप के Claude ने भी उसी दिन -01 बनाई) → अगला खाली नंबर, पुरानी खेप कभी न बदले
+    idir = os.path.join(R, "web", "data", "items")
+    if os.path.exists(os.path.join(idir, batch + ".json")):
+        m = re.match(r"(.*-)(\d+)$", batch); pre, n = (m[1], int(m[2])) if m else (batch + "-", 1)
+        while os.path.exists(os.path.join(idir, f"{pre}{n:02d}.json")): n += 1
+        print(f"⚠ खेप {batch} पहले से है → नया नाम {pre}{n:02d}"); batch = f"{pre}{n:02d}"; d["batch"] = batch
     # जाँच (वही नियम जो दूसरे Claude ने चलाए)
     kd = os.path.join(tmp, "_kit")  # ताज़ा किट (CSV समेत) — उसी के नियमों से जाँच
     subprocess.run([sys.executable, os.path.join(R, "scripts", "kit.py")], check=True, capture_output=True)
