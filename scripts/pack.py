@@ -16,7 +16,8 @@ P = os.path.join(R, "web", "p")
 IDX = os.path.join(D, "index.json")
 ORG = (re.search(r'org:\s*"([a-z0-9]+)"', open(os.path.join(R, "web", "config.js"), encoding="utf8").read()) or [None, "mh177"])[1]  # 🏢 संस्था
 KEEP = ["id", "name", "short", "hi", "brand", "size", "alias", "emoji", "cat", "sub", "unit", "code", "barcode", "mrp", "sale", "cost",
-        "perPack", "packOf", "track", "min", "rack", "secret", "ph", "open"]
+        "perPack", "packOf", "track", "min", "rack", "secret", "ph", "mfr", "fotos", "open"]
+CKEEP = ["id", "name", "phone", "care", "email", "web", "addr", "city", "fssai", "gst", "brands", "dist", "note"]
 
 
 def cap(s):
@@ -95,7 +96,12 @@ def add(path):
         out.append({k: x[k] for k in KEEP if k in x and x[k] not in (None, "")})
     os.makedirs(D, exist_ok=True)
     if src.get("org") and src["org"] != ORG: sys.exit(f"⛔ यह खेप {src['org']} की है, यह रिपो {ORG} का है — नहीं चढ़ेगी")
+    cos = [{k: c[k] for k in CKEEP if c.get(k) not in (None, "", [])} for c in src.get("companies", [])]
+    for c in cos:
+        c["name"] = cap(c["name"])
+        if not re.fullmatch(r"c-[a-z0-9-]{2,40}", c.get("id", "")): sys.exit(f"❌ कंपनी id ग़लत (c-<नाम>): {c}")
     doc = {"app": "mh177-pack", "org": ORG, "v": 5, "id": pid, "date": src.get("date", ""), "by": src.get("by", ""), "note": src.get("note", ""), "items": out}
+    if cos: doc["companies"] = cos
     txt = json.dumps(doc, ensure_ascii=False, indent=1)
     open(os.path.join(D, pid + ".json"), "w", encoding="utf8").write(txt + "\n")
     idx = json.load(open(IDX, encoding="utf8")) if os.path.exists(IDX) else {"app": "mh177-packs", "org": ORG, "v": 5, "packs": []}
@@ -110,6 +116,7 @@ def add(path):
 def check():
     idx = json.load(open(IDX, encoding="utf8")) if os.path.exists(IDX) else {"packs": []}
     seen, bcs, warn = {}, {}, []
+    cids = {c["id"] for p in idx["packs"] for c in json.load(open(os.path.join(D, p["id"] + ".json"), encoding="utf8")).get("companies", [])}
     for p in idx["packs"]:
         for x in json.load(open(os.path.join(D, p["id"] + ".json"), encoding="utf8"))["items"]:
             i = x["id"]
@@ -125,6 +132,7 @@ def check():
             if x.get("rack") and not re.fullmatch(r"\d{1,2}-\d{1,2}", str(x["rack"])): warn.append(f"रैक ग़लत: {x['name']} '{x['rack']}'")
             if not x.get("ph"): warn.append(f"फोटो नहीं: {x['name']}")
             if len(x["name"]) > 24 and x.get("short", "") == x["name"][:24]: warn.append(f"छोटा नाम (short) कटा हुआ — खुद लिखो: {x['name']}")
+            if x.get("mfr") and x["mfr"] not in cids: warn.append(f"🏭 कंपनी {x['mfr']} किसी खेप की companies में नहीं: {x['name']}")
             if x.get("sub") == "tob" and not x.get("secret"): warn.append(f"🔒 तम्बाकू पर secret कोड नहीं: {x['name']}")
     print(f"🔍 {len(seen)} सामान, {len(idx['packs'])} खेप · {len(warn)} चेतावनी")
     for w in warn[:60]: print("  ⚠", w)

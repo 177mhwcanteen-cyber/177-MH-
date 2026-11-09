@@ -14,6 +14,8 @@ function supOf(it){
   if(it.supId){const s=(S.suppliers||[]).find(x=>x.id===it.supId);if(s)return {key:s.id,name:s.name,phone:clean(s.phone)};if(it.supId==="mh")return {key:"mh",name:MHN,phone:""}}
   const p=lastBuy(it.id);if(p){if(p.src==="mh")return {key:"mh",name:MHN,phone:""};const s=(S.suppliers||[]).find(x=>x.id===p.supId);return {key:p.supId||("n:"+p.supName),name:p.supName||(s&&s.name)||"दुकान",phone:clean(p.supPhone)||clean(s&&s.phone)}}
   if(it.supplier){const s=(S.suppliers||[]).find(x=>String(x.name).trim().toLowerCase()===String(it.supplier).trim().toLowerCase());return s?{key:s.id,name:s.name,phone:clean(s.phone)}:{key:"n:"+it.supplier,name:it.supplier,phone:""}}
+  /* 🏭 कहीं से खरीद नहीं → सामान की कंपनी (खेप से आई, suppliers kind:"company") */
+  if(it.mfr){const s=(S.suppliers||[]).find(x=>x.id===it.mfr);if(s)return {key:s.id,name:"🏭 "+s.name,phone:clean(s.phone)||clean(s.care)}}
   return {key:"",name:"दुकान तय नहीं",phone:""};
 }
 SOD.list=function(){
