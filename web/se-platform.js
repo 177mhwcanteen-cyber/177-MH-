@@ -493,6 +493,13 @@ SE.printA4=async function(title,bodyHTML){
   printHTMLWeb(html);
 };
 
+/* 🔐 ज़िप का SHA-256 (Capgo 8.5x इसके बिना डाउनलोड नहीं करता)। version.json में हो तो वही, नहीं तो खुद फ़ाइल लाकर गिनो।
+   साथ में जाँच: फ़ाइल मिली? (HTTP, आकार, सच में ज़िप "PK") — ताकि ग़लती का असली कारण दिखे। */
+SE._zipCk=async function(v,url,D){if(v&&v.checksum&&!D)return v.checksum;
+  try{const r=await fetch(url+(url.includes("?")?"&":"?")+"ck="+Date.now(),{cache:"no-store"});const b=new Uint8Array(await r.arrayBuffer());
+    const h=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",b))).map(x=>x.toString(16).padStart(2,"0")).join("");
+    if(D)D.probe="HTTP "+r.status+" · "+Math.round(b.length/1024)+" KB · "+(b[0]===80&&b[1]===75?"ज़िप ✓":"ज़िप नहीं ✗")+(v&&v.checksum?" · checksum "+(v.checksum===h?"✓":"✗ अलग"):"");
+    return r.ok?((v&&v.checksum)||h):(v&&v.checksum)||""}catch(e){if(D)D.probe="फ़ाइल नहीं आई: "+String(e.message||e).slice(0,80);return (v&&v.checksum)||""}};
 /* ---------- अपने-आप अपडेट (APK दोबारा नहीं भेजनी पड़ेगी) ----------
    🩹 07-11-2026 सुधार: पहले "मैं ठीक चल रहा हूँ" (notifyAppReady) सिर्फ़ लॉगिन के 4 सेकंड बाद बोला जाता था।
    Capgo 15 सेकंड में यह न सुने तो नया संस्करण "खराब" मानकर पुराना वापस लगा देता है (rollback) — इसी से
@@ -525,7 +532,7 @@ SE.checkUpdate=async function(toast){
     if(pend===v.version){try{const l=await U.list();b=(l.bundles||[]).find(x=>x.version===v.version&&x.status!=="error")}catch(e){}}
     // पिछली बार डाउनलोड हो चुका — ऐप खुलते ही (कोई बिल चालू न हो तो) तुरंत लगा दो
     if(b&&!SE._busy()){toast&&toast("✨ नया अपडेट "+v.version+" लग रहा है…");try{_markTry(v.version);await U.set({id:b.id});return}catch(e){}}
-    if(!b){b=await U.download({url:new URL(v.url,CFG.updateUrl.replace(/\/?$/,"/")).href,version:v.version});ls.set("se_upd_ready",v.version)}
+    if(!b){const zu=new URL(v.url,CFG.updateUrl.replace(/\/?$/,"/")).href;b=await U.download({url:zu,version:v.version,checksum:await SE._zipCk(v,zu)});ls.set("se_upd_ready",v.version)}
     SE._pendingBundle=b;
     toast&&toast("✨ नया अपडेट "+v.version+" आ गया — ऐप बंद करके खोलते ही लग जाएगा");
     if(!SE._asl){SE._asl=1;N.App.addListener("appStateChange",async s=>{if(!s.isActive&&SE._pendingBundle&&!SE._busy()){try{_markTry(SE._pendingBundle.version||"");await U.set({id:SE._pendingBundle.id})}catch(e){}}})}
@@ -615,15 +622,16 @@ SE.updateNow=async function(say){
       let b=null;try{const l=await U.list();D.list=(l.bundles||[]).map(x=>x.version+":"+x.status).join(",").slice(0,200);b=(l.bundles||[]).find(x=>x.version===v.version&&x.status!=="error")}catch(e){st("list",e)}
       if(!b)await _dropBundles(U,v.version);
       if(!b){const base=new URL(v.url,CFG.updateUrl.replace(/\/?$/,"/")).href;D.url=base;
-        try{b=await U.download({url:base,version:v.version});st("download-1 ok")}
+        const ck=await SE._zipCk(v,base,D);D.ck=ck?ck.slice(0,12):"";
+        try{b=await U.download({url:base,version:v.version,checksum:ck});st("download-1 ok")}
         catch(e1){st("download-1",e1);say("⬇️ दोबारा कोशिश… (नेटवर्क धीमा)","busy",0);await _dropBundles(U,v.version);
           await new Promise(r=>setTimeout(r,2500));
           /* दूसरी बार अलग नाम से (पिछला अधूरा/खराब बंडल उसी नाम से अटका न रहे) */
-          try{b=await U.download({url:base+"?t="+Date.now(),version:v.version+"-r"+Date.now().toString(36).slice(-4)});st("download-2 ok")}catch(e2){st("download-2",e2);throw e2}}}
+          try{b=await U.download({url:base+"?t="+Date.now(),version:v.version+"-r"+Date.now().toString(36).slice(-4),checksum:ck});st("download-2 ok")}catch(e2){st("download-2",e2);throw e2}}}
       try{h&&h.remove()}catch(e){}
       say("✨ लग रहा है — ऐप 2 सेकंड में दोबारा खुलेगा","ok",100);try{SE.beforeUpdate&&SE.beforeUpdate()}catch(e){}
       await new Promise(r=>setTimeout(r,900));_markTry(v.version);try{await U.set({id:b.id})}catch(e3){st("set",e3);throw e3}
-    }catch(e){try{h&&h.remove()}catch(x){}const why=D.steps.filter(x=>!/ ok$/.test(x)).pop()||String(e.message||e).slice(0,120);
+    }catch(e){try{h&&h.remove()}catch(x){}const why=(D.steps.filter(x=>!/ ok$/.test(x)).pop()||String(e.message||e).slice(0,120)).replace(/\?t=\d+/,"")+(D.probe?" · फ़ाइल: "+D.probe:"");
       try{window.SEW&&SEW.report("OTA अपडेट नहीं हुआ: "+why,D)}catch(x){}try{ls.set("se_upd_diag",JSON.stringify({...D,ts:Date.now()}))}catch(x){}
       say("अपडेट नहीं हुआ — कारण: "+why+" · 1 मिनट बाद दोबारा दबाएँ, या नीचे से पूरा नया ऐप लें","bad");
       const bx=document.querySelector(".updbox");if(bx&&!bx.querySelector(".apkl")){const a2=document.createElement("a");a2.className="big ghost apkl";a2.style.cssText="display:block;text-align:center;text-decoration:none;margin-top:8px";a2.href="https://github.com/177mhwcanteen-cyber/177-MH-/releases/latest/download/mh-wet-canteen.apk";a2.target="_blank";a2.rel="noopener";a2.textContent="📲 पूरा नया ऐप (APK) डाउनलोड करें — डेटा सुरक्षित रहेगा";bx.appendChild(a2)}}
