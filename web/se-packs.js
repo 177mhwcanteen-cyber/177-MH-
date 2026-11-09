@@ -14,7 +14,7 @@ const empty=v=>v==null||v===""||v===0||v==="0";
 const FILL=["mfr","rack","mrp","sale","cost","barcode","ph","hi","brand","size","alias","emoji","sub","secret","perPack","packOf","unit"];
 const PRICE=["mrp","sale","cost"];
 const say=m=>{try{toast(m)}catch(e){}};
-/* कोड: पैक वाले सामान 10001 से (किराना की 1000–1999 जगह 5000 सामान में भर जाती) */
+/* कोड: index.html का nextCode (4 अंक, किस्म-वार) — यह सिर्फ़ बचाव */
 function nextPkCode(){return String(Math.max(10000,...(S.items||[]).map(i=>+i.code||0).filter(c=>c>=10000))+1)}
 function match(x){
   let it=(S.items||[]).find(i=>i.id===x.id);if(it)return it;
@@ -28,7 +28,7 @@ async function one(x,pk,R){
   if(!ex){
     const d={name,short:String(x.short?SE.capNm(x.short):name).slice(0,24),hi:x.hi||"",brand:x.brand||"",size:x.size||"",alias:x.alias||"",
       emoji:x.emoji||(x.sub==="tob"?"🚬":"🛒"),cat:x.cat||"kirana",sub:x.sub||"",unit:x.unit||"pc",
-      code:String(x.code||nextPkCode()),barcode:String(x.barcode||""),mrp:+x.mrp||0,sale:+x.sale||+x.mrp||0,cost:+x.cost||0,
+      code:String(x.code&&!(S.items||[]).some(i=>String(i.code)===String(x.code))?x.code:(typeof nextCode==="function"?nextCode(x.cat||"kirana"):nextPkCode())),barcode:String(x.barcode||""),mrp:+x.mrp||0,sale:+x.sale||+x.mrp||0,cost:+x.cost||0,
       perPack:+x.perPack||0,...(x.packOf?{packOf:x.packOf}:{}),track:x.track!=null?!!x.track:!x.packOf,min:+x.min||(x.packOf?0:2),
       rack:x.rack||"",secret:x.secret||"",ph:x.ph||"",...(x.mfr?{mfr:x.mfr}:{}),hue:Math.floor(Math.random()*360),active:true,
       order:(S.items||[]).length+1,src:"pack:"+pk,addedTs:ts,addedBy:S.uid||""};

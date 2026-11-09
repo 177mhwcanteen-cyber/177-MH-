@@ -1050,7 +1050,15 @@ function lowOf(it){return +it.min>0?+it.min:LOW}
 function isLow(it){return !!it.track&&(+(S.pstock[it.id]?.qty)||0)<=lowOf(it)}
 function expInfo(it){const e0=window.SF&&SF.nearExp?SF.nearExp(it):it.exp;if(e0!==it.exp)it={...it,exp:e0};if(!it.exp)return it.chk?{k:"chk",t:"तारीख जाँचें"}:null;const d=Math.floor((new Date(String(it.exp)+"T23:59:59")-Date.now())/864e5);if(isNaN(d))return null;if(d<0)return {k:"dead",t:"एक्सपायर",d};if(d<=30)return {k:"soon",t:d+" दिन बचे",d};return it.chk?{k:"chk",t:"तारीख जाँचें"}:null}
 function ean13(s12){let t=0;for(let i=0;i<12;i++)t+=(+s12[i])*(i%2?3:1);return s12+((10-t%10)%10)}
-function nextCode(cat){const base={kirana:1000,fast:2000,sabzi:3000}[cat||"kirana"]||1000;return String(S.items.reduce((a,i)=>{const c=+i.code||0;return c>base&&c<base+1000?Math.max(a,c):a},base)+1)}
+/* 🔢 हर सामान का अपना 4 अंक का कोड (विक्रम जी, 09-11-2026: "हमेशा चालू रखना" — बारकोड न चले तो 4 अंक लिखकर बिल)।
+   किस्म-वार हिस्सा, भर जाए तो अगला खाली हिस्सा, फिर 1001–9999 में कोई भी खाली — कभी 5 अंक या दोहरा कोड नहीं। */
+const CODE_RG={kirana:[[1001,1999],[6001,6999]],fast:[[2001,2999]],sabzi:[[3001,3999]],daily:[[4001,4999]],mithai:[[5001,5999]],mela:[[7001,7999]],stationery:[[8001,8999]],gift:[[8001,8999]],kapde:[[8001,8999]]};
+function nextCode(cat,also){const used=new Set((S.items||[]).map(i=>String(i.code||"")).concat(also||[]));
+  const R=(CODE_RG[cat]||CODE_RG.kirana).concat([[9001,9999],[1001,9999]]);
+  for(const [a,b] of R){let m=a-1;for(const c of used){const n=+c;if(n>=a&&n<=b&&n>m)m=n}
+    if(m<b&&!used.has(String(m+1)))return String(m+1);
+    for(let n=a;n<=b;n++)if(!used.has(String(n)))return String(n)}
+  return String(Date.now()).slice(-6)}
 function canSell(it){if(expInfo(it)?.k==="dead"){beep(false);toast("⚠ "+it.name+" एक्सपायर है — इसे काउंटर से हटाएँ, बिल में नहीं जुड़ेगा");return false}return true}
 /* MRP से ग्राहक की बचत (संस्था बिल में नहीं) */
 function savedOf(b){if(!b||b.mode==="inst")return 0;return r2((b.lines||[]).reduce((a,l)=>{const m=+l.mrp||+(S.items.find(x=>x.id===l.id)?.mrp)||0;return a+(m>l.rate&&!l.free?(m-l.rate)*l.qty:0)},0)+(+b.disc||0))}
@@ -1506,6 +1514,10 @@ async function saveBill(){
     if(!(l.rate>0)&&!l.free){toast(`"${l.name}" का भाव ₹0 है — बिल नहीं बनेगा`);return}
     if(base>0&&(l.rate>base*3||l.rate<base/3)){if(!S.isOwner){toast(`"${l.name}" का भाव ₹${l.rate} गलत लगता है (असली ₹${base}) — विक्रम जी से पूछें`);return}warn.push(`भाव ${l.name}: ₹${l.rate} (असली ₹${base})`)}
     const big=l.unit==="kg"?l.qty>10:l.qty>50;if(big)warn.push(`ज़्यादा मात्रा: ${l.name} ${l.qty}${l.unit==="kg"?" किलो":""}`)}
+  /* 🚫 स्टॉक नहीं फिर भी बिक्री — बिलिंग कभी नहीं रुकती (विक्रम जी, 09-11-2026); लाइन पर ns = बिकते समय कितना था → मालिक की रिपोर्ट।
+     बिलिंग चालू (settings.live) से पहले सिर्फ़ उन्हीं सामान पर जिनका स्टॉक-खाता है। रात को खरीद चढ़े तो स्टॉक अपने-आप सही (+) हो जाता है। */
+  {const used={};for(const l of lines){if(l.free&&!(l.qty>0))continue;const [pid,q]=packMap(l.id,l.qty),pi=S.items.find(x=>x.id===pid);if(!pi||!pi.track||!(S.settings.live||S.pstock[pid]))continue;
+    const have=r2((+(S.pstock[pid]?.qty)||0)-(used[pid]||0));used[pid]=(used[pid]||0)+q;if(have<q-1e-9)l.ns=have}}
   const bigLines=warn.filter(w=>w.startsWith("ज़्यादा"));const wkey=bigLines.join("|");
   if(bigLines.length&&S.bigOk!==wkey){S.bigOk=wkey;toast("⚠️ "+bigLines[0]+" — सही है तो दोबारा सेव दबाएँ");return}S.bigOk="";
   const cph=S.mode==="walk"?S.cust.phone:"",cnm=S.mode==="walk"?S.cust.name:"";
@@ -2215,6 +2227,8 @@ function renderReport(){
   <div class="tblwrap"><table class="t"><thead><tr><th>सामान</th><th class="n">कितना बिका</th><th class="n">किस रेट पर</th><th class="n">फिक्स रेट</th><th class="n">रकम</th><th class="n">मुनाफ़ा</th></tr></thead><tbody>
   ${rows.length?rows.map(o=>{const rates=[...o.rates];const p=o.cost>0?r2(o.amt-o.cost*o.qty):null;return `<tr class="${o.chg?"flag":""}"><td>${esc(o.name)}</td><td class="n">${fq(o.qty,o.unit)}</td><td class="n">${rates.map(r=>rs(r)).join(", ")}</td><td class="n">${rs(o.board)}</td><td class="n">${rs(o.amt)}</td><td class="n">${p==null?"—":rs(p)}</td></tr>`}).join(""):`<tr><td colspan="6" class="note">इस दिन कोई बिक्री नहीं</td></tr>`}
   </tbody></table></div>${noCost>0?`<p class="note" style="margin:-6px 0 12px">${rs(noCost)} की बिक्री ऐसे सामान की है जिसका खरीद रेट नहीं डाला — उनका मुनाफ़ा नहीं जुड़ा।</p>`:""}`),
+    (()=>{const N=[];sale.forEach(b=>(b.lines||[]).forEach(l=>{if(l.ns!=null)N.push({b,l})}));
+      return R("nostock","item","🚫","बिना स्टॉक बिके (स्टॉक था नहीं, बिल बना)",N.length?N.length+" बार":"कोई नहीं",()=>N.length?`<p class="note" style="margin:0 0 8px">बिलिंग नहीं रुकी — पर ऐप में इनका स्टॉक कम/शून्य था। वजह: खरीद चढ़ी नहीं, गिनती ग़लत, या माल बिना बिल आया। खरीद चढ़ाते ही स्टॉक अपने-आप सही हो जाता है।</p><div class="list">${N.map(({b,l})=>`<div class="li"><div class="mid"><b>${esc(SE.capNm?SE.capNm(l.name):l.name)}</b><span>बिल ${esc(b.no)} · ${ftime(b.ts)} · ${esc(b.byName||"")} · बिकते समय स्टॉक ${fq(l.ns,l.unit)}</span></div><div class="rt">${fq(l.qty,l.unit)}</div></div>`).join("")}</div>`:`<div class="empty">✅ आज हर सामान स्टॉक में रहते बिका</div>`,N.length>0)})(),
     R("short","item","📉","माल में कमी",shortTot>0?rs(shortTot):"कोई नहीं",()=>`${srows.length?`<h3 style="margin:0 0 6px;color:var(--chili)">⚠ माल में कमी (रात के स्टॉक से)</h3><div class="list">${srows.map(r=>`<div class="li"><div class="mid"><b>${esc(SE.capNm(r.it.name))}</b><span>आया ${fq(r.open,r.it.unit)} · बिका ${fq(r.sold,r.it.unit)} · खराब ${fq(r.waste,r.it.unit)} · बचा ${fq(r.close,r.it.unit)}</span></div><div class="rt" style="color:var(--chili)">${fq(r.short,r.it.unit)}<small>${rs(r.shortVal)}</small></div></div>`).join("")}</div>`:""}${srows.length?"":`<div class="empty">रात के स्टॉक से कोई कमी नहीं 👍</div>`}`,shortTot>0),
     R("stock","item","🏷️","स्टॉक · कम स्टॉक · एक्सपायरी","",null),
     R("profit","item","💹","सामान-वार मुनाफ़ा (दिन चुनें)","",()=>window.SQ?SQ.html():""),
@@ -2414,7 +2428,7 @@ $("#p-set").addEventListener("click",async e=>{
     if(!it.secret&&isTob({...it,sub})){const mx=S.items.reduce((a,x)=>{const m=/^S-(\d+)$/.exec(x.secret||"");return m?Math.max(a,+m[1]):a},0);it.secret="S-"+String(mx+1).padStart(2,"0")}
     const pkR=parseFloat(($("#ni-pkrate")||{}).value)||0,pkB=(($("#ni-pkbar")||{}).value||"").trim();
     try{if(S.demo)S.items.push({id,...it});else await S.db.collection("items").doc(id).set(it);
-      if(it.perPack>1&&pkR>0){const pid=id+"-pk";let pc=nextCode(cat);if(pc===code)pc=String(+code+1);const pk={...it,name:shortNm(it).replace(/\s*\(?1\s*(pc|पीस)\)?\s*$/i,"")+" "+it.perPack+" पैक",short:"",secret:it.secret?it.secret+"P":"",packOf:id,sale:pkR,mrp:it.mrp?r2(it.mrp*it.perPack):0,cost:it.cost?r2(it.cost*it.perPack):0,code:pc,barcode:pkB||ean13("2000000"+pc+"0"),track:false,min:0,order:it.order+0.5};if(S.demo)S.items.push({id:pid,...pk});else await S.db.collection("items").doc(pid).set(pk)}
+      if(it.perPack>1&&pkR>0){const pid=id+"-pk";let pc=nextCode(cat,[code]);const pk={...it,name:shortNm(it).replace(/\s*\(?1\s*(pc|पीस)\)?\s*$/i,"")+" "+it.perPack+" पैक",short:"",secret:it.secret?it.secret+"P":"",packOf:id,sale:pkR,mrp:it.mrp?r2(it.mrp*it.perPack):0,cost:it.cost?r2(it.cost*it.perPack):0,code:pc,barcode:pkB||ean13("2000000"+pc+"0"),track:false,min:0,order:it.order+0.5};if(S.demo)S.items.push({id:pid,...pk});else await S.db.collection("items").doc(pid).set(pk)}
       toast(name+" जुड़ गया · कोड "+code+(it.perPack>1&&pkR>0?" · 📦 पैकेट भी":""));renderSettings();if(window.SBC&&!bar)SBC.onNew(id)}catch(err){toast("नहीं जुड़ा — सिर्फ मालिक जोड़ सकते हैं")}
   }
 });
@@ -2576,6 +2590,7 @@ boot();
 <script src="se-rack.js"></script>
 <script src="se-kharid.js"></script>
 <script src="se-packs.js"></script>
+<script src="se-khula.js"></script>
 <script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>

@@ -5,9 +5,14 @@
 "use strict";
 const SG=window.SG={};
 const NOTES=[500,200,100,50,20,10];
-const KIND={open:["🌅","गल्ला खोला"],count:["💵","गिनती"],out:["📤","पैसा दिया/निकाला"],close:["🔒","गल्ला बंद"],back:["🔁","खरीद का हिसाब मिला"]};
+const KIND={open:["🌅","गल्ला खोला"],count:["💵","गिनती"],out:["📤","पैसा दिया/निकाला"],close:["🔒","गल्ला बंद"],back:["🔁","खरीद का हिसाब मिला"],
+  khula:["🪙","खुले दिए (डिब्बा)"],krefill:["🪙","खुले का रिफिल"],kset:["🪙","खुले का डिब्बा सेट"]};
+const KH=k=>k==="khula"||k==="krefill"||k==="kset";
+const khTxt=g=>{const f=o=>Object.entries(o||{}).sort((a,b)=>b[0]-a[0]).map(([v,c])=>c+"×₹"+v).join(" + ");return g.kind==="kset"?"डिब्बा "+rs(g.amt||0):f(g.in)+" डाले → "+f(g.out)+" निकाले"};
 const ADV="🛒 खरीद के लिए साथी को";
-const OUT_TO=[ADV,"विक्रम जी को दिए","बैंक में जमा","दूसरी दुकान को"];
+const SELF="🙋 साथी ने अपने लिए लिया";
+const OUT_TO=[ADV,"विक्रम जी को दिए",SELF,"बैंक में जमा","दूसरी दुकान को","दूसरा काम"];
+const NOPER=t=>t==="विक्रम जी को दिए"||t==="बैंक में जमा";/* बाकी सब में "किसने लिया" ज़रूरी */
 const num=v=>{const n=parseFloat(String(v==null?"":v).replace(/[^\d.\-]/g,""));return isFinite(n)?n:0};
 const r2=v=>Math.round(v*100)/100;
 const dayAdd=(d,n)=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return today(x)};
@@ -69,7 +74,8 @@ SG.listen=function(d){S.galla=[];if(S.demo||!S.db)return ()=>{};let first=true;
     first=false;if(S.tab==="day"&&typeof renderDay==="function")renderDay();SG.nag();
   },()=>{})};
 function alertOwner(g){setTimeout(()=>{try{
-  if(g.kind==="out"){toast("📤 "+(g.byName||"")+": "+rs(g.total)+" — "+(g.to||"दिए")+(g.person?" "+g.person:""));return}
+  if(KH(g.kind)){toast("🪙 "+(g.byName||"")+": "+khTxt(g));return}
+  if(g.kind==="out"){toast("📤 "+(g.byName||"")+": "+rs(g.total)+" — "+(g.to||"दिए")+(g.person?" · "+g.person:"")+(g.note?" · "+g.note:"")+" · ✓ क्लियर करें");try{beep(false)}catch(x){}return}
   if(g.kind==="back"){toast((Math.abs(g.fark||0)>1?"🚨 ":"🔁 ")+(g.person||"")+" का हिसाब: खरीद "+rs(g.buy)+" + वापस "+rs(g.total)+(Math.abs(g.fark||0)>1?" · "+rs(g.fark)+" फ़र्क!":" · ✅ पूरा"));if(Math.abs(g.fark||0)>1)try{beep(false)}catch(x){}return}
   const e=SG.expAt(g.ts).exp,df=r2(num(g.total)-e),bad=df<-5;
   toast((bad?"🚨 ":"💵 ")+(g.byName||"")+" ने गल्ला "+(g.kind==="close"?"बंद किया":"गिना")+": "+rs(g.total)+" · होना चाहिए "+rs(e)+" → "+(Math.abs(df)<=5?"✅ ठीक":df>0?"+"+rs(df)+" ज़्यादा":rs(-df)+" कम"));
@@ -88,8 +94,8 @@ SG.sheet=function(kind){
     <div class="sh-head"><div><h3>${ic} ${tt}</h3><span class="note">${esc(biller())} · ${ftime(Date.now())}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     ${kind==="out"?`<label class="fld">कितने रुपये? ₹<input class="inp" id="sgAmt" inputmode="numeric" value="${esc(amt)}" autocomplete="off"></label>
       <div class="seg">${OUT_TO.map(x=>`<button class="chip" data-sgto="${esc(x)}" aria-pressed="${x===to}">${esc(x)}</button>`).join("")}</div>
-      ${to===ADV?`<label class="fld">किसको दिए (नाम)<input class="inp" id="sgPer" value="${esc(per)}" placeholder="जैसे रविंद्र जी" list="sgPerL"></label><datalist id="sgPerL">${[...new Set(SG.advAll().filter(g=>g.person).map(g=>g.person))].map(n=>`<option value="${esc(n)}">`).join("")}</datalist>`:""}
-      <label class="fld">${to===ADV?"किस लिए / कहाँ से":"नोट (चाहें तो)"}<input class="inp" id="sgNote" value="${esc(note)}" placeholder="${to===ADV?"जैसे: मजीशा से डिस्पोज़ल":"जैसे: शाम को विक्रम जी आए थे"}"></label>`
+      ${!NOPER(to)?`<label class="fld">कौन ले गया / किसको दिए (नाम)<input class="inp" id="sgPer" value="${esc(per)}" placeholder="जैसे रविंद्र जी" list="sgPerL"></label><datalist id="sgPerL">${[...new Set(SG.advAll().filter(g=>g.person).map(g=>g.person).concat(((S.settings||{}).billers||[]).map(b=>b&&b.name||b).filter(x=>typeof x==="string")))].map(n=>`<option value="${esc(n)}">`).join("")}</datalist>`:""}
+      <label class="fld">किस लिए${NOPER(to)?" (चाहें तो)":""}<input class="inp" id="sgNote" value="${esc(note)}" placeholder="${to===ADV?"जैसे: मजीशा से डिस्पोज़ल":to===SELF?"जैसे: घर का काम, एडवांस":"जैसे: शाम को विक्रम जी आए थे"}"></label>`
     :`<p class="note" style="margin:0 0 8px">${kind==="open"?"सुबह गल्ले में जो नोट हैं, गिनकर लिखें":kind==="close"?"दुकान बंद करते समय पूरे नोट गिनकर लिखें":"अभी गल्ले के नोट गिनकर लिखें"} — कितने-कितने नोट हैं:</p>
     <div class="sg-grid">${NOTES.map(v=>`<label class="sg-row"><span class="sg-n">₹${v}</span><span class="sg-x">×</span><input class="inp" data-sgn="${v}" inputmode="numeric" value="${esc(n[v]||"")}" placeholder="0" aria-label="₹${v} के कितने नोट"><b data-sgr="${v}">${n[v]?rs(v*num(n[v])):""}</b></label>`).join("")}
       <label class="sg-row"><span class="sg-n">🪙 सिक्के</span><span class="sg-x">₹</span><input class="inp" id="sgCoin" inputmode="numeric" value="${esc(coins)}" placeholder="0" aria-label="सिक्कों के कुल रुपये"><b></b></label></div>
@@ -111,11 +117,12 @@ SG.sheet=function(kind){
     if(!e.target.closest("[data-sgsave]"))return;
     const total=tot();
     if(kind==="out"&&!(total>0)){toast("कितने रुपये — यह लिखें");return}
-    if(kind==="out"&&to===ADV&&!String(per).trim()){toast("किस साथी को दिए — नाम लिखें");return}
+    if(kind==="out"&&!NOPER(to)&&!String(per).trim()){toast("कौन ले गया — नाम लिखें");return}
+    if(kind==="out"&&!NOPER(to)&&!String(note).trim()){toast("किस लिए — यह भी लिखें (विक्रम जी को दिखेगा)");return}
     if(kind!=="out"&&!(total>0)&&!confirm("गल्ले में कुछ नहीं है — फिर भी सेव करें?"))return;
     const notes={};NOTES.forEach(v=>{if(num(n[v])>0)notes[v]=num(n[v])});
     const doc={kind,total,ts:Date.now(),date:today(),by:S.uid||"",byName:biller(),
-      ...(kind==="out"?{to,note:String(note).trim().slice(0,120),...(to===ADV?{adv:true,person:String(per).trim().slice(0,30)}:{})}:{notes,coins:num(coins)}),...(kind==="close"&&String(keep).trim()!==""?{keep:num(keep)}:{})};
+      ...(kind==="out"?{to,note:String(note).trim().slice(0,120),...(String(per).trim()&&!NOPER(to)?{person:String(per).trim().slice(0,30)}:{}),...(to===ADV?{adv:true}:{})}:{notes,coins:num(coins)}),...(kind==="close"&&String(keep).trim()!==""?{keep:num(keep)}:{})};
     const id="g"+doc.ts.toString(36)+Math.random().toString(36).slice(2,5);
     try{if(S.demo)S.galla.push({id,...doc});else await S.db.collection("days/"+today()+"/galla").doc(id).set(doc);
       if(!S.galla.some(g=>g.id===id))S.galla.push({id,...doc});
@@ -133,14 +140,16 @@ SG.dayHTML=function(){
   const btns=isT?`<div class="sg-btns">${!st.open?`<button class="big" data-sg="open">🌅 गल्ला खोलें</button>`:`<button class="big" data-sg="count">💵 अभी गिनें</button>`}
     <button class="big ghost" data-sg="out">📤 पैसा दिया</button>${SG.openAdv().length?`<button class="big" data-sgback>🔁 खरीद का हिसाब (${SG.openAdv().length} बाकी)</button>`:""}${st.open&&!st.close?`<button class="big ghost" data-sg="close">🔒 गल्ला बंद</button>`:""}</div>`:"";
   const advL=SG.openAdv(),advH=advL.length?`<div class="warn">🛒 हिसाब बाकी: ${advL.map(x=>`${esc(x.person||"साथी")} ${rs(x.total)} (${x.date!==today()?fdate(x.date)+" ":""}${ftime(x.ts)})`).join(" · ")}</div>`:"";
-  const rowsStaff=st.L.map(g=>`<div class="li"><div class="mid"><b>${KIND[g.kind][0]} ${KIND[g.kind][1]}${g.kind==="out"&&g.to?" · "+esc(g.to):""}${g.person?" · "+esc(g.person):""}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")}</span></div><div class="rt">${rs(g.total)}</div></div>`).join("");
+  const rowsStaff=st.L.filter(g=>KIND[g.kind]).map(g=>`<div class="li"><div class="mid"><b>${KIND[g.kind][0]} ${KIND[g.kind][1]}${g.kind==="out"&&g.to?" · "+esc(g.to):""}${g.person?" · "+esc(g.person):""}${KH(g.kind)?" · "+esc(khTxt(g)):""}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")}</span></div><div class="rt">${KH(g.kind)?"":rs(g.total)}</div></div>`).join("");
+  const kh=window.SKH?SKH.cardHTML():"";
   if(!S.isOwner)return `<div class="card2" data-ds="paisa"><h3>💵 गल्ला</h3>
-    <p class="note" style="margin:0 0 8px">सुबह खोलें, हर ${SG.hrs()} घंटे में एक बार नोट गिनें, रात को बंद करें — बस इतना।</p>${advH}${btns}
+    <p class="note" style="margin:0 0 8px">सुबह खोलें, हर ${SG.hrs()} घंटे में एक बार नोट गिनें, रात को बंद करें — बस इतना। गल्ले से कोई पैसा ले जाए तो "📤 पैसा दिया" में नाम और काम लिखें। खुले का डिब्बा गिनती में नहीं गिनें।</p>${advH}${btns}${kh}
     ${rowsStaff?`<div class="list" style="margin:8px 0 0">${rowsStaff}</div>`:""}</div>`;
   const rows=st.L.map(g=>{if(g.kind==="back")return `<div class="li"><div class="mid"><b>🔁 ${esc(g.person||"")} · खरीद ${rs(g.buy)} + वापस ${rs(g.total)}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")} · दिए थे ${rs(g.given)}${g.note?" · "+esc(g.note):""}</span></div><div class="rt">${Math.abs(g.fark||0)<=1?'<span class="pill green">✓ पूरा</span>':`<span class="pill red">${rs(g.fark)} फ़र्क</span>`}</div></div>`;
-    if(g.kind==="out")return `<div class="li"><div class="mid"><b>📤 ${rs(g.total)} · ${esc(g.to||"दिए")}${g.person?" "+esc(g.person):""}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")}${g.note?" · "+esc(g.note):""}</span></div><div class="rt"></div></div>`;
+    if(KH(g.kind))return `<div class="li"><div class="mid"><b>${KIND[g.kind][0]} ${KIND[g.kind][1]}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")} · ${esc(khTxt(g))}${g.note?" · "+esc(g.note):""}</span></div><div class="rt">${g.amt?rs(g.amt):""}</div></div>`;
+    if(g.kind==="out")return `<div class="li"><div class="mid"><b>📤 ${rs(g.total)} · ${esc(g.to||"दिए")}${g.person?" · "+esc(g.person):""}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")}${g.note?" · "+esc(g.note):""}</span></div><div class="rt">${g.ok?'<span class="pill green">✓ क्लियर</span>':`<button type="button" class="chip" data-sgok="${esc(g.id)}" data-d="${esc(g.date||S.billsDate)}">✓ क्लियर करें</button>`}</div></div>`;
     if(g.kind==="open")return `<div class="li"><div class="mid"><b>🌅 गल्ला खोला</b><span>${ftime(g.ts)} · ${esc(g.byName||"")}${notesTxt(g)}</span></div><div class="rt">${rs(g.total)}</div></div>`;
-    const x=SG.expAt(g.ts),df=r2(num(g.total)-x.exp);
+    if(!KIND[g.kind])return "";const x=SG.expAt(g.ts),df=r2(num(g.total)-x.exp);
     return `<div class="li"><div class="mid"><b>${KIND[g.kind][0]} ${KIND[g.kind][1]} · ${rs(g.total)}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")} · होना चाहिए ${rs(x.exp)}${notesTxt(g)}${g.keep!=null?" · कल के लिए छोड़ा "+rs(g.keep):""}</span></div><div class="rt">${pill(df)}</div></div>`}).join("");
   const now=SG.expAt(Date.now()),lastC=st.last,gap=lastC?Math.round((Date.now()-lastC.ts)/36e5*10)/10:null;
   return `<div class="card2" data-ds="paisa"><h3>💵 गल्ला — दिन भर <small class="note">(सिर्फ़ आपको)</small></h3>
@@ -153,8 +162,9 @@ SG.dayHTML=function(){
     <div class="amtline" style="margin:0"><span>अभी गल्ले में होना चाहिए</span><b>${rs(now.exp)}</b></div>
     ${isT&&st.open&&!st.close&&gap!=null&&gap>=SG.hrs()?`<div class="warn">⏰ आख़िरी गिनती ${gap} घंटे पहले हुई थी</div>`:""}
     ${isT&&!st.open?`<div class="warn">🌅 आज अभी तक गल्ला नहीं खोला गया</div>`:""}
-    ${advH}${rows?`<div class="list" style="margin:8px 0">${rows}</div>`:""}
-    ${btns}
+    ${advH}${(()=>{const u=st.outs.filter(o=>!o.ok);return u.length?`<div class="warn">📤 क्लियर बाकी: ${u.map(o=>esc(o.person||o.to||"")+" "+rs(o.total)).join(" · ")}</div>`:""})()}${rows?`<div class="list" style="margin:8px 0">${rows}</div>`:""}
+    ${btns}${kh}
+    <button type="button" class="lnk" data-sgwho style="margin-top:8px">📤 किसने कितना ले गया (30 दिन) ›</button>
     <div class="seg" style="margin-top:8px"><span class="note" style="align-self:center">कर्मचारी को गिनती की याद हर</span>${[2,3,4].map(h=>`<button class="chip" data-sghrs="${h}" aria-pressed="${SG.hrs()===h}">${h} घंटे</button>`).join("")}</div>
   </div>`;
 };
@@ -166,11 +176,42 @@ SG.ownerLine=function(){const st=SG.state();if(!st.L.length)return "";const c=st
   let t="💵 गल्ला: "+(st.open?"खुला "+rs(st.open.total):"खोला नहीं")+(c?" · "+c+" बार गिना":"");
   if(st.close){const df=r2(num(st.close.total)-SG.expAt(st.close.ts).exp);t+=" · बंद "+rs(st.close.total)+" ("+(Math.abs(df)<=5?"✅ ठीक":df<0?"🚨 "+rs(-df)+" कम":"+"+rs(df)+" ज़्यादा")+")"}else t+=" · ⚠ बंद नहीं किया";
   const o=st.outs.reduce((a,x)=>a+num(x.total),0);if(o)t+=" · दिया "+rs(o);
+  const un=st.outs.filter(x=>!x.ok);if(un.length)t+="\n   📤 क्लियर बाकी: "+un.map(x=>(x.person||x.to||"")+" "+rs(x.total)+(x.note?" ("+x.note+")":"")).join(", ");
+  if(window.SKH&&SKH.cur()){const L=SKH.low();t+="\n   🪙 खुले का डिब्बा "+rs(SKH.total())+(L.length?" · कम: "+L.map(x=>"₹"+x.v+"×"+x.have).join(", "):"")}
   const oa=SG.openAdv();if(oa.length)t+="\n   🛒 खरीद का हिसाब बाकी: "+oa.map(x=>(x.person||"साथी")+" "+rs(x.total)).join(", ");
   const fk=st.L.filter(g=>g.kind==="back"&&Math.abs(g.fark||0)>1);if(fk.length)t+="\n   🚨 हिसाब में फ़र्क: "+fk.map(g=>(g.person||"")+" "+rs(g.fark)).join(", ");
   const bad=st.L.filter(g=>g.kind==="count").map(g=>r2(num(g.total)-SG.expAt(g.ts).exp)).filter(d=>d<-5);if(bad.length)t+="\n   🚨 "+bad.length+" गिनती में कमी मिली";
   return t+"\n"};
 
+/* ---------- 📤 किसने कितना ले गया (मालिक, 30 दिन) — हॉटस्पॉट ---------- */
+SG.who=async function(days){days=days||30;if(!S.isOwner)return [];const L=[];
+  if(S.demo||!S.db)L.push(...(S.galla||[]).filter(g=>g.kind==="out"));
+  else{const ds=[];for(let k=0;k<days;k++)ds.push(dayAdd(today(),-k));
+    await Promise.all(ds.map(async d=>{try{const q=await S.db.collection("days/"+d+"/galla").where("kind","==","out").get();q.docs.forEach(x=>L.push({id:x.id,date:d,...x.data()}))}catch(e){}}))}
+  return L.filter(g=>!g.void).sort((a,b)=>b.ts-a.ts)};
+SG.whoSheet=async function(){if(!S.isOwner)return;
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="किसने कितना ले गया"><div class="grab"></div><div class="sh-head"><h3>📤 गल्ले से किसने कितना ले गया · 30 दिन</h3><button class="x" data-close aria-label="बंद करें">✕</button></div><div id="sgWho"><p class="note">⏳…</p></div></div></div>`;
+  $("#sheet").onclick=async e=>{if(e.target.matches("[data-close]"))closeSheet()};
+  const L=await SG.who(30),M={};L.forEach(g=>{const k=g.person||g.to||"—";const o=M[k]||(M[k]={n:0,t:0,un:0,to:new Set()});o.n++;o.t+=num(g.total);if(!g.ok)o.un+=num(g.total);o.to.add(g.to||"")});
+  const P=Object.entries(M).sort((a,b)=>b[1].t-a[1].t),T=L.reduce((a,g)=>a+num(g.total),0),U=L.filter(g=>!g.ok).reduce((a,g)=>a+num(g.total),0);
+  const el=document.getElementById("sgWho");if(!el)return;
+  el.innerHTML=L.length?`<div class="kpis"><div class="kpi"><span>कुल निकाला</span><b>${rs(T)}</b></div><div class="kpi ${U?"red":""}"><span>क्लियर बाकी</span><b>${rs(U)}</b></div></div>
+    <h4 style="margin:8px 0 4px">व्यक्ति-वार (सबसे ज़्यादा ऊपर)</h4><div class="list">${P.map(([k,o])=>`<div class="li"><div class="mid"><b>${esc(k)}</b><span>${o.n} बार · ${esc([...o.to].filter(Boolean).join(", "))}${o.un?` · <b style="color:var(--chili)">${rs(o.un)} क्लियर बाकी</b>`:""}</span></div><div class="rt">${rs(o.t)}</div></div>`).join("")}</div>
+    <h4 style="margin:10px 0 4px">हर निकासी</h4><div class="list">${L.slice(0,150).map(g=>`<div class="li"><div class="mid"><b>${rs(g.total)} · ${esc(g.person||g.to||"")}</b><span>${fdate(g.date||today())} ${ftime(g.ts)} · ${esc(g.to||"")}${g.note?" · "+esc(g.note):""} · लिखा ${esc(g.byName||"")}</span></div><div class="rt">${g.ok?'<span class="pill green">✓</span>':`<button type="button" class="chip" data-sgok="${esc(g.id)}" data-d="${esc(g.date||today())}">✓ क्लियर</button>`}</div></div>`).join("")}</div>`:`<div class="empty">30 दिन में गल्ले से कोई निकासी नहीं</div>`};
+SG.clear=async function(id,d){if(!S.isOwner)return;const up={ok:true,okTs:Date.now(),okBy:S.uid||""};
+  try{if(!S.demo&&S.db)await S.db.doc("days/"+d+"/galla/"+id).update(up);const g=(S.galla||[]).find(x=>x.id===id);if(g)Object.assign(g,up);toast("✓ क्लियर");if(S.tab==="day"&&typeof renderDay==="function")renderDay()}catch(e){toast("सेव नहीं हुआ")}};
+/* ---------- 💵 मालिक को हर 2-3 घंटे गल्ले का हाल (ऐप खुला हो तो पट्टी + WhatsApp) ---------- */
+SG.pingText=function(){const n=SG.expAt(Date.now()),st=SG.state(),un=st.outs.filter(o=>!o.ok);
+  let t="💵 "+ftime(Date.now())+" गल्ला · होना चाहिए "+rs(n.exp)+"\nनकद बिक्री "+rs(n.cash)+(n.jama?" · उधारी वसूली "+rs(n.jama):"")+(n.out?" · दिया/निकाला "+rs(n.out):"")+(n.kh||n.pu?" · खर्चा/खरीद "+rs(n.kh+n.pu):"");
+  if(st.last&&st.last.kind!=="open"){const df=r2(num(st.last.total)-SG.expAt(st.last.ts).exp);t+="\nआख़िरी गिनती "+ftime(st.last.ts)+" "+rs(st.last.total)+" ("+(Math.abs(df)<=5?"✅ ठीक":df<0?"🚨 "+rs(-df)+" कम":"+"+rs(df))+")"}
+  if(un.length)t+="\n📤 क्लियर बाकी: "+un.map(o=>(o.person||o.to||"")+" "+rs(o.total)).join(", ");
+  if(window.SKH&&SKH.cur()&&SKH.low().length)t+="\n🪙 खुले कम: "+SKH.low().map(x=>"₹"+x.v+"×"+x.have).join(", ");return t};
+SG.ownerPing=function(force){if(!S.isOwner||S.demo&&!force||S.billsDate!==today()||document.getElementById("sgPing"))return false;
+  const st=SG.state();if(!st.open&&!force)return false;const h=new Date().getHours();if(!force&&(h<8||h>=23))return false;
+  const k="sg_ping_"+today();if(!force&&Date.now()-(+LSg.get(k)||0)<SG.hrs()*36e5)return false;LSg.set(k,String(Date.now()));
+  const t=SG.pingText(),el=document.createElement("div");el.id="sgPing";el.className="sgnag";el.setAttribute("role","status");
+  el.innerHTML=`<b style="white-space:pre-line">${esc(t)}</b><div><button class="nag-go" data-sgping="day">देखें</button><a class="nag-go" style="flex:1;text-align:center;border-radius:12px;padding:10px;font-weight:700;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(t)}">📲 WhatsApp</a><button data-sgping="x">ठीक</button></div>`;
+  const m=document.getElementById("main");if(m)m.prepend(el);return true};
 /* ---------- कर्मचारी को याद (बिलिंग पर छोटी पट्टी) ---------- */
 SG.nag=function(force){
   if(S.isOwner||S.demo&&!force||!biller()||S.billsDate!==today())return false;
@@ -193,8 +234,11 @@ document.addEventListener("click",e=>{
   const n=e.target.closest("[data-sgnag]");if(n){const el=document.getElementById("sgNag");const k=el?el.dataset.k:"count";
     if(el)el.remove();if(n.dataset.sgnag==="later"){LSg.set("sg_snz_"+today()+"_"+k,String(Date.now()));return}if(n.dataset.sgnag==="back"){SG.backSheet();return}SG.sheet(n.dataset.sgnag)}
   if(e.target.closest("[data-sgback]")){SG.backSheet();return}
+  const ok=e.target.closest("[data-sgok]");if(ok){ok.disabled=true;SG.clear(ok.dataset.sgok,ok.dataset.d).then(()=>{if(document.getElementById("sgWho"))SG.whoSheet()});return}
+  if(e.target.closest("[data-sgwho]")){SG.whoSheet();return}
+  const pg=e.target.closest("[data-sgping]");if(pg){const el=document.getElementById("sgPing");if(el)el.remove();if(pg.dataset.sgping==="day"){S.tab="day";if(typeof showTab==="function")showTab()}return}
 });
-setTimeout(()=>{try{SG.loadOld().then(()=>{if(S.tab==="day"&&typeof renderDay==="function")renderDay()})}catch(e){}},8000);setTimeout(()=>{try{SG.nag()}catch(e){}},25000);setInterval(()=>{try{SG.nag()}catch(e){}},60000);
+setTimeout(()=>{try{SG.loadOld().then(()=>{if(S.tab==="day"&&typeof renderDay==="function")renderDay()})}catch(e){}},8000);setTimeout(()=>{try{SG.nag()}catch(e){}},25000);setInterval(()=>{try{SG.nag();SG.ownerPing()}catch(e){}},60000);
 
 const css=document.createElement("style");css.textContent=`
 .sg-grid{display:grid;gap:6px}.sg-row{display:grid;grid-template-columns:72px 16px 1fr 84px;align-items:center;gap:6px}

@@ -13,10 +13,13 @@ SKJ.sim=(a,b)=>{const A=words(a),B=new Set(words(b));if(!A.length||!B.size)retur
 const dd=(a,b)=>Math.abs((new Date(a+"T12:00:00")-new Date(b+"T12:00:00"))/864e5);
 SKJ.parse=function(t){t=String(t||"");const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a<0)throw new Error("कोड में { } नहीं");const j=JSON.parse(t.slice(a,b+1));
   if(j.app!=="mh177-kharid"||!Array.isArray(j.bills))throw new Error("यह खरीद-बही का कोड नहीं");if(!SE.orgOk(j.org))throw new Error(SE.orgErr(j.org));return j.bills};
+const LN=l=>({id:l.id||"",name:l.name||"",qty:+l.qty||0,rate:+l.rate||0,amt:+l.amt||+l.billAmt||0,...(l.unit?{u:l.unit}:{}),...(l.ctn?{ctn:l.ctn}:{}),...(l.exp?{exp:l.exp}:{})});
+const XT=p=>({ts:+p.ts||0,...(p.supPhone?{ph:p.supPhone}:{}),...(p.paid!=null?{paid:+p.paid||0}:{}),...(p.pay?{pay:p.pay}:{}),...(p.late?{late:1}:{}),phn:(p.photos||[]).length+(+p.photoPending||0)});
+SKJ.appBuys=(f,t)=>appBuys(f,t);
 async function appBuys(from,to){const L=[];const seen=new Set();const add=(x,k)=>{if(!x||seen.has(k+x.id))return;seen.add(k+x.id);L.push(x)};
-  [...(S.purchHist||[]),...(S.purch||[])].forEach(p=>add({id:p.id,kind:"खरीद",date:p.date,sup:p.supName||"",total:+p.total||+p.gross||0,by:p.byName||"",lines:(p.lines||[]).map(l=>({id:l.id||"",name:l.name||"",qty:+l.qty||0,rate:+l.rate||0,amt:+l.amt||+l.billAmt||0})),cancelled:!!p.cancelled,note:p.note||""},"p"));
-  if(!S.demo&&S.db){try{const q=await S.db.collection("purchases").where("date",">=",from).get();q.docs.forEach(d=>{const p=d.data();add({id:d.id,kind:"खरीद",date:p.date,sup:p.supName||"",total:+p.total||0,by:p.byName||"",lines:(p.lines||[]).map(l=>({id:l.id||"",name:l.name||"",qty:+l.qty||0,rate:+l.rate||0,amt:+l.amt||0})),cancelled:!!p.cancelled,note:p.note||""},"p")})}catch(e){}
-    try{const q=await S.db.collection("mbuys").where("date",">=",from).get();q.docs.forEach(d=>{const m=d.data();add({id:d.id,kind:"बाज़ार",date:m.date,sup:m.shop||"",total:+m.total||0,by:m.byName||"",lines:(m.lines||[]).map(l=>({id:l.id||"",name:l.name||"",qty:+l.qty||0,rate:+l.rate||0,amt:+l.amt||0})),cancelled:m.status==="cancel",note:(m.bill||"")+" "+(m.note||"")},"m")})}catch(e){}}
+  [...(S.purchHist||[]),...(S.purch||[])].forEach(p=>add({id:p.id,kind:"खरीद",date:p.date,sup:p.supName||"",total:+p.total||+p.gross||0,by:p.byName||"",lines:(p.lines||[]).map(LN),cancelled:!!p.cancelled,note:p.note||"",...XT(p)},"p"));
+  if(!S.demo&&S.db){try{const q=await S.db.collection("purchases").where("date",">=",from).get();q.docs.forEach(d=>{const p=d.data();add({id:d.id,kind:"खरीद",date:p.date,sup:p.supName||"",total:+p.total||0,by:p.byName||"",lines:(p.lines||[]).map(LN),cancelled:!!p.cancelled,note:p.note||"",...XT(p)},"p")})}catch(e){}
+    try{const q=await S.db.collection("mbuys").where("date",">=",from).get();q.docs.forEach(d=>{const m=d.data();add({id:d.id,kind:"बाज़ार",date:m.date,sup:m.shop||"",total:+m.total||0,by:m.byName||"",lines:(m.lines||[]).map(LN),cancelled:m.status==="cancel",note:(m.bill||"")+" "+(m.note||""),...XT(m)},"m")})}catch(e){}}
   (SKJ._demo||[]).forEach(x=>add(x,"d"));return L.filter(x=>!x.cancelled&&x.date>=from&&x.date<=to)}
 /* हर बिल का सबसे अच्छा मिलान: तारीख ±4 दिन, फिर कुल रकम / दुकान का नाम / सामान के नाम */
 SKJ.check=async function(bills){bills=(bills||[]).filter(b=>b&&b.date);if(!bills.length)return [];const ds=bills.map(b=>b.date).sort();
@@ -80,7 +83,7 @@ SKJ.makeItems=async function(plan){const r2=n=>Math.round((+n||0)*100)/100;let n
     try{if(pp>1){const sec=tob?nextS():"";
         const pc={...common,name:base+" 1 PC",short:(base+" 1PC").slice(0,24),secret:sec,perPack:pp,code,barcode:ean13("2000000"+code+"0"),track:true,min:pp,mrp:r2((+l.mrp||0)/pp),sale:+l.saleOne||r2((+l.sale||0)/pp),cost:r2((+l.uc||+l.rate||0)/pp),order:(S.items||[]).length+1};
         if(!S.demo)await S.db.collection("items").doc(id).set(pc);S.items.push({id,...pc});
-        let c2=nextCode(cat);if(c2===code)c2=String(+code+1);const pid=id+"-pk";
+        let c2=nextCode(cat,[code]);const pid=id+"-pk";
         const pk={...common,name:SE.capNm(l.nm),short:SE.capNm(l.nm).slice(0,24),secret:sec?sec+"P":"",packOf:id,perPack:pp,code:c2,barcode:String(l.bc||ean13("2000000"+c2+"0")),track:false,min:0,mrp:+l.mrp||0,sale:+l.sale||r2((+l.saleOne||0)*pp),cost:r2(+l.uc||+l.rate||0),order:pc.order+0.5};
         if(!S.demo)await S.db.collection("items").doc(pid).set(pk);S.items.push({id:pid,...pk});made.push(pk.name+" + 1 PC");n+=2}
       else{const it={...common,name:SE.capNm(l.nm),short:SE.capNm(l.nm).slice(0,24),secret:tob?nextS():"",perPack:0,code,barcode:String(l.bc||ean13("2000000"+code+"0")),track:true,min:5,mrp:+l.mrp||0,sale:+l.sale||+l.saleOne||0,cost:r2(+l.uc||+l.rate||0),order:(S.items||[]).length+1};
@@ -109,6 +112,13 @@ function planHTML(P){if(!P)return "";const n=P.filter(x=>x.st==="new"||x.st==="d
 function itemsHTML(I){if(!I)return "";const k=I.filter(x=>x.ok).length;
   return `<div class="skj-b">${I.map(x=>{const l=x.l,pp=+l.pp||0;return `<div class="skj-l"><b>${l.tob?"🔒 ":""}${esc(SE.capNm(l.nm))}</b> ${pp>1?`<span>खुला 1 PC ₹${esc(l.saleOne||"?")} + पैकेट ${pp} ₹${esc(l.sale||"?")}</span>`:`<span>₹${esc(l.sale||l.saleOne||"?")}</span>`}${l.bc?`<span>${esc(l.bc)}</span>`:""}<i style="font-style:normal;margin-left:4px">${esc(x.why||"🆕 बनेगा")}</i></div>`}).join("")}</div>
   ${k?`<button type="button" class="pri big" data-skjmk>🆕 ${k} सामान ऐप में बनाओ</button>`:""}`}
+/* 📋 ऐप में साथियों की चढ़ाई सारी खरीद → Claude (खरीद-बही से मिलान, docs/खरीद-बही/README.md §ऐप-नकल) */
+SKJ.appCode=async function(days){days=+days||30;const to=today(),from=new Date(Date.now()-days*864e5).toISOString().slice(0,10);
+  const L=(await appBuys(from,to)).sort((a,b)=>String(a.date).localeCompare(b.date)||(a.ts||0)-(b.ts||0));
+  const bc=id=>{const it=id&&item(id);const b=it&&String(it.barcode||"").replace(/\D/g,"");return b&&b.length>=8?b:""};
+  return JSON.stringify({app:"mh177-appbuys",org:SE.org,v:1,from,to,n:L.length,ts:Date.now(),
+    buys:L.map(x=>({k:x.kind,id:x.id,d:x.date,ts:x.ts||0,sup:x.sup,...(x.ph?{ph:x.ph}:{}),t:x.total,...(x.paid!=null?{paid:x.paid}:{}),...(x.pay?{pay:x.pay}:{}),by:x.by,...(x.late?{late:1}:{}),phn:x.phn||0,...(String(x.note||"").trim()?{note:String(x.note).trim()}:{}),
+      ln:x.lines.map(l=>({n:l.name,...(l.id?{i:l.id}:{}),...(bc(l.id)?{b:bc(l.id)}:{}),q:l.qty,...(l.u&&l.u!=="pc"?{u:l.u}:{}),r:l.rate,a:l.amt,...(l.ctn?{c:l.ctn}:{}),...(l.exp?{x:l.exp}:{})}))}))})};
 SKJ.text=R=>(R||[]).map(r=>`${STT[r.st]} — ${r.b.sup} #${r.b.no} (${r.b.date}, ₹${r.b.total})${r.m?` · ऐप: ${r.m.kind} ₹${r.m.total} by ${r.m.by}`:""}${r.rows.filter(x=>x.warn.length).map(x=>`\n   • ${x.nm}: ${x.warn.join("; ")}`).join("")}`).join("\n");
 const V={R:null,P:null,I:null};
 SKJ.open=function(){if(!own()){toast("सिर्फ़ विक्रम जी");return}const B=LS.get("skj_b",[]);
@@ -118,6 +128,7 @@ SKJ.open=function(){if(!own()){toast("सिर्फ़ विक्रम ज�
   <textarea id="skjIn" class="inp" rows="4" placeholder='{"app":"mh177-kharid","bills":[…]}' style="width:100%;font:12px monospace"></textarea>
   <div style="display:flex;gap:6px;margin:6px 0"><button type="button" class="pri big" data-skjgo>🔍 मिलान करें</button>${B.length?`<button type="button" class="big ghost" data-skjold>♻️ याद वाले ${B.length} बिल फिर जाँचें</button>`:""}</div>
   <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 0 6px"><button type="button" class="big" data-skjplan>📥 बही से ऐप में चढ़ाओ</button><button type="button" class="big ghost" data-skjcat>📤 सामान-सूची कॉपी (बही के लिए)</button></div>
+  <div class="skj-ac" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 6px"><span class="note">📋 ऐप की सारी खरीद Claude को (मिलान के लिए):</span>${[7,30,90].map(d=>`<button type="button" class="big ghost" data-skjapp="${d}" style="flex:1">${d} दिन</button>`).join("")}</div>
   <button type="button" class="big ghost" data-skjitems style="margin:0 0 6px">🆕 बही से नए सामान बनाओ (भाव, पैकेट, कोड — स्टॉक नहीं छूता)</button><div id="skjItems">${itemsHTML(V.I)}</div>
   <div id="skjPlan">${planHTML(V.P)}</div>
   <div id="skjOut">${resHTML(V.R)}</div></div></div>`;
@@ -133,6 +144,8 @@ SKJ.open=function(){if(!own()){toast("सिर्फ़ विक्रम ज�
     if(t.closest("[data-skjgoimp]")){const b=t.closest("[data-skjgoimp]");b.disabled=true;let n=0,h=0;for(const P of V.P||[]){const ok=P.st==="new"||(P.st==="dup"&&S.isOwner&&($(`[data-skjforce="${P.id}"]`)||{}).checked);if(!ok)continue;
         try{const r=await SKJ.importOne(P);if(r==="ok"){P.st="made";n++}else{P.st="have";h++}}catch(err){P.err=err.code||err.message}}
       $("#skjPlan").innerHTML=planHTML(V.P);beep(true);toast(`✓ ${n} बिल ऐप में "बाज़ार खरीद" में — बिलिंग वाला गिनकर पक्का करे${h?` · ${h} पहले से थे`:""}`);return}
+    const ap=t.closest("[data-skjapp]");if(ap){ap.disabled=true;const c=await SKJ.appCode(ap.dataset.skjapp);ap.disabled=false;const n=JSON.parse(c).n;
+      try{await navigator.clipboard.writeText(c);toast("✓ "+n+" खरीद कॉपी — Claude की चैट में चिपकाएँ")}catch(err){try{if(window.SX&&SX.shareBlob)await SX.shareBlob(new Blob([c],{type:"application/json"}),"MH177_khareed_"+today(),"json","application/json","177 MH खरीद");else{$("#skjIn").value=c;toast("कॉपी नहीं हुआ — ऊपर डिब्बे से कॉपी करें")}}catch(x){}}return}
     if(t.closest("[data-skjcopy]")){const s=SKJ.text(V.R);try{await navigator.clipboard.writeText(s);toast("✓ कॉपी — Claude की चैट में चिपकाएँ")}catch(err){toast("कॉपी नहीं हुआ")}}}};
 SKJ.zeroHTML=()=>own()?`<div class="card2" id="skjZero"><h3 style="margin:0 0 4px">🧹 स्टॉक शून्य करें</h3><p class="note" style="margin:0 0 8px">बिलिंग शुरू करने से पहले — असली गिनती से शुरुआत के लिए। हर सामान का बदलाव स्टॉक-हिसाब में लिखा रहेगा (मिटेगा नहीं)। सिर्फ़ विक्रम जी।</p>
   <div class="seg" style="margin-bottom:6px"><button class="chip" data-zsel="all" aria-pressed="true">सारे सामान</button><button class="chip" data-zsel="tob" aria-pressed="false">🔒 सिर्फ़ कोड वाले</button></div>

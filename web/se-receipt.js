@@ -18,10 +18,11 @@ const SHOW=[
   ["points","🎁 ग्राहक के पॉइंट"],["delivery","📲 घर बैठे मँगाएँ डिब्बा"],["nutri","🥗 सेहत का हिसाब"],["note","💬 अपनी लाइन"],["barcode","🔢 बिल नंबर का बारकोड"],
   ["foot","🙏 धन्यवाद लाइन"],["biller","बिलर का नाम"]];
 const DEF={theme:"classic",size:"m",lang:"en",shop:"177 MH CANTEEN",tag:"Sweets · Snacks · Grocery · Daily Needs",addr:"Akashvani Road, Barmer",gst:"",note:"",foot:"🙏 Thank you! Visit again",
-  show:{logo:1,tag:1,addr:1,phone:1,gst:0,custTag:1,billno:1,date:1,cust:1,sr:1,en:1,rate:1,count:0,saved:1,pay:1,balance:1,qr:1,stamps:1,stampPay:1,stampBy:1,delivery:1,points:1,nutri:0,note:0,barcode:1,foot:1,biller:1}};
+  show:{logo:1,tag:1,addr:1,phone:1,gst:0,custTag:1,billno:1,date:1,cust:1,sr:1,en:1,rate:1,count:1,saved:1,pay:1,balance:1,qr:1,stamps:1,stampPay:1,stampBy:1,delivery:1,points:1,nutri:0,note:0,barcode:1,foot:1,biller:1}};
 SRc.THEMES=THEMES;SRc.SHOW=SHOW;
 SRc.cfg=function(){let s={};try{s=(S.settings&&S.settings.rcpt)||{}}catch(e){}const sh={...DEF.show,...(s.show||{})};
   if(s.show&&s.show.stamps===0&&s.show.stampPay==null&&s.show.stampBy==null){sh.stampPay=0;sh.stampBy=0}/* पुरानी "दोनों ठप्पे बंद" सेटिंग */
+  if(!s.cnt9)sh.count=1;/* 🧮 09-11-2026 विक्रम जी: superstore जैसा "कुल सामान · कुल नग" हर बिल पर — पुरानी "बंद" सेटिंग एक बार चालू; इसके बाद मालिक बंद करें तो बंद */
   return {...DEF,...s,show:sh}};
 /* 🇬🇧 छपे बिल की भाषा — English (D-Mart/Vishal जैसा प्रोफ़ेशनल, सरल अंग्रेज़ी); ऐप की स्क्रीन हिंदी ही रहती है।
    छपाई के canvas पर ही अनुवाद — कोई बिल-डेटा नहीं बदलता। */
@@ -30,7 +31,7 @@ const EN_X={"क्र.":"#","सामान":"ITEM","मात्रा":"QTY"
   "🧑‍🌾 बिलिंग":"BILLED BY","❌ रद्द":"❌ CANCELLED","💵 नकद":"💵 CASH","लेना है":"Due","📒 उधार":"📒 CREDIT","खाते में":"On account","🔀 नकद+उधार":"🔀 CASH+CREDIT",
   "⏳ भुगतान":"⏳ PAYMENT","बाकी":"Pending","स्कैन करें":"Scan to pay","नकद":"Cash","🥗 इस थैले में आपकी सेहत (लगभग)":"🥗 Nutrition in this bag (approx.)","—":"—"};
 const EN_R=[[/VIP ग्राहक/,"VIP CUSTOMER"],[/🧑‍🌾 बिलिंग|बिलिंग/,"BILLED BY"],[/📒 क्रेडिट \/ उधार खाता/,"📒 CREDIT ACCOUNT"],[/🏢 संस्था चालान · खरीद भाव/,"🏢 INSTITUTION CHALLAN"],[/माल चालान — /,"Delivery Challan — "],
-  [/^बिल नं: /,"Bill No: "],[/^बिल: /,"Bill: "],[/^तारीख: /,"Date: "],[/^ग्राहक: /,"Customer: "],[/^कुल सामान: /,"Items: "],[/^पीस: /,"Pcs: "],[/^भुगतान: /,"Paid: "],
+  [/^बिल नं: /,"Bill No: "],[/^बिल: /,"Bill: "],[/^तारीख: /,"Date: "],[/^ग्राहक: /,"Customer: "],[/^कुल सामान: /,"Total Items: "],[/^कुल नग: /,"Total Qty: "],[/^पीस: /,"Pcs: "],[/^भुगतान: /,"Paid: "],
   [/🎉 आपने MRP से (₹[\d,.]+) बचाए/,"🎉 You saved $1 on MRP"],[/🎁 आपके पॉइंट: /,"🎁 Your points: "],[/ — अगली बार इनाम/," — reward on next visit"],
   [/📲 घर बैठे मँगाएँ: /,"📲 Order from home: "],[/📞 ऑर्डर: /,"📞 Orders: "],[/^बिलर: /,"Billed by: "],
   [/खाते में कुल बाकी (₹[\d.,]+) — इसी QR से चुकाएँ/,"Balance due $1 — pay with this QR"],[/✓ भुगतान हो गया · अगली बार भी इसी QR से भुगतान करें/,"✓ Paid · Use this QR for future payments"],
@@ -50,7 +51,7 @@ SRc.roman=function(t){return String(t).replace(/[ऀ-ॿ]+/g,w=>{w=w.normalize("
   o=o.replace(/ee$/,"i");return o.charAt(0).toUpperCase()+o.slice(1)})};/* आख़िरी ई = i (भाई → Bhai, जी → Ji) */
 SRc.en=function(t){t=String(t??"");if(EN_X[t]!=null)return EN_X[t];for(const [a,b] of EN_R)t=t.replace(a,b);return /[ऀ-ॿ]/.test(t)?SRc.roman(t):t};
 let saveT=0;
-SRc.save=function(patch){const cur=SRc.cfg(),c={...cur,...patch,show:{...cur.show,...(patch.show||{})}};S.settings={...(S.settings||{}),rcpt:c};
+SRc.save=function(patch){const cur=SRc.cfg(),c={...cur,...patch,cnt9:1,show:{...cur.show,...(patch.show||{})}};S.settings={...(S.settings||{}),rcpt:c};
   clearTimeout(saveT);saveT=setTimeout(async()=>{try{if(!S.demo&&S.db)await S.db.doc("settings/main").set({rcpt:c},{merge:true});toast("✓ बिल का डिज़ाइन सेव — सब फोन पर")}catch(e){toast("सेव नहीं हुआ — सिर्फ़ विक्रम जी बदल सकते हैं")}},450)};
 
 function wrap(x,t,maxW){if(x._en)t=x._en(t);const out=[];/* अंग्रेज़ी बिल: पहले अनुवाद, फिर लाइन तोड़ो */for(const para of String(t).split("\n")){const ws=para.split(" ");let cur="";
@@ -116,7 +117,9 @@ SRc.draw=function(b,o,widthPx,cfg){
     L.forEach((l,i)=>row(String(i+1),nm(l),qf(l),rateT(l),money(l.amt)));
   }
   SEP();
-  if(sh.count&&L.length){const pc=L.filter(l=>l.unit!=="kg").reduce((a,l)=>a+(+l.qty||0),0);LR("कुल सामान: "+L.length,pc?"पीस: "+r2(pc):"",fs(14),600)}
+  /* 🧮 superstore जैसा: कितनी किस्म, कितने नग (मुफ़्त भी गिने), वज़न अलग — गिनकर देने के लिए */
+  if(sh.count&&L.length){const pc=L.filter(l=>l.unit!=="kg").reduce((a,l)=>a+(+l.qty||0),0),kg=L.filter(l=>l.unit==="kg").reduce((a,l)=>a+(+l.qty||0),0);
+    LR("कुल सामान: "+L.length,"कुल नग: "+r2(pc)+(kg?" + "+r2(kg)+" kg":""),fs(17),800);DASH()}
   /* ---------- जोड़ ---------- */
   const sub=r2(b.sub!=null?b.sub:L.reduce((a,l)=>a+(l.amt||0),0));
   if(b.disc){LR("जोड़",money(sub),fs(17));LR("छूट","−"+money(b.disc),fs(17))}

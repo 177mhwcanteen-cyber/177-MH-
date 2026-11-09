@@ -155,12 +155,19 @@ function pItemSheet(id,idx,qty0){
   const q0=ln?ln.qty:(qty0||""),r0=ln?ln.rate:"",pk=it&&isPc(it.unit)&&it.cat!=="fast",e0=ln?(ln.exp||""):"";
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
   const chips=kg&&it?[[5,"5"],[10,"10"],[20,"20"],[50,"50"]]:[[1,"1"],[5,"5"],[10,"10"],[20,"20"]];
+  /* 📦 कार्टून/पेटी (विक्रम जी, 09-11-2026): कितने कार्टून × एक में कितने × भाव (कार्टून का या एक पीस का) → पीस और पीस का भाव अपने-आप */
+  const LSk=k=>{try{return localStorage.getItem(k)}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+  const ctnOk=!!(it&&pk);let CT=ctnOk&&(ln?!!ln.ctn:LSk("mk_ct_"+it.id)==="1"),RM=(ln&&ln.ctn&&ln.ctn.rm)||LSk("mk_rm_"+(it&&it.id))||"ctn";
+  const per0=ln&&ln.ctn?ln.ctn.per:(it?(+LSk("mk_per_"+it.id)||(+it.perPack>1&&!it.packOf?+it.perPack:"")):"");
   $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="खरीद: ${it?esc(SE.capNm(it.name)):"दूसरा सामान"}">
     <div class="qh">${it?tileHTML(it):'<span class="tile"><span class="em">📦</span></span>'}<div class="qn"><b>${it?esc(SE.capNm(it.name)):"दूसरा सामान"}</b><span>${lr?`पिछली खरीद ${rs(lr.rate)}/${u}${lr.date?" · "+fdate(lr.date).slice(0,5):""}`:"पहली बार खरीद"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     ${it?"":`<label class="qf"><input id="piN" autocomplete="off" placeholder="क्या लिया — पॉलीथीन, रस्सी…" value="${esc(ln?ln.name:"")}" style="font-size:20px"></label>`}
-    <div class="qrow"><label class="qf"><input id="piQ" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="0" value="${q0}" aria-label="वज़न"><span>${kg&&it?"कि.ग्रा":u}</span></label>
-      <span class="or">×</span><label class="qf"><span>₹</span><input id="piR" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="${lr?lr.rate:"भाव"}" value="${r0}" aria-label="भाव"><span>/${kg&&it?"kg":u}</span></label></div>
-    ${it&&+it.perPack>1&&!it.packOf?`<label class="note" style="display:flex;gap:8px;align-items:center;font-size:15px"><input type="checkbox" id="piPk" checked style="width:22px;height:22px"> 📦 पैकेट में लिख रहे हैं (1 पैकेट = ${+it.perPack} पीस) — मात्रा पैकेट, भाव ₹/पैकेट</label>`:""}
+    ${ctnOk?`<div class="seg pi-ct" role="group" aria-label="कैसे आया"><button type="button" class="chip" data-pict="0" aria-pressed="${!CT}">🔹 पीस में</button><button type="button" class="chip" data-pict="1" aria-pressed="${CT}">📦 कार्टून / पेटी में</button></div>
+    <div class="qrow" id="piCR" ${CT?"":"hidden"}><label class="qf"><span>एक कार्टून में</span><input id="piC" inputmode="numeric" autocomplete="off" placeholder="24" value="${per0}" aria-label="एक कार्टून में कितने पीस"><span>पीस</span></label></div>
+    <div class="seg" id="piRM" ${CT?"":"hidden"} role="group" aria-label="भाव किसका"><button type="button" class="chip" data-pirm="ctn" aria-pressed="${RM==="ctn"}">₹ पूरे कार्टून का</button><button type="button" class="chip" data-pirm="pc" aria-pressed="${RM==="pc"}">₹ एक पीस का</button></div>`:""}
+    <div class="qrow"><label class="qf"><input id="piQ" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="0" value="${ln&&ln.ctn?ln.ctn.n:q0}" aria-label="वज़न"><span>${kg&&it?"कि.ग्रा":u}</span></label>
+      <span class="or">×</span><label class="qf"><span>₹</span><input id="piR" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="${lr?lr.rate:"भाव"}" value="${ln&&ln.ctn?ln.ctn.r:r0}" aria-label="भाव"><span>/${kg&&it?"kg":u}</span></label></div>
+    ${it&&+it.perPack>1&&!it.packOf?`<label class="note" id="piPkL" ${CT?"hidden":""} style="display:flex;gap:8px;align-items:center;font-size:15px"><input type="checkbox" id="piPk" ${CT?"":"checked"} style="width:22px;height:22px"> 📦 पैकेट में लिख रहे हैं (1 पैकेट = ${+it.perPack} पीस) — मात्रा पैकेट, भाव ₹/पैकेट</label>`:""}
     ${pk?`<label class="qf qexp"><span>एक्सपायरी</span><input id="piE" type="date" value="${esc(e0)}" aria-label="एक्सपायरी तारीख"></label>${+it.mrp?`<span class="note" style="margin:-4px 2px 0">MRP ₹${+it.mrp} · बिक्री ₹${+it.sale||0}</span>`:""}`:""}
     <div class="qchips2">${chips.map(([v,l])=>`<button type="button" data-piq="${v}">${l}${kg&&it?" किलो":""}</button>`).join("")}</div>
     <div id="piB" class="pbadge" style="min-height:0"></div>
@@ -168,33 +175,44 @@ function pItemSheet(id,idx,qty0){
     <div style="display:flex;justify-content:space-between;align-items:center"><button class="lnk" data-pitot>सिर्फ़ कुल रकम पता है?</button>${ln?'<button class="lnk" data-pidel style="color:var(--chili)">हटाएँ</button>':""}</div>
   </div>`;
   const sh=$("#sheet"),Q=$("#piQ"),Rt=$("#piR"),btn=sh.querySelector("[data-pisave]");
-  const rate=()=>num(Rt.value)>0?num(Rt.value):(String(Rt.value).trim()===""&&lr?lr.rate:0);
-  const pkN=()=>it&&+it.perPack>1&&!it.packOf&&$("#piPk")&&$("#piPk").checked?+it.perPack:1;
-  const upd=()=>{const q=num(Q.value),r=rate(),n=pkN();btn.disabled=!(q>0&&r>0);
+  const cper=()=>CT?num(($("#piC")||{}).value):0;
+  const rate=()=>num(Rt.value)>0?num(Rt.value):(String(Rt.value).trim()===""&&lr?(CT&&RM==="ctn"&&cper()>0?r2(lr.rate*cper()):lr.rate):0);
+  const pkN=()=>it&&+it.perPack>1&&!it.packOf&&!CT&&$("#piPk")&&$("#piPk").checked?+it.perPack:1;
+  const updC=()=>{const c=cper(),q=num(Q.value),r=rate(),pr=RM==="ctn"&&c>0?r/c:r,pcs=q*c;btn.disabled=!(q>0&&r>0&&c>0);
+    try{Q.nextElementSibling.textContent="कार्टून";Rt.nextElementSibling.textContent=RM==="ctn"?"/कार्टून":"/पीस";Rt.setAttribute("aria-label",RM==="ctn"?"एक कार्टून का भाव":"एक पीस का भाव")}catch(e){}
+    btn.textContent=!(c>0)?"एक कार्टून में कितने पीस — लिखें":q>0&&r>0?`${ln?"बदलें":"जोड़ें"} · ${q} कार्टून × ${c} = ${r2(pcs)} पीस · ${rs(Math.round(pr*100)/100)}/पीस · कुल ${rs(r2(pcs*pr))}`:"कितने कार्टून और भाव लिखें";
+    if(it)$("#piB").innerHTML=r>0&&c>0&&String(Rt.value).trim()!==""?rateBadge(it.id,Math.round(pr*10000)/10000):""};
+  const upd=()=>{if(CT)return updC();const q=num(Q.value),r=rate(),n=pkN();btn.disabled=!(q>0&&r>0);
     try{Q.nextElementSibling.textContent=n>1?"पैकेट":(kg&&it?"कि.ग्रा":u);Rt.nextElementSibling.textContent=n>1?"/पैकेट":"/"+(kg&&it?"kg":u)}catch(e){}
     btn.textContent=q>0&&r>0?(n>1?`${ln?"बदलें":"जोड़ें"} · ${q} पैकेट (${q*n} पीस) × ${rs(r)} = ${rs(r2(q*r))}`:`${ln?"बदलें":"जोड़ें"} · ${fq(q,kg&&it?"kg":(it?it.unit:"pc"))} × ${rs(r)} = ${rs(r2(q*r))}`):"वज़न और भाव लिखें";
     if(it)$("#piB").innerHTML=r>0&&String(Rt.value).trim()!==""?rateBadge(it.id,Math.round(r/n*10000)/10000):""};
   const save=()=>{
-    const PK=it&&+it.perPack>1&&!it.packOf&&$("#piPk")&&$("#piPk").checked?+it.perPack:1;
-    const q=r2(num(Q.value)*PK*1000)/1000,r=Math.round(rate()/PK*10000)/10000,nm=it?it.name:String(($("#piN")||{}).value||"").trim();
+    const PK=CT?cper():it&&+it.perPack>1&&!it.packOf&&$("#piPk")&&$("#piPk").checked?+it.perPack:1;
+    if(CT&&!(PK>0)){toast("एक कार्टून में कितने पीस — लिखें");$("#piC").focus();return}
+    const q=r2(num(Q.value)*PK*1000)/1000,r=Math.round((CT&&RM==="pc"?rate():rate()/PK)*10000)/10000,nm=it?it.name:String(($("#piN")||{}).value||"").trim();
     if(!it&&!nm){toast("क्या लिया — यह लिखें");$("#piN").focus();return}if(!(q>0)){Q.focus();return}if(!(r>0)){Rt.focus();return}
     const xd=pk&&$("#piE")?$("#piE").value:"";
     if(xd&&xd<today()){toast("यह माल पहले से एक्सपायर है — तारीख जाँचें");$("#piE").focus();return}
     /* 🛡️ C6: रकम को भाव वाले खाने में लिखने की गलती (पुराना ₹7,040 वाला मामला) */
     if(r>=1000&&P._bigR!==r+"|"+nm){P._bigR=r+"|"+nm;toast(`एक ${it&&it.unit==="kg"?"किलो":"पीस"} का भाव ₹${r}? पूरी रकम नहीं, एक का भाव लिखें — सही है तो दोबारा दबाएँ`);return}
     if(it&&it.cost>0&&(r>it.cost*3||r<it.cost/3)&&P._oddR!==r+"|"+it.id){P._oddR=r+"|"+it.id;toast(`पिछली खरीद ₹${it.cost} थी, अब ₹${r}? सही है तो दोबारा दबाएँ`);return}
-    const line={id:it?it.id:"",name:nm,unit:it?it.unit:"pc",qty:q,rate:r,...(xd?{exp:xd}:{})};
-    if(ln)P.lines[idx]=line;else{const ex=it?P.lines.findIndex(l=>l.id===it.id&&num(l.rate)===r):-1;if(ex>-1&&(P.lines[ex].exp||"")===(line.exp||""))P.lines[ex]={...line,qty:r2((num(P.lines[ex].qty)+q)*1000)/1000};else P.lines.push(line)}
+    const line={id:it?it.id:"",name:nm,unit:it?it.unit:"pc",qty:q,rate:r,...(xd?{exp:xd}:{}),...(CT?{ctn:{n:num(Q.value),per:PK,rm:RM,r:num(Rt.value)||rate()}}:{})};
+    if(it){LSs("mk_ct_"+it.id,CT?"1":"0");if(CT){LSs("mk_per_"+it.id,String(PK));LSs("mk_rm_"+it.id,RM)}}
+    if(ln)P.lines[idx]=line;else{const ex=it&&!CT?P.lines.findIndex(l=>l.id===it.id&&num(l.rate)===r&&!l.ctn):-1;if(ex>-1&&(P.lines[ex].exp||"")===(line.exp||""))P.lines[ex]={...line,qty:r2((num(P.lines[ex].qty)+q)*1000)/1000};else P.lines.push(line)}
     P.q="";P.net="";saveDraft();closeSheet();SF.renderKharid(1);beep(true);toast("✓ "+nm+" "+fq(q,line.unit)+" × "+rs(r)+" = "+rs(r2(q*r)));
     if(ln){pBillSheet();return}
     setTimeout(()=>{const s2=$("#pq");if(s2){s2.focus();s2.scrollIntoView({block:"center"})}},60);
   };
   upd();setTimeout(()=>{const f=it?(q0?Rt:Q):$("#piN");if(f){f.focus();try{f.select()}catch(e){}}},40);
   sh.oninput=upd;
-  sh.onkeydown=e=>{if(e.key!=="Enter")return;e.preventDefault();if(e.target.id==="piN"){Q.focus();return}if(e.target===Q){if(num(Q.value)>0){Rt.focus();try{Rt.select()}catch(x){}}return}save()};
+  sh.onkeydown=e=>{if(e.key!=="Enter")return;e.preventDefault();if(e.target.id==="piN"){Q.focus();return}if(e.target.id==="piC"){Q.focus();return}if(e.target===Q){if(num(Q.value)>0){Rt.focus();try{Rt.select()}catch(x){}}return}save()};
   sh.onclick=e=>{
     if(e.target.matches("[data-close]")){closeSheet();return}
     const c=e.target.closest("[data-piq]");if(c){Q.value=c.dataset.piq;upd();Rt.focus();return}
+    const ct=e.target.closest("[data-pict]");if(ct){CT=ct.dataset.pict==="1";sh.querySelectorAll("[data-pict]").forEach(b=>b.setAttribute("aria-pressed",String(b===ct)));
+      ["#piCR","#piRM"].forEach(s=>{const x=$(s);if(x)x.hidden=!CT});const pl=$("#piPkL");if(pl)pl.hidden=CT;if(!CT){try{Q.nextElementSibling.textContent=kg&&it?"कि.ग्रा":u}catch(x){}}
+      upd();const f=CT&&!num(($("#piC")||{}).value)?$("#piC"):Q;if(f)f.focus();return}
+    const rm=e.target.closest("[data-pirm]");if(rm){RM=rm.dataset.pirm;sh.querySelectorAll("[data-pirm]").forEach(b=>b.setAttribute("aria-pressed",String(b===rm)));upd();Rt.focus();return}
     if(e.target.closest("[data-pitot]")){const t=num(prompt("कुल कितने रुपये दिए? (भाव अपने-आप निकलेगा)")||"");const q=num(Q.value);if(t>0&&q>0){Rt.value=r2(t/q);upd()}else if(t>0)toast("पहले वज़न लिखें");return}
     if(e.target.closest("[data-pidel]")){P.lines.splice(idx,1);P.net="";saveDraft();closeSheet();SF.renderKharid(1);if(P.lines.length)pBillSheet();return}
     if(e.target.closest("[data-pisave]"))save();
@@ -215,7 +233,7 @@ function pBillSheet(){
     <div class="pp-dash"></div>
     <table class="pp-t"><thead><tr><th>क्र.</th><th>सामान</th><th class="r">मात्रा</th><th class="r">भाव</th><th class="r">रकम</th><th></th></tr></thead><tbody>
     ${P.lines.map((l,i)=>{const it=l.id?item(l.id):null;const lr=it?lastRate(it.id):null;const up=lr&&num(l.rate)>lr.rate*1.03;
-      return `<tr data-pedit="${i}"><td>${i+1}</td><td>${esc(l.name||(it&&it.name)||"")}${l.exp?` <small class="pp-en">⏰ ${fdate(l.exp)}</small>`:""}${up?` <span class="pp-chg">🔺 पहले ₹${lr.rate}</span>`:""}</td><td class="r">${fq(l.qty,l.unit||(it&&it.unit)||"pc").replace(" कि.ग्रा"," kg")}</td><td class="r">₹${l.rate}</td><td class="r"><b>₹${lAmt(l)}</b></td><td><button class="pp-x" data-pdel="${i}" aria-label="हटाएँ">✕</button></td></tr>`}).join("")}
+      return `<tr data-pedit="${i}"><td>${i+1}</td><td>${esc(l.name||(it&&it.name)||"")}${l.exp?` <small class="pp-en">⏰ ${fdate(l.exp)}</small>`:""}${l.ctn?` <small class="pp-en">📦 ${l.ctn.n} कार्टून × ${l.ctn.per}${l.ctn.rm==="ctn"?" · ₹"+l.ctn.r+"/कार्टून":""}</small>`:""}${up?` <span class="pp-chg">🔺 पहले ₹${lr.rate}</span>`:""}</td><td class="r">${fq(l.qty,l.unit||(it&&it.unit)||"pc").replace(" कि.ग्रा"," kg")}</td><td class="r">₹${l.rate}</td><td class="r"><b>₹${lAmt(l)}</b></td><td><button class="pp-x" data-pdel="${i}" aria-label="हटाएँ">✕</button></td></tr>`}).join("")}
     </tbody></table>
     <div class="pp-dash"></div>
     <div class="pp-row"><span>बिल का जोड़</span><span>₹${g}</span></div>
@@ -275,7 +293,7 @@ async function savePurchase(){
   const ts=Date.now(),id="p"+uid(),paid=P.pay==="udhar"?Math.min(num(P.paid),net):net;
   // छूट हर सामान में बराबर हिस्से से — ताकि स्टॉक की लागत असली रहे
   const lines=P.lines.map(l=>{const it=l.id?item(l.id):null;const lr=it?lastRate(it.id):null;const amt=lAmt(l);
-    return {id:l.id||"",name:it?it.name:String(l.name).trim(),unit:it?it.unit:(l.unit||"pc"),qty:r2(num(l.qty)*1000)/1000,rate:r2(num(l.rate)),amt:disc>0?r2(amt*f):amt,billAmt:amt,prev:lr?lr.rate:0,...(l.exp?{exp:l.exp}:{})}});
+    return {id:l.id||"",name:it?it.name:String(l.name).trim(),unit:it?it.unit:(l.unit||"pc"),qty:r2(num(l.qty)*1000)/1000,rate:r2(num(l.rate)),amt:disc>0?r2(amt*f):amt,billAmt:amt,prev:lr?lr.rate:0,...(l.exp?{exp:l.exp}:{}),...(l.ctn?{ctn:l.ctn}:{})}});
   const pdate=P.day==="yday"?dayAdd(today(),-1):today();
   const doc={date:pdate,ts,...(P.day==="yday"?{late:true}:{}),...((window.SR&&SR.locNow&&SR.locNow())?{loc:SR.locNow()}:{}),by:S.uid||"",byName:biller(),supId:sup.id,supName:shop,supPhone:ph.length===10?ph:(ph||""),lines,gross,disc,total:net,pay:isMH?"mh":P.pay,paid:isMH?0:r2(paid),due:isMH?0:r2(net-paid),src:isMH?"mh":"shop",note:String(P.note||"").trim(),photos:[],photoPending:draftPhotos.length,cancelled:false};
   try{

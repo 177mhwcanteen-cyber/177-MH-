@@ -58,7 +58,8 @@ async def main():
         it = await pg.evaluate("item('b8901786140503')")
         assert it["mfr"] == "c-everest", it
         assert it["name"] == "EVEREST SHAHI BIRYANI MASALA 50G" and it["rack"] == "6-4" and it["cost"] == 72 and it["track"] is True, it
-        assert int(it["code"]) >= 10001 and it["src"] == "pack:S-TEST-01"
+        assert len(it["code"]) == 4 and it["src"] == "pack:S-TEST-01", it["code"]  # 🔢 4 अंक
+        cs = await pg.evaluate("S.items.map(i=>String(i.code||'')).filter(Boolean)"); assert len(cs) == len(set(cs)), "दोहरा कोड"
         pk = await pg.evaluate("item('g-test-pk')")
         assert pk["packOf"] == "g-test-pc" and pk["track"] is False
         e2 = await pg.evaluate(f"item('{ex}')")
