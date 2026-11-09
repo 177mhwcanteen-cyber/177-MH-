@@ -170,6 +170,8 @@ function pItemSheet(id,idx,qty0){
     ${it&&+it.perPack>1&&!it.packOf?`<label class="note" id="piPkL" ${CT?"hidden":""} style="display:flex;gap:8px;align-items:center;font-size:15px"><input type="checkbox" id="piPk" ${CT?"":"checked"} style="width:22px;height:22px"> 📦 पैकेट में लिख रहे हैं (1 पैकेट = ${+it.perPack} पीस) — मात्रा पैकेट, भाव ₹/पैकेट</label>`:""}
     ${pk?`<label class="qf qexp"><span>एक्सपायरी</span><input id="piE" type="date" value="${esc(e0)}" aria-label="एक्सपायरी तारीख"></label>${+it.mrp?`<span class="note" style="margin:-4px 2px 0">MRP ₹${+it.mrp} · बिक्री ₹${+it.sale||0}</span>`:""}`:""}
     <div class="qchips2">${chips.map(([v,l])=>`<button type="button" data-piq="${v}">${l}${kg&&it?" किलो":""}</button>`).join("")}</div>
+    ${it&&window.SRX?`<label class="qf pi-rk"><span>📍 कहाँ रखेंगे</span><input id="piK" class="code" autocomplete="off" placeholder="6-2 · खाने का स्टिकर स्कैन" value="${esc((ln&&ln.rk)||(typeof rkOf==="function"?rkOf(it):"")||"")}" aria-label="किस खाने में रखेंगे"></label>`:""}
+    ${it&&pk&&!ln&&window.SBC&&SBC.cand&&SBC.cand(it)&&!SBC.co(it)?`<label class="note pi-lb" style="display:flex;gap:8px;align-items:center;font-size:15px;margin:2px 2px 0"><input type="checkbox" id="piL" checked style="width:22px;height:22px"> 🏷️ कंपनी का बारकोड नहीं — जितने आए उतने लेबल अभी छापें</label>`:""}
     <div id="piB" class="pbadge" style="min-height:0"></div>
     <button class="big" data-pisave disabled>वज़न और भाव लिखें</button>
     <div style="display:flex;justify-content:space-between;align-items:center"><button class="lnk" data-pitot>सिर्फ़ कुल रकम पता है?</button>${ln?'<button class="lnk" data-pidel style="color:var(--chili)">हटाएँ</button>':""}</div>
@@ -197,9 +199,14 @@ function pItemSheet(id,idx,qty0){
     if(r>=1000&&P._bigR!==r+"|"+nm){P._bigR=r+"|"+nm;toast(`एक ${it&&it.unit==="kg"?"किलो":"पीस"} का भाव ₹${r}? पूरी रकम नहीं, एक का भाव लिखें — सही है तो दोबारा दबाएँ`);return}
     if(it&&it.cost>0&&(r>it.cost*3||r<it.cost/3)&&P._oddR!==r+"|"+it.id){P._oddR=r+"|"+it.id;toast(`पिछली खरीद ₹${it.cost} थी, अब ₹${r}? सही है तो दोबारा दबाएँ`);return}
     const line={id:it?it.id:"",name:nm,unit:it?it.unit:"pc",qty:q,rate:r,...(xd?{exp:xd}:{}),...(CT?{ctn:{n:num(Q.value),per:PK,rm:RM,r:num(Rt.value)||rate()}}:{})};
+    const rkIn=$("#piK"),rkv=rkIn&&window.SRK?SRK.canon(rkIn.value):rkIn?String(rkIn.value).trim():"";if(rkv)line.rk=rkv;
+    const wantLbl=!!($("#piL")&&$("#piL").checked);
     if(it){LSs("mk_ct_"+it.id,CT?"1":"0");if(CT){LSs("mk_per_"+it.id,String(PK));LSs("mk_rm_"+it.id,RM)}}
     if(ln)P.lines[idx]=line;else{const ex=it&&!CT?P.lines.findIndex(l=>l.id===it.id&&num(l.rate)===r&&!l.ctn):-1;if(ex>-1&&(P.lines[ex].exp||"")===(line.exp||""))P.lines[ex]={...line,qty:r2((num(P.lines[ex].qty)+q)*1000)/1000};else P.lines.push(line)}
     P.q="";P.net="";saveDraft();closeSheet();SF.renderKharid(1);beep(true);toast("✓ "+nm+" "+fq(q,line.unit)+" × "+rs(r)+" = "+rs(r2(q*r)));
+    /* 📍 जहाँ रखा (पहले वाला खाना डिफ़ॉल्ट) + 🏷️ बिना कंपनी-बारकोड वाले के उतने लेबल एक क्लिक में (विक्रम जी, 09-11-2026) */
+    if(it&&line.rk&&!ln&&window.SRX&&SRX.addAt)SRX.addAt(it.id,line.rk,q).catch(()=>{});
+    if(it&&wantLbl&&window.SL&&SL.print){const n=Math.min(600,Math.round(q));if(n>0)setTimeout(()=>SL.print([{id:it.id,n}]),150)}
     if(ln){pBillSheet();return}
     setTimeout(()=>{const s2=$("#pq");if(s2){s2.focus();s2.scrollIntoView({block:"center"})}},60);
   };

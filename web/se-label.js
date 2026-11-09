@@ -223,7 +223,7 @@ function hits(q){q=String(q||"").trim().toLowerCase();if(!q)return [];
   const byCode=findByCode(q);
   const L=S.items.filter(i=>i.active!==false&&!i.virtual&&(((i.name||"")+" "+(i.hi||"")+" "+(i.alias||"")+" "+(i.short||"")).toLowerCase().includes(q)||String(i.code||"")===q));
   if(byCode&&!L.includes(byCode))L.unshift(byCode);return L.slice(0,12)}
-const hitsHTML=()=>hits(V.q).map(i=>`<button type="button" data-sladd="${esc(i.id)}">${tileHTML(i)}<span><b>${esc(SL.dataOf(i).name)}</b><small>${+i.sale>0?rs(+i.sale):"भाव नहीं"}${i.code?" · #"+esc(i.code):""}${doneTag(i)}</small></span><em>＋</em></button>`).join("")||(V.q.trim()?`<p class="note" style="margin:4px 0">"${esc(V.q)}" नहीं मिला</p>`:"");
+const hitsHTML=()=>hits(V.q).map(i=>`<button type="button" data-sladd="${esc(i.id)}">${tileHTML(i)}<span><b>${esc(SL.dataOf(i).name)}</b><small>${+i.sale>0?rs(+i.sale):"भाव नहीं"}${i.code?" · #"+esc(i.code):""}${doneTag(i)}${i.rack&&typeof rkOf==="function"?` · 📍${esc(rkOf(i))}`:""}</small></span><em>＋</em></button>`).join("")||(V.q.trim()?`<p class="note" style="margin:4px 0">"${esc(V.q)}" नहीं मिला</p>`:"");
 function rowHTML(r){const it=item(r.id);if(!it)return "";const d=SL.dataOf(it,r),sh=SL.cfg().show,id=esc(r.id);
   return `<div class="sl-row${V.flash===r.id?" flash":""}${V.prev===r.id?" sel":""}">
     <button type="button" class="sl-tl" data-slprev="${id}" aria-label="${esc(it.name)} की झलक">${tileHTML(it)}</button>
@@ -242,7 +242,7 @@ SL.render=function(force){
   el.innerHTML=`<h2 class="sec">🏷️ बारकोड लेबल</h2>
   <div class="paym" style="margin:0 0 10px"><button data-ltype="kirana" aria-pressed="true">🛒 सामान · लिस्ट से</button><button data-ltype="sabzi" aria-pressed="false">🥬 सब्ज़ी-फल (वज़न)</button></div>
   <div class="card2 sl-box">
-    <div class="sl-hd"><b>📋 छापने की लिस्ट</b><span class="note">नाम लिखें या पुराना लेबल/पैकेट स्कैन करें</span></div>
+    <div class="sl-hd"><b>📋 छापने की लिस्ट</b>${window.SRX?`<button type="button" class="chip rkxchip" data-rkxopen style="margin-left:auto">📍 रैक बदलें</button>`:""}<span class="note">नाम लिखें या पुराना लेबल/पैकेट स्कैन करें</span></div>
     <div class="sl-srch"><input id="slQ" type="search" value="${esc(V.q)}" placeholder="🔍 नाम / 4 अंक कोड / बारकोड" autocomplete="off" enterkeyhint="done" aria-label="लेबल के लिए सामान खोजें"><button type="button" class="scanbtn" data-slcam aria-label="कैमरे से स्कैन">📷</button></div>
     <div id="slHits" class="sl-hits">${hitsHTML()}</div>
     <div id="slList" class="sl-list">${Q.map(rowHTML).join("")||`<div class="sl-empty"><b>लिस्ट खाली है</b><span>① ऊपर नाम लिखें या बारकोड स्कैन करें → सामान जुड़ेगा<br>② हर सामान के आगे लिखें कितने लेबल<br>③ नीचे 🖨️ दबाएँ — सब एक साथ छपेंगे</span></div>`}</div>

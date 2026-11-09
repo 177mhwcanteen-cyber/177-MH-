@@ -75,7 +75,7 @@ SRK.scan=function(code){const c=String(code||"").trim().toUpperCase(),m=/^R(\d{1
     if(SRK.arm&&item(SRK.arm)){const id=SRK.arm;SRK.arm="";const it=item(id),old=SRK.canon(it.rack);
       setLoc(id,p.code).then(ok=>{if(!ok)return;logMoves([{id,from:old,to:p.code}]);document.querySelectorAll('[data-if="rack"]').forEach(e=>{const w=e.closest("[data-sid]");if(w&&w.dataset.sid===id)e.value=p.code});toast("📍 "+NM(it)+" → "+p.code+" · "+SRK.info(p.code))});return true}
     /* नया सामान फ़ॉर्म / अकेला editor खुला हो → रैक का खाना वहीं भर दो */
-    const vis=[...document.querySelectorAll('#ni-rack,[data-if="rack"]')].filter(e=>e.offsetParent!==null),ed=vis.find(e=>e.id==="ni-rack")||(vis.length===1?vis[0]:null);
+    const vis=[...document.querySelectorAll('#piK,#ni-rack,[data-if="rack"]')].filter(e=>e.offsetParent!==null),ed=vis.find(e=>e.id==="piK")||vis.find(e=>e.id==="ni-rack")||(vis.length===1?vis[0]:null);
     if(ed){ed.value=p.code;ed.dispatchEvent(new Event("input",{bubbles:true}));ed.dispatchEvent(new Event("change",{bubbles:true}));toast("📍 खाना "+p.code+" भर दिया — "+SRK.info(p.code)+" · सेव दबाएँ");return true}
     const L=SRK.of(p.code);toast("📍 "+p.code+" · "+SRK.info(p.code)+(L.length?" — "+L.slice(0,4).map(NM).join(", ")+(L.length>4?" +"+(L.length-4):""):" — खाली"));return true}
   if(m){beep(true);V.rack=SRK.norm(m[1]);LSr.set("srk_cur",V.rack);toast("📍 खाना "+V.rack+" — "+SRK.info(V.rack)+" · अब सामान स्कैन करें");draw();return true}
@@ -195,8 +195,8 @@ SRK.move=async function(a,b){chk();a=SRK.canon(a);b=SRK.canon(b);const ra=/^\d{1
     act().forEach(i=>["rack","grack"].forEach(f=>{if(SRK.canon(i[f])===pa.code)plan.push({it:i,f,from:pa.code,to:pb.code})}))}
   else{toast("दोनों खाने (5-3 → 4-2) या दोनों रैक (5 → 4) लिखें");return 0}
   if(!plan.length){toast(a+" में कोई सामान नहीं");return 0}if(!isOwn()){toast("सिर्फ़ विक्रम जी");return 0}
-  let n=0;const log=[];for(const x of plan){const ok=S.demo||!S.db?true:await S.db.doc("items/"+x.it.id).update({rack:x.to}).then(()=>true,()=>false);
-    if(ok){x.it.rack=x.to;n++;log.push({id:x.it.id,from:x.from,to:x.to})}}
+  let n=0;const log=[];for(const x of plan){const ok=S.demo||!S.db?true:await S.db.doc("items/"+x.it.id).update({[x.f]:x.to}).then(()=>true,()=>false);
+    if(ok){x.it[x.f]=x.to;n++;log.push({id:x.it.id,from:x.from,to:x.to})}}
   logMoves(log);toast("↔ "+n+" सामान "+a+" → "+b);return n};
 function body(){chk();const R=SRK.racks(),none=act().filter(i=>!SRK.norm(i.rack)).length,ch=SRK.changed(),T=SRK.today(),td=RK[T];
   const filled=RL.reduce((a,x)=>a+fill(x.r),0),gd=act().filter(i=>{const p=SRK.parse(i.rack);return (p&&p.g)||SRK.norm(i.grack)}).length;
@@ -330,7 +330,7 @@ SRK.open=function(sel){V.open=true;if(sel)V.sel=SRK.norm(sel);
 SRK.settingsHTML=function(){if(!isOwn())return "";chk();const none=act().filter(i=>!SRK.norm(i.rack)).length,ch=SRK.changed().length,T=SRK.today(),filled=RL.reduce((a,x)=>a+fill(x.r),0);
   return `<div class="card2" id="srkCard"><h3 style="margin:0 0 4px">📍 रैक-खाना व्यवस्था</h3>
   <p class="note" style="margin:0 0 8px">जगह लगी: <b>${act().length-none}</b> · बाकी: <b>${none}</b> · खाने भरे: <b>${filled}/${SRK.total()}</b>${ch?` · 🔁 भाव बदले: <b>${ch}</b>`:""}${RK[T]?` · 🔢 आज गिनें: <b>रैक ${T}</b>`:""}</p>
-  <div class="srk-pb"><button type="button" class="pri" data-srkopen>📍 जगह लगाएँ · खाना खोजें · स्टिकर</button></div></div>`};
+  <div class="srk-pb"><button type="button" class="pri" data-srkopen>📍 जगह लगाएँ · खाना खोजें · स्टिकर</button>${window.SRX?`<button type="button" class="pri" data-rkxopen style="margin-top:6px;background:#0f766e">↔ रैक बदलें · माल ट्रांसफ़र · 🧠 सुझाव</button>`:""}</div></div>`};
 function refreshCard(){const c=$("#srkCard");if(c)c.outerHTML=SRK.settingsHTML()}
 /* 🧭 नया सामान: किस्म से घर का सुझाव */
 function niHome(){const b=document.getElementById("ni-rkhome");if(!b)return;const v=id=>(document.getElementById(id)||{}).value||"";const h=SRK.home({name:v("ni-name"),cat:v("ni-cat"),sub:v("ni-sub"),secret:v("ni-secret")});
