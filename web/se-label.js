@@ -176,12 +176,22 @@ SL.sample=function(){const q=Q.map(r=>item(r.id)).find(Boolean);if(q)return q;
 /* ================= छापने की लिस्ट (हर फोन की अपनी) ================= */
 let Q=[];try{Q=JSON.parse(LSl.get("se_lq")||"[]").filter(r=>r&&r.id)}catch(e){Q=[]}
 const saveQ=()=>LSl.set("se_lq",JSON.stringify(Q));
-const V={q:"",prev:"",flash:"",cam:false,done:0};
+const V={q:"",prev:"",flash:"",cam:false,done:0,dup:null,last:null};
+/* 🖨️ कौन-सा सामान पहले छप चुका (दोहरी छपाई = फालतू खर्च) — इस फ़ोन का हिसाब (sl_done) + बारकोड-पहरा का साझा हिसाब (SBC.prOf) */
+let LD={};try{LD=JSON.parse(LSl.get("sl_done")||"{}")||{}}catch(e){LD={}}
+SL.doneOf=function(it){if(!it)return null;const a=LD[it.id]||null,b=window.SBC&&SBC.prOf?SBC.prOf(it):null;return !a?b:!b?a:((b.ts||0)>(a.ts||0)?b:a)};
+SL.markDone=async function(rows){const ts=Date.now();rows.forEach(r=>{const n=Math.round(+r.n)||0;if(n>0)LD[r.id]={ts,n}});LSl.set("sl_done",JSON.stringify(LD));
+  if(window.SBC&&SBC.setPr&&SBC.todo)for(const r of rows){const it=item(r.id);if(it&&SBC.todo(it)&&!(SBC.prOf&&SBC.prOf(it)))await SBC.setPr(r.id,Math.round(+r.n)||0)}};
+SL.undone=function(id){delete LD[id];LSl.set("sl_done",JSON.stringify(LD))};
+const dd=ts=>{const d=new Date(ts||0);return String(d.getDate()).padStart(2,"0")+"-"+String(d.getMonth()+1).padStart(2,"0")};
+const doneTag=it=>{const x=SL.doneOf(it);return x?`<em class="sl-pr">🖨️ छप चुका ${dd(x.ts)}${x.n?" · "+x.n:""}</em>`:""};
 SL.list=()=>Q;
 SL.count=()=>Q.reduce((a,r)=>a+(Math.max(0,Math.round(+r.n)||0)),0);
 SL.add=function(id,n,o){n=Math.max(1,Math.min(500,Math.round(+n||1)));const i=Q.findIndex(x=>x.id===id);let r;
   if(i>=0){r=Q.splice(i,1)[0];r.n=Math.min(500,(Math.round(+r.n)||0)+n)}else r={id,n,...(o||{})};
-  Q.unshift(r);V.prev=id;V.flash=id;V.done=0;saveQ();return r.n};
+  Q.unshift(r);V.prev=id;V.flash=id;V.done=0;V.last=null;saveQ();
+  const x=SL.doneOf(item(id));if(x&&i<0)toast("⚠ इसके लेबल "+dd(x.ts)+" को छप चुके"+(x.n?" ("+x.n+")":"")+" — दोबारा चाहिए तभी छापें");
+  return r.n};
 SL.clear=()=>{Q=[];V.prev="";V.done=0;saveQ()};
 
 /* ================= छापना ================= */
@@ -202,6 +212,7 @@ SL.print=async function(rows){
       for(const j of jobs){if(pr.type==="escpos"){const one=atob(SE.escpos(j.cv));for(let i=0;i<j.r.n;i++)all+=one}else all+=atob(SE.tspl(j.cv,{wmm:w,hmm:h,copies:j.r.n}))}
       await SENative.BtPrinter.print({address:pr.addr,data:btoa(all)})}
     toast("🏷️ "+total+" लेबल छप रहे हैं");
+    await SL.markDone(rows.map(r=>({id:r.id,n:r.n})));
     if(!S.demo)S.db.collection("labelLog").doc("l"+uid()).set({batch:"list",items:rows.map(r=>({id:r.id,name:r.it.name,n:r.n})),copies:total,style:cfg.style,size:sk,date:today(),ts:Date.now(),by:S.uid||"",byName:biller()}).catch(()=>{});
     return total;
   }catch(e){toast(e.msg||("प्रिंट नहीं हुआ: "+(e.message||"")));return 0}
@@ -212,15 +223,17 @@ function hits(q){q=String(q||"").trim().toLowerCase();if(!q)return [];
   const byCode=findByCode(q);
   const L=S.items.filter(i=>i.active!==false&&!i.virtual&&(((i.name||"")+" "+(i.hi||"")+" "+(i.alias||"")+" "+(i.short||"")).toLowerCase().includes(q)||String(i.code||"")===q));
   if(byCode&&!L.includes(byCode))L.unshift(byCode);return L.slice(0,12)}
-const hitsHTML=()=>hits(V.q).map(i=>`<button type="button" data-sladd="${esc(i.id)}">${tileHTML(i)}<span><b>${esc(SL.dataOf(i).name)}</b><small>${+i.sale>0?rs(+i.sale):"भाव नहीं"}${i.code?" · #"+esc(i.code):""}</small></span><em>＋</em></button>`).join("")||(V.q.trim()?`<p class="note" style="margin:4px 0">"${esc(V.q)}" नहीं मिला</p>`:"");
+const hitsHTML=()=>hits(V.q).map(i=>`<button type="button" data-sladd="${esc(i.id)}">${tileHTML(i)}<span><b>${esc(SL.dataOf(i).name)}</b><small>${+i.sale>0?rs(+i.sale):"भाव नहीं"}${i.code?" · #"+esc(i.code):""}${doneTag(i)}</small></span><em>＋</em></button>`).join("")||(V.q.trim()?`<p class="note" style="margin:4px 0">"${esc(V.q)}" नहीं मिला</p>`:"");
 function rowHTML(r){const it=item(r.id);if(!it)return "";const d=SL.dataOf(it,r),sh=SL.cfg().show,id=esc(r.id);
   return `<div class="sl-row${V.flash===r.id?" flash":""}${V.prev===r.id?" sel":""}">
     <button type="button" class="sl-tl" data-slprev="${id}" aria-label="${esc(it.name)} की झलक">${tileHTML(it)}</button>
-    <div class="sl-nm" data-slprev="${id}"><b>${esc(d.name)}</b><span>${d.price>0?rs(d.price):'<em>भाव नहीं</em>'}${it.code?" · #"+esc(it.code):""}${d.bc?"":' · <em>⚠ बारकोड नहीं</em>'}</span></div>
+    <div class="sl-nm" data-slprev="${id}"><b>${esc(d.name)}</b><span>${d.price>0?rs(d.price):'<em>भाव नहीं</em>'}${it.code?" · #"+esc(it.code):""}${d.bc?"":' · <em>⚠ बारकोड नहीं</em>'}${doneTag(it)}</span></div>
     <div class="sl-n"><button type="button" data-slm="${id}" aria-label="एक कम">−</button><input data-sln="${id}" inputmode="numeric" value="${Math.round(+r.n)||0}" aria-label="${esc(it.name)} के कितने लेबल"><button type="button" data-slp="${id}" aria-label="एक ज़्यादा">＋</button></div>
     <button type="button" class="sl-x" data-slx="${id}" aria-label="${esc(it.name)} हटाएँ">✕</button>
     ${sh.mfg||sh.exp?`<div class="sl-dt">${sh.mfg?`<label>पैक<input type="date" data-slmfg="${id}" value="${esc(r.mfg||today())}"></label>`:""}${sh.exp?`<label>एक्सपायरी<input type="date" data-slexp="${id}" value="${esc(r.exp||it.exp||"")}"></label>`:""}</div>`:""}</div>`}
-const sumHTML=()=>Q.length?`<b>${Q.length} सामान · ${SL.count()} लेबल</b><button type="button" class="lnk" data-slclear>🗑️ लिस्ट खाली करें</button>`:"";
+const sumHTML=()=>{if(!Q.length)return "";const old=Q.filter(r=>SL.doneOf(item(r.id))).length;
+  return `<b>${Q.length} सामान · ${SL.count()} लेबल${old?` · <span class="sl-prn">🖨️ ${old} पहले छप चुके</span>`:""}</b><button type="button" class="lnk" data-slclear>🗑️ लिस्ट खाली करें</button>
+  <button type="button" class="lnk sl-mk" data-slmark>✅ ये लेबल मैं छाप चुका — निशान लगाकर लिस्ट खाली करें</button>`};
 SL.render=function(force){
   const el=$("#p-label");if(!el)return;
   if(!force&&el.contains(document.activeElement)&&document.activeElement.matches("input")){SL.drawPrev();return}
@@ -244,7 +257,10 @@ SL.render=function(force){
   </div>
   <div class="paym" style="margin:0 0 8px"><button data-lout="label" aria-pressed="${out==="label"}">🏷️ लेबल प्रिंटर</button><button data-lout="a4" aria-pressed="${out==="a4"}">📄 A4 स्टिकर शीट</button></div>
   <button class="big sl-go" data-slprint ${n?"":"disabled"}>🖨️ ${n?n+" लेबल छापें":"लिस्ट में सामान जोड़ें"}</button>
-  ${V.done?`<div class="sl-done">✓ ${V.done} लेबल भेजे गए · <button type="button" class="lnk" data-slclear>लिस्ट खाली करें</button></div>`:""}
+  ${V.dup?`<div class="sl-dup" role="alertdialog"><b>⚠ ${V.dup.length} सामान के लेबल पहले छप चुके</b>
+    <ul>${V.dup.slice(0,8).map(r=>{const x=SL.doneOf(item(r.id));return `<li>${esc(SL.dataOf(item(r.id),r).name)} — ${dd(x.ts)}${x.n?" को "+x.n:""}</li>`}).join("")}${V.dup.length>8?`<li>…और ${V.dup.length-8}</li>`:""}</ul>
+    <div class="sl-dupb"><button class="big" data-sldup="new" ${V.dup.length>=Q.length?"disabled":""}>🖨️ सिर्फ़ नए छापें (${Q.length-V.dup.length})</button><button class="big ghost" data-sldup="all">फिर भी सब छापें</button><button class="big ghost" data-sldup="x">रद्द</button></div></div>`:""}
+  ${V.done?`<div class="sl-done">✓ ${V.done} लेबल भेजे गए — लिस्ट खाली कर दी (दोबारा न छपें)${V.last?` · <button type="button" class="lnk" data-slundo>↩ वही लिस्ट वापस</button>`:""}</div>`:""}
   <p class="note" style="margin:6px 0 12px;text-align:center">बिलिंग में यह लेबल स्कैन करते ही सामान बिल में जुड़ेगा।</p>
   ${SF.batchHTML?SF.batchHTML():""}${S.isOwner&&SF.kNewHTML?SF.kNewHTML():""}`;
   V.flash="";SL.drawPrev();
@@ -277,7 +293,16 @@ SL.bind=function(){
     if((b=c("[data-slstyle]"))){SL.save({style:b.dataset.slstyle});SL.render(1);return}
     if(c("[data-slgoset]")){S.tab="set";showTab();setTimeout(()=>{const s=$("#slDesign");if(s)s.scrollIntoView({block:"start"})},80);return}
     if(c("[data-slcam]")){V.cam=true;if(typeof camOn==="function")camOn();return}
-    if((b=c("[data-slprint]"))){b.disabled=true;const n=await SL.print();b.disabled=false;if(n){V.done=n;SL.render(1)}return}
+    const go=async rows=>{const n=await SL.print(rows);if(n){const ids=new Set((rows||Q).map(r=>r.id));V.last=Q.slice();Q=Q.filter(r=>!ids.has(r.id));saveQ();V.done=n;V.prev=""}V.dup=null;SL.render(1)};
+    if((b=c("[data-slprint]"))){const dup=Q.filter(r=>(Math.round(+r.n)||0)>0&&SL.doneOf(item(r.id)));
+      if(dup.length){V.dup=dup;SL.render(1);setTimeout(()=>{const d=$(".sl-dup");if(d)d.scrollIntoView({block:"center"})},40);return}
+      b.disabled=true;await go();return}
+    if((b=c("[data-sldup]"))){const k=b.dataset.sldup,dup=new Set((V.dup||[]).map(r=>r.id));
+      if(k==="x"){V.dup=null;SL.render(1);return}
+      b.disabled=true;await go(k==="new"?Q.filter(r=>!dup.has(r.id)):null);return}
+    if(c("[data-slundo]")){if(V.last){Q=V.last;V.last=null;V.done=0;saveQ();SL.render(1);toast("↩ लिस्ट वापस")}return}
+    if(c("[data-slmark]")){const rows=Q.filter(r=>(Math.round(+r.n)||0)>0);if(!rows.length)return;await SL.markDone(rows);V.last=Q.slice();Q=[];saveQ();V.done=0;V.prev="";SL.render(1);
+      toast("✅ "+rows.length+" सामान \"छप चुके\" — दोबारा जोड़ने पर चेतावनी आएगी");return}
   });
 };
 SL.wantCam=()=>V.cam;
@@ -416,6 +441,9 @@ const css=document.createElement("style");css.id="slcss";css.textContent=`
 .sl-hits em{font-style:normal;font-weight:900;font-size:20px;color:var(--leaf)}
 .sl-list{display:grid;gap:6px}
 .sl-row{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:14px;padding:6px;background:var(--surface)}
+.sl-pr{display:inline-block;margin-left:4px;padding:0 6px;border-radius:8px;background:#fde8e8;color:#b42318;font-style:normal;font-weight:700;font-size:11px}
+.sl-prn{color:#b42318}.sl-mk{display:block;margin-top:4px;color:#1f8a4c!important}
+.sl-dup{margin:10px 0;padding:10px;border:2px solid #b42318;border-radius:14px;background:#fff5f5}.sl-dup ul{margin:6px 0 8px 18px;padding:0;font-size:13px}.sl-dupb{display:grid;gap:6px}
 .sl-row.sel{border-color:var(--haldi)}.sl-row.flash{animation:slfl .9s ease}@keyframes slfl{0%{background:var(--haldi);}100%{}}
 .sl-tl{border:0;background:none;padding:0}.sl-nm{min-width:0;display:grid}.sl-nm b{font-size:15px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sl-nm span{font-size:12px;color:var(--muted)}.sl-nm em{font-style:normal;color:var(--chili);font-weight:700}

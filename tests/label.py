@@ -115,6 +115,24 @@ async def main():
         assert await pg.evaluate("window.__imgs") == total, (await pg.evaluate("window.__imgs"), total)
         assert await pg.locator(".sl-done").count() == 1
         print("label tab list + print ok", total)
+        # 🖨️ दोहरी छपाई से बचाव: छपने के बाद लिस्ट खाली, दोबारा जोड़ा तो "छप चुका" + छापने से पहले पूछना
+        assert await pg.evaluate("SL.list().length") == 0
+        await pg.click("[data-slundo]"); assert await pg.evaluate("SL.list().length") == n_rows + 1 or await pg.evaluate("SL.list().length") >= 2
+        await pg.evaluate("SL.clear();SL.render(1)")
+        await pg.evaluate(f"SL.add('{ids[3]}',2);SL.render(1)")
+        assert await pg.locator("#slList .sl-pr").count() == 1
+        await pg.evaluate("window.__printed=0"); await pg.click("[data-slprint]"); await pg.wait_for_timeout(200)
+        assert await pg.locator(".sl-dup").count() == 1 and await pg.evaluate("window.__printed") == 0
+        assert await pg.is_disabled('[data-sldup="new"]')
+        await pg.screenshot(path=f"{SHOTS}/l3b-dup.png", full_page=True)
+        await pg.click('[data-sldup="x"]'); assert await pg.locator(".sl-dup").count() == 0 and await pg.evaluate("SL.list().length") == 1
+        await pg.click("[data-slprint]"); await pg.click('[data-sldup="all"]'); await pg.wait_for_timeout(400)
+        assert await pg.evaluate("window.__printed") == 1 and await pg.evaluate("SL.list().length") == 0
+        # ✅ "मैं छाप चुका" — बिना छापे निशान
+        await pg.evaluate(f"SL.add('{ids[1]}',3);SL.render(1)")
+        await pg.click("[data-slmark]"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("SL.list().length") == 0 and await pg.evaluate(f"!!SL.doneOf(item('{ids[1]}'))")
+        print("label dup-guard ok")
         # सब्ज़ी वाला पुराना लेबल अभी भी खुले
         await pg.click('[data-ltype="sabzi"]'); await pg.wait_for_timeout(100)
         assert await pg.locator("#p-label .ppick, #p-label #lPrev").count() >= 1
