@@ -475,6 +475,35 @@ SE.shareReceipt=async function(b,o,phone,text){
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name+".png";document.body.appendChild(a);a.click();a.remove();
   return "download";
 };
+/* 💬 WhatsApp — नंबर डालते ही सीधी उसी ग्राहक की चैट (docs/व्हाट्सएप-प्रॉम्प्ट.txt)
+   बड़े ऐप (Vyapar/Khatabook) का तरीका: फ़ाइल-शेयर (ACTION_SEND + jid) सिर्फ़ सेव किए नंबर पर सीधा जाता है, नए नंबर पर
+   WhatsApp "किसे भेजें" सूची खोलता है (नंबर दोबारा लिखना पड़ता था)। इसलिए पहले हमेशा "click-to-chat" लिंक —
+   ऐप में whatsapp://send?phone=91XXXXXXXXXX&text=… (Capacitor इसे Android Intent से सीधा WhatsApp में खोलता है, नंबर सेव हो या न हो),
+   WhatsApp न खुले तो 1.8 सेकंड बाद https://api.whatsapp.com/send (ब्राउज़र/Business)। वेब पर https://wa.me/91…  */
+SE.waNum=function(p){let d=String(p||"").replace(/\D/g,"");if(d.length>10&&/^(91|0)/.test(d))d=d.slice(-10);return d.length===10&&/^[6-9]/.test(d)?"91"+d:""};
+SE.waUrl=function(phone,text,web){const n=SE.waNum(phone),t=encodeURIComponent(text||"");
+  if(SE.isNative&&!web)return "whatsapp://send?"+(n?"phone="+n+"&":"")+"text="+t;
+  return "https://"+(web==="api"?"api.whatsapp.com/send?"+(n?"phone="+n+"&":""):"wa.me/"+n+"?")+"text="+t};
+SE.wa=function(phone,text){
+  SE._waLast={phone:SE.waNum(phone),ts:Date.now()};
+  if(!SE.isNative){const w=window.open(SE.waUrl(phone,text,true),"_blank");if(!w)location.href=SE.waUrl(phone,text,true);return true}
+  let gone=false;const h=()=>{if(document.hidden)gone=true};document.addEventListener("visibilitychange",h);
+  try{location.href=SE.waUrl(phone,text)}catch(e){}
+  setTimeout(()=>{document.removeEventListener("visibilitychange",h);if(!gone&&!document.hidden){try{location.href=SE.waUrl(phone,text,"api")}catch(e){}}},1800);
+  return true};
+/* wa.me / api.whatsapp.com वाला कोई भी लिंक (पुराने बटन, window.open) ऐप में अपने-आप सीधी चैट से */
+SE.waParse=function(u){try{const x=new URL(u,location.href);if(!/(^|\.)wa\.me$|api\.whatsapp\.com$/.test(x.hostname))return null;
+  return {phone:x.searchParams.get("phone")||x.pathname.replace(/\D/g,""),text:x.searchParams.get("text")||""}}catch(e){return null}};
+if(SE.isNative){
+  document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a)return;const w=SE.waParse(a.getAttribute("href"));if(!w)return;
+    e.preventDefault();e.stopPropagation();if(a.getAttribute("aria-disabled")==="true")return;
+    a.dispatchEvent(new CustomEvent("wasent",{bubbles:true}));SE.wa(w.phone,w.text)},true);
+  const _open=window.open;window.open=function(u){const w=typeof u==="string"&&SE.waParse(u);if(w){SE.wa(w.phone,w.text);return null}return _open.apply(window,arguments)};
+}
+/* नंबर के खाने में 10 अंक पूरे होते ही (रुककर) अपने-आप भेजो — बीच में बदला तो रुक जाता है */
+SE.waAuto=function(inp,go,ms){if(!inp)return;let t=0,last="";
+  inp.addEventListener("input",()=>{clearTimeout(t);const n=SE.waNum(inp.value);if(!n||n===last)return;
+    t=setTimeout(()=>{if(SE.waNum(inp.value)!==n)return;last=n;try{if(navigator.vibrate)navigator.vibrate(30)}catch(e){}go(n.slice(2))},ms||900)})};
 function printHTMLWeb(html){
   const f=document.createElement("iframe");f.style.cssText="position:fixed;right:0;bottom:0;width:0;height:0;border:0";document.body.appendChild(f);
   const d=f.contentWindow.document;d.open();d.write(html);d.close();

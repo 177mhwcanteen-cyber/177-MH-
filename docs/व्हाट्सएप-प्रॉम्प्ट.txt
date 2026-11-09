@@ -1,0 +1,37 @@
+💬 WhatsApp पर बिल/संदेश — किसी भी Claude के लिए (विक्रम जी, 09-11-2026)
+
+विक्रम जी की बात: "बिल भेजने के लिए नंबर लिखता हूँ तो WhatsApp खुलता है, पर उस व्यक्ति का नंबर मुझे वापस लिखना पड़ता है।
+10 अंक का नंबर डालते ही उसी को WhatsApp चला जाए। बड़े ऐप जैसे करते हैं वैसी पक्की व्यवस्था बनाओ।"
+
+## असली कारण (रिवर्स-इंजीनियरिंग)
+Android पर WhatsApp में भेजने के 3 रास्ते हैं:
+1. फ़ाइल-शेयर (Intent ACTION_SEND + PDF + "jid"=91XXXXXXXXXX@s.whatsapp.net, package com.whatsapp)
+   → सिर्फ़ तब सीधी चैट जब वह नंबर फ़ोन में सेव हो। नया ग्राहक हो तो WhatsApp "किसे भेजें" सूची खोलता है = नंबर दोबारा लिखना।
+   (हमारा पुराना "WhatsApp पर भेजें" यही करता था — यही शिकायत थी।)
+2. Click-to-chat लिंक: whatsapp://send?phone=91XXXXXXXXXX&text=… (ऐप) / https://wa.me/91XXXXXXXXXX?text=… /
+   https://api.whatsapp.com/send?phone=…&text=… → **किसी भी नंबर** की सीधी चैट, सेव होना ज़रूरी नहीं। सिर्फ़ टेक्स्ट (फ़ाइल नहीं)।
+3. WhatsApp Business API (Meta, पैसे वाला, सर्वर, टेम्पलेट मंज़ूरी) — Vyapar/Khatabook/बैंक का "अपने-आप बिना खोले" संदेश।
+   हमारे लिए अभी नहीं (खर्च + सर्वर + Meta सत्यापन)। आगे चाहें तो: सर्वर (Apps Script/Cloud Function) से Cloud API, चाबी Firebase में।
+
+बड़े ऐप (Vyapar, Khatabook, OkCredit) का तरीका: पहले रास्ता 2 से सीधी चैट में टेक्स्ट बिल (या बिल का लिंक),
+PDF चाहिए तो उसके बाद शेयर — तब वही चैट WhatsApp की सूची में सबसे ऊपर होती है (एक टैप)।
+
+## हमारे ऐप में (web/se-platform.js)
+- SE.waNum(p)  → "+91 95095-53600", "09509553600", "919509553600" सब = "919509553600"; ग़लत/अधूरा = ""।
+- SE.waUrl(phone,text[,web|"api"]) → ऐप में whatsapp://send?phone=…, वेब पर wa.me/…, "api" = api.whatsapp.com।
+- SE.wa(phone,text) → ऐप में whatsapp:// (Capacitor का Bridge इसे Android Intent ACTION_VIEW से खोलता है — नई APK नहीं चाहिए);
+  1.8 सेकंड में ऐप पीछे न गया (WhatsApp नहीं खुला) तो api.whatsapp.com (ब्राउज़र/Business)। वेब पर नई टैब में wa.me।
+- ऐप में हर पुराना <a href="https://wa.me/…"> और window.open(wa.me…) अपने-आप SE.wa से (click पकड़ने वाला + window.open लपेटा)।
+  इसलिए waLink() (index.html) वैसा ही https://wa.me लौटाता है — नए कोड में भी waLink या SE.wa ही इस्तेमाल करें, अपना wa.me न बनाएँ।
+- SE.waAuto(input, go) → खाने में 10 सही अंक (6-9 से शुरू) पूरे होते ही 0.9 सेकंड रुककर go(10 अंक) — बीच में बदला तो रुकता है, वही नंबर दोबारा नहीं।
+
+## बिल भेजना (web/se-route.js SR.shareAsk / SR.waBill / SR.pdfAfter)
+📤 बिल भेजें → नंबर टाइप → 10 अंक होते ही (बिना बटन) नंबर ग्राहक रजिस्टर में (SR.keepPhone) + सीधी चैट में टेक्स्ट बिल (receiptText)।
+WhatsApp से लौटने पर पॉप-अप "📄 PDF भी भेजें" (SF._shareNow → shareFile jid के साथ)। "📄 PDF भेजें" बटन सीधा PDF वाला पुराना रास्ता।
+बिल शीट (index.html, नंबर न हो तो) #waPh में भी 10 अंक = अपने-आप भेजना; "PDF शेयर" बटन टाइप किया नंबर भी लेता है।
+
+## नियम
+- नंबर कभी गढ़ना नहीं; ग्राहक का नंबर सिर्फ़ customers/* (रजिस्टर) में — public/pub में नहीं।
+- तम्बाकू: receiptText/बिल पर वही billNm (Misc कोड) नियम।
+- जाँच: python3 tests/wa.py www <shots> ("✅ पूरा टेस्ट पास")।
+- भैरव में भी वही कोड (se-platform/se-route) — 3-तरफ़ा merge।

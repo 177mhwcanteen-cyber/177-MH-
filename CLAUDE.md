@@ -49,5 +49,6 @@
 - 📸 **विक्रम जी सामान की फोटो भेजें तो** पहले docs/सामान-इनबॉक्स/README.md: जमा के दौर में हर संदेश पर सिर्फ़ `python3 scripts/foto.py add <रैक> --note "…" --new` + एक लाइन जवाब (सोचना बाद में)। असली फोटो git शाखा `foto-sangrah` में (कभी न मिटें), कंपनी की डिटेल (नंबर/पता) खेप की `companies` में → ऐप के suppliers (kind company)।
 - 🔁 **दूसरे Claude खाते की ZIP** (mh177-kaam-S-….zip) आए या किट माँगें → docs/kit/README.md (`scripts/kit_import.py`, किट `scripts/kit.py` → docs/kit/mh177-saman-kit-v6.zip)।
 - 💵 गल्ला, 🪙 खुले का डिब्बा (se-khula.js = window.SKH), 🚫 बिना स्टॉक बिक्री, 📦 कार्टून खरीद, 🔢 4 अंक कोड, 📋 ऐप की खरीद → Claude: पहले docs/गल्ला-और-खरीद-प्रॉम्प्ट.txt।
+- 💬 WhatsApp पर बिल/संदेश (10 अंक डालते ही सीधी चैट, SE.wa/waAuto) बदलने से पहले docs/व्हाट्सएप-प्रॉम्प्ट.txt; जाँच `tests/wa.py`।
 - 📸 हर फोटो ≤20 KB (SPH.compress) — कभी बड़ी फोटो सीधी Firestore में नहीं; पैकेट वाले सामान की फोटो असली ही।
 - 🔒 सार्वजनिक (pub/*, ग्राहक पेज) में तम्बाकू कभी नहीं — SON.list में isTob/secret/sub tob तीनों जाँच।

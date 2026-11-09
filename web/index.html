@@ -1605,11 +1605,13 @@ function showReceipt(b,fresh,offline){
   if(b.photo||(S.isOwner&&!S.demo))loadBillPhoto(b.no);
   if(window.SF&&SF.drawPaperQR)SF.drawPaperQR(b,"ppqr",240);
   $("#sheet").oninput=e=>{if(e.target.id==="waPh"){const ph=e.target.value.replace(/\D/g,"").slice(-10),go=$("#waGo");go.setAttribute("aria-disabled",ph.length===10?"false":"true");go.href=ph.length===10?waLink(receiptText({...b,custPhone:ph}),ph):"#"}};
+  /* 💬 10 अंक पूरे होते ही सीधे उसी ग्राहक की WhatsApp चैट (SE.waAuto) — नंबर ग्राहक रजिस्टर में भी */
+  if(window.SE&&SE.waAuto&&$("#waPh"))SE.waAuto($("#waPh"),async ph=>{toast("🟢 "+ph+" की WhatsApp चैट खुल रही है…");if(window.SR&&SR.waBill){await SR.keepPhone(b,ph,true);SR.waBill(b,ph,true)}else SE.wa(ph,receiptText({...b,custPhone:ph}))});
   $("#sheet").onclick=async e=>{
     if(e.target.matches("[data-close]")){closeSheet();return}
     if(e.target.closest("[data-print]")){printBill(b);return}
     if(e.target.closest("[data-creq]")){SF.sendCancelReq(b);return}
-    if(e.target.closest("[data-sharepdf]")){if(window.SF)SF.shareBill(b,(party&&party.phone)||b.custPhone,true);return}
+    if(e.target.closest("[data-sharepdf]")){const tp=$("#waPh")&&$("#waPh").value.replace(/\D/g,"").slice(-10);if(window.SF)SF.shareBill(b,(party&&party.phone)||b.custPhone||(tp&&tp.length===10?tp:""),true);return}
     if(e.target.closest("[data-waask]")){$("#waask").hidden=false;$("#waPh").focus();return}
     const go=e.target.closest("#waGo");if(go){const ph=$("#waPh").value.replace(/\D/g,"").slice(-10);if(ph.length!==10){e.preventDefault();toast("10 अंक का मोबाइल नंबर डालें");return}saveCustPhone(b,ph);toast("नंबर "+ph+" इस बिल व ग्राहक में सेव हुआ");return}
     const cb=e.target.closest("[data-cancel]");

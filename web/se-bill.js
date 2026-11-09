@@ -11,7 +11,7 @@ const unpaid=()=>(S.dayBills||[]).filter(b=>b.settled===false&&!b.cancelled&&b.d
 SB.unpaid=unpaid;
 /* सर्वर पर या फोन (बिना नेट) में बिल बदलो */
 SB.patchBill=(b,ch)=>patchBill(b,ch);
-SB.waNotice=(txt,ph)=>{try{location.href=waLink(txt,ph)}catch(e){}};
+SB.waNotice=(txt,ph)=>{try{if(window.SE&&SE.wa)SE.wa(ph,txt);else location.href=waLink(txt,ph)}catch(e){}};
 async function patchBill(b,ch){
   Object.assign(b,ch);
   const o=outboxGet();const i=o.findIndex(x=>x.bill.no===b.no);

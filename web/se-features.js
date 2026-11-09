@@ -1221,7 +1221,7 @@ SF._shareNow=async function(b,phone,saved){
   try{toast("📄 बिल का PDF बन रहा है…");
     const how=await SE.shareReceipt(b,SF.rcptOpts(b,!saved||(b.pay&&b.pay.udhar>0)),phone,receiptText(b));
     if(how==="download")toast("बिल की फोटो डाउनलोड हुई — WhatsApp में भेज दें")}
-  catch(e){if(e&&e.code==="oldapk"){toast(e.msg);location.href=waLink(receiptText(b),phone);return}toast(e.msg||("शेयर नहीं हुआ: "+(e.message||"")))}
+  catch(e){if(e&&e.code==="oldapk"){toast(e.msg);SE.wa(phone,receiptText(b));return}toast(e.msg||("शेयर नहीं हुआ: "+(e.message||"")))}
 };
 /* "बिल देखें" दबाते ही बिल सेव होता है (SB.autoSave) — यहाँ सिर्फ़ सेव होते समय का दृश्य; ✕/हटाने/भाव बदलने का कोई बटन नहीं */
 SF.drawCheckout=function(){

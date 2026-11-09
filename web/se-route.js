@@ -150,22 +150,42 @@ SR.shareAsk=function(b,phone,saved){
     <h3>📤 बिल ग्राहक को भेजें</h3><p class="note" style="margin:0 0 8px">बिल ${esc(b.no)} · ${rs(b.total)}</p>
     <label class="fld">ग्राहक का मोबाइल नंबर<input class="inp" id="shPh" type="tel" inputmode="tel" maxlength="16" placeholder="10 अंक का नंबर" value="${ph0}" autocomplete="off" style="font-size:22px;font-weight:800;letter-spacing:1px"></label>
     <p class="note" id="shKnown" style="min-height:18px;margin:4px 0 8px"></p>
-    <button class="big" data-shwa style="background:#1f8a4c;color:#fff">🟢 WhatsApp पर भेजें</button>
-    <div class="row2" style="margin:8px 0 0"><button class="big ghost" data-shsms>✉️ SMS भेजें</button><button class="big ghost" data-shx>रद्द</button></div>
-    <p class="note" style="margin:8px 0 0">ग्राहक के पास WhatsApp नहीं है तो SMS दबाएँ। यह नंबर ग्राहक रजिस्टर में हमेशा के लिए सेव रहेगा।</p></div>`;
+    <button class="big" data-shwa style="background:#1f8a4c;color:#fff">🟢 WhatsApp पर भेजें (सीधी चैट)</button>
+    <div class="row2" style="margin:8px 0 0"><button class="big ghost" data-shpdf>📄 PDF भेजें</button><button class="big ghost" data-shsms>✉️ SMS</button></div>
+    <button class="big ghost" data-shx style="margin-top:8px">रद्द</button>
+    <p class="note" style="margin:8px 0 0">10 अंक पूरे होते ही उसी ग्राहक की WhatsApp चैट अपने-आप खुलती है (नंबर दोबारा नहीं लिखना)। लौटने पर "📄 PDF भी भेजें" आएगा। नंबर ग्राहक रजिस्टर में सेव रहता है।</p></div>`;
   box.hidden=false;
   const inp=document.getElementById("shPh");
   const known=()=>{const p=clean(inp.value);const c=p.length===10&&(S.customers||[]).find(x=>x.id===p);
     document.getElementById("shKnown").textContent=c?`⭐ पुराने ग्राहक${c.name?" "+c.name:""} · ${c.visits||0} बार आए · कुल ${rs(c.spent||0)}`:(p.length===10?"🆕 नया ग्राहक — रजिस्टर में जुड़ जाएगा":"")};
   inp.oninput=known;known();if(!ph0)setTimeout(()=>inp.focus(),120);
+  const go=async(ph,how)=>{box.hidden=true;box.innerHTML="";
+    await SR.keepPhone(b,ph,saved);
+    if(how==="wa")SR.waBill(b,ph,saved);else if(how==="pdf")SF._shareNow(b,ph,saved);else SR.sendSms(b,ph)};
+  if(SE.waAuto&&!ph0)SE.waAuto(inp,ph=>{toast("🟢 "+ph+" की WhatsApp चैट खुल रही है…");go(ph,"wa")});
   box.onclick=async e=>{
     if(e.target.closest("[data-shx]")){box.hidden=true;box.innerHTML="";return}
-    const wa=e.target.closest("[data-shwa]"),sm=e.target.closest("[data-shsms]");if(!wa&&!sm)return;
+    const wa=e.target.closest("[data-shwa]"),sm=e.target.closest("[data-shsms]"),pdf=e.target.closest("[data-shpdf]");if(!wa&&!sm&&!pdf)return;
     const ph=clean(inp.value);if(ph.length!==10||!/^[6-9]/.test(ph)){toast("सही 10 अंक का मोबाइल नंबर डालें");inp.focus();return}
-    box.hidden=true;box.innerHTML="";
-    await SR.keepPhone(b,ph,saved);
-    if(wa)SF._shareNow(b,ph,saved);else SR.sendSms(b,ph);
+    go(ph,wa?"wa":pdf?"pdf":"sms");
   };
+};
+/* 🟢 बिल सीधे ग्राहक की WhatsApp चैट में (टेक्स्ट बिल) — लौटने पर "📄 PDF भी भेजें" (तब वही चैट WhatsApp की सूची में सबसे ऊपर होती है) */
+SR.waBill=function(b,ph,saved){
+  if(!(window.SE&&SE.wa)){location.href=waLink(receiptText(b),ph);return}
+  SE.wa(ph,receiptText(b));
+  if(!SE.isNative)return;
+  const back=()=>{if(document.hidden)return;document.removeEventListener("visibilitychange",back);
+    setTimeout(()=>SR.pdfAfter(b,ph,saved),300)};
+  setTimeout(()=>document.addEventListener("visibilitychange",back),400);
+};
+SR.pdfAfter=function(b,ph,saved){let box=document.getElementById("shbox");if(!box){box=document.createElement("div");box.id="shbox";document.body.appendChild(box)}
+  box.innerHTML=`<div class="shb-scrim" data-shx></div><div class="shb" role="dialog" aria-label="PDF भी भेजें"><h3>✅ ${esc(ph)} को बिल भेजा</h3>
+    <p class="note" style="margin:0 0 10px">बिल की सुंदर PDF भी भेजनी है? WhatsApp में यही ग्राहक सबसे ऊपर मिलेगा।</p>
+    <div class="row2"><button class="big" data-shp style="background:#1f8a4c;color:#fff">📄 PDF भी भेजें</button><button class="big ghost" data-shx>बस हो गया</button></div></div>`;
+  box.hidden=false;
+  box.onclick=e=>{if(e.target.closest("[data-shx]")){box.hidden=true;box.innerHTML="";return}
+    if(e.target.closest("[data-shp]")){box.hidden=true;box.innerHTML="";SF._shareNow(b,ph,saved)}};
 };
 SR.keepPhone=async function(b,ph,saved){
   b.custPhone=ph;
