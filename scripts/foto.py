@@ -95,10 +95,12 @@ def push(msg):
     if sh("git", "status", "--porcelain", cwd=WT):
         sh("git", "commit", "-qm", msg, cwd=WT)
     for _ in range(3):
-        if subprocess.run(["git", "push", "-q", "origin", "HEAD:" + BR], cwd=WT, capture_output=True).returncode == 0: break
+        r = subprocess.run(["git", "push", "-q", "origin", "HEAD:" + BR], cwd=WT, capture_output=True, text=True)
+        if r.returncode == 0: break
         sh("git", "pull", "-q", "--rebase", "origin", BR, cwd=WT, ok=True)
-    rel = os.path.relpath(Q, R)
-    sh("git", "add", rel, os.path.relpath(IGN, R) if os.path.exists(IGN) else rel)
+    else: print("⚠ फोटो-शाखा push नहीं हुई:", r.stderr[-300:])
+    fs = [os.path.relpath(x, R) for x in (Q, IGN) if os.path.exists(x)]
+    if fs: sh("git", "add", *fs)
     if sh("git", "diff", "--cached", "--name-only"):
         sh("git", "commit", "-qm", msg + "\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>")
         sh("git", "pull", "-q", "--rebase", ok=True)
