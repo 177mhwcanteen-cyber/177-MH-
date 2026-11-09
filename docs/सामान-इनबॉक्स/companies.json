@@ -25,7 +25,9 @@
   ],
   "dist": "बाड़मेर की ही कंपनी — सीधा मँगा सकते हैं",
   "note": "स्रोत: पैक की फोटो (मैदा, बेसन, सेवइयाँ)। फोन (पैक पर): 02982-221119",
-  "fssai": "12219014000286"
+  "fssai": "12219014000286",
+  "care": "02982-221119",
+  "email": "vinay9962@gmail.com"
  },
  {
   "id": "c-vidya-sagar",
@@ -484,5 +486,163 @@
   "web": "",
   "gst": "",
   "dist": ""
+ },
+ {
+  "id": "c-appleton",
+  "name": "APPLETON",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "APPLETON"
+  ],
+  "dist": "",
+  "note": "पता वाली साइड की फोटो नहीं"
+ },
+ {
+  "id": "c-bikaji",
+  "name": "BIKAJI FOODS INTERNATIONAL LTD.",
+  "phone": "",
+  "care": "+91-151-2250350",
+  "email": "care@bikaji.com",
+  "web": "www.bikaji.com",
+  "addr": "F/196-199, F/178, E/188, Bichhwal Industrial Area",
+  "city": "Bikaner 334006, Rajasthan",
+  "fssai": "10012013000346",
+  "gst": "",
+  "brands": [
+   "BIKAJI"
+  ],
+  "dist": "UTTAM COMPANY",
+  "note": "r9-0002/0003"
+ },
+ {
+  "id": "c-parkash",
+  "name": "PARKASH CANDLE WORKS PVT. LTD.",
+  "phone": "9971733241",
+  "care": "",
+  "email": "parkashcandle@gmail.com",
+  "web": "www.parkashcandles.com",
+  "addr": "C-109, Naraina Industrial Area Phase-I",
+  "city": "New Delhi 110028",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "PARKASH"
+  ],
+  "dist": "",
+  "note": "r9-0010"
+ },
+ {
+  "id": "c-nlfood",
+  "name": "N.L. FOOD INDUSTRIES (REAL ROASTED / NL NO.1)",
+  "phone": "",
+  "care": "0141-2319984",
+  "email": "",
+  "web": "",
+  "addr": "Phase-1, G-1-18, RIICO Industrial Area, Sarna Dungar, Jhotwara",
+  "city": "Jaipur, Rajasthan",
+  "fssai": "12214026001559",
+  "gst": "",
+  "brands": [
+   "NL",
+   "REAL ROASTED"
+  ],
+  "dist": "",
+  "note": "r9-0015"
+ },
+ {
+  "id": "c-hvindia",
+  "name": "H V INDIA (XTRIO)",
+  "phone": "8079085324",
+  "care": "",
+  "email": "hvindia2020@gmail.com",
+  "web": "",
+  "addr": "Plot No. 62, Behind Police Line, Kheteshwar Nagar",
+  "city": "Barmer, Rajasthan 344001",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "XTRIO"
+  ],
+  "dist": "",
+  "note": "r9-0026/0028 — स्थानीय (बाड़मेर)"
+ },
+ {
+  "id": "c-ankit",
+  "name": "ANKIT TRADING CO. (AK GOLD)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "Unjha, Gujarat",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "AK GOLD"
+  ],
+  "dist": "",
+  "note": "r9-0030 — नंबर/FSSAI नहीं पढ़े"
+ },
+ {
+  "id": "c-gandhi",
+  "name": "GANDHI SPICES PVT. LTD. (HATHI)",
+  "phone": "9428211521",
+  "care": "",
+  "email": "cc@gandhispices.com",
+  "web": "www.gandhispices.com",
+  "addr": "",
+  "city": "Gujarat",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "HATHI"
+  ],
+  "dist": "",
+  "note": "FSSAI आंशिक (...13021000618) — खाली रखा"
+ },
+ {
+  "id": "c-foodcoast",
+  "name": "FOODCOAST INTERNATIONAL (NIEU)",
+  "phone": "",
+  "care": "1800-274-274-0",
+  "email": "info@foodcoast.com",
+  "web": "www.foodcoast.com",
+  "addr": "A-23/A, Focal Point Extension",
+  "city": "Jalandhar 144004, Punjab",
+  "fssai": "10011063000008",
+  "gst": "",
+  "brands": [
+   "NIEU"
+  ],
+  "dist": "",
+  "note": "r9-0036"
+ },
+ {
+  "id": "c-kandhari",
+  "name": "KANDHARI BEVERAGES PVT. LTD. (COCA-COLA BOTTLER)",
+  "phone": "",
+  "care": "1800-208-2653",
+  "email": "indiahelpline@coca-cola.com",
+  "web": "",
+  "addr": "21 Canal Colony, Near District Administration Complex",
+  "city": "Amritsar, Punjab 143001",
+  "fssai": "13026999000026",
+  "gst": "",
+  "brands": [
+   "SPRITE",
+   "COCA-COLA",
+   "LIMCA",
+   "FANTA",
+   "THUMS UP"
+  ],
+  "dist": "",
+  "note": "fr-0052"
  }
 ]

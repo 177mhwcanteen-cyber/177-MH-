@@ -49,6 +49,14 @@ def main():
     if nbad and "--force" not in sys.argv:
         sys.exit(f"❌ ZIP में {nbad} गलतियाँ — दूसरे Claude से ठीक करवाओ, या stock.json सुधारकर दोबारा (--dry से देखो, --force से फिर भी)")
     items = d.get("items") or []
+    # 🏭 एक ही कंपनी के दो id (दूसरे Claude ने नया बना दिया) → पुराना id (docs/सामान-इनबॉक्स/company-alias.json)
+    try: AL = json.load(open(os.path.join(INB, "company-alias.json"), encoding="utf8"))
+    except Exception: AL = {}
+    for x in items:
+        for k in ("mfrId", "mfr"):
+            if x.get(k) in AL: x[k] = AL[x[k]]
+    for c in d.get("companies") or []:
+        if c.get("id") in AL: c["id"] = AL[c["id"]]
     # 2) असली फोटो → संग्रह
     foto.wt(); Q = foto.load(); have = {x["sha"]: x for x in Q}; day = datetime.datetime.now().strftime("%Y%m%d"); kb = 0; new = 0
     ref = {}

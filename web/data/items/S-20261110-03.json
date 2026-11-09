@@ -1,0 +1,1819 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-03",
+ "date": "2026-11-10",
+ "by": "स्वरूप जी (विक्रम जी के लिए)",
+ "note": "पिछली ZIP (S-20261109-01, रैक 7–8 के 48 सामान) के बाद का सब: रैक 8 बाकी, रैक 9, फ्रिज (अमूल आइसक्रीम, कोल्ड ड्रिंक, डेयरी)। नियम: अमूल आइसक्रीम/डेयरी और कोल्ड ड्रिंक MRP पर। रैक नक्शा: रैक 8 में 8-13, 8-14 नए; आइसक्रीम → रैक 19 (Amul फ्रीज़र), कोल्ड ड्रिंक/अमूल डिब्बे/चीज़-मक्खन-पनीर → रैक 20 (Coca-Cola फ्रिज)। तापड़िया कंपनी का पूरा पता अब भरें। · किट v6",
+ "items": [
+  {
+   "id": "b8906079510247",
+   "name": "20-20 HEALTHY RAISINS KISHMISH 250 G POUCH",
+   "short": "20-20 KISHMISH 250G",
+   "hi": "20-20 हेल्दी किशमिश 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "kishmish raisins 20-20 किशमिश",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510247",
+   "mrp": 0,
+   "sale": 195,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-8",
+   "ph": "eed0280a",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r8/20261109-cdfe6ce0.jpg",
+    "r8/20261109-18ca8db2.jpg"
+   ],
+   "open": {
+    "qty": 36,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-sabut-moong-whole-green-gram-500-g-loose",
+   "name": "SABUT MOONG (WHOLE GREEN GRAM) 500 G LOOSE PACK",
+   "short": "SABUT MOONG 500G",
+   "hi": "साबुत मूंग 500 ग्राम (खुला पैक)",
+   "size": "500g",
+   "alias": "moong mung sabut green gram मूंग",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 66,
+   "cost": 52.5,
+   "perPack": 0,
+   "rack": "8-9",
+   "ph": "d1531839",
+   "fotos": [
+    "r8/20261109-9b9ff409.jpg"
+   ],
+   "open": {
+    "qty": 26,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-banana-chips-long-cut-masala-200-g-loose",
+   "name": "BANANA CHIPS (LONG CUT, MASALA) 200 G LOOSE PACK",
+   "short": "BANANA CHIPS 200G",
+   "hi": "केला चिप्स (लंबे, मसाला) 200 ग्राम",
+   "size": "200g",
+   "alias": "banana chips kela chips केला चिप्स",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-10",
+   "ph": "2f46fc2a",
+   "fotos": [
+    "r8/20261109-43cf139a.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8908019008142",
+   "name": "APPLETON ROASTED & SALTED CASHEW 250 G",
+   "short": "APPLETON ROAST KAJU 250G",
+   "hi": "एप्पलटन रोस्टेड नमकीन काजू 250 ग्राम",
+   "brand": "APPLETON",
+   "size": "250g",
+   "alias": "roasted kaju cashew appleton काजू",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8908019008142",
+   "mrp": 360,
+   "sale": 290,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-10",
+   "ph": "5f9aaeab",
+   "mfr": "c-appleton",
+   "fotos": [
+    "r8/20261109-8cda3351.jpg",
+    "r8/20261109-d9cbb4cf.jpg",
+    "r8/20261109-207d3a12.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-02",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-kabuli-chana-white-chickpeas-500-g-loose",
+   "name": "KABULI CHANA (WHITE CHICKPEAS) 500 G LOOSE PACK",
+   "short": "KABULI CHANA 500G",
+   "hi": "काबुली चना 500 ग्राम (खुला पैक)",
+   "size": "500g",
+   "alias": "kabuli chana chole safed chana छोले काबुली",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 70,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-11",
+   "ph": "73d756e0",
+   "fotos": [
+    "r8/20261109-77b393b2.jpg",
+    "r8/20261109-549e0cf7.jpg"
+   ],
+   "open": {
+    "qty": 57,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8908004942512",
+   "name": "TAPARIA WHOLE WHEAT CHAKKI FRESH ATTA 10 KG",
+   "short": "TAPARIA ATTA 10KG",
+   "hi": "तापड़िया चक्की फ्रेश आटा 10 किलो",
+   "brand": "TAPARIA",
+   "size": "10kg",
+   "alias": "atta aata tapariya taparia आटा 10 kg",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "8908004942512",
+   "mrp": 440,
+   "sale": 389,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-13",
+   "ph": "09448efc",
+   "mfr": "c-taparia-food",
+   "fotos": [
+    "r8/20261109-8d601622.jpg",
+    "r8/20261109-3c37ad68.jpg",
+    "r8/20261109-6e04e189.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2026-11-28",
+    "batchNo": "15TFP"
+   }
+  },
+  {
+   "id": "b8906005502575",
+   "name": "BIKAJI BAAT CHEET PAPAD MOONG URAD 400 G",
+   "short": "BIKAJI PAPAD 400G",
+   "hi": "बीकाजी बात-चीत पापड़ (मूंग-उड़द) 400 ग्राम",
+   "brand": "BIKAJI",
+   "size": "400g",
+   "alias": "papad bikaji bikaneri papad पापड़",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8906005502575",
+   "mrp": 140,
+   "sale": 135,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-1",
+   "ph": "8be55bfc",
+   "mfr": "c-bikaji",
+   "fotos": [
+    "r9/20261109-4f484cbc.jpg",
+    "r9/20261109-a4e4e86f.jpg",
+    "r9/20261109-d462ee2a.jpg"
+   ],
+   "open": {
+    "qty": 12,
+    "exp": "2027-03-17",
+    "batchNo": "B26I8202"
+   }
+  },
+  {
+   "id": "b8908013486052",
+   "name": "GAYATRI MARWARI TADKA RED CHILLI GARLIC CHUTNEY 100 G",
+   "short": "GAYATRI TADKA CHUTNEY100",
+   "hi": "गायत्री मारवाड़ी तड़का (लाल मिर्च-लहसुन चटनी) 100 ग्राम",
+   "brand": "GAYATRI",
+   "size": "100g",
+   "alias": "lahsun chutney garlic chutney tadka लहसुन चटनी",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8908013486052",
+   "mrp": 40,
+   "sale": 39,
+   "cost": 34,
+   "perPack": 0,
+   "rack": "9-1",
+   "ph": "3dffbecc",
+   "mfr": "c-gayatri",
+   "fotos": [
+    "r9/20261109-5f060bed.jpg",
+    "r9/20261109-7d0fa516.jpg",
+    "r9/20261109-fd45f620.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2027-04",
+    "batchNo": "KA10"
+   }
+  },
+  {
+   "id": "g-karishma-glassware-black-currant-gift-se",
+   "name": "KARISHMA GLASSWARE BLACK CURRANT GIFT SET (4 CUPS + 1 PLATTER)",
+   "short": "KARISHMA GIFT SET 5PC",
+   "hi": "करिश्मा ग्लासवेयर ब्लैक करंट गिफ्ट सेट (4 कप + 1 प्लेटर)",
+   "brand": "KARISHMA",
+   "size": "5 pcs",
+   "alias": "gift set cup set glass karishma गिफ्ट कप सेट",
+   "cat": "gift",
+   "sub": "party",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 250,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-1",
+   "ph": "0fb6aea7",
+   "fotos": [
+    "r9/20261109-9c3a2879.jpg",
+    "r9/20261109-8736f927.jpg"
+   ],
+   "open": {
+    "qty": 0,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-parkash-twisted-candle-pastel-yellow-pac",
+   "name": "PARKASH TWISTED CANDLE PASTEL YELLOW (PACK OF 2)",
+   "short": "PARKASH CANDLE YLW 2PC",
+   "hi": "प्रकाश घुमावदार मोमबत्ती पीली (2 का डिब्बा)",
+   "brand": "PARKASH",
+   "size": "2 pcs",
+   "alias": "candle mombatti diwali मोमबत्ती कैंडल",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "mrp": 135,
+   "sale": 108,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-2",
+   "ph": "a7aa9f24",
+   "mfr": "c-parkash",
+   "fotos": [
+    "r9/20261109-e51a80c4.jpg",
+    "r9/20261109-4e4a8d3d.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b38678984326",
+   "name": "20-20 CLASSIC KIMIA DATES 500 G BOX",
+   "short": "20-20 KIMIA DATES 500G",
+   "hi": "20-20 क्लासिक किमिया खजूर 500 ग्राम",
+   "brand": "20-20",
+   "size": "500g",
+   "alias": "khajur kimia dates khajoor खजूर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "38678984326",
+   "mrp": 399,
+   "sale": 230,
+   "cost": 160,
+   "perPack": 0,
+   "rack": "9-3",
+   "ph": "1d660e0c",
+   "mfr": "c-lakecity",
+   "fotos": [
+    "r9/20261109-ae18c019.jpg",
+    "r9/20261109-e88fabb9.jpg",
+    "r9/20261109-68ea5826.jpg"
+   ],
+   "open": {
+    "qty": 12,
+    "exp": "2027-03",
+    "batchNo": "26AD1435"
+   }
+  },
+  {
+   "id": "b8908005271024",
+   "name": "REAL ROASTED NO.1 MALAI CHANA 500 G",
+   "short": "NL MALAI CHANA 500G",
+   "hi": "रियल रोस्टेड नं.1 मलाई चना 500 ग्राम",
+   "brand": "NL",
+   "size": "500g",
+   "alias": "bhuna chana roasted chana malai chana भुना चना",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8908005271024",
+   "mrp": 100,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-4",
+   "ph": "dbd3063a",
+   "mfr": "c-nlfood",
+   "fotos": [
+    "r9/20261109-4fd9833a.jpg",
+    "r9/20261109-92ef48e3.jpg",
+    "r9/20261109-5231b220.jpg"
+   ],
+   "open": {
+    "qty": 18,
+    "exp": "2026-12-18",
+    "batchNo": "F55"
+   }
+  },
+  {
+   "id": "b8908005271154",
+   "name": "NL NO.1 GUJARATI SINGDANA 500 G",
+   "short": "NL GUJ SINGDANA 500G",
+   "hi": "NL नं.1 गुजराती सिंगदाना 500 ग्राम",
+   "brand": "NL",
+   "size": "500g",
+   "alias": "singdana moongfali masala peanut सिंगदाना",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8908005271154",
+   "mrp": 150,
+   "sale": 100,
+   "cost": 85,
+   "perPack": 0,
+   "rack": "9-5",
+   "ph": "f40c999f",
+   "mfr": "c-nlfood",
+   "fotos": [
+    "r9/20261109-81d73448.jpg",
+    "r9/20261109-596a69b0.jpg",
+    "r9/20261109-829e2c50.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-khane-ka-gond-edible-gum-200-g-loose-pac",
+   "name": "KHANE KA GOND (EDIBLE GUM) 200 G LOOSE PACK",
+   "short": "EDIBLE GOND 200G",
+   "hi": "खाने का गोंद 200 ग्राम (खुला पैक)",
+   "size": "200g",
+   "alias": "gond edible gum gondh गोंद लड्डू",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 128,
+   "cost": 46,
+   "perPack": 0,
+   "rack": "9-6",
+   "ph": "c2bf0106",
+   "fotos": [
+    "r9/20261109-c0358859.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-mishri-dana-sugar-crystal-200-g-loose-pa",
+   "name": "MISHRI DANA (SUGAR CRYSTAL) 200 G LOOSE PACK",
+   "short": "MISHRI DANA 200G",
+   "hi": "मिश्री दाना 200 ग्राम",
+   "size": "200g",
+   "alias": "mishri misri sugar candy मिश्री",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-6",
+   "ph": "5444e476",
+   "fotos": [
+    "r9/20261109-2b0c8cef.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-chhuara-dry-dates-kharek-400-g-loose-pac",
+   "name": "CHHUARA DRY DATES (KHAREK) 400 G LOOSE PACK",
+   "short": "CHHUARA 400G",
+   "hi": "छुआरा (सूखा खजूर/खारक) 400 ग्राम",
+   "size": "400g",
+   "alias": "chhuara chuara kharek dry dates छुआरा",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 99,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-7",
+   "ph": "46a4ae0e",
+   "fotos": [
+    "r9/20261109-4811ddd9.jpg"
+   ],
+   "open": {
+    "qty": 22,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-dry-coconut-gola-loose-per-kg",
+   "name": "DRY COCONUT GOLA (LOOSE, PER KG)",
+   "short": "SUKHA NARIYAL GOLA KG",
+   "hi": "सूखा नारियल गोला (खुला, किलो भाव)",
+   "size": "1kg",
+   "alias": "gola sukha nariyal dry coconut copra गोला नारियल",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "kg",
+   "mrp": 0,
+   "sale": 490,
+   "cost": 420,
+   "perPack": 0,
+   "ph": "07a04803",
+   "fotos": [
+    "rx/20261109-1cff7d19.jpg"
+   ],
+   "open": {
+    "qty": 1.1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-rai-black-mustard-seed-200-g-pack",
+   "name": "RAI (BLACK MUSTARD SEED) 200 G PACK",
+   "short": "RAI 200G",
+   "hi": "राई 200 ग्राम",
+   "size": "200g",
+   "alias": "rai sarson mustard seed राई",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 33,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "9b5a5e5a",
+   "fotos": [
+    "rx/20261109-30e35a92.jpg"
+   ],
+   "open": {
+    "qty": 35,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8939131255152",
+   "name": "XTRIO TOILET CLEANER 1 L",
+   "short": "XTRIO TOILET CLNR 1L",
+   "hi": "एक्सट्रियो टॉयलेट क्लीनर 1 लीटर",
+   "brand": "XTRIO",
+   "size": "1L",
+   "alias": "toilet cleaner harpic xtrio टॉयलेट क्लीनर",
+   "cat": "daily",
+   "sub": "clean",
+   "unit": "pc",
+   "barcode": "8939131255152",
+   "mrp": 170,
+   "sale": 162,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-8",
+   "ph": "2c00ecc4",
+   "mfr": "c-hvindia",
+   "fotos": [
+    "r9/20261109-2301f0cf.jpg",
+    "r9/20261109-5f50a5e7.jpg"
+   ],
+   "open": {
+    "qty": 23,
+    "exp": "2028-02",
+    "batchNo": "HV/002"
+   }
+  },
+  {
+   "id": "b8939131255602",
+   "name": "XTRIO GLASS CLEANER EXTRA SHINE 500 ML",
+   "short": "XTRIO GLASS CLNR 500ML",
+   "hi": "एक्सट्रियो ग्लास क्लीनर 500 मि.ली.",
+   "brand": "XTRIO",
+   "size": "500ml",
+   "alias": "glass cleaner colin xtrio ग्लास क्लीनर",
+   "cat": "daily",
+   "sub": "clean",
+   "unit": "pc",
+   "barcode": "8939131255602",
+   "mrp": 110,
+   "sale": 105,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-8",
+   "ph": "44f0f857",
+   "mfr": "c-hvindia",
+   "fotos": [
+    "r9/20261109-9024ebac.jpg",
+    "r9/20261109-86d25191.jpg"
+   ],
+   "open": {
+    "qty": 25,
+    "exp": "2028-06",
+    "batchNo": "HV/006"
+   }
+  },
+  {
+   "id": "g-ak-gold-saunf-fennel-seeds-1-kg",
+   "name": "AK GOLD SAUNF (FENNEL SEEDS) 1 KG",
+   "short": "AK GOLD SAUNF 1KG",
+   "hi": "AK गोल्ड सौंफ 1 किलो",
+   "brand": "AK GOLD",
+   "size": "1kg",
+   "alias": "saunf sonf fennel सौंफ",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 320,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-9",
+   "ph": "80877b13",
+   "mfr": "c-ankit",
+   "fotos": [
+    "r9/20261109-9a5e0df0.jpg",
+    "r9/20261109-416b9924.jpg",
+    "r9/20261109-ac57766b.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906012760708",
+   "name": "HATHI BLACK SALT POWDER 100 G",
+   "short": "HATHI KALA NAMAK 100G",
+   "hi": "हाथी काला नमक पाउडर 100 ग्राम",
+   "brand": "HATHI",
+   "size": "100g",
+   "alias": "kala namak black salt sanchal काला नमक",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8906012760708",
+   "mrp": 15,
+   "sale": 15,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-9",
+   "ph": "6e5f88a0",
+   "mfr": "c-gandhi",
+   "fotos": [
+    "r9/20261109-a122f6ba.jpg",
+    "r9/20261109-f992759e.jpg",
+    "r9/20261109-b3a2c886.jpg"
+   ],
+   "open": {
+    "qty": 20,
+    "exp": "2027-09-07",
+    "batchNo": "15"
+   }
+  },
+  {
+   "id": "b8906032372912",
+   "name": "NIEU THOUSAND ISLAND DRESSING 1 KG POUCH",
+   "short": "NIEU THOUSAND ISLAND 1KG",
+   "hi": "निउ थाउज़ैंड आइलैंड ड्रेसिंग 1 किलो",
+   "brand": "NIEU",
+   "size": "1kg",
+   "alias": "thousand island dressing sauce nieu",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906032372912",
+   "mrp": 270,
+   "sale": 252,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-9",
+   "ph": "6d77b55b",
+   "mfr": "c-foodcoast",
+   "fotos": [
+    "r9/20261109-c1ce5a07.jpg",
+    "r9/20261109-7a388d39.jpg",
+    "r9/20261109-ebc100be.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-02-24",
+    "batchNo": "HSYDA4"
+   }
+  },
+  {
+   "id": "b8906032372752",
+   "name": "NIEU CHILLI GARLIC SPREAD 1 KG POUCH",
+   "short": "NIEU CHILLI GARLIC 1KG",
+   "hi": "निउ चिली गार्लिक स्प्रेड 1 किलो",
+   "brand": "NIEU",
+   "size": "1kg",
+   "alias": "chilli garlic spread sauce nieu",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906032372752",
+   "mrp": 203,
+   "sale": 183,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-9",
+   "ph": "8b25d8f9",
+   "mfr": "c-foodcoast",
+   "fotos": [
+    "r9/20261109-622c83c7.jpg",
+    "r9/20261109-ad3b6a37.jpg",
+    "r9/20261109-fa7c3c92.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-01-12",
+    "batchNo": "HLMDA2"
+   }
+  },
+  {
+   "id": "b8906032372868",
+   "name": "NIEU EGGLESS MAYONNAISE 1 KG POUCH",
+   "short": "NIEU MAYO EGGLESS 1KG",
+   "hi": "निउ एगलेस मेयोनीज़ 1 किलो",
+   "brand": "NIEU",
+   "size": "1kg",
+   "alias": "mayonnaise mayo eggless मेयोनीज़",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906032372868",
+   "mrp": 140,
+   "sale": 131,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-9",
+   "ph": "c3af0555",
+   "mfr": "c-foodcoast",
+   "fotos": [
+    "r9/20261109-4a866083.jpg",
+    "r9/20261109-3e6cfc05.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-02-04",
+    "batchNo": "HSEDA2"
+   }
+  },
+  {
+   "id": "b8906030060552",
+   "name": "FRUTIN'S MONOSODIUM GLUTAMATE (AJINOMOTO) 500 G",
+   "short": "FRUTINS AJINOMOTO 500G",
+   "hi": "फ्रूटिन्स अजीनोमोटो (MSG) 500 ग्राम",
+   "brand": "FRUTIN'S",
+   "size": "500g",
+   "alias": "ajinomoto msg chinese salt अजीनोमोटो",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8906030060552",
+   "mrp": 210,
+   "sale": 199,
+   "cost": 180,
+   "perPack": 0,
+   "rack": "9-10",
+   "ph": "e776d25e",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r9/20261109-bf8f3335.jpg",
+    "r9/20261109-99de3efb.jpg",
+    "r9/20261109-20babb1b.jpg"
+   ],
+   "open": {
+    "qty": 22,
+    "exp": "2028-10-01",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262176446",
+   "name": "AMUL PISTA MALAI KULFI 60 ML",
+   "short": "AMUL PISTA KULFI 60ML",
+   "hi": "अमूल पिस्ता मलाई कुल्फ़ी 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "kulfi pista amul ice cream कुल्फी",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262176446",
+   "mrp": 30,
+   "sale": 30,
+   "cost": 22,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "697597d1",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-000c8623.jpg",
+    "r19/20261109-91a0fbd5.jpg",
+    "r19/20261109-197e0e7f.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 70,
+    "exp": "2027-07-22",
+    "batchNo": "EDF2981"
+   }
+  },
+  {
+   "id": "b8901262177139",
+   "name": "AMUL TRICONE CHOCO CRUNCH 120 ML",
+   "short": "AMUL TRICONE CHOCO 120ML",
+   "hi": "अमूल ट्राई-कोन चोको क्रंच 120 ml",
+   "brand": "AMUL",
+   "size": "120ml",
+   "alias": "cone tricone choco amul कोन",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262177139",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 28.9,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "a92cd147",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-2139928e.jpg",
+    "r19/20261109-eccc6e91.jpg",
+    "r19/20261109-e6c35578.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 40,
+    "exp": "2027-09-29",
+    "batchNo": "TBF2721"
+   }
+  },
+  {
+   "id": "b8901262176606",
+   "name": "AMUL RAJASTHANI KULFI KEWDA 60 ML",
+   "short": "AMUL RAJASTHANI KULFI",
+   "hi": "अमूल राजस्थानी कुल्फ़ी केवड़ा 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "kulfi rajasthani kewda कुल्फी",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262176606",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 16.5,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "e8699942",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-9a85941f.jpg",
+    "r19/20261109-63d25926.jpg",
+    "r19/20261109-a06ff28c.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 80,
+    "exp": "2027-10-06",
+    "batchNo": "TBF2791"
+   }
+  },
+  {
+   "id": "b8901262178648",
+   "name": "AMUL TRICONE BUTTERSCOTCH GOLD 120 ML",
+   "short": "AMUL TRICONE BSCOT GOLD",
+   "hi": "अमूल ट्राई-कोन बटरस्कॉच गोल्ड 120 ml",
+   "brand": "AMUL",
+   "size": "120ml",
+   "alias": "cone tricone butterscotch gold कोन",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262178648",
+   "mrp": 40,
+   "sale": 40,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "7f6e685c",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-7df481c2.jpg",
+    "r19/20261109-a797851a.jpg",
+    "r19/20261109-1e63545b.jpg",
+    "r19/20261109-7a05fdec.jpg",
+    "r19/20261109-f75f3620.jpg",
+    "r19/20261109-ceb1c73a.jpg",
+    "r19/20261109-d43e6d1f.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 70,
+    "exp": "2027-10-09",
+    "batchNo": "GAF2821"
+   }
+  },
+  {
+   "id": "b8901262300353",
+   "name": "AMUL JUMBO TRICONE CHOCO BROWNIE 100 G",
+   "short": "AMUL JUMBO CONE BROWNIE",
+   "hi": "अमूल जंबो ट्राई-कोन चोको ब्राउनी",
+   "brand": "AMUL",
+   "size": "100g",
+   "alias": "jumbo cone brownie choco कोन",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262300353",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "46edbc02",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-84460a00.jpg",
+    "r19/20261109-975e56f4.jpg",
+    "r19/20261109-e36ef9b0.jpg"
+   ],
+   "ctn": 10,
+   "open": {
+    "qty": 13,
+    "exp": "2027-08-16",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262176767",
+   "name": "AMUL BOMBAY KULFI DRY FRUITS 60 ML",
+   "short": "AMUL BOMBAY KULFI 60ML",
+   "hi": "अमूल बॉम्बे कुल्फ़ी ड्राई फ्रूट्स 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "kulfi bombay dry fruit कुल्फी",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262176767",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "387d4cc1",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-34ce44ec.jpg",
+    "r19/20261109-54b35040.jpg",
+    "r19/20261109-cfc3ff19.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 80,
+    "exp": "2027-07-13",
+    "batchNo": "EDF2891"
+   }
+  },
+  {
+   "id": "b8901262176637",
+   "name": "AMUL KASHMIRI KULFI KESAR 60 ML",
+   "short": "AMUL KASHMIRI KULFI 60ML",
+   "hi": "अमूल कश्मीरी कुल्फ़ी केसर 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "kulfi kashmiri kesar कुल्फी",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262176637",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 16.5,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "5bd80f4b",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-16fc1d09.jpg",
+    "r19/20261109-7be44339.jpg",
+    "r19/20261109-21a51cdb.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 80,
+    "exp": "2027-10-03",
+    "batchNo": "EDF2761"
+   }
+  },
+  {
+   "id": "b8901262300155",
+   "name": "AMUL FUNDOO MANGO DOLLY 45 ML",
+   "short": "AMUL FUNDOO MANGO 45ML",
+   "hi": "अमूल फंडू मैंगो डॉली 45 ml",
+   "brand": "AMUL",
+   "size": "45ml",
+   "alias": "fundoo mango dolly candy आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262300155",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "ea0a31c8",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-659ac6e8.jpg",
+    "r19/20261109-23f128b2.jpg",
+    "r19/20261109-711770f1.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 60,
+    "exp": "2027-10-11",
+    "batchNo": "TBF2841"
+   }
+  },
+  {
+   "id": "b8901262300537",
+   "name": "AMUL DUETZ MANGO GOLD 60 ML",
+   "short": "AMUL DUETZ MANGO 60ML",
+   "hi": "अमूल ड्यूएट्ज़ मैंगो गोल्ड 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "duetz mango gold stick आइसक्रीम",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262300537",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 14.5,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "6e919584",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-6e0cda5a.jpg",
+    "r19/20261109-eec7fda7.jpg",
+    "r19/20261109-a1e30365.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 80,
+    "exp": "2027-10-07",
+    "batchNo": "TBF2801"
+   }
+  },
+  {
+   "id": "b8901262177122",
+   "name": "AMUL TRICONE BUTTERSCOTCH 120 ML",
+   "short": "AMUL TRICONE BSCOT 120ML",
+   "hi": "अमूल ट्राई-कोन बटरस्कॉच 120 ml",
+   "brand": "AMUL",
+   "size": "120ml",
+   "alias": "cone tricone butterscotch कोन",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262177122",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 28.9,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "4a20ab33",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-7ef4aa82.jpg",
+    "r19/20261109-6a69d9c5.jpg",
+    "r19/20261109-4d3d81c1.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 55,
+    "exp": "2027-10-09",
+    "batchNo": "TBF2821"
+   }
+  },
+  {
+   "id": "b8901262176224",
+   "name": "AMUL CHOCOBAR PROBIOTIC 60 ML",
+   "short": "AMUL CHOCOBAR 60ML",
+   "hi": "अमूल चोकोबार 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "chocobar choco bar stick चोकोबार",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262176224",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 16.5,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "44be9748",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-20556361.jpg",
+    "r19/20261109-32cc5ecc.jpg",
+    "r19/20261109-674a3f7e.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 80,
+    "exp": "2027-04-12",
+    "batchNo": "TBF2871"
+   }
+  },
+  {
+   "id": "b8901262176545",
+   "name": "AMUL BADSHAHI KULFI 60 ML",
+   "short": "AMUL BADSHAHI KULFI 60ML",
+   "hi": "अमूल बादशाही कुल्फ़ी 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "kulfi badshahi कुल्फी",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262176545",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "b07de592",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-ba3ae97c.jpg",
+    "r19/20261109-5cc2c968.jpg",
+    "r19/20261109-64d6c43a.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 72,
+    "exp": "2027-07-14",
+    "batchNo": "EDF2901"
+   }
+  },
+  {
+   "id": "b8901262300681",
+   "name": "AMUL KAJU MALAI KULFI 60 ML",
+   "short": "AMUL KAJU MALAI KULFI",
+   "hi": "अमूल काजू मलाई कुल्फ़ी 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "kulfi kaju malai कुल्फी",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262300681",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 16.5,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "00d6a163",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-a52f9a0b.jpg",
+    "r19/20261109-4467a9da.jpg",
+    "r19/20261109-f6e79ac1.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 40,
+    "exp": "2027-07-11",
+    "batchNo": "TBF2871"
+   }
+  },
+  {
+   "id": "b8901262300568",
+   "name": "AMUL TRICONE CHOCOLATE GOLD 120 ML",
+   "short": "AMUL TRICONE CHOCO GOLD",
+   "hi": "अमूल ट्राई-कोन चॉकलेट गोल्ड 120 ml",
+   "brand": "AMUL",
+   "size": "120ml",
+   "alias": "cone tricone chocolate gold कोन",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262300568",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "dc7436f3",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-c3e0a411.jpg",
+    "r19/20261109-7c396ffe.jpg",
+    "r19/20261109-d93072aa.jpg",
+    "r19/20261109-02d7ce69.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 60,
+    "exp": "2027-10-10",
+    "batchNo": "EDF2831"
+   }
+  },
+  {
+   "id": "b8901262176521",
+   "name": "AMUL RAJBHOG KULFI 60 ML",
+   "short": "AMUL RAJBHOG KULFI 60ML",
+   "hi": "अमूल राजभोग कुल्फ़ी 60 ml",
+   "brand": "AMUL",
+   "size": "60ml",
+   "alias": "kulfi rajbhog कुल्फी",
+   "cat": "kirana",
+   "sub": "ice",
+   "unit": "pc",
+   "barcode": "8901262176521",
+   "mrp": 30,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "19-1",
+   "ph": "4d0ced45",
+   "mfr": "c-amul",
+   "fotos": [
+    "r19/20261109-1b7be9b0.jpg",
+    "r19/20261109-09461f30.jpg",
+    "r19/20261109-87d1d3a0.jpg"
+   ],
+   "ctn": 20,
+   "open": {
+    "qty": 60,
+    "exp": "2027-07-13",
+    "batchNo": "EDF2891"
+   }
+  },
+  {
+   "id": "b8901764032912",
+   "name": "SPRITE LEMON-LIME 250 ML",
+   "short": "SPRITE 250ML",
+   "hi": "स्प्राइट 250 ml",
+   "brand": "SPRITE",
+   "size": "250ml",
+   "alias": "sprite cold drink स्प्राइट",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764032912",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 17.35,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "6d402655",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261109-fe81b7f1.jpg",
+    "r20/20261109-479a30d9.jpg",
+    "r20/20261109-a9e32e86.jpg"
+   ],
+   "ctn": 28,
+   "open": {
+    "qty": 56,
+    "exp": "2027-06-12",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764012914",
+   "name": "COCA-COLA ORIGINAL TASTE 250 ML",
+   "short": "COCA COLA 250ML",
+   "hi": "कोका-कोला 250 ml",
+   "brand": "COCA-COLA",
+   "size": "250ml",
+   "alias": "coke coca cola cold drink कोक",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764012914",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 17.35,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "2921e18f",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261109-d6d5020c.jpg",
+    "r20/20261109-50fa6733.jpg",
+    "r20/20261109-e4cbe050.jpg"
+   ],
+   "ctn": 28,
+   "open": {
+    "qty": 56,
+    "exp": "2027-04-28",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764052910",
+   "name": "LIMCA LIME & LEMON 250 ML",
+   "short": "LIMCA 250ML",
+   "hi": "लिम्का 250 ml",
+   "brand": "LIMCA",
+   "size": "250ml",
+   "alias": "limca cold drink लिम्का",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764052910",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 17.35,
+   "perPack": 0,
+   "rack": "20-2",
+   "ph": "a4e10394",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261109-05248a7a.jpg",
+    "r20/20261109-588d8966.jpg",
+    "r20/20261109-be673642.jpg"
+   ],
+   "ctn": 28,
+   "open": {
+    "qty": 84,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764022913",
+   "name": "FANTA ORANGE 250 ML",
+   "short": "FANTA 250ML",
+   "hi": "फैंटा ऑरेंज 250 ml",
+   "brand": "FANTA",
+   "size": "250ml",
+   "alias": "fanta orange cold drink फैंटा",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764022913",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 17.35,
+   "perPack": 0,
+   "rack": "20-5",
+   "ph": "fd068cf9",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261109-fe67cff8.jpg",
+    "r20/20261109-7476aa94.jpg",
+    "r20/20261109-9b0f7345.jpg"
+   ],
+   "ctn": 28,
+   "open": {
+    "qty": 84,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764042911",
+   "name": "THUMS UP 250 ML",
+   "short": "THUMS UP 250ML",
+   "hi": "थम्स अप 250 ml",
+   "brand": "THUMS",
+   "size": "250ml",
+   "alias": "thums up thumsup cold drink थम्स अप",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764042911",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 17.35,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "40ddae72",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261109-a768244d.jpg",
+    "r20/20261109-e4c66ac8.jpg",
+    "r20/20261109-4c17dcb5.jpg"
+   ],
+   "ctn": 28,
+   "open": {
+    "qty": 56,
+    "exp": "2027-05-17",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262151306",
+   "name": "AMUL KOOL CAFE CLASSIC 200 ML CAN",
+   "short": "AMUL KOOL CAFE 200ML",
+   "hi": "अमूल कूल कैफ़े 200 ml",
+   "brand": "AMUL",
+   "size": "200ml",
+   "alias": "kool cafe cold coffee amul कोल्ड कॉफी",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901262151306",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-2",
+   "ph": "d1798564",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-260919c8.jpg",
+    "r20/20261109-62b1b78d.jpg",
+    "r20/20261109-5e7245e2.jpg"
+   ],
+   "ctn": 30,
+   "open": {
+    "qty": 60,
+    "exp": "2027-10-18",
+    "batchNo": "KEF2911"
+   }
+  },
+  {
+   "id": "b8901262151917",
+   "name": "AMUL KADHAI DOODH 200 ML CAN",
+   "short": "AMUL KADHAI DOODH 200ML",
+   "hi": "अमूल कढ़ाई दूध 200 ml",
+   "brand": "AMUL",
+   "size": "200ml",
+   "alias": "kadhai doodh milk amul कढ़ाई दूध",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901262151917",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-3",
+   "ph": "2a473dcd",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-ee343c7e.jpg",
+    "r20/20261109-495f5514.jpg",
+    "r20/20261109-d6cc467f.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "2027-10-17",
+    "batchNo": "KEF2901"
+   }
+  },
+  {
+   "id": "b8901262151337",
+   "name": "AMUL STRAWBERRY SHAKERS 200 ML CAN",
+   "short": "AMUL STRAWBERRY SHAKE",
+   "hi": "अमूल स्ट्रॉबेरी शेकर्स 200 ml",
+   "brand": "AMUL",
+   "size": "200ml",
+   "alias": "strawberry shake amul शेक",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901262151337",
+   "mrp": 30,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-3",
+   "ph": "dc8f8d83",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-e270008b.jpg",
+    "r20/20261109-5e5644da.jpg",
+    "r20/20261109-0b861ddf.jpg"
+   ],
+   "open": {
+    "qty": 24,
+    "exp": "2027-10-02",
+    "batchNo": "KEF2751"
+   }
+  },
+  {
+   "id": "b8901262020015",
+   "name": "AMUL CHEESE SLICES 200 G (10 SLICES)",
+   "short": "AMUL CHEESE SLICE 200G",
+   "hi": "अमूल चीज़ स्लाइस 200 ग्राम",
+   "brand": "AMUL",
+   "size": "200g",
+   "alias": "cheese slice amul चीज़",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262020015",
+   "mrp": 145,
+   "sale": 145,
+   "cost": 144,
+   "perPack": 0,
+   "rack": "20-4",
+   "ph": "ba9b2c52",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-a622aeac.jpg",
+    "r20/20261109-a3e46146.jpg",
+    "r20/20261109-b5ed91de.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2027-05-31",
+    "batchNo": "KFF2461"
+   }
+  },
+  {
+   "id": "b8901262010016",
+   "name": "AMUL PASTEURISED BUTTER 100 G",
+   "short": "AMUL BUTTER 100G",
+   "hi": "अमूल मक्खन 100 ग्राम",
+   "brand": "AMUL",
+   "size": "100g",
+   "alias": "butter makhan amul मक्खन",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262010016",
+   "mrp": 66,
+   "sale": 66,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-4",
+   "ph": "e65a79a0",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-0a205ced.jpg",
+    "r20/20261109-7278178e.jpg",
+    "r20/20261109-d5f0d615.jpg"
+   ],
+   "open": {
+    "qty": 29,
+    "exp": "2027-10-27",
+    "batchNo": "BBF3001"
+   }
+  },
+  {
+   "id": "b8901262020244",
+   "name": "AMUL PROCESSED CHEESE BLOCK 200 G",
+   "short": "AMUL CHEESE BLOCK 200G",
+   "hi": "अमूल चीज़ ब्लॉक 200 ग्राम",
+   "brand": "AMUL",
+   "size": "200g",
+   "alias": "cheese block amul चीज़",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262020244",
+   "mrp": 129,
+   "sale": 129,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-4",
+   "ph": "ba88773e",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-29ce88e4.jpg",
+    "r20/20261109-126ef852.jpg",
+    "r20/20261109-4bc38601.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-06-15",
+    "batchNo": "BAF2611"
+   }
+  },
+  {
+   "id": "b8901262180115",
+   "name": "AMUL MALAI PANEER FRESH 200 G",
+   "short": "AMUL MALAI PANEER 200G",
+   "hi": "अमूल मलाई पनीर 200 ग्राम",
+   "brand": "AMUL",
+   "size": "200g",
+   "alias": "paneer amul पनीर",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262180115",
+   "mrp": 92,
+   "sale": 92,
+   "cost": 82,
+   "perPack": 0,
+   "rack": "20-4",
+   "ph": "3baaa77d",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-d4aa20d5.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2026-12-01",
+    "batchNo": "BCF2301"
+   }
+  },
+  {
+   "id": "g-amul-cheese-cubes-40-retail-pack-1-pc-pc",
+   "name": "AMUL CHEESE CUBES 40 (RETAIL PACK) 1 PC",
+   "short": "AMUL CHEESE CUBE 1 PC",
+   "hi": "अमूल चीज़ क्यूब (40 का डिब्बा / खुला)",
+   "brand": "AMUL",
+   "size": "1 cube",
+   "alias": "cheese cube amul चीज़ क्यूब",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "mrp": 15.25,
+   "sale": 0.5,
+   "cost": 0.0,
+   "perPack": 40,
+   "rack": "20-4",
+   "ph": "44a27164",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-b52d1552.jpg",
+    "r20/20261109-f40df15f.jpg",
+    "r20/20261109-bed7443d.jpg",
+    "r20/20261109-9f3b2689.jpg",
+    "r20/20261109-d5acaf5d.jpg"
+   ],
+   "open": {
+    "qty": 2000,
+    "exp": "2027-06-15",
+    "batchNo": "BAF2611"
+   }
+  },
+  {
+   "id": "b8901262020268",
+   "name": "AMUL CHEESE CUBES 40 (RETAIL PACK)",
+   "short": "AMUL CHEESE CUBE",
+   "hi": "अमूल चीज़ क्यूब (40 का डिब्बा / खुला)",
+   "brand": "AMUL",
+   "size": "1 cube",
+   "alias": "cheese cube amul चीज़ क्यूब",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262020268",
+   "mrp": 610,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 40,
+   "packOf": "g-amul-cheese-cubes-40-retail-pack-1-pc-pc",
+   "track": false,
+   "rack": "20-4",
+   "ph": "44a27164",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261109-b52d1552.jpg",
+    "r20/20261109-f40df15f.jpg",
+    "r20/20261109-bed7443d.jpg",
+    "r20/20261109-9f3b2689.jpg",
+    "r20/20261109-d5acaf5d.jpg"
+   ]
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-lakecity",
+   "name": "LAKE CITY DRY FRUITS PVT. LTD. (20-20 DRY FRUITS)",
+   "phone": "7023080003",
+   "email": "enquiry@lcdf.co.in",
+   "web": "www.2020dryfruits.com",
+   "addr": "R.S. No. 176, Mehsana Highway, Mandali",
+   "city": "Mehsana, Gujarat 384130",
+   "fssai": "12222999000428",
+   "brands": [
+    "20-20"
+   ],
+   "note": "पिछली ZIP में भी"
+  },
+  {
+   "id": "c-gayatri",
+   "name": "GAYATRI MAHILA GRAH UDHYOG",
+   "phone": "8890609060",
+   "care": "02960-222781",
+   "email": "marwadipickles@gmail.com",
+   "addr": "Khasra No. 360/1, Lundawas Road",
+   "city": "Sojat City 306104, Pali, Rajasthan",
+   "fssai": "12214036000306",
+   "brands": [
+    "GAYATRI"
+   ],
+   "note": "पिछली ZIP में भी"
+  },
+  {
+   "id": "c-vidya-sagar",
+   "name": "VIDYA SAGAR FOODS PVT. LTD. (FRUTIN'S)",
+   "phone": "9999645655",
+   "email": "mail.vsf@gmail.com",
+   "web": "www.frutins.com",
+   "addr": "A-2, Lawrence Road",
+   "city": "New Delhi 110035",
+   "fssai": "10018011005140",
+   "brands": [
+    "FRUTIN'S"
+   ],
+   "note": "पिछली ZIP में भी"
+  },
+  {
+   "id": "c-taparia-food",
+   "name": "TAPARIA FOOD PRODUCTS",
+   "care": "02982-221119",
+   "email": "vinay9962@gmail.com",
+   "addr": "Factory: Khasra No. 736/309, Aati Faata, Gram Marudi; Office: N-14 Krishi Upaj Mandi",
+   "city": "Barmer, Rajasthan 344001",
+   "fssai": "12219014000286",
+   "brands": [
+    "TAPARIA"
+   ],
+   "note": "10 किलो बोरी (r8-0085/0086) से पूरा पता — पिछली ZIP में खाली था, अब भरें"
+  },
+  {
+   "id": "c-appleton",
+   "name": "APPLETON",
+   "brands": [
+    "APPLETON"
+   ],
+   "note": "पता वाली साइड की फोटो नहीं"
+  },
+  {
+   "id": "c-bikaji",
+   "name": "BIKAJI FOODS INTERNATIONAL LTD.",
+   "care": "+91-151-2250350",
+   "email": "care@bikaji.com",
+   "web": "www.bikaji.com",
+   "addr": "F/196-199, F/178, E/188, Bichhwal Industrial Area",
+   "city": "Bikaner 334006, Rajasthan",
+   "fssai": "10012013000346",
+   "brands": [
+    "BIKAJI"
+   ],
+   "dist": "UTTAM COMPANY",
+   "note": "r9-0002/0003"
+  },
+  {
+   "id": "c-parkash",
+   "name": "PARKASH CANDLE WORKS PVT. LTD.",
+   "phone": "9971733241",
+   "email": "parkashcandle@gmail.com",
+   "web": "www.parkashcandles.com",
+   "addr": "C-109, Naraina Industrial Area Phase-I",
+   "city": "New Delhi 110028",
+   "brands": [
+    "PARKASH"
+   ],
+   "note": "r9-0010"
+  },
+  {
+   "id": "c-nlfood",
+   "name": "N.L. FOOD INDUSTRIES (REAL ROASTED / NL NO.1)",
+   "care": "0141-2319984",
+   "addr": "Phase-1, G-1-18, RIICO Industrial Area, Sarna Dungar, Jhotwara",
+   "city": "Jaipur, Rajasthan",
+   "fssai": "12214026001559",
+   "brands": [
+    "NL",
+    "REAL ROASTED"
+   ],
+   "note": "r9-0015"
+  },
+  {
+   "id": "c-hvindia",
+   "name": "H V INDIA (XTRIO)",
+   "phone": "8079085324",
+   "email": "hvindia2020@gmail.com",
+   "addr": "Plot No. 62, Behind Police Line, Kheteshwar Nagar",
+   "city": "Barmer, Rajasthan 344001",
+   "brands": [
+    "XTRIO"
+   ],
+   "note": "r9-0026/0028 — स्थानीय (बाड़मेर)"
+  },
+  {
+   "id": "c-ankit",
+   "name": "ANKIT TRADING CO. (AK GOLD)",
+   "city": "Unjha, Gujarat",
+   "brands": [
+    "AK GOLD"
+   ],
+   "note": "r9-0030 — नंबर/FSSAI नहीं पढ़े"
+  },
+  {
+   "id": "c-gandhi",
+   "name": "GANDHI SPICES PVT. LTD. (HATHI)",
+   "phone": "9428211521",
+   "email": "cc@gandhispices.com",
+   "web": "www.gandhispices.com",
+   "city": "Gujarat",
+   "brands": [
+    "HATHI"
+   ],
+   "note": "FSSAI आंशिक (...13021000618) — खाली रखा"
+  },
+  {
+   "id": "c-foodcoast",
+   "name": "FOODCOAST INTERNATIONAL (NIEU)",
+   "care": "1800-274-274-0",
+   "email": "info@foodcoast.com",
+   "web": "www.foodcoast.com",
+   "addr": "A-23/A, Focal Point Extension",
+   "city": "Jalandhar 144004, Punjab",
+   "fssai": "10011063000008",
+   "brands": [
+    "NIEU"
+   ],
+   "note": "r9-0036"
+  },
+  {
+   "id": "c-amul",
+   "name": "GUJARAT CO-OPERATIVE MILK MARKETING FEDERATION LTD. (AMUL)",
+   "care": "1800 258 3333",
+   "email": "customercare@amul.coop",
+   "web": "www.amul.com",
+   "addr": "Amul Dairy Road",
+   "city": "Anand, Gujarat 388001",
+   "fssai": "10012021000071",
+   "brands": [
+    "AMUL"
+   ],
+   "dist": "MINAXI AGENCY (AMUL)",
+   "note": "fr-0002 आदि"
+  },
+  {
+   "id": "c-kandhari",
+   "name": "KANDHARI BEVERAGES PVT. LTD. (COCA-COLA BOTTLER)",
+   "care": "1800-208-2653",
+   "email": "indiahelpline@coca-cola.com",
+   "addr": "21 Canal Colony, Near District Administration Complex",
+   "city": "Amritsar, Punjab 143001",
+   "fssai": "13026999000026",
+   "brands": [
+    "SPRITE",
+    "COCA-COLA",
+    "LIMCA",
+    "FANTA",
+    "THUMS UP"
+   ],
+   "note": "fr-0052"
+  }
+ ]
+}
