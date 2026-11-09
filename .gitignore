@@ -4,3 +4,4 @@ dist/
 .DS_Store
 *.log
 android/app/*.jks
+__pycache__/

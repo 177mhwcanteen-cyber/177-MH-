@@ -11,7 +11,7 @@ const own=()=>typeof S!=="undefined"&&S&&S.isOwner&&!S.demo&&S.db;
 const base=()=>{const u=(window.SE&&SE.cfg&&SE.cfg.updateUrl)||"";return (window.SE&&SE.isNative&&u)?u.replace(/\/?$/,"/"):""};
 SPK.url=p=>base()+p;
 const empty=v=>v==null||v===""||v===0||v==="0";
-const FILL=["mfr","rack","mrp","sale","cost","barcode","ph","hi","brand","size","alias","emoji","sub","secret","perPack","packOf","unit"];
+const FILL=["mfr","ctn","rack","mrp","sale","cost","barcode","ph","hi","brand","size","alias","emoji","sub","secret","perPack","packOf","unit"];
 const PRICE=["mrp","sale","cost"];
 const say=m=>{try{toast(m)}catch(e){}};
 /* कोड: index.html का nextCode (4 अंक, किस्म-वार) — यह सिर्फ़ बचाव */
@@ -30,7 +30,7 @@ async function one(x,pk,R){
       emoji:x.emoji||(x.sub==="tob"?"🚬":"🛒"),cat:x.cat||"kirana",sub:x.sub||"",unit:x.unit||"pc",
       code:String(x.code&&!(S.items||[]).some(i=>String(i.code)===String(x.code))?x.code:(typeof nextCode==="function"?nextCode(x.cat||"kirana"):nextPkCode())),barcode:String(x.barcode||""),mrp:+x.mrp||0,sale:+x.sale||+x.mrp||0,cost:+x.cost||0,
       perPack:+x.perPack||0,...(x.packOf?{packOf:x.packOf}:{}),track:x.track!=null?!!x.track:!x.packOf,min:+x.min||(x.packOf?0:2),
-      rack:x.rack||"",secret:x.secret||"",ph:x.ph||"",...(x.mfr?{mfr:x.mfr}:{}),hue:Math.floor(Math.random()*360),active:true,
+      rack:x.rack||"",secret:x.secret||"",ph:x.ph||"",...(x.mfr?{mfr:x.mfr}:{}),...(+x.ctn>1?{ctn:+x.ctn}:{}),hue:Math.floor(Math.random()*360),active:true,
       order:(S.items||[]).length+1,src:"pack:"+pk,addedTs:ts,addedBy:S.uid||""};
     if(!d.barcode&&typeof ean13==="function")d.barcode=ean13(("200000"+d.code.padStart(5,"0")).slice(0,11)+"0");
     await S.db.collection("items").doc(x.id).set(d);S.items.push({id:x.id,...d});R.add++;x._id=x.id;if(!x.barcode&&!x.packOf)R.lbl++}

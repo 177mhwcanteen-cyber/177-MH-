@@ -103,7 +103,7 @@ def push(msg):
     if fs: sh("git", "add", *fs)
     if sh("git", "diff", "--cached", "--name-only"):
         sh("git", "commit", "-qm", msg + "\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>")
-        sh("git", "pull", "-q", "--rebase", ok=True)
+        sh("git", "pull", "-q", "--rebase", "--autostash", ok=True)
         sh("git", "push", "-q", ok=True)
 
 

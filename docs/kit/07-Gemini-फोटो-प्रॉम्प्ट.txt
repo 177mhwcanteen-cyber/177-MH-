@@ -1,0 +1,23 @@
+177 MH — Gemini से दुकान-फोटो बनवाने का तरीका (हर सामान का "geminiPrompt")
+
+क्यों: ऑनलाइन दुकान और ऐप की टाइल में हर सामान की साफ़, एक जैसी फोटो चाहिए। असली फोटो धुंधली हो, या सामान
+खुला हो (मिठाई, नाश्ता), तो विक्रम जी यह प्रॉम्प्ट Gemini में डालकर फोटो बनवाएँगे।
+
+नियम:
+• अंग्रेज़ी में, एक पैराग्राफ़, 40–80 शब्द।
+• असली पैक जैसा: ब्रांड का नाम, रंग, पैक का प्रकार (पाउच/डिब्बा/बोतल/जार), साइज़, सामने छपी मुख्य बात।
+• हमेशा: "product photo, centered, pure white background, soft studio light, 1:1 square, sharp, no hands, no other objects, no extra text".
+• खुला सामान: असली दिखावट लिखो, जैसे "paneer dosa with visible paneer cubes on top, golden crisp, on a steel plate".
+• दो सामान की फोटो एक जैसी न बने: वैरिएंट/स्वाद का रंग और चिह्न ज़रूर लिखो।
+• 🔒 तम्बाकू/सिगरेट: geminiPrompt खाली छोड़ो (ऑनलाइन नहीं दिखता)।
+
+उदाहरण:
+"Product photo of EVEREST Shahi Biryani Masala 50 g carton box, red and yellow Everest branding, biryani bowl
+illustration on front, upright front view, centered, pure white background, soft studio light, 1:1 square, sharp
+focus, no hands, no other objects, no extra text."
+
+"Product photo of BIKAJI Bhujia Sev ₹10 pouch, orange pouch with Bikaji logo and bhujia image, standing upright,
+centered, pure white background, soft studio light, 1:1 square, sharp, no hands, no other objects, no extra text."
+
+"Close-up product photo of fresh kaju katli sweets, 6 diamond-shaped pieces with silver varq, neatly arranged on a
+small white plate, centered, pure white background, soft light, 1:1 square, appetizing, no hands, no text."

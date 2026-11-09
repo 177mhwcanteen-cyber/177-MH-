@@ -16,7 +16,7 @@ P = os.path.join(R, "web", "p")
 IDX = os.path.join(D, "index.json")
 ORG = (re.search(r'org:\s*"([a-z0-9]+)"', open(os.path.join(R, "web", "config.js"), encoding="utf8").read()) or [None, "mh177"])[1]  # 🏢 संस्था
 KEEP = ["id", "name", "short", "hi", "brand", "size", "alias", "emoji", "cat", "sub", "unit", "code", "barcode", "mrp", "sale", "cost",
-        "perPack", "packOf", "track", "min", "rack", "secret", "ph", "mfr", "fotos", "open"]
+        "perPack", "packOf", "track", "min", "rack", "secret", "ph", "mfr", "fotos", "ctn", "open"]
 CKEEP = ["id", "name", "phone", "care", "email", "web", "addr", "city", "fssai", "gst", "brands", "dist", "note"]
 
 
@@ -57,19 +57,21 @@ def from_stock(it):
     base = {"name": cap(it.get("name")), "hi": it.get("hi", ""), "brand": cap(it.get("brand")), "size": it.get("size", ""),
             "cat": it.get("cat") or "kirana", "sub": it.get("sub", ""), "unit": it.get("unit") or "pc", "barcode": it.get("barcode", ""),
             "mrp": it.get("mrp") or 0, "sale": it.get("sale") or 0, "cost": it.get("cost") or 0, "rack": it.get("rack", ""),
-            "secret": it.get("secret", ""), "alias": " ".join(it.get("searchWords") or []) if isinstance(it.get("searchWords"), list) else it.get("searchWords", "")}
+            "secret": it.get("secret", ""), "alias": " ".join(it.get("searchWords") or []) if isinstance(it.get("searchWords"), list) else it.get("searchWords", ""),
+            "short": cap(it.get("short", "")), "mfr": it.get("mfrId", ""), "fotos": it.get("fotos") or [], "ctn": int(it.get("caseQty") or 0) or ""}
     ph = (it.get("photoFile") or (it.get("photos") or [None])[0])
     op = {"qty": it.get("qty"), "exp": it.get("exp", ""), "batchNo": it.get("batchNo", "")} if it.get("qty") not in (None, "") else None
     if pp > 1 and it.get("sell") in ("both", "pack"):
         pc = dict(base, name=cap(it.get("name")) + " 1 PC", barcode="", mrp=round((base["mrp"] or 0) / pp, 2),
                   sale=it.get("saleOne") or round((base["sale"] or 0) / pp, 2), cost=round((base["cost"] or 0) / pp, 2), perPack=pp)
-        pc["id"] = make_id(dict(pc, barcode="")) + "-pc"
+        pc["id"] = it.get("appId") or (make_id(dict(pc, barcode="")) + "-pc")
+        pc["short"] = cap((it.get("short") or base["name"])[:19] + " 1 PC")
         pk = dict(base, perPack=pp, packOf=pc["id"], track=False)
         pk["id"] = make_id(pk)
         if op: pc["open"] = {**op, "qty": (op["qty"] or 0) * pp}
         return [dict(pc, photo=ph), dict(pk, photo=ph)]
     x = dict(base, perPack=pp)
-    x["id"] = it.get("id") or make_id(x)
+    x["id"] = it.get("appId") or it.get("id") or make_id(x)  # appId = ऐप में पहले से (किट v6)
     if op: x["open"] = op
     return [dict(x, photo=ph)]
 

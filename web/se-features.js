@@ -158,7 +158,7 @@ function pItemSheet(id,idx,qty0){
   /* 📦 कार्टून/पेटी (विक्रम जी, 09-11-2026): कितने कार्टून × एक में कितने × भाव (कार्टून का या एक पीस का) → पीस और पीस का भाव अपने-आप */
   const LSk=k=>{try{return localStorage.getItem(k)}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
   const ctnOk=!!(it&&pk);let CT=ctnOk&&(ln?!!ln.ctn:LSk("mk_ct_"+it.id)==="1"),RM=(ln&&ln.ctn&&ln.ctn.rm)||LSk("mk_rm_"+(it&&it.id))||"ctn";
-  const per0=ln&&ln.ctn?ln.ctn.per:(it?(+LSk("mk_per_"+it.id)||(+it.perPack>1&&!it.packOf?+it.perPack:"")):"");
+  const per0=ln&&ln.ctn?ln.ctn.per:(it?(+LSk("mk_per_"+it.id)||(+it.ctn>1?+it.ctn:"")||(+it.perPack>1&&!it.packOf?+it.perPack:"")):"");
   $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="खरीद: ${it?esc(SE.capNm(it.name)):"दूसरा सामान"}">
     <div class="qh">${it?tileHTML(it):'<span class="tile"><span class="em">📦</span></span>'}<div class="qn"><b>${it?esc(SE.capNm(it.name)):"दूसरा सामान"}</b><span>${lr?`पिछली खरीद ${rs(lr.rate)}/${u}${lr.date?" · "+fdate(lr.date).slice(0,5):""}`:"पहली बार खरीद"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     ${it?"":`<label class="qf"><input id="piN" autocomplete="off" placeholder="क्या लिया — पॉलीथीन, रस्सी…" value="${esc(ln?ln.name:"")}" style="font-size:20px"></label>`}
