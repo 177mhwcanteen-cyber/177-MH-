@@ -1,0 +1,120 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261109-02",
+ "date": "2026-11-09",
+ "by": "विक्रम जी",
+ "note": "रैक 4 (पहला हिस्सा)",
+ "items": [
+  {
+   "id": "g-ruhi-poha-1kg",
+   "name": "RUHI PREMIUM POHA 1KG",
+   "short": "RUHI POHA 1KG",
+   "hi": "रूही पोहा",
+   "brand": "RUHI",
+   "size": "1KG",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 75,
+   "sale": 65,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "4-8",
+   "fotos": [
+    "r4/20261109-a4616ea2.jpg",
+    "r4/20261109-48ef0f7c.jpg",
+    "r4/20261109-74ae17f5.jpg"
+   ],
+   "mfr": "c-parth",
+   "open": {
+    "qty": 36,
+    "exp": "2027-05-02",
+    "batchNo": ""
+   },
+   "geminiPrompt": "Product photo of RUHI Premium Quality Poha 1 kg pouch, bright yellow pouch with red Ruhi logo, blue POHA text and poha bowl, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "racks": "दो खाने: 4-7 (15) + 4-8 (21)"
+  },
+  {
+   "id": "b8980800494327",
+   "name": "TAPARIA POHA 1KG",
+   "short": "TAPARIA POHA 1KG",
+   "hi": "तापड़िया पोहा",
+   "brand": "TAPARIA",
+   "size": "1KG",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 70,
+   "sale": 65,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "4-6",
+   "fotos": [
+    "r4/20261109-b3c4cd5f.jpg",
+    "r4/20261109-23ea3253.jpg",
+    "r4/20261109-689ab317.jpg",
+    "r4/20261109-f34b0195.jpg"
+   ],
+   "mfr": "c-taparia-food",
+   "open": {
+    "qty": 26,
+    "exp": "2027-04",
+    "batchNo": "14TFP"
+   },
+   "barcode": "8980800494327",
+   "geminiPrompt": "Product photo of TAPARIA Brand Poha 1 kg pouch, white pouch with ornate Taparia badge, blue Poha text and poha bowl with peas, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text."
+  },
+  {
+   "id": "g-ruhi-soya-chunks-500g",
+   "name": "RUHI SOYA CHUNKS 500G",
+   "short": "RUHI SOYA CHUNKS 500G",
+   "hi": "रूही सोया बड़ी",
+   "brand": "RUHI",
+   "size": "500G",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "mrp": 100,
+   "sale": 70,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "4-9",
+   "fotos": [
+    "r4/20261109-3b51b09a.jpg",
+    "r4/20261109-24647c1a.jpg",
+    "r4/20261109-bd4eed9e.jpg"
+   ],
+   "mfr": "c-parth",
+   "open": {
+    "qty": 42,
+    "exp": "2027-08-07",
+    "batchNo": "RUHI26"
+   },
+   "geminiPrompt": "Product photo of RUHI High Protein Soya Chunks 500 g pouch, yellow and red pouch with Ruhi logo and soya chunks dish, product photo, centered, pure white background, soft studio light, 1:1 square, sharp focus, no hands, no other objects, no extra text.",
+   "racks": "तीन खाने: 4-4, 4-9, 4-10 (कुल 42)"
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-parth",
+   "name": "PARTH ENTERPRISES (RUHI)",
+   "phone": "9414814161",
+   "addr": "KHASRA NO. 2624/2050, RIICO INDUSTRIAL AREA",
+   "city": "BARMER",
+   "fssai": "12218014000100",
+   "brands": [
+    "RUHI"
+   ],
+   "dist": "बाड़मेर की ही — सीधा मँगा सकते हैं",
+   "note": "स्रोत: पोहा/सोया पैक की फोटो"
+  },
+  {
+   "id": "c-taparia-food",
+   "name": "TAPARIA FOOD PRODUCTS",
+   "fssai": "12219014000286",
+   "note": "पोहा पैक पर भी 02982-221119"
+  }
+ ]
+}
