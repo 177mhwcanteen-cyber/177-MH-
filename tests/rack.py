@@ -70,7 +70,7 @@ async def main():
         await pg.click('[data-srkstk="11"]'); await pg.wait_for_timeout(800)
         h = (await pg.evaluate("window.__pr"))["h"]; assert h.count("<img") == 63, h.count("<img")
         p2 = await ctx.new_page(); await p2.set_content("<html><body>" + h.split('<img')[0] + '<img' + '<img'.join(h.split('<img')[1:4]) + "</div></body></html>"); await p2.screenshot(path=f"{SHOTS}/r3-stickers.png"); await p2.close()
-        assert await pg.evaluate("SRK.total()") == 245
+        assert await pg.evaluate("SRK.total()") == 247
         # छोटी जगहें मिलीं: पुराने फोटो-नंबर → नए, अलग रैक की चिप नहीं
         assert await pg.evaluate("[SRK.canon('2-1'),SRK.canon('3-4'),SRK.canon('14-2'),SRK.canon('16-1')]") == ["1-7", "12-8", "13-14", "10-5"]
         assert not await pg.query_selector('[data-srksel="2"]') and not await pg.query_selector('[data-srksel="16"]')
@@ -106,12 +106,12 @@ async def main():
         await pg.fill("#srkFa", "2"); await pg.fill("#srkFb", "4"); await pg.click('.srk-tl [data-srkrange="5"]'); await pg.wait_for_timeout(500)
         assert (await pg.evaluate("window.__pr"))["h"].count("<img") == 3
         await pg.click("[data-srkdel]"); await pg.wait_for_timeout(200); assert await pg.evaluate("SRK.RK[5].n") == 8
-        assert await pg.evaluate("SRK.total()") == 245
+        assert await pg.evaluate("SRK.total()") == 247
         # ➕ नया रैक
         await pg.click('[data-srknew="0"]'); await pg.wait_for_timeout(150)
         assert await pg.input_value("#srkNr") == "22"
         await pg.fill("#srkNn", "4"); await pg.fill("#srkNm", "दरवाज़े के पीछे"); await pg.click("[data-srknrsave]"); await pg.wait_for_timeout(200)
-        assert await pg.evaluate("SRK.RK[22]&&SRK.RK[22].n") == 4 and await pg.query_selector('[data-srksel="22"]') and await pg.evaluate("SRK.total()") == 249
+        assert await pg.evaluate("SRK.RK[22]&&SRK.RK[22].n") == 4 and await pg.query_selector('[data-srksel="22"]') and await pg.evaluate("SRK.total()") == 251
         assert await pg.evaluate("SRK.addRack(2,3,'x')") is False, "मिलाया गया नंबर दोबारा नहीं"
         # ↔ खाना → खाना, रैक → रैक (कम खाने = रोक)
         await pg.evaluate(f"SRK.move('11-23','4-2')"); await pg.wait_for_timeout(200)

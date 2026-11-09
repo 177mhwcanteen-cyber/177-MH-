@@ -1,0 +1,34 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-05",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "विक्रम जी के जवाब (10-11 रात): नारियल-गोला और राई = 9-34 (9-6/9-7 के नीचे का बॉक्स), किशमिश MRP 599, Karishma गिफ्ट सेट 1 डिब्बा",
+ "items": [
+  {
+   "id": "g-dry-coconut-gola-loose-per-kg",
+   "name": "SUKHA NARIYAL GOLA KG",
+   "rack": "9-34"
+  },
+  {
+   "id": "g-rai-black-mustard-seed-200-g-pack",
+   "name": "RAI 200G",
+   "rack": "9-34"
+  },
+  {
+   "id": "b8906079510247",
+   "name": "20-20 KISHMISH 250G",
+   "barcode": "8906079510247",
+   "mrp": 599
+  },
+  {
+   "id": "g-karishma-glassware-black-currant-gift-se",
+   "name": "KARISHMA GIFT SET 5PC",
+   "xloc": {
+    "9-1": 1
+   }
+  }
+ ]
+}
