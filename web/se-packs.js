@@ -33,7 +33,7 @@ async function one(x,pk,R){
       rack:x.rack||"",secret:x.secret||"",ph:x.ph||"",...(x.mfr?{mfr:x.mfr}:{}),hue:Math.floor(Math.random()*360),active:true,
       order:(S.items||[]).length+1,src:"pack:"+pk,addedTs:ts,addedBy:S.uid||""};
     if(!d.barcode&&typeof ean13==="function")d.barcode=ean13(("200000"+d.code.padStart(5,"0")).slice(0,11)+"0");
-    await S.db.collection("items").doc(x.id).set(d);S.items.push({id:x.id,...d});R.add++;x._id=x.id}
+    await S.db.collection("items").doc(x.id).set(d);S.items.push({id:x.id,...d});R.add++;x._id=x.id;if(!x.barcode&&!x.packOf)R.lbl++}
   else{
     const p={};for(const k of FILL){const v=x[k];if(v==null||v==="")continue;if(empty(ex[k])&&!empty(v))p[k]=k==="perPack"||PRICE.includes(k)?+v:v}
     if(Object.keys(p).length){await S.db.collection("items").doc(ex.id).set(p,{merge:true});
@@ -54,7 +54,7 @@ async function company(c,pk,R){
   if(ex)Object.assign(ex,p);else S.suppliers&&S.suppliers.push({id:c.id,...p});R.co++}
 /* सारी नई खेपें */
 SPK.apply=async function(force){
-  if(!own()||SPK._busy)return null;SPK._busy=1;const out={packs:0,add:0,fill:0,same:0,cnt:0,co:0,bad:0};
+  if(!own()||SPK._busy)return null;SPK._busy=1;const out={packs:0,add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0};
   try{
     const r=await fetch(SPK.url("data/items/index.json")+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)return null;
     const idx=await r.json();if(idx&&!SE.orgOk(idx.org)){say(SE.orgErr(idx.org));return null}const list=(idx&&idx.packs)||[];if(!list.length)return out;
@@ -63,7 +63,7 @@ SPK.apply=async function(force){
       const rr=await fetch(SPK.url("data/items/"+P.id+".json")+"?v="+encodeURIComponent(P.sha||""),{cache:"no-store"});if(!rr.ok)continue;
       const pk=await rr.json();if(!pk||pk.app!=="mh177-pack"||!Array.isArray(pk.items))continue;
       if(!SE.orgOk(pk.org)){say(SE.orgErr(pk.org)+" (खेप "+P.id+")");continue}
-      const R={add:0,fill:0,same:0,cnt:0,co:0,bad:0};
+      const R={add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0};
       for(const c of (Array.isArray(pk.companies)?pk.companies:[]))try{await company(c,P.id,R)}catch(e){R.bad++}
       /* पहले पीस वाले, फिर पैकेट (packOf को पीस मिल जाए) */
       const L=[...pk.items].sort((a,b)=>(a.packOf?1:0)-(b.packOf?1:0));
@@ -71,7 +71,7 @@ SPK.apply=async function(force){
       await ref.set({done:{[P.id]:{ts:Date.now(),by:S.uid||"",n:L.length,...R}}},{merge:true});
       out.packs++;for(const k in R)out[k]+=R[k]}
     if(out.packs){try{typeof setSoon==="function"&&setSoon()}catch(e){}
-      say(`📦 ${out.packs} खेप: ${out.add} नए सामान, ${out.fill} में भाव/रैक/फोटो भरे${out.cnt?`, ${out.cnt} की गिनती (अभी स्टॉक नहीं)`:""}${out.co?`, 🏭 ${out.co} कंपनी`:""}${out.bad?` · ⚠ ${out.bad} अधूरे`:""}`)}
+      say(`📦 ${out.packs} खेप: ${out.add} नए सामान, ${out.fill} में भाव/रैक/फोटो भरे${out.cnt?`, ${out.cnt} की गिनती (अभी स्टॉक नहीं)`:""}${out.co?`, 🏭 ${out.co} कंपनी`:""}${out.lbl?` · 🏷️ ${out.lbl} का अपना बारकोड तैयार — "बारकोड पहरा" में रैक चुनकर छापें`:""}${out.bad?` · ⚠ ${out.bad} अधूरे`:""}`)}
     return out}
   catch(e){return null}finally{SPK._busy=0}};
 /* ▶ बिलिंग चालू / गिनती को स्टॉक बनाओ */

@@ -23,7 +23,13 @@ SBC.need=it=>SBC.cand(it)&&!SBC.co(it)&&!BC[it.id]&&!SBC.okOf(it);
 SBC.list=()=>(S.items||[]).filter(SBC.need);
 SBC.disc=it=>+it.mrp>0&&+it.sale>0&&+it.sale<+it.mrp?Math.round((+it.mrp-+it.sale)*100)/100:0;
 SBC.stock=it=>{try{const v=typeof stockLeft==="function"?stockLeft(it.id):null;if(v!=null)return v;const p=S.pstock&&S.pstock[it.id];return p&&p.qty!=null?+p.qty:null}catch(e){return null}};
-const defN=it=>{const s=SBC.stock(it);return s>0?Math.min(200,Math.round(s)):5};
+/* लेबल कितने: स्टॉक, न हो तो GitHub खेप की ओपनिंग गिनती (बिलिंग चालू से पहले), न हो तो 5 */
+const CNT={};SBC.cnt=CNT;
+const defN=it=>{const s=SBC.stock(it),c=+CNT[it.id]||0;return s>0?Math.min(200,Math.round(s)):c>0?Math.min(200,Math.round(c)):5};
+async function loadCnt(){try{if(window.SPK&&SPK.counts&&S.isOwner&&!S.demo){const L=await SPK.counts();L.forEach(c=>{CNT[c.itemId]=+c.qty||0})}}catch(e){}}
+/* 📍 रैक: "6-4" → "6" (SRK का पुराना-नया नंबर भी) */
+const rkOf=it=>{const r=window.SRK&&SRK.canon?SRK.canon(it.rack):String(it.rack||"").toUpperCase();return String(r||"").split("-")[0]};
+SBC.rkOf=rkOf;
 const sortL=L=>L.sort((a,b)=>(SBC.stock(b)||0)-(SBC.stock(a)||0)||(String(b.id)>String(a.id)?1:-1));
 
 /* ---------- दिन का दस्तावेज़ (गिनती) ---------- */
@@ -102,7 +108,7 @@ SBC.ai=async function(){if(!isOwn()){toast("यह सिर्फ़ विक�
   toast("🤖 "+p+" कंपनी पैकेट · "+l+" खुला/दुकान का");draw()};
 
 /* ---------- UI ---------- */
-const V={tab:"need",q:"",more:0,busy:""};
+const V={tab:"need",q:"",rk:"",more:0,busy:""};
 const ph=it=>`<div class="sbc-ph">${tileHTML(it)}</div>`;
 const priceTxt=it=>{const d=SBC.disc(it);return +it.sale>0?`<b>${rs(+it.sale)}</b>${d?` <s>${rs(+it.mrp)}</s> <em class="sbc-off">${rs(d)} छूट</em>`:""}`:"<em>भाव नहीं</em>"};
 const stTxt=it=>{const s=SBC.stock(it);return s==null?"📦 स्टॉक ?":s>0?`📦 स्टॉक <b>${Math.round(s*100)/100}</b> पीस`:"📦 स्टॉक 0"};
@@ -114,12 +120,19 @@ function card(it,pr){const id=esc(it.id),n=defN(it),p=pr[it.id]||0,armed=SBC.arm
     ${armed?`<div class="sbc-arm">${SBC.arm.kind==="ok"?"📷 अब इसका एक लगा हुआ लेबल स्कैन करें":"📷 अब पैकेट का बारकोड स्कैन करें"}<span><button type="button" data-sbccam>📷 कैमरा</button>${SBC.arm.kind==="ok"?`<button type="button" data-sbcokh="${id}">बिना स्कैन ✅</button>`:""}<button type="button" data-sbcunarm>रद्द</button></span></div>`:
     `<div class="sbc-b"><button type="button" class="pri" data-sbcadd="${id}" data-n="${n}">🏷️ ${n} लेबल</button><button type="button" data-sbcok="${id}">✅ लग गया</button></div>
     <div class="sbc-b2"><button type="button" data-sbcatt="${id}">📷 कंपनी बारकोड है</button>${it.bcHint&&isOwn()?`<button type="button" data-sbchint="${id}">✓ AI वाला लगाएँ</button>`:""}${isOwn()?`<button type="button" data-sbcno="${id}" title="इस पर लेबल नहीं चाहिए">🚫</button>`:""}</div>`}</div>`}
-async function needHTML(){const pr=await loadPrints();let L=sortL(SBC.list());const q=V.q.trim().toLowerCase();
+function curList(noRk){let L=sortL(SBC.list());const q=V.q.trim().toLowerCase();
   if(q)L=L.filter(i=>((i.name||"")+" "+(i.short||"")+" "+(i.hi||"")+" "+(i.code||"")).toLowerCase().includes(q));
-  if(!L.length)return `<div class="sbc-empty">🎉 ${q?"इस नाम का कोई सामान बाकी नहीं":"सब सामान पर बारकोड है या लेबल पक्का हो चुका"}</div>`;
+  if(V.rk&&!noRk)L=L.filter(i=>rkOf(i)===(V.rk==="—"?"":V.rk));return L}
+SBC.curList=curList;
+/* 📍 रैक-वार पट्टी: एक रैक के सारे लेबल एक साथ छापें-चिपकाएँ */
+function rkBar(){const all=curList(1),m={};all.forEach(i=>{const r=rkOf(i)||"—";m[r]=(m[r]||0)+1});
+  const ks=Object.keys(m).sort((a,b)=>(a==="—")-(b==="—")||(+a||999)-(+b||999)||a.localeCompare(b));if(ks.length<2&&!V.rk)return "";
+  return `<div class="sbc-rk" role="group" aria-label="रैक से छाँटें"><button type="button" data-sbcrk="" aria-pressed="${!V.rk}">सब <b>${all.length}</b></button>${ks.map(r=>`<button type="button" data-sbcrk="${esc(r==="—"?"":r)}"${r==="—"?" data-none=1":""} aria-pressed="${V.rk===r}">${r==="—"?"बिना रैक":"📍 "+esc(r)} <b>${m[r]}</b></button>`).join("")}</div>`}
+async function needHTML(){const pr=await loadPrints();const L=curList();const q=V.q.trim();
+  if(!L.length)return rkBar()+`<div class="sbc-empty">🎉 ${q||V.rk?"यहाँ कोई सामान बाकी नहीं":"सब सामान पर बारकोड है या लेबल पक्का हो चुका"}</div>`;
   const pack=L.filter(i=>i.bcAI==="pack"),rest=L.filter(i=>i.bcAI!=="pack"),max=120+V.more;
   const grid=(A)=>`<div class="sbc-g">${A.slice(0,max).map(i=>card(i,pr)).join("")}</div>${A.length>max?`<button type="button" class="lnk sbc-more" data-sbcmore>और ${A.length-max} दिखाएँ ›</button>`:""}`;
-  return `${pack.length?`<h4 class="sbc-h">📦 कंपनी पैकेट (${pack.length}) — एक बार पैकेट का बारकोड स्कैन करें, अपने-आप जुड़ेगा</h4>${grid(pack)}`:""}
+  return `${rkBar()}${V.rk?`<p class="note sbc-nt">📍 रैक ${esc(V.rk)}: इन ${L.length} सामान का बारकोड तैयार है — "🏷️ सब लिस्ट में" दबाकर छापें, इसी रैक में चिपकाएँ, फिर हर सामान पर "✅ लग गया"।</p>`:""}${pack.length?`<h4 class="sbc-h">📦 कंपनी पैकेट (${pack.length}) — एक बार पैकेट का बारकोड स्कैन करें, अपने-आप जुड़ेगा</h4>${grid(pack)}`:""}
     ${rest.length?`<h4 class="sbc-h">🏷️ अपना लेबल लगाएँ (${rest.length}) — छापें, चिपकाएँ, फिर "✅ लग गया"</h4>${grid(rest)}`:""}`}
 const row=(it,txt,btn)=>`<div class="sbc-r">${tileHTML(it)}<div><b>${esc(NM(it))}</b><span>${txt}</span></div>${btn||""}</div>`;
 async function repHTML(){const [D,pr]=await Promise.all([loadDays(7),loadPrints()]);const S7={};let ts=0,tt=0,ds=0,dt=0;
@@ -141,12 +154,12 @@ async function repHTML(){const [D,pr]=await Promise.all([loadDays(7),loadPrints(
 async function draw(){const sh=$("#sbcSheet");if(!sh||sh.dataset.new)return;const b=sh.querySelector(".sbc-body");const n=SBC.list().length;
   sh.querySelector(".sbc-tabs").innerHTML=`<button type="button" data-sbctab="need" aria-pressed="${V.tab==="need"}">🏷️ बारकोड चाहिए <b>${n}</b></button>${isOwn()?`<button type="button" data-sbctab="rep" aria-pressed="${V.tab==="rep"}">📊 स्कैन-छपाई हिसाब</button>`:""}`;
   const tools=sh.querySelector(".sbc-tools");tools.hidden=V.tab!=="need";
-  tools.innerHTML=`<input id="sbcQ" type="search" placeholder="🔍 नाम / कोड" value="${esc(V.q)}" aria-label="सामान खोजें"><button type="button" class="pri" data-sbcall ${n?"":"disabled"}>🏷️ सब लिस्ट में</button>${isOwn()?`<button type="button" data-sbcai>🤖 AI से छाँटें</button>`:""}`+(V.busy?`<div class="sbc-busy">${esc(V.busy)}</div>`:"");
+  tools.innerHTML=`<input id="sbcQ" type="search" placeholder="🔍 नाम / कोड" value="${esc(V.q)}" aria-label="सामान खोजें"><button type="button" class="pri" data-sbcall ${n?"":"disabled"}>🏷️ ${V.rk?(V.rk==="—"?"बिना रैक वाले":"रैक "+esc(V.rk)+" के"):"सब"} लिस्ट में</button>${isOwn()?`<button type="button" data-sbcai>🤖 AI से छाँटें</button>`:""}`+(V.busy?`<div class="sbc-busy">${esc(V.busy)}</div>`:"");
   const html=V.tab==="rep"&&isOwn()?await repHTML():await needHTML();if($("#sbcSheet"))b.innerHTML=html;
   const c=SL&&SL.count?SL.count():0;sh.querySelector(".sbc-foot").innerHTML=c?`<button type="button" class="big" data-sbcgo>🖨️ लेबल टैब में छापें (${c} लेबल लिस्ट में)</button>`:""}
 SBC.refresh=function(){if($("#sbcSheet"))draw();if(S.tab==="set"&&$("#sbcCard"))$("#sbcCard").outerHTML=SBC.settingsHTML();const bar=$("#sbcBar");if(bar)bar.outerHTML=barHTML()};
 function addLbl(id,n,mrp){const it=item(id);if(!it||!window.SL)return;const o=mrp||SBC.disc(it)>0?{mrp:1}:{};const k=SL.add(id,n,o);toast("🏷️ "+NM(it)+" · "+k+" लेबल लिस्ट में")}
-SBC.open=function(tab){if(tab)V.tab=tab;V.more=0;
+SBC.open=function(tab,rk){if(tab)V.tab=tab;V.more=0;if(rk!=null)V.rk=String(rk);loadCnt().then(()=>{if(Object.keys(CNT).length)draw()});
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px sbc" id="sbcSheet" role="dialog" aria-label="बारकोड पहरा"><div class="grab"></div>
   <div class="sh-head"><h3 style="font-size:17px">🏷️ बारकोड पहरा</h3><button class="x" data-close aria-label="बंद करें">✕</button></div>
   <div class="sbc-tabs seg"></div><div class="sbc-tools"></div><div class="sbc-body"><p class="note">⏳…</p></div><div class="sbc-foot"></div></div></div>`;
@@ -154,7 +167,8 @@ SBC.open=function(tab){if(tab)V.tab=tab;V.more=0;
   sh.onclick=async e=>{const t=e.target;if(t.matches("[data-close]")){SBC.arm=null;closeSheet();return}const g=s=>t.closest(s);let b;
     if((b=g("[data-sbctab]"))){V.tab=b.dataset.sbctab;draw();return}
     if((b=g("[data-sbcadd]"))){addLbl(b.dataset.sbcadd,+b.dataset.n||1,!!b.dataset.mrp);draw();return}
-    if(g("[data-sbcall]")){const L=sortL(SBC.list());L.forEach(i=>SL.add(i.id,defN(i),SBC.disc(i)>0?{mrp:1}:{}));toast("🏷️ "+L.length+" सामान लिस्ट में — नीचे 🖨️ दबाएँ");draw();return}
+    if((b=g("[data-sbcrk]"))){V.rk=b.dataset.none?"—":b.dataset.sbcrk;V.more=0;draw();return}
+    if(g("[data-sbcall]")){const L=curList();L.forEach(i=>SL.add(i.id,defN(i),SBC.disc(i)>0?{mrp:1}:{}));toast("🏷️ "+L.length+" सामान लिस्ट में — नीचे 🖨️ दबाएँ");draw();return}
     if((b=g("[data-sbcok]"))){SBC.arm={id:b.dataset.sbcok,kind:"ok"};draw();return}
     if((b=g("[data-sbcatt]"))){SBC.arm={id:b.dataset.sbcatt,kind:"attach"};if(V.tab==="rep"){V.tab="need";const it=item(SBC.arm.id);toast("📷 "+(it?NM(it):"")+" का पैकेट स्कैन करें")}draw();return}
     if((b=g("[data-sbcokh]"))){SBC.arm=null;await SBC.mark(b.dataset.sbcokh,"tap");toast("✅ पक्का (बिना स्कैन)");return}
@@ -198,7 +212,7 @@ const css=document.createElement("style");css.textContent=`
 .sbc-tools{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}.sbc-tools input{flex:1 1 140px;min-width:0;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit}
 .sbc-tools button,.sbc-b button,.sbc-b2 button,.sbc-arm button,.sbc-sb{padding:7px 9px;border-radius:11px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13px;line-height:1.15}
 .sbc .pri{background:#0f766e;color:#fff;border-color:#0f766e}.sbc-busy{flex-basis:100%;font-size:13px;color:var(--muted)}
-.sbc-h{margin:10px 0 6px;font-size:14px}.sbc-nt{margin:-2px 0 6px}
+.sbc-h{margin:10px 0 6px;font-size:14px}.sbc-rk{display:flex;gap:6px;overflow-x:auto;margin:0 0 8px;padding-bottom:2px}.sbc-rk button{flex:0 0 auto;padding:6px 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13px}.sbc-rk button[aria-pressed=true]{background:var(--brand,#0a7);color:#fff;border-color:transparent}.sbc-nt{margin:-2px 0 6px}
 .sbc-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .sbc-c{display:flex;flex-direction:column;gap:3px;border:1.5px solid var(--line);border-radius:16px;padding:6px;background:var(--surface);min-width:0}
 .sbc-c.arm{border-color:#0f766e;box-shadow:0 0 0 3px #0f766e33}

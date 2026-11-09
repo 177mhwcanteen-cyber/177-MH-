@@ -45,6 +45,14 @@ async def main():
         r = await pg.evaluate("SPK.apply()")
         print("apply:", r)
         assert r and r["packs"] == 1 and r["add"] == 3 and r["fill"] == 1 and r["cnt"] == 2 and r["co"] == 1, r
+        assert r["lbl"] == 1, r  # बिना कंपनी बारकोड का नया सामान (पैकेट नहीं गिना)
+        await pg.evaluate("SBC.open('need','7')"); await pg.wait_for_timeout(700)
+        ids = await pg.evaluate("SBC.curList().map(i=>i.id)")
+        assert "g-test-pc" in ids and "b8901786140503" not in ids, ids
+        assert await pg.evaluate("SBC.cnt['g-test-pc']") == 120
+        t = await pg.inner_text("#sbcSheet"); assert "रैक 7 के लिस्ट में" in t and "📍 7" in t, t[:400]
+        await pg.click("[data-sbcall]"); assert await pg.evaluate("SL.count()") >= 120
+        await pg.evaluate("closeSheet()")
         co = await pg.evaluate("S.suppliers.find(s=>s.id==='c-everest')")
         assert co and co["kind"] == "company" and co["phone"] == "9876543210" and co["care"] == "18002091234", co
         it = await pg.evaluate("item('b8901786140503')")
