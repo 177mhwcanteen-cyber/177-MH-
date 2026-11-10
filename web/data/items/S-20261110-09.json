@@ -1,0 +1,22 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-09",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "🫛 फ्रोज़न मटर की गिनती (विक्रम जी 10-11): 6 बैग × 5 kg = 30 kg (खुले किलो वाले सामान में)",
+ "items": [
+  {
+   "id": "g-atulya-frozen-green-peas-loose-kg",
+   "name": "ATULYA FROZEN GREEN PEAS (LOOSE PER KG)",
+   "short": "FROZEN MATAR LOOSE 1KG",
+   "rack": "18-1",
+   "open": {
+    "qty": 30,
+    "exp": "2027-07-15",
+    "batchNo": "26816"
+   }
+  }
+ ]
+}
