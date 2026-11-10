@@ -1,0 +1,50 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-10",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "🖊️ ZUIXUA सफ़ेद परमानेंट मार्कर 0637 — डिब्बा 10 पीस ₹250 (विक्रम जी), 1 डिब्बा, रैक 11-44। बारकोड नहीं।",
+ "items": [
+  {
+   "id": "g-zuixua-white-permanent-marker-0637-pc",
+   "name": "ZUIXUA WHITE PERMANENT MARKER 0637",
+   "short": "ZUIXUA WHITE MARKER",
+   "hi": "सफ़ेद परमानेंट मार्कर",
+   "brand": "ZUIXUA",
+   "size": "1 pc",
+   "alias": "white marker permanent marker safed marker सफ़ेद मार्कर zuixua",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 25,
+   "sale": 25,
+   "perPack": 10,
+   "rack": "11-44",
+   "ph": "a87af3e0",
+   "open": {
+    "qty": 10
+   }
+  },
+  {
+   "id": "g-zuixua-white-permanent-marker-0637-box-10",
+   "name": "ZUIXUA WHITE PERMANENT MARKER BOX (10 PC)",
+   "short": "ZUIXUA WHITE MARKER BOX1",
+   "hi": "सफ़ेद मार्कर डिब्बा (10 पीस)",
+   "brand": "ZUIXUA",
+   "size": "10 pc",
+   "alias": "white marker box",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 250,
+   "sale": 250,
+   "perPack": 10,
+   "packOf": "g-zuixua-white-permanent-marker-0637-pc",
+   "track": false,
+   "rack": "11-44",
+   "ph": "a87af3e0"
+  }
+ ]
+}
