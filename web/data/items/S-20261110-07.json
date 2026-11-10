@@ -1,0 +1,67 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-07",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "📍 दूसरा खाना (xloc) — खेप S-20261110-06 के सामान जो दो/तीन खानों में रखे हैं (विक्रम जी: 'अलग अलग रख लो')",
+ "items": [
+  {
+   "id": "b8901491435109",
+   "name": "UNCLE CHIPPS SPICY 53G",
+   "short": "UNCLE CHIPPS SPICY 53G",
+   "barcode": "8901491435109",
+   "xloc": {
+    "11-21": 15
+   }
+  },
+  {
+   "id": "b8905950003632",
+   "name": "BIKAJI NAVRATAN MIX 400G",
+   "short": "BIKAJI NAVRATAN MIX 400G",
+   "barcode": "8905950003632",
+   "xloc": {
+    "11-12": 8
+   }
+  },
+  {
+   "id": "b8905950003519",
+   "name": "BIKAJI KUCH KUCH 400G",
+   "short": "BIKAJI KUCH KUCH 400G",
+   "barcode": "8905950003519",
+   "xloc": {
+    "11-12": 2,
+    "11-14": 8
+   }
+  },
+  {
+   "id": "b8901491100342",
+   "name": "LAYS TOMATO TANGO 52.9G",
+   "short": "LAYS TOMATO TANGO 52.9G",
+   "barcode": "8901491100342",
+   "xloc": {
+    "11-23": 3
+   }
+  },
+  {
+   "id": "b8906003514136",
+   "name": "JALANI GOLGAPPA MAGIC",
+   "short": "JALANI GOLGAPPA MAGIC",
+   "barcode": "8906003514136",
+   "xloc": {
+    "11-26": 1
+   }
+  },
+  {
+   "id": "b8901491101837",
+   "name": "LAYS CLASSIC SALTED 51G",
+   "short": "LAYS CLASSIC SALTED 51G",
+   "barcode": "8901491101837",
+   "xloc": {
+    "11-18": 20,
+    "11-26": 7
+   }
+  }
+ ]
+}

@@ -1,0 +1,2738 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-06",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "रैक 11, 18, 20 — 09/10-11-2026 रात की फोटो से। जिनका भाव पक्का नहीं था (चंदन टीका, चिक्विटो टॉर्टिला, HP DVD, ज़ोबी No.86, कोहिनूर चम्मच, तिरंगा झंडा) इस ZIP में नहीं — विक्रम जी बाद में बताएँगे। · किट v6",
+ "items": [
+  {
+   "id": "b0820294212862",
+   "name": "BC KHATTA MEETHA NAMKEEN 400G",
+   "short": "BC KHATTA MEETHA 400G",
+   "hi": "बीसी खट्टा मीठा नमकीन 400 ग्राम",
+   "brand": "BC",
+   "size": "400g",
+   "alias": "khatta meetha khatta mitha खट्टा मीठा नमकीन bc bhikharam bikaneri",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "0820294212862",
+   "mrp": 135,
+   "sale": 135,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-37",
+   "ph": "2de9384f",
+   "mfr": "c-bc-sunshine",
+   "fotos": [
+    "r11/20261110-92ee2a1f.jpg",
+    "r11/20261110-94e01e33.jpg",
+    "r11/20261110-d180b982.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-02-25",
+    "batchNo": "4K335"
+   }
+  },
+  {
+   "id": "b0820294212237",
+   "name": "BC BIKANERI BHUJIA 400G",
+   "short": "BC BIKANERI BHUJIA 400G",
+   "hi": "बीसी बीकानेरी भुजिया 400 ग्राम",
+   "brand": "BC",
+   "size": "400g",
+   "alias": "bhujia bujia भुजिया बीकानेरी bc bhikharam sev",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "0820294212237",
+   "mrp": 135,
+   "sale": 135,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-37",
+   "ph": "ab2bff7d",
+   "mfr": "c-bc-sunshine",
+   "fotos": [
+    "r11/20261110-bc93e0f7.jpg",
+    "r11/20261110-b02a4e0c.jpg",
+    "r11/20261110-10507535.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-03-20",
+    "batchNo": "4B139"
+   }
+  },
+  {
+   "id": "b8901652140262",
+   "name": "PRIYAGOLD CLASSIC CREME ELAICHI BISCUIT 74G",
+   "short": "PRIYAGOLD ELAICHI 74G",
+   "hi": "प्रियागोल्ड इलायची क्रीम बिस्किट 74 ग्राम",
+   "brand": "PRIYAGOLD",
+   "size": "74g",
+   "alias": "priyagold priya gold elaichi cream biscuit इलायची क्रीम बिस्किट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652140262",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-38",
+   "ph": "3231fbd1",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r11/20261110-a4346524.jpg",
+    "r11/20261110-6aa6c899.jpg",
+    "r11/20261110-bc81c549.jpg"
+   ],
+   "open": {
+    "qty": 54,
+    "exp": "2027-07",
+    "batchNo": "E26J P12 XA"
+   }
+  },
+  {
+   "id": "b8906005509215",
+   "name": "BIKAJI BOONDI BHJ 400G",
+   "short": "BIKAJI BOONDI BHJ 400G",
+   "hi": "बीकाजी बूंदी भुजिया 400 ग्राम",
+   "brand": "BIKAJI",
+   "size": "400g",
+   "alias": "bikaji boondi bundi bhujia बूंदी भुजिया बीकाजी",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8906005509215",
+   "mrp": 105,
+   "sale": 105,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-29",
+   "ph": "3efb7502",
+   "mfr": "c-bikaji",
+   "fotos": [
+    "r11/20261110-d76d96be.jpg",
+    "r11/20261110-8b3947f8.jpg",
+    "r11/20261110-abe4e720.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2027-04-14",
+    "batchNo": "K25J8E144"
+   }
+  },
+  {
+   "id": "b8905950004271",
+   "name": "BIKAJI PANEER BHJ 350G",
+   "short": "BIKAJI PANEER BHJ 350G",
+   "hi": "बीकाजी पनीर भुजिया 350 ग्राम",
+   "brand": "BIKAJI",
+   "size": "350g",
+   "alias": "bikaji paneer bhujia पनीर भुजिया बीकाजी",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8905950004271",
+   "mrp": 120,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-29",
+   "ph": "83f581ab",
+   "mfr": "c-bikaji",
+   "fotos": [
+    "r11/20261110-23389fb6.jpg",
+    "r11/20261110-52956992.jpg",
+    "r11/20261110-1156c5d4.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2027-03-07",
+    "batchNo": "K26J9214"
+   }
+  },
+  {
+   "id": "b8901491435109",
+   "name": "UNCLE CHIPPS SPICY TREAT 53G",
+   "short": "UNCLE CHIPPS SPICY 53G",
+   "hi": "अंकल चिप्स स्पाइसी ट्रीट 53 ग्राम",
+   "brand": "UNCLE CHIPPS",
+   "size": "53g",
+   "alias": "uncle chips chipps spicy treat अंकल चिप्स",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8901491435109",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-20",
+   "ph": "4c09a18a",
+   "mfr": "c-pepsico",
+   "fotos": [
+    "r11/20261110-df35e53c.jpg",
+    "r11/20261110-9c0fdc4e.jpg",
+    "r11/20261110-3a7c7e11.jpg",
+    "r11/20261110-13accc7d.jpg",
+    "r11/20261110-5903ddfb.jpg",
+    "r11/20261110-0246e1c2.jpg",
+    "r11/20261110-b11fe43d.jpg",
+    "r11/20261110-e0c360d3.jpg"
+   ],
+   "open": {
+    "qty": 19,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8905950003632",
+   "name": "BIKAJI SUB-KUCH NAVRATAN MIX 400G",
+   "short": "BIKAJI NAVRATAN MIX 400G",
+   "hi": "बीकाजी नवरतन मिक्स 400 ग्राम",
+   "brand": "BIKAJI",
+   "size": "400g",
+   "alias": "bikaji navratan navratna mix sab kuch नवरतन मिक्स बीकाजी",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8905950003632",
+   "mrp": 120,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-11",
+   "ph": "4c48f9f7",
+   "mfr": "c-bikaji",
+   "fotos": [
+    "r11/20261110-a9fa7504.jpg",
+    "r11/20261110-0dec3057.jpg",
+    "r11/20261110-198bdfcd.jpg",
+    "r11/20261110-fed34dd1.jpg",
+    "r11/20261110-6845e3ea.jpg",
+    "r11/20261110-2ed5d601.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906015341522",
+   "name": "EVEREST HOME STYLE MANGO PICKLE 400G",
+   "short": "EVEREST MANGO ACHAR 400G",
+   "hi": "एवरेस्ट आम का अचार 400 ग्राम",
+   "brand": "EVEREST",
+   "size": "400g",
+   "alias": "everest mango pickle aam achar आम अचार",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015341522",
+   "mrp": 95,
+   "sale": 95,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-2",
+   "ph": "d916229f",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r11/20261110-2b42dd90.jpg",
+    "r11/20261110-ff58dda5.jpg",
+    "r11/20261110-042e2c8d.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262071581",
+   "name": "AMUL CHOCOZOO CHOCOLATE 250G",
+   "short": "AMUL CHOCOZOO 250G",
+   "hi": "अमूल चोकोज़ू चॉकलेट 250 ग्राम",
+   "brand": "AMUL",
+   "size": "250g",
+   "alias": "amul chocozoo choco zoo chocolate अमूल चोकोज़ू चॉकलेट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901262071581",
+   "mrp": 130,
+   "sale": 130,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-2",
+   "ph": "ff605d57",
+   "mfr": "c-amul",
+   "fotos": [
+    "r11/20261110-de3f257c.jpg",
+    "r11/20261110-e5bcccc1.jpg",
+    "r11/20261110-4a412806.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "2027-03-30",
+    "batchNo": "KIF0891B"
+   }
+  },
+  {
+   "id": "b8906030060491",
+   "name": "FRUTINS BABY CORN 400G TIN",
+   "short": "FRUTINS BABY CORN 400G",
+   "hi": "फ्रूटिन्स बेबी कॉर्न 400 ग्राम टिन",
+   "brand": "FRUTINS",
+   "size": "400g",
+   "alias": "frutins baby corn tin बेबी कॉर्न",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906030060491",
+   "mrp": 125,
+   "sale": 125,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-3",
+   "ph": "ad78af77",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r11/20261110-01c7f6b3.jpg",
+    "r11/20261110-104432d3.jpg",
+    "r11/20261110-f016be7e.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906030061382",
+   "name": "FRUTINS GOLD FRUIT COCKTAIL 840G TIN",
+   "short": "FRUTINS COCKTAIL 840G",
+   "hi": "फ्रूटिन्स फ्रूट कॉकटेल 840 ग्राम टिन",
+   "brand": "FRUTINS",
+   "size": "840g",
+   "alias": "frutins fruit cocktail tin फ्रूट कॉकटेल",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906030061382",
+   "mrp": 250,
+   "sale": 250,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-3",
+   "ph": "66f163b3",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r11/20261110-e30608ea.jpg",
+    "r11/20261110-0110d970.jpg",
+    "r11/20261110-af07c5db.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906030061450",
+   "name": "FRUTINS GOLD PINEAPPLE SLICES 840G TIN",
+   "short": "FRUTINS PINEAPPLE 840G",
+   "hi": "फ्रूटिन्स अनानास स्लाइस 840 ग्राम टिन",
+   "brand": "FRUTINS",
+   "size": "840g",
+   "alias": "frutins pineapple slice ananas tin अनानास पाइनएप्पल",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906030061450",
+   "mrp": 252,
+   "sale": 250,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-3",
+   "ph": "5ed9d0a2",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r11/20261110-01fe7c31.jpg",
+    "r11/20261110-cb610c8e.jpg",
+    "r11/20261110-4f988b01.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8905950003519",
+   "name": "BIKAJI ALL-IN-ONE KUCH-KUCH 400G",
+   "short": "BIKAJI KUCH KUCH 400G",
+   "hi": "बीकाजी कुछ-कुछ 400 ग्राम",
+   "brand": "BIKAJI",
+   "size": "400g",
+   "alias": "bikaji kuch kuch all in one कुछ कुछ बीकाजी",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8905950003519",
+   "mrp": 120,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-13",
+   "ph": "df519a1f",
+   "mfr": "c-bikaji",
+   "fotos": [
+    "r11/20261110-9ad9c66e.jpg",
+    "r11/20261110-bd30513f.jpg",
+    "r11/20261110-c533a3b0.jpg",
+    "r11/20261110-93f205b0.jpg",
+    "r11/20261110-f4c750f1.jpg",
+    "r11/20261110-c58a82f9.jpg",
+    "r11/20261110-3b9f24cc.jpg",
+    "r11/20261110-10a01d75.jpg",
+    "r11/20261110-a2f5ef9c.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "2027-04-27",
+    "batchNo": "K26 J72 126"
+   }
+  },
+  {
+   "id": "b8905950003892",
+   "name": "BIKAJI SOYA STICKS MASALA MUNCH 200G",
+   "short": "BIKAJI SOYA STICKS 200G",
+   "hi": "बीकाजी सोया स्टिक्स 200 ग्राम",
+   "brand": "BIKAJI",
+   "size": "200g",
+   "alias": "bikaji soya stick masala munch सोया स्टिक",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8905950003892",
+   "mrp": 80,
+   "sale": 80,
+   "cost": 55,
+   "perPack": 0,
+   "rack": "11-30",
+   "ph": "5fb113d0",
+   "mfr": "c-bikaji",
+   "fotos": [
+    "r11/20261110-831bfc6d.jpg",
+    "r11/20261110-1381873e.jpg",
+    "r11/20261110-fa1a4c4c.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "2027-04-06",
+    "batchNo": "K26J93077"
+   }
+  },
+  {
+   "id": "b8939998072206",
+   "name": "ROYAL DEEP JUMBO GREEN CARDAMOM 500G",
+   "short": "ROYAL DEEP ELAICHI 500G",
+   "hi": "रॉयल दीप जंबो हरी इलायची 500 ग्राम",
+   "brand": "ROYAL DEEP",
+   "size": "500g",
+   "alias": "elaichi ilaichi cardamom इलायची हरी इलायची royal deep",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8939998072206",
+   "mrp": 2600,
+   "sale": 2600,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-39",
+   "ph": "3dbbea4a",
+   "mfr": "c-royal-deep",
+   "fotos": [
+    "r11/20261110-bfde5888.jpg",
+    "r11/20261110-ad85264c.jpg",
+    "r11/20261110-833641a5.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906160933146",
+   "name": "CAKKIES MIXED FRUIT FLAVOUR CAKE 55G",
+   "short": "CAKKIES FRUIT CAKE 55G",
+   "hi": "केकीज़ मिक्स्ड फ्रूट केक 55 ग्राम",
+   "brand": "CAKKIES",
+   "size": "55g",
+   "alias": "cake cakkies fruit cake केक",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8906160933146",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-39",
+   "ph": "c8ef632c",
+   "fotos": [
+    "r11/20261110-02445034.jpg",
+    "r11/20261110-218598ec.jpg",
+    "r11/20261110-14d6f5c1.jpg"
+   ],
+   "open": {
+    "qty": 26,
+    "exp": "2026-12-03",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901652141344",
+   "name": "PRIYAGOLD BUTTER BITE BUTTER COOKIES 130G",
+   "short": "PRIYAGOLD BTRBITE 130G",
+   "hi": "प्रियागोल्ड बटर बाइट कुकीज़ 130 ग्राम",
+   "brand": "PRIYAGOLD",
+   "size": "130g",
+   "alias": "priyagold butter bite cookies बटर बाइट कुकीज़",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652141344",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-40",
+   "ph": "d5943e19",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r11/20261110-5618a63b.jpg",
+    "r11/20261110-677fde05.jpg",
+    "r11/20261110-a4ce0812.jpg"
+   ],
+   "open": {
+    "qty": 22,
+    "exp": "2027-07",
+    "batchNo": "E26J P07 1B"
+   }
+  },
+  {
+   "id": "b8901652142549",
+   "name": "PRIYAGOLD SNAKKER CHOCO SANDWICH BISCUITS 50G",
+   "short": "PRIYAGOLD SNAKKER 50G",
+   "hi": "प्रियागोल्ड स्नैकर चोको सैंडविच बिस्किट 50 ग्राम",
+   "brand": "PRIYAGOLD",
+   "size": "50g",
+   "alias": "priyagold snakker choco sandwich biscuit चॉकलेट बिस्किट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652142549",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-31",
+   "ph": "cc50e01a",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r11/20261110-f9704f21.jpg",
+    "r11/20261110-3dd1f028.jpg",
+    "r11/20261110-128aaba9.jpg",
+    "r11/20261110-7f0bcf1b.jpg",
+    "r11/20261110-87f156c3.jpg"
+   ],
+   "open": {
+    "qty": 49,
+    "exp": "2027-05",
+    "batchNo": "E26H P12 CB"
+   }
+  },
+  {
+   "id": "b8901652140026",
+   "name": "PRIYAGOLD BUTTER BITE BUTTER COOKIES 65G",
+   "short": "PRIYAGOLD BTRBITE 65G",
+   "hi": "प्रियागोल्ड बटर बाइट कुकीज़ 65 ग्राम",
+   "brand": "PRIYAGOLD",
+   "size": "65g",
+   "alias": "priyagold butter bite cookies बटर बाइट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652140026",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-40",
+   "ph": "2bd4f050",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r11/20261110-e90a04a7.jpg",
+    "r11/20261110-c32281d5.jpg",
+    "r11/20261110-2d26043f.jpg"
+   ],
+   "open": {
+    "qty": 81,
+    "exp": "2027-07",
+    "batchNo": "E26J P07 0A"
+   }
+  },
+  {
+   "id": "g-crown-lite-non-greasy-hair-oil-70ml",
+   "name": "CROWN LITE NON GREASY HAIR OIL 70ML",
+   "short": "CROWN LITE HAIR OIL 70ML",
+   "hi": "क्राउन लाइट हेयर ऑयल 70 मि.ली.",
+   "brand": "CROWN",
+   "size": "70ml",
+   "alias": "crown hair oil tel बालों का तेल हेयर ऑयल",
+   "cat": "daily",
+   "sub": "hair",
+   "unit": "pc",
+   "mrp": 40,
+   "sale": 40,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-22",
+   "ph": "1e43eb0a",
+   "mfr": "c-crown",
+   "fotos": [
+    "r11/20261110-b2e45d17.jpg",
+    "r11/20261110-d1f9eee8.jpg",
+    "r11/20261110-16df8d1d.jpg"
+   ],
+   "open": {
+    "qty": 20,
+    "exp": "2029-04",
+    "batchNo": "L-16"
+   }
+  },
+  {
+   "id": "b89008720",
+   "name": "DABUR SARSON AMLA KESH TEL 62ML",
+   "short": "DABUR SARSON AMLA 62ML",
+   "hi": "डाबर सरसों आँवला केश तेल 62 मि.ली.",
+   "brand": "DABUR",
+   "size": "62ml",
+   "alias": "dabur sarson amla hair oil kesh tel सरसों आँवला तेल",
+   "cat": "daily",
+   "sub": "hair",
+   "unit": "pc",
+   "barcode": "89008720",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-22",
+   "ph": "9ed69401",
+   "mfr": "c-dabur",
+   "fotos": [
+    "r11/20261110-1225588e.jpg",
+    "r11/20261110-b0829a81.jpg",
+    "r11/20261110-d6d36709.jpg"
+   ],
+   "open": {
+    "qty": 22,
+    "exp": "2028-07",
+    "batchNo": "BM4569"
+   }
+  },
+  {
+   "id": "b8901207020001",
+   "name": "DABUR GLUCOPLUS-C JUICY ORANGE 400G",
+   "short": "DABUR GLUCOPLUS-C 400G",
+   "hi": "डाबर ग्लूकोप्लस-सी ऑरेंज 400 ग्राम",
+   "brand": "DABUR",
+   "size": "400g",
+   "alias": "glucose glucoplus dabur glucon ग्लूकोज़ ग्लूकोप्लस",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901207020001",
+   "mrp": 255,
+   "sale": 255,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-3",
+   "ph": "e52b1606",
+   "mfr": "c-dabur",
+   "fotos": [
+    "r11/20261110-323a6299.jpg",
+    "r11/20261110-c59be528.jpg",
+    "r11/20261110-700f807e.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "2027-06-28",
+    "batchNo": "RU0110 A"
+   }
+  },
+  {
+   "id": "b8901106102266",
+   "name": "TOPAZ PLATINUM BLADES BOX 50 BLADES (5X10)",
+   "short": "TOPAZ PLATINUM BOX 50",
+   "hi": "टोपाज़ प्लैटिनम ब्लेड डिब्बा (50 ब्लेड)",
+   "brand": "TOPAZ",
+   "size": "5 x 10",
+   "alias": "topaz blade platinum ब्लेड टोपाज़",
+   "cat": "daily",
+   "sub": "personal",
+   "unit": "pc",
+   "barcode": "8901106102266",
+   "mrp": 110,
+   "sale": 110,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-41",
+   "ph": "dd90c7ea",
+   "mfr": "c-laser-shaving",
+   "fotos": [
+    "r11/20261110-61d102f8.jpg",
+    "r11/20261110-6b2bffb3.jpg",
+    "r11/20261110-53358ac4.jpg",
+    "r11/20261110-7e861525.jpg",
+    "r11/20261110-0b1928f8.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901106101214",
+   "name": "TOPAZ PLATINUM BLADES TUCK 10 BLADES",
+   "short": "TOPAZ PLATINUM 10 BLADE",
+   "hi": "टोपाज़ प्लैटिनम ब्लेड (10 ब्लेड)",
+   "brand": "TOPAZ",
+   "size": "10 blades",
+   "alias": "topaz blade ब्लेड टोपाज़",
+   "cat": "daily",
+   "sub": "personal",
+   "unit": "pc",
+   "barcode": "8901106101214",
+   "mrp": 22,
+   "sale": 22,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-41",
+   "ph": "6479ad98",
+   "mfr": "c-laser-shaving",
+   "fotos": [
+    "r11/20261110-53358ac4.jpg",
+    "r11/20261110-7e861525.jpg"
+   ],
+   "open": {
+    "qty": 0,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8902102197508",
+   "name": "MAXO A-GRADE MOSQUITO COIL 10 COILS",
+   "short": "MAXO COIL 10 PC",
+   "hi": "मैक्सो मच्छर कॉइल (10 कॉइल)",
+   "brand": "MAXO",
+   "size": "10 coils",
+   "alias": "maxo coil machhar mosquito मच्छर कॉइल",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "barcode": "8902102197508",
+   "mrp": 33,
+   "sale": 33,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-41",
+   "ph": "de9a7258",
+   "mfr": "c-jyothy",
+   "fotos": [
+    "r11/20261110-5afdabc0.jpg",
+    "r11/20261110-dfb4c363.jpg",
+    "r11/20261110-ffebed1c.jpg"
+   ],
+   "open": {
+    "qty": 11,
+    "exp": "2028-06",
+    "batchNo": "JLPP P013 C3 173"
+   }
+  },
+  {
+   "id": "b8906010225605",
+   "name": "ZED BLACK MANTHAN GUGGAL DHOOP 20 STICKS",
+   "short": "ZED BLACK GUGGAL DHP 20",
+   "hi": "ज़ेड ब्लैक मंथन गुग्गल धूप (20 स्टिक)",
+   "brand": "ZED BLACK",
+   "size": "20 sticks",
+   "alias": "zed black guggal dhoop dhup धूप गुग्गल",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8906010225605",
+   "mrp": 30,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-41",
+   "ph": "27c12e29",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-7e500e5a.jpg",
+    "r11/20261110-9c5c6e9c.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904227332215",
+   "name": "ZED BLACK VAYU 3IN1 AGARBATTI 12 STICKS",
+   "short": "ZED BLACK VAYU 12 STK",
+   "hi": "ज़ेड ब्लैक वायु 3-इन-1 अगरबत्ती (12 स्टिक)",
+   "brand": "ZED BLACK",
+   "size": "12 sticks",
+   "alias": "zed black vayu agarbatti अगरबत्ती वायु",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227332215",
+   "mrp": 12,
+   "sale": 12,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-41",
+   "ph": "17242ef8",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-b0e22527.jpg",
+    "r11/20261110-83ece86b.jpg",
+    "r11/20261110-1891a74f.jpg",
+    "r11/20261110-5b535343.jpg",
+    "r11/20261110-c4bcf36f.jpg",
+    "r11/20261110-1ea43b6e.jpg"
+   ],
+   "open": {
+    "qty": 11,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8905950003571",
+   "name": "BIKAJI TANA-TAN ALOO BHUJIA 400G",
+   "short": "BIKAJI ALOO BHUJIA 400G",
+   "hi": "बीकाजी टना-टन आलू भुजिया 400 ग्राम",
+   "brand": "BIKAJI",
+   "size": "400g",
+   "alias": "bikaji aloo bhujia tana tan आलू भुजिया",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8905950003571",
+   "mrp": 120,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-15",
+   "ph": "5dafd575",
+   "mfr": "c-bikaji",
+   "fotos": [
+    "r11/20261110-e9de4647.jpg",
+    "r11/20261110-57832cd9.jpg",
+    "r11/20261110-5a401606.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2027-04-26",
+    "batchNo": "K26 J73068"
+   }
+  },
+  {
+   "id": "b8904227332222",
+   "name": "ZED BLACK VAYU 3IN1 AGARBATTI WHOLESALE BOX (12 PACKS)",
+   "short": "ZED BLACK VAYU BOX 12PK",
+   "hi": "ज़ेड ब्लैक वायु अगरबत्ती बड़ा डिब्बा (12 पैकेट)",
+   "brand": "ZED BLACK",
+   "size": "12 x 12 sticks",
+   "alias": "zed black vayu agarbatti box डिब्बा अगरबत्ती",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227332222",
+   "mrp": 144,
+   "sale": 144,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-24",
+   "ph": "69c517b3",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-0cdbaad1.jpg",
+    "r11/20261110-d77036d9.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-comfort-citronella-incense-box-12-pouch--pc",
+   "name": "COMFORT CITRONELLA INCENSE POUCH (10 STICKS)",
+   "short": "COMFORT CITRONELLA POUCH",
+   "hi": "कम्फर्ट सिट्रोनेला मच्छर अगरबत्ती (पाउच)",
+   "brand": "COMFORT",
+   "size": "10 sticks",
+   "alias": "comfort citronella agarbatti machhar मच्छर अगरबत्ती",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "mrp": 16.0,
+   "sale": 16.0,
+   "cost": 0.0,
+   "perPack": 12,
+   "rack": "11-24",
+   "ph": "5576208f",
+   "fotos": [
+    "r11/20261110-2cc11cad.jpg",
+    "r11/20261110-b73e5629.jpg"
+   ],
+   "open": {
+    "qty": 48,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-comfort-citronella-incense-box-12-pouch",
+   "name": "COMFORT CITRONELLA INCENSE BOX (12 POUCH)",
+   "short": "COMFORT CITRONELLA BOX",
+   "hi": "कम्फर्ट सिट्रोनेला मच्छर अगरबत्ती (पाउच)",
+   "brand": "COMFORT",
+   "size": "10 sticks",
+   "alias": "comfort citronella agarbatti machhar मच्छर अगरबत्ती",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "mrp": 192,
+   "sale": 192,
+   "cost": 0,
+   "perPack": 12,
+   "packOf": "g-comfort-citronella-incense-box-12-pouch--pc",
+   "track": false,
+   "rack": "11-24",
+   "ph": "5576208f",
+   "fotos": [
+    "r11/20261110-2cc11cad.jpg",
+    "r11/20261110-b73e5629.jpg"
+   ]
+  },
+  {
+   "id": "b8904227303369",
+   "name": "ZED BLACK DEEP CHANDAN AGARBATTI WHOLESALE BOX (6 X 40G)",
+   "short": "ZED BLK CHANDAN BOX 6PK",
+   "hi": "ज़ेड ब्लैक दीप चंदन अगरबत्ती डिब्बा (6 पैकेट)",
+   "brand": "ZED BLACK",
+   "size": "6 x 40g",
+   "alias": "zed black deep chandan agarbatti चंदन अगरबत्ती",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227303369",
+   "mrp": 168,
+   "sale": 168,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-24",
+   "ph": "b5bad197",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-930740c8.jpg",
+    "r11/20261110-416c2b13.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904227303307",
+   "name": "ZED BLACK DEEP CHANDAN PREMIUM AGARBATTI 40G",
+   "short": "ZED BLACK CHANDAN 40G",
+   "hi": "ज़ेड ब्लैक दीप चंदन अगरबत्ती 40 ग्राम",
+   "brand": "ZED BLACK",
+   "size": "40g",
+   "alias": "zed black chandan agarbatti चंदन",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227303307",
+   "mrp": 28,
+   "sale": 28,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-24",
+   "ph": "a7dc87e3",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-d90c7869.jpg"
+   ],
+   "open": {
+    "qty": 0,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901652140156",
+   "name": "PRIYAGOLD COCONUT CRUNCH GOLD COOKIES 65G",
+   "short": "PRIYAGOLD COCONUT 65G",
+   "hi": "प्रियागोल्ड कोकोनट क्रंच कुकीज़ 65 ग्राम",
+   "brand": "PRIYAGOLD",
+   "size": "65g",
+   "alias": "priyagold coconut crunch cookies नारियल बिस्किट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652140156",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-32",
+   "ph": "15243308",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r11/20261110-0977fa2e.jpg",
+    "r11/20261110-45ed3c8d.jpg",
+    "r11/20261110-c06113b5.jpg"
+   ],
+   "open": {
+    "qty": 48,
+    "exp": "2027-07",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901491100342",
+   "name": "LAYS SPANISH TOMATO TANGO 52.9G",
+   "short": "LAYS TOMATO TANGO 52.9G",
+   "hi": "लेज़ स्पैनिश टोमैटो टैंगो 52.9 ग्राम",
+   "brand": "LAYS",
+   "size": "52.9g",
+   "alias": "lays lay's tomato tango chips लेज़ टमाटर",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8901491100342",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-16",
+   "ph": "cc7e42c8",
+   "mfr": "c-pepsico",
+   "fotos": [
+    "r11/20261110-767ce1bb.jpg",
+    "r11/20261110-44415d95.jpg",
+    "r11/20261110-221530f1.jpg",
+    "r11/20261110-d258c1e4.jpg",
+    "r11/20261110-5729c82d.jpg",
+    "r11/20261110-39da3b01.jpg"
+   ],
+   "open": {
+    "qty": 23,
+    "exp": "2027-02-18",
+    "batchNo": "2.6/N4210926"
+   }
+  },
+  {
+   "id": "b8901491981682",
+   "name": "LAYS WAVY CREAM & ONION 44.8G",
+   "short": "LAYS WAVY CR&ON 44.8G",
+   "hi": "लेज़ वेवी क्रीम एंड ओनियन 44.8 ग्राम",
+   "brand": "LAYS",
+   "size": "44.8g",
+   "alias": "lays wavy cream onion chips लेज़",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8901491981682",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-23",
+   "ph": "c6ed57c7",
+   "mfr": "c-pepsico",
+   "fotos": [
+    "r11/20261110-b30c90f3.jpg",
+    "r11/20261110-42d2f83d.jpg",
+    "r11/20261110-ad7be632.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2026-12-28",
+    "batchNo": "2.2/N4310726"
+   }
+  },
+  {
+   "id": "b8906003514136",
+   "name": "JALANI GOLGAPPA MAGIC 100G",
+   "short": "JALANI GOLGAPPA MAGIC",
+   "hi": "जलानी गोलगप्पा मैजिक 100 ग्राम",
+   "brand": "JALANI",
+   "size": "100g",
+   "alias": "jalani golgappa pani puri पानी पूरी गोलगप्पा",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8906003514136",
+   "mrp": 30,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-5",
+   "ph": "7ba877d8",
+   "mfr": "c-jalani",
+   "fotos": [
+    "r11/20261110-accc3f2a.jpg",
+    "r11/20261110-8829f08f.jpg",
+    "r11/20261110-58c64bea.jpg",
+    "r11/20261110-1f018cf4.jpg",
+    "r11/20261110-96ffa8c8.jpg",
+    "r11/20261110-b44f624a.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2026-10",
+    "batchNo": "G11"
+   }
+  },
+  {
+   "id": "b8901652142105",
+   "name": "PRIYAGOLD CHEESE CRACKER 70G",
+   "short": "PRIYAGOLD CHEESE CRK 70G",
+   "hi": "प्रियागोल्ड चीज़ क्रैकर 70 ग्राम",
+   "brand": "PRIYAGOLD",
+   "size": "70g",
+   "alias": "priyagold cheese cracker biscuit चीज़ क्रैकर",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652142105",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-33",
+   "ph": "91a141c8",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r11/20261110-0ba4856e.jpg",
+    "r11/20261110-1bfaa9d7.jpg",
+    "r11/20261110-fd047074.jpg"
+   ],
+   "open": {
+    "qty": 26,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901652142143",
+   "name": "PRIYAGOLD BUTTER DELITE NAMKEEN BISCUITS 70G",
+   "short": "PRIYAGOLD BTR DELITE 70G",
+   "hi": "प्रियागोल्ड बटर डिलाइट बिस्किट 70 ग्राम",
+   "brand": "PRIYAGOLD",
+   "size": "70g",
+   "alias": "priyagold butter delite biscuit बटर बिस्किट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652142143",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-33",
+   "ph": "d4e1183a",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r11/20261110-00463668.jpg",
+    "r11/20261110-913822aa.jpg"
+   ],
+   "open": {
+    "qty": 16,
+    "exp": "2027-07",
+    "batchNo": "E26JP025A"
+   }
+  },
+  {
+   "id": "b8904227349589",
+   "name": "ZED BLACK SANDAL PREMIUM DHOOP STICKS 9 STICKS",
+   "short": "ZED BLACK SANDAL DHOOP 9",
+   "hi": "ज़ेड ब्लैक सैंडल धूप (9 स्टिक)",
+   "brand": "ZED BLACK",
+   "size": "9 sticks",
+   "alias": "zed black sandal dhoop चंदन धूप",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227349589",
+   "mrp": 15,
+   "sale": 15,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-42",
+   "ph": "78139836",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-77606a9f.jpg",
+    "r11/20261110-0b6be284.jpg",
+    "r11/20261110-01db5444.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901765085351",
+   "name": "FLAIR CREATIVES AVENGERS STATIONERY KIT-150",
+   "short": "FLAIR AVENGERS KIT 150",
+   "hi": "फ्लेयर एवेंजर्स स्टेशनरी किट",
+   "brand": "FLAIR",
+   "size": "1 kit",
+   "alias": "flair stationery kit avengers pencil set स्टेशनरी किट",
+   "cat": "stationery",
+   "sub": "art",
+   "unit": "pc",
+   "barcode": "8901765085351",
+   "mrp": 150,
+   "sale": 150,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-42",
+   "ph": "082ee0cc",
+   "mfr": "c-flair",
+   "fotos": [
+    "r11/20261110-675277b0.jpg",
+    "r11/20261110-6984eff3.jpg",
+    "r11/20261110-c32ca23b.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904411804740",
+   "name": "DOMS UNICORN STATIONERY KIT",
+   "short": "DOMS UNICORN KIT",
+   "hi": "डोम्स यूनिकॉर्न स्टेशनरी किट",
+   "brand": "DOMS",
+   "size": "1 kit",
+   "alias": "doms unicorn stationery kit स्टेशनरी किट",
+   "cat": "stationery",
+   "sub": "art",
+   "unit": "pc",
+   "barcode": "8904411804740",
+   "mrp": 150,
+   "sale": 150,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-42",
+   "ph": "4ab8e3ed",
+   "mfr": "c-doms",
+   "fotos": [
+    "r11/20261110-11bfb045.jpg",
+    "r11/20261110-5f9254f1.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901765085405",
+   "name": "FLAIR CREATIVES MICKEY STATIONERY KIT-150",
+   "short": "FLAIR MICKEY KIT 150",
+   "hi": "फ्लेयर मिकी स्टेशनरी किट",
+   "brand": "FLAIR",
+   "size": "1 kit",
+   "alias": "flair stationery kit mickey pencil set स्टेशनरी किट",
+   "cat": "stationery",
+   "sub": "art",
+   "unit": "pc",
+   "barcode": "8901765085405",
+   "mrp": 150,
+   "sale": 150,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-42",
+   "ph": "b6da655e",
+   "mfr": "c-flair",
+   "fotos": [
+    "r11/20261110-a579a0a1.jpg",
+    "r11/20261110-949b5041.jpg",
+    "r11/20261110-bee00c13.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906030061078",
+   "name": "FRUTINS CORN STARCH 1KG",
+   "short": "FRUTINS CORN STARCH 1KG",
+   "hi": "फ्रूटिन्स कॉर्न स्टार्च 1 किलो",
+   "brand": "FRUTINS",
+   "size": "1kg",
+   "alias": "corn starch cornflour corn flour कॉर्न स्टार्च कॉर्नफ्लोर frutins",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "8906030061078",
+   "mrp": 140,
+   "sale": 140,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-7",
+   "ph": "07b03e07",
+   "mfr": "c-vidya-sagar",
+   "fotos": [
+    "r11/20261110-c56e8141.jpg",
+    "r11/20261110-9a6bc9e0.jpg",
+    "r11/20261110-4e987559.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2028-05-18",
+    "batchNo": "260519"
+   }
+  },
+  {
+   "id": "b8906020900660",
+   "name": "JAIN RASRANG JEERA RICE PAPAD 500G",
+   "short": "JAIN JEERA PAPAD 500G",
+   "hi": "जैन रसरंग जीरा चावल पापड़ 500 ग्राम",
+   "brand": "JAIN",
+   "size": "500g",
+   "alias": "papad jeera rice papad jain paliwala पापड़ जीरा",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "8906020900660",
+   "mrp": 80,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-25",
+   "ph": "9f56783b",
+   "mfr": "c-jain-papad",
+   "fotos": [
+    "r11/20261110-63ef34d1.jpg",
+    "r11/20261110-8a14c763.jpg",
+    "r11/20261110-9d96a0df.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-04-21",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904227335568",
+   "name": "ZED BLACK PARFUM 4IN1 PREMIUM INCENSE STICKS 80G",
+   "short": "ZED BLK PARFUM 4IN1 80G",
+   "hi": "ज़ेड ब्लैक परफ़्यूम 4-इन-1 अगरबत्ती 80 ग्राम",
+   "brand": "ZED BLACK",
+   "size": "80g",
+   "alias": "zed black parfum agarbatti अगरबत्ती",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227335568",
+   "mrp": 55,
+   "sale": 55,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-34",
+   "ph": "1586387d",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-7024a97c.jpg",
+    "r11/20261110-f37c9c71.jpg",
+    "r11/20261110-ae27efc6.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904227352411",
+   "name": "ZED BLACK FLOWER BLISS 3IN1 AGARBATTI 120G",
+   "short": "ZED BLK FLWR BLISS 120G",
+   "hi": "ज़ेड ब्लैक फ्लावर ब्लिस अगरबत्ती 120 ग्राम",
+   "brand": "ZED BLACK",
+   "size": "120g",
+   "alias": "zed black flower bliss agarbatti mogra gulab अगरबत्ती",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227352411",
+   "mrp": 55,
+   "sale": 55,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-34",
+   "ph": "d4b44d16",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-11dc04fc.jpg",
+    "r11/20261110-1e69605c.jpg",
+    "r11/20261110-ebabcf76.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904227326245",
+   "name": "ZED BLACK SAMARPAN PURE CAMPHOR TABLETS 30G JAR",
+   "short": "ZED BLACK KAPOOR 30G",
+   "hi": "ज़ेड ब्लैक समर्पण कपूर 30 ग्राम",
+   "brand": "ZED BLACK",
+   "size": "30g",
+   "alias": "kapoor kapur camphor कपूर samarpan zed black",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227326245",
+   "mrp": 75,
+   "sale": 75,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-34",
+   "ph": "32a0db81",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-04f5ce16.jpg",
+    "r11/20261110-741f54e2.jpg",
+    "r11/20261110-6cabe9eb.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "2036-06",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904227326252",
+   "name": "ZED BLACK SAMARPAN CAMPHOR TABLETS 15G JAR",
+   "short": "ZED BLACK KAPOOR 15G",
+   "hi": "ज़ेड ब्लैक समर्पण कपूर 15 ग्राम",
+   "brand": "ZED BLACK",
+   "size": "15g",
+   "alias": "kapoor kapur camphor कपूर samarpan",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227326252",
+   "mrp": 45,
+   "sale": 45,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-34",
+   "ph": "8df2cfb7",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-90ba4fa7.jpg",
+    "r11/20261110-3a151843.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904227345727",
+   "name": "ZED BLACK SAMARPAN PURE CAMPHOR 8G",
+   "short": "ZED BLACK KAPOOR 8G",
+   "hi": "ज़ेड ब्लैक समर्पण कपूर 8 ग्राम",
+   "brand": "ZED BLACK",
+   "size": "8g",
+   "alias": "kapoor kapur camphor कपूर",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8904227345727",
+   "mrp": 28,
+   "sale": 28,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-34",
+   "ph": "03e84bc9",
+   "mfr": "c-zed-black",
+   "fotos": [
+    "r11/20261110-f01b8980.jpg",
+    "r11/20261110-58223336.jpg"
+   ],
+   "open": {
+    "qty": 29,
+    "exp": "2036-06",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901491101837",
+   "name": "LAYS CLASSIC SALTED 51G",
+   "short": "LAYS CLASSIC SALTED 51G",
+   "hi": "लेज़ क्लासिक सॉल्टेड 51 ग्राम",
+   "brand": "LAYS",
+   "size": "51g",
+   "alias": "lays lay's classic salted chips लेज़ नमकीन चिप्स",
+   "cat": "kirana",
+   "sub": "namkeen",
+   "unit": "pc",
+   "barcode": "8901491101837",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-17",
+   "ph": "579d3d23",
+   "mfr": "c-pepsico",
+   "fotos": [
+    "r11/20261110-fa7a2328.jpg",
+    "r11/20261110-098f7d73.jpg",
+    "r11/20261110-d1a6dc9e.jpg",
+    "r11/20261110-b2104820.jpg",
+    "r11/20261110-d808a0a8.jpg",
+    "r11/20261110-67f1e3f6.jpg",
+    "r11/20261110-168e58b7.jpg",
+    "r11/20261110-ce347944.jpg",
+    "r11/20261110-2096c59b.jpg"
+   ],
+   "open": {
+    "qty": 21,
+    "exp": "2027-02-16",
+    "batchNo": "2.6/N4190926"
+   }
+  },
+  {
+   "id": "b0731788449599",
+   "name": "ALPINE BLACK SALT POWDER 1KG",
+   "short": "ALPINE BLACK SALT 1KG",
+   "hi": "एल्पाइन काला नमक पाउडर 1 किलो",
+   "brand": "ALPINE",
+   "size": "1kg",
+   "alias": "kala namak black salt काला नमक alpine sanchal",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "0731788449599",
+   "mrp": 0,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-8",
+   "ph": "46590524",
+   "fotos": [
+    "r11/20261110-af0592bc.jpg",
+    "r11/20261110-8c9a3d89.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2029-05",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906015340242",
+   "name": "EVERPLUS MIXED FRUIT JAM 250G",
+   "short": "EVERPLUS MIX FRUIT JAM",
+   "hi": "एवरप्लस मिक्स्ड फ्रूट जैम",
+   "brand": "EVERPLUS",
+   "size": "250g",
+   "alias": "jam mixed fruit jam everplus जैम",
+   "cat": "kirana",
+   "sub": "achar",
+   "unit": "pc",
+   "barcode": "8906015340242",
+   "mrp": 75,
+   "sale": 75,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-8",
+   "ph": "d3d93569",
+   "mfr": "c-everest-bev",
+   "fotos": [
+    "r11/20261110-b9ec2c76.jpg",
+    "r11/20261110-1601868e.jpg",
+    "r11/20261110-fc6f31d9.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "2027-06-04",
+    "batchNo": "D218"
+   }
+  },
+  {
+   "id": "b8901860010661",
+   "name": "FEVIBOND SYNTHETIC RUBBER ADHESIVE TUBE",
+   "short": "FEVIBOND TUBE",
+   "hi": "फेविबॉन्ड ट्यूब",
+   "brand": "FEVIBOND",
+   "size": "25ml",
+   "alias": "fevibond fevicol gond glue गोंद फेविबॉन्ड",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8901860010661",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-35",
+   "ph": "cd940d2d",
+   "fotos": [
+    "r11/20261110-b581c67b.jpg",
+    "r11/20261110-377ac88b.jpg",
+    "r11/20261110-7ca517a7.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": "SN6212"
+   }
+  },
+  {
+   "id": "g-birthday-number-candle-box-7-pc-1-pc-pc",
+   "name": "BIRTHDAY NUMBER CANDLE (1 PC)",
+   "short": "BIRTHDAY NO CANDLE 1PC",
+   "hi": "बर्थडे नंबर मोमबत्ती (1 पीस)",
+   "size": "1 pc",
+   "alias": "birthday candle number candle mombatti मोमबत्ती बर्थडे",
+   "cat": "gift",
+   "sub": "party",
+   "unit": "pc",
+   "mrp": 2.0,
+   "sale": 2,
+   "cost": 0.0,
+   "perPack": 7,
+   "rack": "11-35",
+   "ph": "9fb9a50c",
+   "fotos": [
+    "r11/20261110-70dfc6a4.jpg"
+   ],
+   "open": {
+    "qty": 49,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-birthday-number-candle-box-7-pc",
+   "name": "BIRTHDAY NUMBER CANDLE BOX (7 PC)",
+   "short": "BIRTHDAY CANDLE BOX 7",
+   "hi": "बर्थडे नंबर मोमबत्ती (1 पीस)",
+   "size": "1 pc",
+   "alias": "birthday candle number candle mombatti मोमबत्ती बर्थडे",
+   "cat": "gift",
+   "sub": "party",
+   "unit": "pc",
+   "mrp": 14,
+   "sale": 14,
+   "cost": 0,
+   "perPack": 7,
+   "packOf": "g-birthday-number-candle-box-7-pc-1-pc-pc",
+   "track": false,
+   "rack": "11-35",
+   "ph": "9fb9a50c",
+   "fotos": [
+    "r11/20261110-70dfc6a4.jpg"
+   ]
+  },
+  {
+   "id": "g-kangaro-no-10-stapler-box-10-pc-1-pc-pc",
+   "name": "KANGARO NO.10 STAPLER",
+   "short": "KANGARO NO10 STAPLER",
+   "hi": "कंगारू नंबर 10 स्टेपलर",
+   "brand": "KANGARO",
+   "size": "1 pc",
+   "alias": "stapler kangaro no 10 स्टेपलर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "mrp": 75.0,
+   "sale": 75.0,
+   "cost": 0.0,
+   "perPack": 10,
+   "rack": "11-35",
+   "ph": "5af63b7d",
+   "mfr": "c-kangaro",
+   "fotos": [
+    "r11/20261110-f436369f.jpg",
+    "r11/20261110-89a8199c.jpg",
+    "r11/20261110-5316c54a.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b18901057310069",
+   "name": "KANGARO NO.10 STAPLER BOX (10 PC)",
+   "short": "KANGARO NO10 BOX 10",
+   "hi": "कंगारू नंबर 10 स्टेपलर",
+   "brand": "KANGARO",
+   "size": "1 pc",
+   "alias": "stapler kangaro no 10 स्टेपलर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "18901057310069",
+   "mrp": 750,
+   "sale": 750,
+   "cost": 0,
+   "perPack": 10,
+   "packOf": "g-kangaro-no-10-stapler-box-10-pc-1-pc-pc",
+   "track": false,
+   "rack": "11-35",
+   "ph": "5af63b7d",
+   "mfr": "c-kangaro",
+   "fotos": [
+    "r11/20261110-f436369f.jpg",
+    "r11/20261110-89a8199c.jpg",
+    "r11/20261110-5316c54a.jpg"
+   ]
+  },
+  {
+   "id": "b8850006958308",
+   "name": "COLGATE STRONG TEETH TOOTHPASTE 44G",
+   "short": "COLGATE STRONG TEETH 44G",
+   "hi": "कोलगेट स्ट्रॉन्ग टीथ टूथपेस्ट 44 ग्राम",
+   "brand": "COLGATE",
+   "size": "44g",
+   "alias": "colgate toothpaste manjan कोलगेट टूथपेस्ट",
+   "cat": "daily",
+   "sub": "personal",
+   "unit": "pc",
+   "barcode": "8850006958308",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-35",
+   "ph": "2d87fb43",
+   "mfr": "c-colgate",
+   "fotos": [
+    "r11/20261110-455e4394.jpg",
+    "r11/20261110-756a58c3.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8902191000161",
+   "name": "OMEGA PIN-O-CLIP DELUXE",
+   "short": "OMEGA PIN-O-CLIP DELUXE",
+   "hi": "ओमेगा पिन-ओ-क्लिप डीलक्स",
+   "brand": "OMEGA",
+   "size": "1 pc",
+   "alias": "pin holder clip holder omega पिन होल्डर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8902191000161",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-26",
+   "ph": "09f2aa77",
+   "mfr": "c-omega",
+   "fotos": [
+    "r11/20261110-a9fab470.jpg",
+    "r11/20261110-3e9ea8b9.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8902191040617",
+   "name": "OMEGA PIN-O-CLIP ELEGANT",
+   "short": "OMEGA PIN-O-CLIP ELEGANT",
+   "hi": "ओमेगा पिन-ओ-क्लिप एलिगेंट",
+   "brand": "OMEGA",
+   "size": "1 pc",
+   "alias": "pin holder omega elegant पिन होल्डर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8902191040617",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-35",
+   "ph": "ec3d9c8a",
+   "mfr": "c-omega",
+   "fotos": [
+    "r11/20261110-59b5f26d.jpg",
+    "r11/20261110-185f76f6.jpg",
+    "r11/20261110-b9ca94b3.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904411801831",
+   "name": "DOMS E-RACER ERASER",
+   "short": "DOMS E-RACER ERASER",
+   "hi": "डोम्स ई-रेसर रबर",
+   "brand": "DOMS",
+   "size": "1 pc",
+   "alias": "doms eraser rubber e racer रबर इरेज़र",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8904411801831",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-44",
+   "ph": "4fd634ea",
+   "mfr": "c-doms",
+   "fotos": [
+    "r11/20261110-6b003ba1.jpg",
+    "r11/20261110-50c3864a.jpg",
+    "r11/20261110-8492134a.jpg"
+   ],
+   "open": {
+    "qty": 15,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-pexon-correction-tape-px-9803-16m-x-5mm",
+   "name": "PEXON CORRECTION TAPE PX-9803 16M X 5MM",
+   "short": "PEXON CORRECTION TAPE",
+   "hi": "पेक्सॉन करेक्शन टेप 16 मीटर",
+   "brand": "PEXON",
+   "size": "16m x 5mm",
+   "alias": "correction tape whitener white tape करेक्शन टेप",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 90,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-44",
+   "ph": "55ae19f4",
+   "fotos": [
+    "r11/20261110-5c8626ca.jpg",
+    "r11/20261110-6fa97d22.jpg",
+    "r11/20261110-9ca4e3a4.jpg",
+    "r11/20261110-93cada5e.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-doms-refilo-white-board-marker-box-10-pc-pc",
+   "name": "DOMS REFILO WHITE BOARD MARKER PEN",
+   "short": "DOMS REFILO WB MARKER",
+   "hi": "डोम्स रीफ़िलो व्हाइटबोर्ड मार्कर",
+   "brand": "DOMS",
+   "size": "1 pc",
+   "alias": "white board marker doms refilo मार्कर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 25.0,
+   "sale": 25.0,
+   "cost": 0.0,
+   "perPack": 10,
+   "rack": "11-44",
+   "ph": "0c328112",
+   "mfr": "c-doms",
+   "fotos": [
+    "r11/20261110-b8e5f61e.jpg",
+    "r11/20261110-72c6e695.jpg",
+    "r11/20261110-84e42094.jpg"
+   ],
+   "open": {
+    "qty": 20,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906073774355",
+   "name": "DOMS REFILO WHITE BOARD MARKER BOX (10 PC)",
+   "short": "DOMS REFILO BOX 10",
+   "hi": "डोम्स रीफ़िलो व्हाइटबोर्ड मार्कर",
+   "brand": "DOMS",
+   "size": "1 pc",
+   "alias": "white board marker doms refilo मार्कर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8906073774355",
+   "mrp": 250,
+   "sale": 250,
+   "cost": 0,
+   "perPack": 10,
+   "packOf": "g-doms-refilo-white-board-marker-box-10-pc-pc",
+   "track": false,
+   "rack": "11-44",
+   "ph": "0c328112",
+   "mfr": "c-doms",
+   "fotos": [
+    "r11/20261110-b8e5f61e.jpg",
+    "r11/20261110-72c6e695.jpg",
+    "r11/20261110-84e42094.jpg"
+   ]
+  },
+  {
+   "id": "b8901238310133",
+   "name": "KANGARO HP-45 STAPLER",
+   "short": "KANGARO HP-45 STAPLER",
+   "hi": "कंगारू HP-45 स्टेपलर",
+   "brand": "KANGARO",
+   "size": "1 pc",
+   "alias": "stapler kangaro hp 45 plier स्टेपलर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8901238310133",
+   "mrp": 335,
+   "sale": 335,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-44",
+   "ph": "3ece557f",
+   "mfr": "c-kangaro",
+   "fotos": [
+    "r11/20261110-ad7e0b14.jpg",
+    "r11/20261110-a90c0cde.jpg",
+    "r11/20261110-47bcaf61.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-cello-perma-mark-marker-box-10-pc-1-pc-pc",
+   "name": "CELLO PERMA MARK PERMANENT MARKER",
+   "short": "CELLO PERMA MARK MARKER",
+   "hi": "सेलो पर्मा मार्क परमानेंट मार्कर",
+   "brand": "CELLO",
+   "size": "1 pc",
+   "alias": "permanent marker cello perma mark मार्कर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 20.0,
+   "sale": 20.0,
+   "cost": 0.0,
+   "perPack": 10,
+   "rack": "11-44",
+   "ph": "e3a8a573",
+   "mfr": "c-cello",
+   "fotos": [
+    "r11/20261110-1cc227bd.jpg",
+    "r11/20261110-e7534dfb.jpg",
+    "r11/20261110-6eff641e.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8907234504156",
+   "name": "CELLO PERMA MARK MARKER BOX (10 PC)",
+   "short": "CELLO PERMA MARK BOX 10",
+   "hi": "सेलो पर्मा मार्क परमानेंट मार्कर",
+   "brand": "CELLO",
+   "size": "1 pc",
+   "alias": "permanent marker cello perma mark मार्कर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8907234504156",
+   "mrp": 200,
+   "sale": 200,
+   "cost": 0,
+   "perPack": 10,
+   "packOf": "g-cello-perma-mark-marker-box-10-pc-1-pc-pc",
+   "track": false,
+   "rack": "11-44",
+   "ph": "e3a8a573",
+   "mfr": "c-cello",
+   "fotos": [
+    "r11/20261110-1cc227bd.jpg",
+    "r11/20261110-e7534dfb.jpg",
+    "r11/20261110-6eff641e.jpg"
+   ]
+  },
+  {
+   "id": "b8901764072277",
+   "name": "KINLEY STRONG SODA 750ML",
+   "short": "KINLEY SODA 750ML",
+   "hi": "किनले स्ट्रॉन्ग सोडा 750 मि.ली.",
+   "brand": "KINLEY",
+   "size": "750ml",
+   "alias": "kinley soda सोडा",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764072277",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "4e143b70",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261110-3aca24cf.jpg",
+    "r20/20261110-f71af531.jpg",
+    "r20/20261110-5bd8f356.jpg"
+   ],
+   "open": {
+    "qty": 23,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906017290033",
+   "name": "BISLERI PACKAGED DRINKING WATER 500ML",
+   "short": "BISLERI WATER 500ML",
+   "hi": "बिसलेरी पानी 500 मि.ली.",
+   "brand": "BISLERI",
+   "size": "500ml",
+   "alias": "bisleri water pani पानी बोतल",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8906017290033",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "27e35e05",
+   "mfr": "c-bisleri",
+   "fotos": [
+    "r20/20261110-6fe26448.jpg",
+    "r20/20261110-4f721491.jpg",
+    "r20/20261110-17724a86.jpg"
+   ],
+   "open": {
+    "qty": 33,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262152228",
+   "name": "AMUL KOOL ELAICHI FLAVOURED MILK 180ML",
+   "short": "AMUL KOOL ELAICHI 180ML",
+   "hi": "अमूल कूल इलायची 180 मि.ली.",
+   "brand": "AMUL",
+   "size": "180ml",
+   "alias": "amul kool elaichi flavoured milk अमूल कूल इलायची दूध",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262152228",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "6543e9f8",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261110-6f1273db.jpg",
+    "r20/20261110-053fe505.jpg",
+    "r20/20261110-c84a643f.jpg"
+   ],
+   "open": {
+    "qty": 78,
+    "exp": "2027-04-02",
+    "batchNo": "GAF2771"
+   }
+  },
+  {
+   "id": "b8901262152341",
+   "name": "AMUL KOOL GOLD PREMIUM KESAR FLAVOURED MILK",
+   "short": "AMUL KOOL GOLD KESAR",
+   "hi": "अमूल कूल गोल्ड केसर",
+   "brand": "AMUL",
+   "alias": "amul kool gold kesar flavoured milk केसर दूध",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262152341",
+   "mrp": 30,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "6ace3e9e",
+   "mfr": "c-amul",
+   "fotos": [
+    "r20/20261110-594c70fb.jpg",
+    "r20/20261110-771d7782.jpg",
+    "r20/20261110-7fca852c.jpg"
+   ],
+   "open": {
+    "qty": 70,
+    "exp": "2027-04-08",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764032271",
+   "name": "SPRITE LEMON-LIME 750ML",
+   "short": "SPRITE 750ML",
+   "hi": "स्प्राइट 750 मि.ली.",
+   "brand": "SPRITE",
+   "size": "750ml",
+   "alias": "sprite cold drink स्प्राइट",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764032271",
+   "mrp": 40,
+   "sale": 40,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "0c7a06f6",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261110-d96a1074.jpg",
+    "r20/20261110-e4bc9f24.jpg"
+   ],
+   "open": {
+    "qty": 59,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906017290040",
+   "name": "BISLERI PACKAGED DRINKING WATER 1L",
+   "short": "BISLERI WATER 1L",
+   "hi": "बिसलेरी पानी 1 लीटर",
+   "brand": "BISLERI",
+   "size": "1L",
+   "alias": "bisleri water 1 litre पानी",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8906017290040",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "2d7f6dd4",
+   "mfr": "c-bisleri",
+   "fotos": [
+    "r20/20261110-5ad38a4d.jpg",
+    "r20/20261110-65a25e20.jpg"
+   ],
+   "open": {
+    "qty": 56,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764042270",
+   "name": "THUMS UP 750ML",
+   "short": "THUMS UP 750ML",
+   "hi": "थम्स अप 750 मि.ली.",
+   "brand": "THUMS UP",
+   "size": "750ml",
+   "alias": "thums up thumsup cola थम्स अप",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764042270",
+   "mrp": 40,
+   "sale": 40,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "97b4abd9",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261110-44b4e9ea.jpg",
+    "r20/20261110-c91066f2.jpg",
+    "r20/20261110-d0864704.jpg",
+    "r20/20261110-c6d1f695.jpg"
+   ],
+   "open": {
+    "qty": 40,
+    "exp": "2027-01-10",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764042508",
+   "name": "THUMS UP 2L",
+   "short": "THUMS UP 2L",
+   "hi": "थम्स अप 2 लीटर",
+   "brand": "THUMS UP",
+   "size": "2L",
+   "alias": "thums up 2 litre cola थम्स अप",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764042508",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "d0845c60",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261110-cdf0c7ed.jpg",
+    "r20/20261110-5e8280b1.jpg",
+    "r20/20261110-2e746020.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764032400",
+   "name": "SPRITE 2L",
+   "short": "SPRITE 2L",
+   "hi": "स्प्राइट 2 लीटर",
+   "brand": "SPRITE",
+   "size": "2L",
+   "alias": "sprite 2 litre स्प्राइट",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764032400",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "26a55dcb",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261110-b2afd2c1.jpg",
+    "r20/20261110-6a957135.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764032301",
+   "name": "SPRITE ₹50 BOTTLE",
+   "short": "SPRITE RS50",
+   "hi": "स्प्राइट (₹50 वाली बोतल)",
+   "brand": "SPRITE",
+   "alias": "sprite स्प्राइट",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764032301",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "ecc2d9d8",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261110-63127761.jpg",
+    "r20/20261110-4566ad4e.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764022401",
+   "name": "FANTA ORANGE 2L",
+   "short": "FANTA ORANGE 2L",
+   "hi": "फैंटा ऑरेंज 2 लीटर",
+   "brand": "FANTA",
+   "size": "2L",
+   "alias": "fanta orange cold drink फैंटा",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764022401",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "0b511f85",
+   "mfr": "c-kandhari",
+   "fotos": [
+    "r20/20261110-5a1c8d97.jpg",
+    "r20/20261110-3eef4534.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262020558",
+   "name": "AMUL DICED CHEESE MOZZARELLA & CHEDDAR 200G",
+   "short": "AMUL DICED CHEESE 200G",
+   "hi": "अमूल डाइस्ड चीज़ 200 ग्राम",
+   "brand": "AMUL",
+   "size": "200g",
+   "alias": "amul cheese diced mozzarella pizza cheese चीज़",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262020558",
+   "mrp": 125,
+   "sale": 125,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "18-1",
+   "ph": "de42f8d0",
+   "mfr": "c-amul",
+   "fotos": [
+    "r18/20261110-359dcaac.jpg",
+    "r18/20261110-b1d66aa1.jpg",
+    "r18/20261110-537681c9.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-08-07",
+    "batchNo": "BAF2192"
+   }
+  },
+  {
+   "id": "ms-paneer",
+   "name": "LOOSE PANEER (PER KG)",
+   "short": "PANEER LOOSE 1KG",
+   "hi": "खुला पनीर (किलो)",
+   "size": "1kg",
+   "alias": "paneer khula paneer पनीर cottage cheese",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "kg",
+   "mrp": 0,
+   "sale": 340,
+   "cost": 240,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "f70ef6ab",
+   "fotos": [
+    "r20/20261110-240be048.jpg",
+    "r20/20261110-dc0d0408.jpg"
+   ],
+   "open": {
+    "qty": 45,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262180016",
+   "name": "AMUL MALAI PANEER FROZEN 200G",
+   "short": "AMUL MALAI PANEER 200G",
+   "hi": "अमूल मलाई पनीर 200 ग्राम",
+   "brand": "AMUL",
+   "size": "200g",
+   "alias": "amul paneer malai paneer frozen अमूल पनीर",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8901262180016",
+   "mrp": 99,
+   "sale": 99,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "18-1",
+   "ph": "8c87bcbc",
+   "mfr": "c-amul",
+   "fotos": [
+    "r18/20261110-2df2bc30.jpg",
+    "r18/20261110-651c02d1.jpg",
+    "r18/20261110-8abda0c1.jpg"
+   ],
+   "open": {
+    "qty": 14,
+    "exp": "2027-03-06",
+    "batchNo": "BBF2501"
+   }
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-bc-sunshine",
+   "name": "SUN SHINE FOOD PRODUCTS (I) PVT LTD (BHIKHARAM CHANDMAL)",
+   "care": "+91 151 2225232",
+   "email": "customer@bcgroups.in",
+   "web": "www.bhikharamchandmal.in",
+   "addr": "F-86-88, Bichhwal Industrial Area",
+   "city": "Bikaner 334006, Rajasthan",
+   "fssai": "10012013000353",
+   "brands": [
+    "BC"
+   ],
+   "note": "स्रोत: फोटो r11-0003, r11-0006 (Mfd & Marketed by)"
+  },
+  {
+   "id": "c-priyagold",
+   "name": "SURYA FOOD & AGRO LTD (PRIYAGOLD)",
+   "email": "mail@priyagold.com",
+   "web": "www.priyagold.com",
+   "addr": "D-1, Sector-2",
+   "city": "Noida 201301, U.P.",
+   "fssai": "10018051002309",
+   "brands": [
+    "PRIYAGOLD"
+   ],
+   "note": "स्रोत: फोटो r11-0008, r11-0062 (Marketed by)। फोन नंबर फोटो में कटा (+91-120-25…)"
+  },
+  {
+   "id": "c-bikaji",
+   "name": "BIKAJI FOODS INTERNATIONAL LTD",
+   "care": "+91-151-2250350",
+   "email": "care@bikaji.com",
+   "web": "www.bikaji.com",
+   "addr": "F-196-199, F-178 & E-188, Bichhwal Industrial Area",
+   "city": "Bikaner 334006, Rajasthan",
+   "fssai": "10012013000346",
+   "brands": [
+    "BIKAJI"
+   ],
+   "note": "स्रोत: फोटो r11-0012, r11-0047, r11-0076 (Marketed by)"
+  },
+  {
+   "id": "c-pepsico",
+   "name": "PEPSICO INDIA HOLDINGS PVT LTD",
+   "addr": "P.O. Box 27, DLF…",
+   "city": "Gurugram 122002, Haryana",
+   "brands": [
+    "LAYS",
+    "UNCLE CHIPPS"
+   ],
+   "note": "स्रोत: फोटो r11-0018 (पता आधा कटा), r11-0101। केयर नंबर फोटो में साफ़ नहीं — खाली छोड़ा"
+  },
+  {
+   "id": "c-everest-bev",
+   "name": "EVEREST BEVERAGES & FOOD INDUSTRIES PVT LTD",
+   "phone": "7252838333",
+   "email": "ebfi.consumercell@gmail.com",
+   "addr": "Plot No. 19 & 20, Sector 8, Vedvyaspuri",
+   "city": "Meerut 250103, U.P.",
+   "fssai": "10018051002359",
+   "brands": [
+    "EVEREST (अचार)",
+    "EVERPLUS"
+   ],
+   "note": "स्रोत: फोटो r11-0184, r11-0185 (Mfd by)। यह मसाले वाली EVEREST (S. Narendrakumar) से अलग कंपनी है"
+  },
+  {
+   "id": "c-amul",
+   "name": "GCMMF LTD (AMUL)",
+   "care": "1800 258 3333",
+   "email": "customercare@amul.coop",
+   "web": "www.amul.com",
+   "city": "Anand 388001, Gujarat",
+   "fssai": "10012021000071",
+   "brands": [
+    "AMUL"
+   ],
+   "dist": "MINAXI AGENCY (AMUL) — 10-खरीद-भाव.csv में",
+   "note": "स्रोत: फोटो r18-0002 (Customer Care), r11-0026"
+  },
+  {
+   "id": "c-vidya-sagar",
+   "name": "VIDYA SAGAR FOODS PVT LTD (FRUTIN'S)",
+   "email": "mail.vsf@gmail.com",
+   "web": "www.frutins.com",
+   "addr": "A-2, Lawrence Road",
+   "city": "New Delhi",
+   "brands": [
+    "FRUTINS"
+   ],
+   "note": "स्रोत: फोटो r11-0151 (Marketed by)। फोन +91-9999… आधा कटा — खाली छोड़ा"
+  },
+  {
+   "id": "c-royal-deep",
+   "name": "ROYAL DEEP (कंपनी का नाम फोटो में नहीं पढ़ा)",
+   "phone": "9560484708",
+   "brands": [
+    "ROYAL DEEP"
+   ],
+   "note": "स्रोत: फोटो r11-0052/0053 (कस्टमर केयर +91-9560484708)"
+  },
+  {
+   "id": "c-crown",
+   "name": "MRJS CROWN INDUSTRIES PVT LTD",
+   "phone": "8669875555",
+   "web": "www.crownworld.in",
+   "addr": "Kavthepiran",
+   "city": "Sangli 416417, Maharashtra",
+   "brands": [
+    "CROWN"
+   ],
+   "note": "स्रोत: फोटो r11-0068/0070"
+  },
+  {
+   "id": "c-dabur",
+   "name": "DABUR INDIA LTD",
+   "care": "1800-103-1644",
+   "email": "daburcares@dabur.com",
+   "addr": "8/3, Asaf Ali Road",
+   "city": "New Delhi 110002",
+   "brands": [
+    "DABUR"
+   ],
+   "note": "स्रोत: फोटो r11-0072/0073"
+  },
+  {
+   "id": "c-laser-shaving",
+   "name": "LASER SHAVING (INDIA) PVT LTD",
+   "care": "040-67274300",
+   "email": "qc@lasershaving.in",
+   "addr": "30, Narsapur Road",
+   "city": "Hyderabad 500037",
+   "brands": [
+    "TOPAZ"
+   ],
+   "note": "स्रोत: फोटो r11-0080…0084"
+  },
+  {
+   "id": "c-jyothy",
+   "name": "JYOTHY LABS LTD",
+   "care": "1800-103-2992",
+   "email": "customercare@jyothy.com",
+   "addr": "Ramkrishna Mandir Road, Kondivita, Andheri (East)",
+   "city": "Mumbai",
+   "brands": [
+    "MAXO"
+   ],
+   "note": "स्रोत: फोटो r11-0085…0087"
+  },
+  {
+   "id": "c-zed-black",
+   "name": "MYSORE DEEP PERFUMERY HOUSE (ZED BLACK)",
+   "care": "+91 731 4073123",
+   "email": "mail@zedblack.com",
+   "web": "www.zedblack.com",
+   "addr": "Survey No. 9, SDA Annex, Lasudia Mori, Dewas Naka",
+   "city": "Indore 452010, M.P.",
+   "brands": [
+    "ZED BLACK"
+   ],
+   "note": "स्रोत: फोटो r11-0091/0092, r11-0173/0174 (कपूर: camphor@zedblack.com)"
+  },
+  {
+   "id": "c-jalani",
+   "name": "JALANI ENTERPRISES PVT LTD",
+   "care": "+91-0291-2722463",
+   "email": "info@jalani.in",
+   "addr": "C-34 & C-39, M.I. Area, 1st Phase Basni",
+   "city": "Jodhpur 342005, Rajasthan",
+   "fssai": "10012013000474",
+   "brands": [
+    "JALANI"
+   ],
+   "dist": "जोधपुर की ही कंपनी — सीधे मँगा सकते हैं",
+   "note": "स्रोत: फोटो r11-0109/0110, r11-0190/0191 (Mfd & Mkt by)"
+  },
+  {
+   "id": "c-flair",
+   "name": "FLAIR WRITING INDUSTRIES LTD",
+   "care": "+91 22 2868 3084",
+   "email": "consumercare@flairpens.com",
+   "web": "www.flairworld.in",
+   "addr": "Flair House, Plot A/64, Cross Road-A, Marol MIDC, Andheri (East)",
+   "city": "Mumbai 400093",
+   "brands": [
+    "FLAIR"
+   ],
+   "note": "स्रोत: फोटो r11-0135…0137"
+  },
+  {
+   "id": "c-doms",
+   "name": "DOMS INDUSTRIES LTD",
+   "addr": "Umbergaon",
+   "city": "Gujarat",
+   "brands": [
+    "DOMS"
+   ],
+   "note": "स्रोत: फोटो r11-0210 (पता आधा, नंबर फोटो में नहीं)"
+  },
+  {
+   "id": "c-jain-papad",
+   "name": "SHREE JAIN UDHYOG PAPAD BHANDAR (ASLEE PALIWALA)",
+   "phone": "9785554755",
+   "care": "02932-221597",
+   "email": "jainpapadwala@gmail.com",
+   "web": "www.jainpapad.com",
+   "addr": "F-187-B, RIICO Industrial Area, 4th Phase",
+   "city": "Pali (Marwar), Rajasthan",
+   "fssai": "12218036000028",
+   "brands": [
+    "JAIN",
+    "RASRANG"
+   ],
+   "note": "स्रोत: फोटो r11-0158/0159 (Marketed by)। Mfd by: Vinayak Food Industries, F-189 RIICO Pali 306401"
+  },
+  {
+   "id": "c-kandhari",
+   "name": "THE COCA-COLA COMPANY (बॉटलर: KANDHARI BEVERAGES / ENRICH AGRO FOOD PRODUCTS)",
+   "care": "1800-208-2653",
+   "email": "indiahelpline@coca-cola.com",
+   "addr": "बॉटलर: Enrich Agro Food Products Pvt Ltd, Plot 1A, Sector-31B, IMT",
+   "city": "Rohtak 124001, Haryana",
+   "brands": [
+    "KINLEY",
+    "SPRITE",
+    "THUMS UP",
+    "FANTA"
+   ],
+   "note": "स्रोत: फोटो r20-0002, r20-0025, r20-0032"
+  },
+  {
+   "id": "c-bisleri",
+   "name": "BISLERI INTERNATIONAL PVT LTD",
+   "care": "1800-121-1007",
+   "web": "www.bisleri.com",
+   "addr": "5th Floor, Western Express Highway, Andheri (East)",
+   "city": "Mumbai 400099",
+   "fssai": "11524998000680",
+   "brands": [
+    "BISLERI"
+   ],
+   "note": "स्रोत: फोटो r20-0005/0006"
+  },
+  {
+   "id": "c-colgate",
+   "name": "COLGATE-PALMOLIVE (INDIA) LTD",
+   "care": "1800-225599",
+   "email": "consumeraffairs_india@colpal.com",
+   "addr": "Hiranandani…",
+   "city": "Mumbai",
+   "brands": [
+    "COLGATE"
+   ],
+   "note": "स्रोत: फोटो r11-0203"
+  },
+  {
+   "id": "c-kangaro",
+   "name": "KANIN INDIA LTD (KANGARO)",
+   "care": "0161-5260800",
+   "email": "kangaro@kangaro.com",
+   "web": "www.kangaro.com",
+   "addr": "79, Sector-25",
+   "city": "Faridabad 121004, Haryana",
+   "brands": [
+    "KANGARO"
+   ],
+   "note": "स्रोत: फोटो r11-0221 (Mfrs)। Customer Care: A-46, MCIE, Mathura Road, New Delhi 110044"
+  },
+  {
+   "id": "c-omega",
+   "name": "ALLIED INSTRUMENTS PVT LTD (OMEGA)",
+   "care": "+91 (022) 28693176",
+   "email": "support@omegastationery.com",
+   "web": "www.omegastationery.com",
+   "addr": "717 & 720, Somnath Road, Dabhel",
+   "city": "Daman 396210",
+   "brands": [
+    "OMEGA"
+   ],
+   "note": "स्रोत: फोटो r11-0208। Regd: 30-CD Govt Industrial Estate, Kandivali (W), Mumbai 400067"
+  },
+  {
+   "id": "c-cello",
+   "name": "BIC CELLO (INDIA) PVT LTD",
+   "care": "1-800-222608",
+   "email": "cello.marketing@bicworld.com",
+   "web": "www.cellowriting.com",
+   "addr": "C-1/701, G-1/701, G-2/702, 7th Floor, Lotus Corporate Park, W.E. Highway, Goregaon (E)",
+   "city": "Mumbai 400063",
+   "brands": [
+    "CELLO"
+   ],
+   "note": "स्रोत: फोटो r11-0225"
+  }
+ ]
+}

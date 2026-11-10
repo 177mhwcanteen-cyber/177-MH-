@@ -644,5 +644,313 @@
   ],
   "dist": "",
   "note": "fr-0052"
+ },
+ {
+  "id": "c-bc-sunshine",
+  "name": "SUN SHINE FOOD PRODUCTS (I) PVT LTD (BHIKHARAM CHANDMAL)",
+  "phone": "",
+  "care": "+91 151 2225232",
+  "email": "customer@bcgroups.in",
+  "web": "www.bhikharamchandmal.in",
+  "addr": "F-86-88, Bichhwal Industrial Area",
+  "city": "Bikaner 334006, Rajasthan",
+  "fssai": "10012013000353",
+  "gst": "",
+  "brands": [
+   "BC"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0003, r11-0006 (Mfd & Marketed by)"
+ },
+ {
+  "id": "c-priyagold",
+  "name": "SURYA FOOD & AGRO LTD (PRIYAGOLD)",
+  "phone": "",
+  "care": "",
+  "email": "mail@priyagold.com",
+  "web": "www.priyagold.com",
+  "addr": "D-1, Sector-2",
+  "city": "Noida 201301, U.P.",
+  "fssai": "10018051002309",
+  "gst": "",
+  "brands": [
+   "PRIYAGOLD"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0008, r11-0062 (Marketed by)। फोन नंबर फोटो में कटा (+91-120-25…)"
+ },
+ {
+  "id": "c-pepsico",
+  "name": "PEPSICO INDIA HOLDINGS PVT LTD",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "P.O. Box 27, DLF…",
+  "city": "Gurugram 122002, Haryana",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "LAYS",
+   "UNCLE CHIPPS"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0018 (पता आधा कटा), r11-0101। केयर नंबर फोटो में साफ़ नहीं — खाली छोड़ा"
+ },
+ {
+  "id": "c-royal-deep",
+  "name": "ROYAL DEEP (कंपनी का नाम फोटो में नहीं पढ़ा)",
+  "phone": "9560484708",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "ROYAL DEEP"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0052/0053 (कस्टमर केयर +91-9560484708)"
+ },
+ {
+  "id": "c-crown",
+  "name": "MRJS CROWN INDUSTRIES PVT LTD",
+  "phone": "8669875555",
+  "care": "",
+  "email": "",
+  "web": "www.crownworld.in",
+  "addr": "Kavthepiran",
+  "city": "Sangli 416417, Maharashtra",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "CROWN"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0068/0070"
+ },
+ {
+  "id": "c-dabur",
+  "name": "DABUR INDIA LTD",
+  "phone": "",
+  "care": "1800-103-1644",
+  "email": "daburcares@dabur.com",
+  "web": "",
+  "addr": "8/3, Asaf Ali Road",
+  "city": "New Delhi 110002",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "DABUR"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0072/0073"
+ },
+ {
+  "id": "c-laser-shaving",
+  "name": "LASER SHAVING (INDIA) PVT LTD",
+  "phone": "",
+  "care": "040-67274300",
+  "email": "qc@lasershaving.in",
+  "web": "",
+  "addr": "30, Narsapur Road",
+  "city": "Hyderabad 500037",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "TOPAZ"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0080…0084"
+ },
+ {
+  "id": "c-jyothy",
+  "name": "JYOTHY LABS LTD",
+  "phone": "",
+  "care": "1800-103-2992",
+  "email": "customercare@jyothy.com",
+  "web": "",
+  "addr": "Ramkrishna Mandir Road, Kondivita, Andheri (East)",
+  "city": "Mumbai",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "MAXO"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0085…0087"
+ },
+ {
+  "id": "c-zed-black",
+  "name": "MYSORE DEEP PERFUMERY HOUSE (ZED BLACK)",
+  "phone": "",
+  "care": "+91 731 4073123",
+  "email": "mail@zedblack.com",
+  "web": "www.zedblack.com",
+  "addr": "Survey No. 9, SDA Annex, Lasudia Mori, Dewas Naka",
+  "city": "Indore 452010, M.P.",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "ZED BLACK"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0091/0092, r11-0173/0174 (कपूर: camphor@zedblack.com)"
+ },
+ {
+  "id": "c-jalani",
+  "name": "JALANI ENTERPRISES PVT LTD",
+  "phone": "",
+  "care": "+91-0291-2722463",
+  "email": "info@jalani.in",
+  "web": "",
+  "addr": "C-34 & C-39, M.I. Area, 1st Phase Basni",
+  "city": "Jodhpur 342005, Rajasthan",
+  "fssai": "10012013000474",
+  "gst": "",
+  "brands": [
+   "JALANI"
+  ],
+  "dist": "जोधपुर की ही कंपनी — सीधे मँगा सकते हैं",
+  "note": "स्रोत: फोटो r11-0109/0110, r11-0190/0191 (Mfd & Mkt by)"
+ },
+ {
+  "id": "c-flair",
+  "name": "FLAIR WRITING INDUSTRIES LTD",
+  "phone": "",
+  "care": "+91 22 2868 3084",
+  "email": "consumercare@flairpens.com",
+  "web": "www.flairworld.in",
+  "addr": "Flair House, Plot A/64, Cross Road-A, Marol MIDC, Andheri (East)",
+  "city": "Mumbai 400093",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "FLAIR"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0135…0137"
+ },
+ {
+  "id": "c-doms",
+  "name": "DOMS INDUSTRIES LTD",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "Umbergaon",
+  "city": "Gujarat",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "DOMS"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0210 (पता आधा, नंबर फोटो में नहीं)"
+ },
+ {
+  "id": "c-jain-papad",
+  "name": "SHREE JAIN UDHYOG PAPAD BHANDAR (ASLEE PALIWALA)",
+  "phone": "9785554755",
+  "care": "02932-221597",
+  "email": "jainpapadwala@gmail.com",
+  "web": "www.jainpapad.com",
+  "addr": "F-187-B, RIICO Industrial Area, 4th Phase",
+  "city": "Pali (Marwar), Rajasthan",
+  "fssai": "12218036000028",
+  "gst": "",
+  "brands": [
+   "JAIN",
+   "RASRANG"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0158/0159 (Marketed by)। Mfd by: Vinayak Food Industries, F-189 RIICO Pali 306401"
+ },
+ {
+  "id": "c-bisleri",
+  "name": "BISLERI INTERNATIONAL PVT LTD",
+  "phone": "",
+  "care": "1800-121-1007",
+  "email": "",
+  "web": "www.bisleri.com",
+  "addr": "5th Floor, Western Express Highway, Andheri (East)",
+  "city": "Mumbai 400099",
+  "fssai": "11524998000680",
+  "gst": "",
+  "brands": [
+   "BISLERI"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r20-0005/0006"
+ },
+ {
+  "id": "c-colgate",
+  "name": "COLGATE-PALMOLIVE (INDIA) LTD",
+  "phone": "",
+  "care": "1800-225599",
+  "email": "consumeraffairs_india@colpal.com",
+  "web": "",
+  "addr": "Hiranandani…",
+  "city": "Mumbai",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "COLGATE"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0203"
+ },
+ {
+  "id": "c-kangaro",
+  "name": "KANIN INDIA LTD (KANGARO)",
+  "phone": "",
+  "care": "0161-5260800",
+  "email": "kangaro@kangaro.com",
+  "web": "www.kangaro.com",
+  "addr": "79, Sector-25",
+  "city": "Faridabad 121004, Haryana",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "KANGARO"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0221 (Mfrs)। Customer Care: A-46, MCIE, Mathura Road, New Delhi 110044"
+ },
+ {
+  "id": "c-omega",
+  "name": "ALLIED INSTRUMENTS PVT LTD (OMEGA)",
+  "phone": "",
+  "care": "+91 (022) 28693176",
+  "email": "support@omegastationery.com",
+  "web": "www.omegastationery.com",
+  "addr": "717 & 720, Somnath Road, Dabhel",
+  "city": "Daman 396210",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "OMEGA"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0208। Regd: 30-CD Govt Industrial Estate, Kandivali (W), Mumbai 400067"
+ },
+ {
+  "id": "c-cello",
+  "name": "BIC CELLO (INDIA) PVT LTD",
+  "phone": "",
+  "care": "1-800-222608",
+  "email": "cello.marketing@bicworld.com",
+  "web": "www.cellowriting.com",
+  "addr": "C-1/701, G-1/701, G-2/702, 7th Floor, Lotus Corporate Park, W.E. Highway, Goregaon (E)",
+  "city": "Mumbai 400063",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "CELLO"
+  ],
+  "dist": "",
+  "note": "स्रोत: फोटो r11-0225"
  }
 ]
