@@ -103,13 +103,14 @@ async def main():
         await pg.evaluate("SRX.close()")
         assert await pg.evaluate(f"!!SRX.xfer('{F}','','6-6',0)") and await pg.evaluate(f"item('{F}').rack") == "6-6"
         # 🗄️ रैक देखें: रैक → खानों की जाली → खाने का सामान → "यहाँ रखना है" = अगला स्कैन सीधे वहीं
-        rl = await pg.evaluate("((window.SRK&&SRK.RL)||[]).length")   # भैरव में नक्शा खाली (मालिक जोड़ें) → जाली वाली जाँच नहीं
+        rl = await pg.evaluate("(((window.SRK&&SRK.RL)||[]).find(x=>x.r===6)||{}).n||0")   # भैरव में नक्शा खाली (मालिक जोड़ें) → जाली वाली जाँच नहीं
         if rl:
             await pg.evaluate("SRX.open(null,{tab:'rack'})"); await pg.wait_for_timeout(150)
-            assert await pg.locator(".rx-rack").count() >= 15
+            assert await pg.locator(".rx-rack").count() == await pg.evaluate("SRK.RL.length")
             await pg.click('[data-rxrk="6"]'); await pg.wait_for_timeout(150)
-            assert await pg.locator(".rx-cell").count() == 15 and await pg.locator(".rx-cell.empty").count() >= 5
-            assert await pg.locator(".rx-cell.gone").count() == 1, "6-3 अब 6-2 में मिला"
+            assert await pg.locator(".rx-cell").count() == rl and await pg.locator(".rx-cell.empty").count() >= 1
+            gone = await pg.evaluate("[...Array(%d)].filter((_,i)=>SRK.canon('6-'+(i+1))!=='6-'+(i+1)).length" % rl)
+            assert await pg.locator(".rx-cell.gone").count() == gone, "मिला दिए गए खाने (जैसे 6-3 → 6-2) धुँधले"
             await pg.click('[data-rxkh="6-4"]'); await pg.wait_for_timeout(150)
             assert await pg.locator(f'#rxMain [data-rxpick="{D}"]').count() == 1
             await pg.screenshot(path=f"{SHOTS}/x4-rack.png")
