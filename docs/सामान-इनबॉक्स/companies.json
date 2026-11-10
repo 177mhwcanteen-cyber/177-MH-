@@ -53,7 +53,8 @@
   "brands": [
    "SAVOUR"
   ],
-  "note": "स्रोत: मैकरोनी/पास्ता पैक की फोटो। फोन पैक पर धुंधला — पक्का नहीं"
+  "note": "स्रोत: मैकरोनी/पास्ता पैक की फोटो। फोन पैक पर धुंधला — पक्का नहीं",
+  "phone": "9319677880"
  },
  {
   "id": "c-bhagya-laxmi",
@@ -684,7 +685,7 @@
   "name": "PEPSICO INDIA HOLDINGS PVT LTD",
   "phone": "",
   "care": "",
-  "email": "",
+  "email": "consumer.feedback@pepsico.com",
   "web": "",
   "addr": "P.O. Box 27, DLF…",
   "city": "Gurugram 122002, Haryana",
@@ -952,5 +953,329 @@
   ],
   "dist": "",
   "note": "स्रोत: फोटो r11-0225"
+ },
+ {
+  "id": "c-preet",
+  "name": "PREET INTERNATIONAL (ROYAL DEEP)",
+  "phone": "9560484708",
+  "care": "",
+  "email": "skyin69@rediffmail.com",
+  "web": "",
+  "addr": "Bodinayakanur",
+  "city": "Theni 625513, Tamil Nadu",
+  "fssai": "12420022000219",
+  "gst": "",
+  "brands": [
+   "ROYAL DEEP"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-mssharda",
+  "name": "MAA SHARDA ENTERPRISES (NAVYA)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "Plot 224-225, Aman Enclave, Boytawala",
+  "city": "Jaipur 302012",
+  "fssai": "12214026000173",
+  "gst": "",
+  "brands": [
+   "NAVYA"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-mars",
+  "name": "MARS INTERNATIONAL INDIA PVT. LTD.",
+  "phone": "",
+  "care": "1800 889 2121",
+  "email": "mars.india.chocolates@effem.com",
+  "web": "",
+  "addr": "4658-A No.21 Ansari Road, Darya Ganj",
+  "city": "New Delhi 110002",
+  "fssai": "10012011000434",
+  "gst": "",
+  "brands": [
+   "SNICKERS"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-zoopy",
+  "name": "SUPREME NUTRI GRAIN PVT. LTD. (ZOOPY)",
+  "phone": "",
+  "care": "+91-2825-280253",
+  "email": "info@zoopy.co.in",
+  "web": "www.zoopy.co.in",
+  "addr": "Survey 37/1, Rajkot-Gondal Road NH-27, Bhunava",
+  "city": "Gondal, Rajkot 360311",
+  "fssai": "10013021000745",
+  "gst": "",
+  "brands": [
+   "ZOOPY"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-meenakshi",
+  "name": "SRI MEENAKSHI TRADERS",
+  "phone": "9442029422",
+  "care": "",
+  "email": "smt.srimeenakshitraders@gmail.com",
+  "web": "",
+  "addr": "14 New Street, Anuppanady",
+  "city": "Madurai 625009",
+  "fssai": "10020042007034",
+  "gst": "",
+  "brands": [
+   "SRI MEENAKSHI"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-sanjivani",
+  "name": "SANJIVANI TEA PVT. LTD.",
+  "phone": "9776717671",
+  "care": "",
+  "email": "care@sanjivanitea.in",
+  "web": "www.sanjivanitea.in",
+  "addr": "Plot 80, Ecotech-1 Extension, Kasna",
+  "city": "Greater Noida 201310",
+  "fssai": "10017051002021",
+  "gst": "",
+  "brands": [
+   "SANJIVANI"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-anurag",
+  "name": "ANURAG FOOD PRODUCTS (KRUSHERZ)",
+  "phone": "9717467467",
+  "care": "",
+  "email": "anurag_jain272@yahoo.com",
+  "web": "",
+  "addr": "A-8 Mandoli Industrial Area Phase-II",
+  "city": "Delhi 110093",
+  "fssai": "13314011000013",
+  "gst": "",
+  "brands": [
+   "KRUSHERZ"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-tapi",
+  "name": "TAPI FRUIT PROCESSING LTD.",
+  "phone": "7383680150",
+  "care": "",
+  "email": "helpdesk@tapifood.com",
+  "web": "www.tapifood.com",
+  "addr": "Block 124-125, Plot 17-A, NH48, Pipodara",
+  "city": "Mangarol, Surat 394110",
+  "fssai": "10012021000213",
+  "gst": "",
+  "brands": [
+   "TAPI"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-kopiko",
+  "name": "KOPIKO (MAYORA)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "KOPIKO"
+  ],
+  "dist": "",
+  "note": "पता वाली फोटो नहीं"
+ },
+ {
+  "id": "c-shrihari",
+  "name": "SHRI HARI INDUSTRIES (KALARAM)",
+  "phone": "",
+  "care": "0151-2250587",
+  "email": "shriharimtc@yahoo.co.in",
+  "web": "",
+  "addr": "F-93 Bichwal Industrial Area",
+  "city": "Bikaner 334006",
+  "fssai": "12222017000384",
+  "gst": "",
+  "brands": [
+   "KALARAM"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-shankar",
+  "name": "SHANKAR FOOD PRODUCTS (5 STAR)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "Bikaner?",
+  "fssai": "10021013000196",
+  "gst": "",
+  "brands": [
+   "5 STAR"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-tcon",
+  "name": "T.CON FOOD PRODUCTS LLP",
+  "phone": "9081444535",
+  "care": "",
+  "email": "tconfood@gmail.com",
+  "web": "www.tconfood.com",
+  "addr": "R/S Block 542, NH-8, Mahuvej",
+  "city": "Mangrol, Surat 394125",
+  "fssai": "10723998000002",
+  "gst": "",
+  "brands": [
+   "T.CON",
+   "QUENTELLA"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-pelican",
+  "name": "PELICAN CONFECTIONERS PVT. LTD.",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "Block 94/101, NH-8, Malarpura",
+  "city": "Kheda, Gujarat 387540",
+  "fssai": "10013021000772",
+  "gst": "",
+  "brands": [
+   "PELICAN"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-prerna",
+  "name": "PRERNA ENTERPRISES (ALPINE)",
+  "phone": "",
+  "care": "",
+  "email": "vanshnamak123@yahoo.com",
+  "web": "",
+  "addr": "A-334 MIA",
+  "city": "Alwar, Rajasthan",
+  "fssai": "12215010000362",
+  "gst": "",
+  "brands": [
+   "ALPINE"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-vaijanti",
+  "name": "VAIJANTI INDUSTRIES (VI BRAND)",
+  "phone": "7014528168",
+  "care": "9782112430",
+  "email": "vaijantiindustries@gmail.com",
+  "web": "",
+  "addr": "G-1/11 RIICO Industrial Area 2nd Phase, Sindhari Road",
+  "city": "Barmer, Rajasthan",
+  "fssai": "12220014000268",
+  "gst": "",
+  "brands": [
+   "VI"
+  ],
+  "dist": "",
+  "note": "स्थानीय बाड़मेर"
+ },
+ {
+  "id": "c-kaysons",
+  "name": "KAY SONS OILS PVT. LTD. (DR. SMITH)",
+  "phone": "9813499999",
+  "care": "",
+  "email": "customercare@drsmith.in",
+  "web": "www.drsmith.in",
+  "addr": "Nagla Chowk",
+  "city": "Karnal, Haryana 132001",
+  "fssai": "10816010000004",
+  "gst": "",
+  "brands": [
+   "DR. SMITH"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-hainey",
+  "name": "HAINEY GLOBAL (TOWER)",
+  "phone": "",
+  "care": "",
+  "email": "haineyglobal@yahoo.co.in",
+  "web": "www.towermsg.com",
+  "addr": "308 Padam Chamber, Karol Bagh",
+  "city": "New Delhi 110005",
+  "fssai": "13325999000627",
+  "gst": "",
+  "brands": [
+   "TOWER"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-borana",
+  "name": "BORANA AND COMPANY (MARUDHAR)",
+  "phone": "9929782469",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "NH-162, Jaipur Road",
+  "city": "Sojat, Rajasthan",
+  "fssai": "12221036000270",
+  "gst": "",
+  "brands": [
+   "MARUDHAR"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-anilkumar",
+  "name": "ANILKUMAR TARACHAND (STAR KIWI)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "39 New Fruit Market, Naroda Road",
+  "city": "Ahmedabad 382345",
+  "fssai": "10721999001084",
+  "gst": "",
+  "brands": [
+   "STAR KIWI"
+  ],
+  "dist": "",
+  "note": ""
  }
 ]

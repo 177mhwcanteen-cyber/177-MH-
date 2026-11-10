@@ -1,0 +1,38 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-14",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "📍 दूसरा खाना (xloc) — ZIP S-20261110-02: कुरकुरे/लेज़ वेवी 10-2, रॉयल दीप इलायची 9-10 (पहले से 11-39 में)",
+ "items": [
+  {
+   "id": "b8901491366229",
+   "name": "KURKURE SOLID MASTI 61G",
+   "short": "KURKURE SOLID MASTI 61G",
+   "barcode": "8901491366229",
+   "xloc": {
+    "10-2": 33
+   }
+  },
+  {
+   "id": "b8901491981699",
+   "name": "LAYS WAVY MAGIC MASALA",
+   "short": "LAYS WAVY MAGIC MASALA",
+   "barcode": "8901491981699",
+   "xloc": {
+    "10-2": 17
+   }
+  },
+  {
+   "id": "b8939998072206",
+   "name": "ROYAL DEEP JUMBO GREEN CARDAMOM 500G",
+   "short": "ROYAL DEEP JUMBO GREEN C",
+   "barcode": "8939998072206",
+   "xloc": {
+    "9-10": 1
+   }
+  }
+ ]
+}

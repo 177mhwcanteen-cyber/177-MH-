@@ -2792,6 +2792,124 @@
    "photos": [],
    "photoPending": 0,
    "cancelled": false
+  },
+  "p-kalyan-amul-20261110": {
+   "date": "2026-11-10",
+   "ts": 1794385000000,
+   "by": "",
+   "byName": "Claude (स्टॉक ZIP)",
+   "buyer": "",
+   "supId": "",
+   "supName": "कल्याण सिंह (अमूल)",
+   "supPhone": "",
+   "lines": [
+    {
+     "id": "b8901262200677",
+     "name": "AMUL MASTI DAHI 1 KG POUCH",
+     "unit": "pc",
+     "qty": 12,
+     "rate": 78,
+     "amt": 936,
+     "billAmt": 936,
+     "prev": 0
+    },
+    {
+     "id": "b8901262200622",
+     "name": "AMUL MASTI DAHI POUCH 390 G",
+     "unit": "pc",
+     "qty": 25,
+     "rate": 33,
+     "amt": 825,
+     "billAmt": 825,
+     "prev": 0
+    },
+    {
+     "id": "b8901262260107",
+     "name": "AMUL GOLD FULL CREAM MILK 500 ML",
+     "unit": "pc",
+     "qty": 60,
+     "rate": 35.5,
+     "amt": 2130,
+     "billAmt": 2130,
+     "prev": 0
+    },
+    {
+     "id": "b8901262200028",
+     "name": "AMUL MASTI DAHI CUP",
+     "unit": "pc",
+     "qty": 24,
+     "rate": 22,
+     "amt": 528,
+     "billAmt": 528,
+     "prev": 0
+    },
+    {
+     "id": "b8901262180115",
+     "name": "AMUL MALAI PANEER FRESH 200 G",
+     "unit": "pc",
+     "qty": 10,
+     "rate": 82,
+     "amt": 820,
+     "billAmt": 820,
+     "prev": 0
+    },
+    {
+     "id": "b8901262200004",
+     "name": "AMUL PROBIOTIC BUTTERMILK (CHHACH) POUCH",
+     "unit": "pc",
+     "qty": 12,
+     "rate": 14.5,
+     "amt": 174,
+     "billAmt": 174,
+     "prev": 0
+    }
+   ],
+   "gross": 5413,
+   "disc": 0,
+   "total": 5413,
+   "pay": "",
+   "paid": 0,
+   "due": 5413,
+   "src": "shop",
+   "noStock": true,
+   "note": "10-11-2026 रजिस्टर की फोटो (दूसरे Claude की ZIP S-20261110-02) · गोल्ड 2½ = 60 थैली · छाछ 24 आई, 12 वापस · स्टॉक खेप की गिनती से (यहाँ नहीं जोड़ा) · भुगतान का तरीका नहीं लिखा",
+   "photos": [],
+   "photoPending": 0,
+   "cancelled": false
+  },
+  "p-sabji-kiwi-20261110": {
+   "date": "2026-11-10",
+   "ts": 1794385000001,
+   "by": "",
+   "byName": "Claude (स्टॉक ZIP)",
+   "buyer": "कमल भाई",
+   "supId": "",
+   "supName": "सब्ज़ी एक्सप्रेस (कमल भाई)",
+   "supPhone": "",
+   "lines": [
+    {
+     "id": "g-star-kiwi-premium-fresh-kiwi-box-of-3",
+     "name": "STAR KIWI PREMIUM FRESH KIWI (BOX OF 3)",
+     "unit": "pc",
+     "qty": 4,
+     "rate": 80,
+     "amt": 320,
+     "billAmt": 320,
+     "prev": 0
+    }
+   ],
+   "gross": 320,
+   "disc": 0,
+   "total": 320,
+   "pay": "",
+   "paid": 0,
+   "due": 320,
+   "src": "shop",
+   "noStock": true,
+   "note": "10-11-2026 · स्टॉक खेप की गिनती से",
+   "photos": [],
+   "photoPending": 0,
+   "cancelled": false
   }
  },
  "batches": {
@@ -3123,6 +3241,12 @@
      "from": 14,
      "to": 9
     }
+   },
+   "b8901262180115": {
+    "qty": {
+     "from": 3,
+     "to": 13
+    }
    }
   },
   "openings": {
@@ -3130,6 +3254,12 @@
     "qty": {
      "from": 14,
      "to": 9
+    }
+   },
+   "cnt_b8901262180115": {
+    "qty": {
+     "from": 3,
+     "to": 13
     }
    }
   }
