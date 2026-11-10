@@ -1,0 +1,171 @@
+{
+ "added": 1794380000000,
+ "app": "old",
+ "appNote": "पुराना बिल — सिर्फ़ भाव (स्टॉक नहीं)",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-11-04",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "nm": "EVEREST SHAHI PANEER MASALA 50G",
+   "bc": "8901786530502",
+   "qty": 30,
+   "u": "pcs",
+   "mrp": 57,
+   "rate": 45.5059,
+   "amt": 1365.18
+  },
+  {
+   "nm": "EVEREST CHICKEN MASALA 50G",
+   "bc": "8901786160501",
+   "qty": 30,
+   "u": "pcs",
+   "mrp": 54,
+   "rate": 43.112,
+   "amt": 1293.36
+  },
+  {
+   "nm": "EVEREST GARAM MASALA 50G",
+   "bc": "8901786100507",
+   "qty": 30,
+   "u": "pcs",
+   "mrp": 58,
+   "rate": 46.304,
+   "amt": 1389.12
+  },
+  {
+   "nm": "EVEREST CHAAT MASALA 50G",
+   "bc": "8901786060504",
+   "qty": 40,
+   "u": "pcs",
+   "mrp": 50,
+   "rate": 39.92,
+   "amt": 1596.8
+  },
+  {
+   "nm": "EVEREST CHHOLE MASALA 50G",
+   "bc": "8901786090501",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 51,
+   "rate": 40.718,
+   "amt": 814.36
+  },
+  {
+   "nm": "EVEREST BLACK PEPPER POWDER 50G",
+   "bc": "8901786260508",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 95,
+   "rate": 75.8499,
+   "amt": 1517.0
+  },
+  {
+   "nm": "EVEREST KASHMIRILAL CHILLI POWDER 50G",
+   "bc": "8901786410507",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 68,
+   "rate": 54.2939,
+   "amt": 1085.88
+  },
+  {
+   "nm": "EVEREST KITCHEN KING MASALA 50G",
+   "bc": "8901786120505",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 53,
+   "rate": 42.314,
+   "amt": 846.28
+  },
+  {
+   "nm": "EVEREST SAMBHAR MASALA 50G",
+   "bc": "8901786080502",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 48,
+   "rate": 38.324,
+   "amt": 766.48
+  },
+  {
+   "nm": "EVEREST PAV BHAJI MASALA 50G",
+   "bc": "8901786070503",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 53,
+   "rate": 42.314,
+   "amt": 423.14
+  },
+  {
+   "nm": "EVEREST GARAM MASALA 50G",
+   "bc": "8901786100507",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 58,
+   "rate": 46.304,
+   "amt": 926.08
+  },
+  {
+   "nm": "EVEREST SHAHI PANEER MASALA 50G",
+   "bc": "8901786530502",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 57,
+   "rate": 45.5059,
+   "amt": 910.12
+  },
+  {
+   "nm": "EVEREST KITCHEN KING MASALA 50G",
+   "bc": "8901786120505",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 53,
+   "rate": 42.314,
+   "amt": 423.14
+  },
+  {
+   "nm": "EVEREST SHAHI BIRYANI MASALA 50G",
+   "bc": "8901786140503",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 90,
+   "rate": 71.8499,
+   "amt": 718.5
+  },
+  {
+   "nm": "EVEREST CHICKEN MASALA 50G",
+   "bc": "8901786160501",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 54,
+   "rate": 43.112,
+   "amt": 431.12
+  },
+  {
+   "nm": "EVEREST SAMBHAR MASALA 50G",
+   "bc": "8901786080502",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 48,
+   "rate": 38.324,
+   "amt": 383.24
+  },
+  {
+   "nm": "ROUND OFF",
+   "qty": 1,
+   "u": "pcs",
+   "rate": 0.2,
+   "amt": 0.2
+  }
+ ],
+ "no": "2060/26-27",
+ "note": "Everest 50g (16 लाइन, 320 पीस); छपा जोड़ ₹14,927.10 − छूट ₹746.00 = कर-योग्य ₹14,181.10 + GST 5% ₹709.14 − गोलाई 0.24 = ₹14,890; बिल 'Vande Bharat Vikram ji Charan (Jalipa)' के नाम; रेट में 0.9975 (5% छूट × 5% GST) जोड़ा",
+ "paid": 0,
+ "pay": "उधार (CREDIT)",
+ "src": "chat",
+ "sup": "MAHESH ENTERPRISES",
+ "total": 14890
+}
