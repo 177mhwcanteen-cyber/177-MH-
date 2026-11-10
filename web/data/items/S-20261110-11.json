@@ -1,0 +1,68 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-11",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "🖊️ CAMLIN फाइन टिप परमानेंट मार्कर — ₹10/पीस, डिब्बा 10 पीस ₹100; 14 पीस (एक डिब्बे में 9 + एक में 5), रैक 11-44",
+ "items": [
+  {
+   "id": "g-camlin-fine-tip-permanent-marker-pc",
+   "name": "CAMLIN FINE TIP PERMANENT MARKER",
+   "short": "CAMLIN FINE TIP MARKER",
+   "hi": "कैमलिन फाइन टिप परमानेंट मार्कर",
+   "brand": "CAMLIN",
+   "size": "1 pc",
+   "alias": "camlin kokuyo permanent marker fine tip कैमलिन मार्कर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 10,
+   "sale": 10,
+   "perPack": 10,
+   "rack": "11-44",
+   "ph": "5088276b",
+   "mfr": "c-kokuyo-camlin",
+   "open": {
+    "qty": 14,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901425029947",
+   "name": "CAMLIN FINE TIP PERMANENT MARKER BOX (10 PC)",
+   "short": "CAMLIN FINE TIP BOX 10",
+   "hi": "कैमलिन मार्कर डिब्बा (10 पीस)",
+   "brand": "CAMLIN",
+   "size": "10 pc",
+   "alias": "camlin marker box",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8901425029947",
+   "mrp": 100,
+   "sale": 100,
+   "perPack": 10,
+   "packOf": "g-camlin-fine-tip-permanent-marker-pc",
+   "track": false,
+   "rack": "11-44",
+   "ph": "5088276b",
+   "mfr": "c-kokuyo-camlin"
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-kokuyo-camlin",
+   "name": "KOKUYO CAMLIN LTD",
+   "web": "www.kokuyocamlin.com",
+   "addr": "…Road, MIDC, …093",
+   "city": "Mumbai",
+   "brands": [
+    "CAMLIN"
+   ],
+   "note": "स्रोत: 10-11-2026 फोटो (पता आधा कटा)। MFD 04/2026"
+  }
+ ]
+}
