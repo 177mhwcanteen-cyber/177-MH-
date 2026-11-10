@@ -1,0 +1,64 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-08",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "🫛 फ्रोज़न मटर (विक्रम जी 10-11): खरीद ₹68/kg, बिक्री ₹120/kg — खुला किलो में भी, पूरा 5 kg बैग भी। फ्रीज़र 18।",
+ "items": [
+  {
+   "id": "g-atulya-frozen-green-peas-loose-kg",
+   "name": "ATULYA FROZEN GREEN PEAS (LOOSE PER KG)",
+   "short": "FROZEN MATAR LOOSE 1KG",
+   "hi": "फ्रोज़न हरी मटर (खुली, किलो)",
+   "brand": "ATULYA",
+   "size": "1kg",
+   "alias": "safal matar frozen peas matar mutter हरी मटर फ्रोज़न मटर atulya",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "kg",
+   "mrp": 160,
+   "sale": 120,
+   "cost": 68,
+   "perPack": 5,
+   "rack": "18-1",
+   "ph": "1f7d6445",
+   "mfr": "c-friends-agro"
+  },
+  {
+   "id": "g-atulya-frozen-green-peas-5kg",
+   "name": "ATULYA FROZEN GREEN PEAS 5KG BAG",
+   "short": "ATULYA FROZEN MATAR 5KG",
+   "hi": "अतुल्य फ्रोज़न हरी मटर 5 किलो बैग",
+   "brand": "ATULYA",
+   "size": "5kg",
+   "alias": "safal matar frozen peas 5kg bag मटर",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "mrp": 800,
+   "sale": 600,
+   "cost": 340,
+   "perPack": 5,
+   "packOf": "g-atulya-frozen-green-peas-loose-kg",
+   "track": false,
+   "rack": "18-1",
+   "ph": "1f7d6445",
+   "mfr": "c-friends-agro"
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-friends-agro",
+   "name": "FRIENDS AGRO INDUSTRIES (ATULYA)",
+   "addr": "Village Chatra…, Kota-Bundi Main Highway",
+   "city": "District Bundi, Rajasthan",
+   "fssai": "10019013001910",
+   "brands": [
+    "ATULYA"
+   ],
+   "note": "स्रोत: 10-11-2026 विक्रम जी की फोटो (Mfd & Marketed by)। फोन/ईमेल फोटो में नहीं"
+  }
+ ]
+}
