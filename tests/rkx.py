@@ -32,31 +32,49 @@ async def main():
           L[0].rack='7-5';L[1].rack='6-1';L[2].rack='6-2';L[3].rack='6-4';L[4].rack='15-12';L[5].rack='';
           if(!SF.itemCode(L[0]))L[0].barcode='8906000000019';return L.map(i=>i.id)}""")
         A, B, C, D, E, F = ids
-        # बिलिंग में चिप
+        # बिलिंग में चिप — लिखा हुआ दिखे (पहले सफ़ेद पर सफ़ेद था)
         await pg.evaluate("S.tab='bill';showTab()"); await pg.wait_for_timeout(200)
-        assert await pg.locator("#cats [data-rkxopen]").count() == 1
-        await pg.click("#cats [data-rkxopen]"); await pg.wait_for_selector("#srxSheet")
+        chip = pg.locator("#cats [data-rkxopen]")
+        assert await chip.count() == 1 and "रैक बदलें" in await chip.inner_text()
+        col = await chip.evaluate("e=>{const c=getComputedStyle(e);return [c.color,c.backgroundColor]}")
+        assert col[0] != col[1], col
+        await chip.click(); await pg.wait_for_selector("#rxMain")
+        # पूरी स्क्रीन: ऊपर पट्टी (‹ · 📷 · 3 टैब), ऐप का हेडर छिपा
+        assert await pg.locator("#srxSheet [data-rxtab]").count() == 3 and await pg.is_visible("[data-rxback]")
+        assert await pg.evaluate("getComputedStyle(document.querySelector('header')).visibility") == "hidden"
         await pg.screenshot(path=f"{SHOTS}/x1-open.png")
-        # सामान स्कैन → कहाँ-कहाँ
+        # 📷 कैमरा चालू हो तो कैमरे की खिड़की पट्टी के ठीक नीचे पूरी दिखे, काम उसके नीचे (पहले कैमरा ढक जाता था)
+        geo = await pg.evaluate("""(()=>{document.documentElement.classList.add('camon');const w=document.getElementById('camwin');w.hidden=false;w.style.display='block';
+          const g=e=>e.getBoundingClientRect(),b=g(document.querySelector('#srxSheet .rx-bar')),c=g(w),m=g(document.getElementById('rxMain'));
+          const r=[b.bottom,c.top,c.bottom,m.top,+getComputedStyle(w).zIndex];document.documentElement.classList.remove('camon');w.hidden=true;w.style.display='';return r})()""")
+        assert abs(geo[1] - geo[0]) <= 2 and geo[2] - geo[1] > 120 and geo[3] >= geo[2] - 2 and geo[4] > 60, geo
+        # सामान स्कैन → कहाँ-कहाँ कितना
         await pg.evaluate(f"handleScan(SF.itemCode(item('{A}')))"); await pg.wait_for_timeout(150)
-        t = await pg.inner_text("#srxSheet")
-        assert "7-5" in t and "10 पीस" in t and "मुख्य" in t, t[:400]
+        t = await pg.inner_text("#rxMain")
+        assert "7-5" in t and "10 पीस" in t and "मुख्य जगह" in t and "कहाँ से उठाना है" in t, t[:400]
         assert await pg.input_value("#srxN") == "10"
+        assert await pg.is_disabled("[data-rxgo]"), "नया खाना चुने बिना बटन बंद"
         await pg.fill("#srxN", "8")
-        # खाने का स्टिकर स्कैन = कहाँ
+        # खाने का स्टिकर स्कैन = कहाँ रखना है
         await pg.evaluate("handleScan('R6-2')"); await pg.wait_for_timeout(150)
         assert await pg.input_value("#srxTo") == "6-2"
-        await pg.fill("#srxN", "8")
+        await pg.fill("#srxN", "8"); await pg.wait_for_timeout(50)
+        t = await pg.inner_text("#rxRoute"); assert "बचेंगे" in t and "2 पीस" in t and "हो जाएँगे" in t and "8 पीस" in t, t
+        assert "8 पीस भेजें" in await pg.inner_text("[data-rxgo]")
         await pg.screenshot(path=f"{SHOTS}/x2-item.png")
-        await pg.click("[data-rxgo]"); await pg.wait_for_timeout(200)
+        await pg.click("[data-rxgo]"); await pg.wait_for_timeout(250)
+        assert await pg.is_visible(".rx-done") and "6-2" in await pg.inner_text(".rx-done")
         L = await pg.evaluate(f"SRX.locs(item('{A}')).map(l=>[l.k,l.q,l.main])")
         assert L == [["7-5", 2, True], ["6-2", 8, False]], L
         assert await pg.evaluate(f"S.pstock['{A}'].qty") == 10, "कुल स्टॉक वही"
         assert await pg.evaluate(f"item('{A}').rack") == "7-5"
+        # ↩ वापस (हरे कार्ड से)
+        await pg.click(".rx-done [data-rxundo]"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate(f"SRX.locs(item('{A}')).map(l=>[l.k,l.q])") == [["7-5", 10]]
+        assert await pg.evaluate(f"!!SRX.xfer('{A}','7-5','6-2',8)")
         # ज़्यादा नहीं भेज सकते
-        await pg.evaluate(f"handleScan(SF.itemCode(item('{A}')))"); await pg.wait_for_timeout(100)
         assert await pg.evaluate(f"SRX.xfer('{A}','6-2','6-4',9)") is False
-        # 6-2 का बाकी 8 वापस 7-5 (मुख्य) → एक ही जगह
+        # 6-2 का 8 वापस 7-5 (मुख्य) → एक ही जगह
         assert await pg.evaluate(f"!!SRX.xfer('{A}','6-2','7-5',8)")
         assert await pg.evaluate(f"SRX.locs(item('{A}')).map(l=>[l.k,l.q])") == [["7-5", 10]]
         # सारा माल दूसरी जगह = मुख्य जगह बदली
@@ -65,30 +83,53 @@ async def main():
         # आधा + "मुख्य यही" = पुराने में बचा अलग गिना
         assert await pg.evaluate(f"!!SRX.xfer('{B}','6-1','6-5',4,true)")
         _v = await pg.evaluate(f"SRX.locs(item('{B}')).map(l=>[l.k,l.q,l.main])"); assert _v == [["6-5", 4, True], ["6-1", 7, False]], _v
-        # ↩ वापस
-        ts = await pg.evaluate("SRX.state&&0") or 0
+        # आज के ट्रांसफ़र + ↩
         await pg.evaluate("SRX.close();SRX.open()"); await pg.wait_for_timeout(100)
-        assert await pg.locator("[data-rxundo]").count() >= 3
-        await pg.locator("[data-rxundo]").first.click(); await pg.wait_for_timeout(150)
+        assert await pg.locator(".rx-log [data-rxundo]").count() >= 3
+        await pg.locator(".rx-log [data-rxundo]").first.click(); await pg.wait_for_timeout(150)
         assert await pg.evaluate(f"[item('{B}').rack,SRX.more(item('{B}'))]") == ["6-1", 0]
-        # टाइल पर 📍+1
+        # टाइल पर 📍+1 · बंद करने पर हेडर वापस
         assert await pg.evaluate(f"!!SRX.xfer('{C}','6-2','6-7',3)")
-        await pg.evaluate("SRX.close();renderBill()"); await pg.wait_for_timeout(150)
+        await pg.click("[data-rxback]"); await pg.wait_for_timeout(150)
+        assert await pg.locator("#srxSheet").count() == 0 and await pg.evaluate("getComputedStyle(document.querySelector('header')).visibility") == "visible"
         assert await pg.evaluate(f"(document.querySelector('.card[data-item=\"{C}\"] .rkb')||{{}}).textContent||''") == "📍6-2+1"
         # खाने का स्टिकर पहले (सामान नहीं चुना) = उस खाने का सामान
         await pg.evaluate("SRX.open()"); await pg.evaluate("handleScan('R6-4')"); await pg.wait_for_timeout(150)
-        assert "6-4" in await pg.inner_text("#srxSheet") and await pg.input_value("#srxN") == str(10 + 3)
+        assert "6-4" in await pg.inner_text("#rxMain") and await pg.input_value("#srxN") == str(10 + 3)
+        # नाम से खोज → सूची में 📍 जगह
+        await pg.click("[data-rxnew]"); await pg.fill("#srxQ", await pg.evaluate(f"item('{B}').name.slice(0,4)")); await pg.wait_for_timeout(150)
+        assert await pg.locator(f'#rxHits [data-rxpick="{B}"]').count() == 1 and "📍6-1" in await pg.inner_text(f'#rxHits [data-rxpick="{B}"]')
         # बिना जगह वाला → सीधा घर
         await pg.evaluate("SRX.close()")
         assert await pg.evaluate(f"!!SRX.xfer('{F}','','6-6',0)") and await pg.evaluate(f"item('{F}').rack") == "6-6"
-        # 🧠 सुझाव: 6 मसाले, रैक 6 घर → 15-12 / 8-3 वाले "ले जाएँ"
-        await pg.evaluate("SRX.open()"); await pg.click('[data-rxtab="idea"]'); await pg.wait_for_timeout(150)
-        t = await pg.inner_text("#srxSheet")
-        assert "रैक 6★" in t and "ले जाएँ" in t and "खाली खाने" in t, t[:600]
+        # 🗄️ रैक देखें: रैक → खानों की जाली → खाने का सामान → "यहाँ रखना है" = अगला स्कैन सीधे वहीं
+        await pg.evaluate("SRX.open(null,{tab:'rack'})"); await pg.wait_for_timeout(150)
+        assert await pg.locator(".rx-rack").count() >= 15
+        await pg.click('[data-rxrk="6"]'); await pg.wait_for_timeout(150)
+        assert await pg.locator(".rx-cell").count() == 15 and await pg.locator(".rx-cell.empty").count() >= 5
+        assert await pg.locator(".rx-cell.gone").count() == 1, "6-3 अब 6-2 में मिला"
+        await pg.click('[data-rxkh="6-4"]'); await pg.wait_for_timeout(150)
+        assert await pg.locator(f'#rxMain [data-rxpick="{D}"]').count() == 1
+        await pg.screenshot(path=f"{SHOTS}/x4-rack.png")
+        await pg.click('[data-rxput="6-4"]'); await pg.wait_for_timeout(150)
+        assert "6-4" in await pg.inner_text(".rx-pre")
+        await pg.evaluate(f"handleScan(SF.itemCode(item('{A}')))"); await pg.wait_for_timeout(150)
+        assert await pg.input_value("#srxTo") == "6-4"
+        await pg.evaluate("SRX.close()")
+        # 🧠 सुझाव: स्कोर + किस्म का घर (6 में से 4 मसाले रैक 6 → घर 6 अपने-आप) + बाहर वाले "घर ले जाएँ" + खाली खाने
+        await pg.evaluate("SRX.open(null,{tab:'idea'})"); await pg.wait_for_timeout(200)
+        t = await pg.inner_text("#rxMain")
+        assert "जमावट स्कोर" in t and "🏠 रैक 6" in t and "घर ले जाएँ" in t and "खाली खाने" in t, t[:700]
+        assert "undefined" not in t and "NaN" not in t
+        sc = await pg.evaluate("SRX.ideas().score"); assert 0 < sc < 100, sc
         assert await pg.locator(f'[data-rxidea="{E}"]').count() == 1
-        await pg.screenshot(path=f"{SHOTS}/x3-ideas.png", full_page=True)
+        assert await pg.evaluate("document.getElementById('rxMain').scrollWidth<=document.getElementById('rxMain').clientWidth+1"), "दाएँ-बाएँ नहीं खिसकना चाहिए"
+        await pg.screenshot(path=f"{SHOTS}/x3-ideas.png")
         await pg.click(f'[data-rxidea="{E}"]'); await pg.wait_for_timeout(150)
-        assert await pg.input_value("#srxTo") != "" and "15-12" in await pg.inner_text("#srxSheet")
+        to = await pg.input_value("#srxTo"); assert to.startswith("6-") and "15-12" in await pg.inner_text("#rxMain"), to
+        # 🏠 मालिक किस्म का घर खुद चुने
+        assert await pg.evaluate("SRX.setHome('masala',15)") and await pg.evaluate("SRX.zones().masala.home") == 15
+        await pg.evaluate("SRX.setHome('masala',0)")
         await pg.evaluate("SRX.close()")
         # लेबल टैब और सेटिंग में भी बटन
         await pg.evaluate("S.tab='label';showTab()"); await pg.wait_for_timeout(200)
