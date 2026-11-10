@@ -163,8 +163,8 @@
  ],
  "no": "2060/26-27",
  "note": "Everest 50g (16 लाइन, 320 पीस); छपा जोड़ ₹14,927.10 − छूट ₹746.00 = कर-योग्य ₹14,181.10 + GST 5% ₹709.14 − गोलाई 0.24 = ₹14,890; बिल 'Vande Bharat Vikram ji Charan (Jalipa)' के नाम; रेट में 0.9975 (5% छूट × 5% GST) जोड़ा",
- "paid": 0,
- "pay": "उधार (CREDIT)",
+ "paid": 14890,
+ "pay": "UPI 10-11-2026 1:59 PM, कमला कंवर के खाते से → M S MAHESH ENTERPRISES (eazypay.590865593@icici)",
  "src": "chat",
  "sup": "MAHESH ENTERPRISES",
  "total": 14890

@@ -1,0 +1,91 @@
+{
+ "added": 1794646800000,
+ "app": "new",
+ "appNote": "नई खरीद 10-11-2026 — ऐप में स्टॉक जुड़ा (खेप S-20261110-15)",
+ "ask": [],
+ "buyer": "",
+ "byName": "विक्रम जी",
+ "date": "2026-11-10",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "nm": "EVEREST GARAM MASALA 100G",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 115,
+   "rate": 91.8158,
+   "amt": 1836.32
+  },
+  {
+   "nm": "EVEREST CHICKEN MASALA 100G",
+   "qty": 20,
+   "u": "pcs",
+   "mrp": 107,
+   "rate": 85.4313,
+   "amt": 1708.63
+  },
+  {
+   "nm": "EVEREST MEAT MASALA 100G",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 107,
+   "rate": 85.4313,
+   "amt": 854.31
+  },
+  {
+   "nm": "EVEREST SHAHI PANEER MASALA 100G",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 110,
+   "rate": 87.8255,
+   "amt": 878.26
+  },
+  {
+   "nm": "EVEREST DRY MANGO (AMCHUR) 100G",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 96,
+   "rate": 76.6428,
+   "amt": 766.43
+  },
+  {
+   "nm": "EVEREST CHAAT MASALA 100G",
+   "qty": 10,
+   "u": "pcs",
+   "mrp": 93,
+   "rate": 74.2487,
+   "amt": 742.49
+  },
+  {
+   "nm": "EVEREST CHAAT MASALA 500G",
+   "qty": 1,
+   "u": "pcs",
+   "mrp": 445,
+   "rate": 355.2823,
+   "amt": 355.28
+  },
+  {
+   "nm": "EVEREST GARAM MASALA 500G",
+   "qty": 2,
+   "u": "pcs",
+   "mrp": 525,
+   "rate": 419.1463,
+   "amt": 838.29
+  },
+  {
+   "nm": "ROUND OFF",
+   "qty": 1,
+   "u": "pcs",
+   "rate": -0.01,
+   "amt": -0.01
+  }
+ ],
+ "no": "2089/26-27",
+ "note": "Everest 100g/500g (8 लाइन, 83 पीस); छपा जोड़ ₹7,999.49 − छूट ₹399.83 = कर-योग्य ₹7,599.66 + GST 5% ₹380 + गोलाई 0.34 = ₹7,980; बिल 'Vande Bharat Vikram ji Charan (Jalipa)' के नाम; रेट में ×0.99756 (छूट+GST+गोलाई) जोड़ा; MRP नए: गरम 100g 115 (पहले 112), चिकन/मीट 100g 107 (पहले 104)",
+ "paid": 0,
+ "pay": "उधार (CREDIT) — बाकी ₹7,980",
+ "src": "chat",
+ "sup": "MAHESH ENTERPRISES",
+ "total": 7980
+}

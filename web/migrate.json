@@ -2422,6 +2422,15 @@
    "lastTs": 1794059000000,
    "by": "",
    "byName": "Claude (खरीद-बही)"
+  },
+  "s-mahesh": {
+   "name": "Mahesh Enterprises (Everest मसाले)",
+   "phone": "9001414161",
+   "ts": 1794646800000,
+   "lastTs": 1794646800000,
+   "by": "",
+   "byName": "Claude (बिल से)",
+   "gst": "08ANZPS8059H3ZU"
   }
  },
  "purchases": {
@@ -2910,6 +2919,118 @@
    "photos": [],
    "photoPending": 0,
    "cancelled": false
+  },
+  "p-mahesh-2089": {
+   "date": "2026-11-10",
+   "ts": 1794646800000,
+   "by": "",
+   "byName": "Claude (खरीद-बही)",
+   "buyer": "",
+   "supId": "s-mahesh",
+   "supName": "Mahesh Enterprises",
+   "supPhone": "9001414161",
+   "lines": [
+    {
+     "id": "g-everest-garam-masala-100g",
+     "name": "EVEREST GARAM MASALA 100G",
+     "unit": "pc",
+     "qty": 20,
+     "rate": 91.82,
+     "amt": 1836.32,
+     "billAmt": 1836.32,
+     "prev": 0
+    },
+    {
+     "id": "g-everest-chicken-masala-100g",
+     "name": "EVEREST CHICKEN MASALA 100G",
+     "unit": "pc",
+     "qty": 20,
+     "rate": 85.43,
+     "amt": 1708.63,
+     "billAmt": 1708.63,
+     "prev": 0
+    },
+    {
+     "id": "b8901786151004",
+     "name": "EVEREST MEAT MASALA 100G",
+     "unit": "pc",
+     "qty": 10,
+     "rate": 85.43,
+     "amt": 854.31,
+     "billAmt": 854.31,
+     "prev": 0
+    },
+    {
+     "id": "g-everest-shahi-paneer-masala-100g",
+     "name": "EVEREST SHAHI PANEER MASALA 100G",
+     "unit": "pc",
+     "qty": 10,
+     "rate": 87.83,
+     "amt": 878.26,
+     "billAmt": 878.26,
+     "prev": 0
+    },
+    {
+     "id": "g-everest-dry-mango-amchur-100g",
+     "name": "EVEREST DRY MANGO (AMCHUR) 100G",
+     "unit": "pc",
+     "qty": 10,
+     "rate": 76.64,
+     "amt": 766.43,
+     "billAmt": 766.43,
+     "prev": 0
+    },
+    {
+     "id": "g-everest-chaat-masala-100g",
+     "name": "EVEREST CHAAT MASALA 100G",
+     "unit": "pc",
+     "qty": 10,
+     "rate": 74.25,
+     "amt": 742.49,
+     "billAmt": 742.49,
+     "prev": 0
+    },
+    {
+     "id": "g-everest-chaat-masala-500g",
+     "name": "EVEREST CHAAT MASALA 500G",
+     "unit": "pc",
+     "qty": 1,
+     "rate": 355.28,
+     "amt": 355.28,
+     "billAmt": 355.28,
+     "prev": 0
+    },
+    {
+     "id": "g-everest-garam-masala-500g",
+     "name": "EVEREST GARAM MASALA 500G",
+     "unit": "pc",
+     "qty": 2,
+     "rate": 419.15,
+     "amt": 838.29,
+     "billAmt": 838.29,
+     "prev": 0
+    },
+    {
+     "id": "",
+     "name": "गोलाई (बिल के हिसाब से)",
+     "unit": "pc",
+     "qty": 1,
+     "rate": -0.01,
+     "amt": -0.01,
+     "billAmt": -0.01,
+     "prev": 0
+    }
+   ],
+   "total": 7980,
+   "pay": "udhar",
+   "paid": 0,
+   "due": 7980,
+   "src": "shop",
+   "noStock": true,
+   "note": "GST बिल 2089/26-27 · Everest 100g/500g, 83 पीस · उधार (बाकी ₹7,980) · स्टॉक खेप S-20261110-15 से जुड़ा (दोबारा नहीं) · 📒 Claude खरीद-बही",
+   "photos": [],
+   "photoPending": 0,
+   "cancelled": false
   }
  },
  "batches": {
@@ -3232,6 +3353,12 @@
     "cost": {
      "from": 0,
      "to": 71.85
+    }
+   },
+   "b8901786151004": {
+    "cost": {
+     "from": 83.03,
+     "to": 85.43
     }
    }
   },
