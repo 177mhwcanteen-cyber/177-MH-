@@ -50,7 +50,7 @@ async def main():
         await pg.click("#smnBtn"); await pg.click('[data-hmgo="stock"]'); await pg.wait_for_timeout(300)
         assert await pg.evaluate("S.tab") == "stock" and await pg.locator("#smnHome").count() == 0
         await pg.click("#smnBtn"); await pg.click('[data-hmgo="rkv"]'); await pg.wait_for_timeout(300)
-        assert await pg.evaluate("SRX.isOpen()") and await pg.locator("#rxMain .rx-rack").count() > 5
+        assert await pg.evaluate("SRX.isOpen()") and (await pg.locator("#rxMain .rx-rack").count() > 5 or "नक्शा अभी नहीं बना" in await pg.inner_text("#rxMain"))
         assert await pg.evaluate("SMN.back()") == "srx" and not await pg.evaluate("SRX.isOpen()")
         # ⭐ ज़्यादा इस्तेमाल वाले ऊपर
         for _ in range(2):

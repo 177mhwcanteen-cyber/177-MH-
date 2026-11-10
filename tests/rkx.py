@@ -103,18 +103,23 @@ async def main():
         await pg.evaluate("SRX.close()")
         assert await pg.evaluate(f"!!SRX.xfer('{F}','','6-6',0)") and await pg.evaluate(f"item('{F}').rack") == "6-6"
         # 🗄️ रैक देखें: रैक → खानों की जाली → खाने का सामान → "यहाँ रखना है" = अगला स्कैन सीधे वहीं
-        await pg.evaluate("SRX.open(null,{tab:'rack'})"); await pg.wait_for_timeout(150)
-        assert await pg.locator(".rx-rack").count() >= 15
-        await pg.click('[data-rxrk="6"]'); await pg.wait_for_timeout(150)
-        assert await pg.locator(".rx-cell").count() == 15 and await pg.locator(".rx-cell.empty").count() >= 5
-        assert await pg.locator(".rx-cell.gone").count() == 1, "6-3 अब 6-2 में मिला"
-        await pg.click('[data-rxkh="6-4"]'); await pg.wait_for_timeout(150)
-        assert await pg.locator(f'#rxMain [data-rxpick="{D}"]').count() == 1
-        await pg.screenshot(path=f"{SHOTS}/x4-rack.png")
-        await pg.click('[data-rxput="6-4"]'); await pg.wait_for_timeout(150)
-        assert "6-4" in await pg.inner_text(".rx-pre")
-        await pg.evaluate(f"handleScan(SF.itemCode(item('{A}')))"); await pg.wait_for_timeout(150)
-        assert await pg.input_value("#srxTo") == "6-4"
+        rl = await pg.evaluate("((window.SRK&&SRK.RL)||[]).length")   # भैरव में नक्शा खाली (मालिक जोड़ें) → जाली वाली जाँच नहीं
+        if rl:
+            await pg.evaluate("SRX.open(null,{tab:'rack'})"); await pg.wait_for_timeout(150)
+            assert await pg.locator(".rx-rack").count() >= 15
+            await pg.click('[data-rxrk="6"]'); await pg.wait_for_timeout(150)
+            assert await pg.locator(".rx-cell").count() == 15 and await pg.locator(".rx-cell.empty").count() >= 5
+            assert await pg.locator(".rx-cell.gone").count() == 1, "6-3 अब 6-2 में मिला"
+            await pg.click('[data-rxkh="6-4"]'); await pg.wait_for_timeout(150)
+            assert await pg.locator(f'#rxMain [data-rxpick="{D}"]').count() == 1
+            await pg.screenshot(path=f"{SHOTS}/x4-rack.png")
+            await pg.click('[data-rxput="6-4"]'); await pg.wait_for_timeout(150)
+            assert "6-4" in await pg.inner_text(".rx-pre")
+            await pg.evaluate(f"handleScan(SF.itemCode(item('{A}')))"); await pg.wait_for_timeout(150)
+            assert await pg.input_value("#srxTo") == "6-4"
+        else:
+            await pg.evaluate("SRX.open(null,{tab:'rack'})"); await pg.wait_for_timeout(150)
+            assert "नक्शा अभी नहीं बना" in await pg.inner_text("#rxMain")
         await pg.evaluate("SRX.close()")
         # 🧠 सुझाव: स्कोर + किस्म का घर (6 में से 4 मसाले रैक 6 → घर 6 अपने-आप) + बाहर वाले "घर ले जाएँ" + खाली खाने
         await pg.evaluate("SRX.open(null,{tab:'idea'})"); await pg.wait_for_timeout(200)
