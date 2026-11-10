@@ -3035,6 +3035,36 @@
      "from": 350,
      "to": 340
     }
+   },
+   "g-camlin-fine-tip-permanent-marker-pc": {
+    "name": {
+     "from": "CAMLIN FINE TIP PERMANENT MARKER",
+     "to": "CAMLIN FINE TIP PERMANENT MARKER GREEN"
+    },
+    "short": {
+     "from": "CAMLIN FINE TIP MARKER",
+     "to": "CAMLIN FINE TIP GREEN"
+    },
+    "hi": {
+     "from": "कैमलिन फाइन टिप परमानेंट मार्कर",
+     "to": "कैमलिन फाइन टिप मार्कर (हरा)"
+    }
+   }
+  },
+  "pstock": {
+   "g-camlin-fine-tip-permanent-marker-pc": {
+    "qty": {
+     "from": 14,
+     "to": 9
+    }
+   }
+  },
+  "openings": {
+   "cnt_g-camlin-fine-tip-permanent-marker-pc": {
+    "qty": {
+     "from": 14,
+     "to": 9
+    }
    }
   }
  }

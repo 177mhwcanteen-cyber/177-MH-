@@ -1,0 +1,44 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261110-12",
+ "date": "2026-11-10",
+ "by": "विक्रम जी",
+ "note": "🖊️ CAMLIN मार्कर रंग-वार (विक्रम जी 10-11): हरा 9 पीस (पहले वाला सामान, गिनती 14→9), काला 5 पीस नया सामान",
+ "items": [
+  {
+   "id": "g-camlin-fine-tip-permanent-marker-pc",
+   "name": "CAMLIN FINE TIP PERMANENT MARKER GREEN",
+   "short": "CAMLIN FINE TIP GREEN",
+   "rack": "11-44",
+   "open": {
+    "qty": 9,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-camlin-fine-tip-permanent-marker-black-pc",
+   "name": "CAMLIN FINE TIP PERMANENT MARKER BLACK",
+   "short": "CAMLIN FINE TIP BLACK",
+   "hi": "कैमलिन फाइन टिप मार्कर (काला)",
+   "brand": "CAMLIN",
+   "size": "1 pc",
+   "alias": "camlin black permanent marker fine tip काला मार्कर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 10,
+   "sale": 10,
+   "rack": "11-44",
+   "ph": "5088276b",
+   "mfr": "c-kokuyo-camlin",
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
