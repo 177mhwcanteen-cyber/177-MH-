@@ -291,7 +291,7 @@ SL.bind=function(){
     if(c("[data-slclear]")){SL.clear();SL.render(1);toast("लिस्ट खाली");return}
     if((b=c("[data-slsize]"))){LSl.set("se_lsize",b.dataset.slsize);SL.render(1);return}
     if((b=c("[data-slstyle]"))){SL.save({style:b.dataset.slstyle});SL.render(1);return}
-    if(c("[data-slgoset]")){S.tab="set";showTab();setTimeout(()=>{const s=$("#slDesign");if(s)s.scrollIntoView({block:"start"})},80);return}
+    if(c("[data-slgoset]")){if(window.SMN&&SMN.openSet){S.tab="set";showTab();setTimeout(()=>SMN.openSet("slDesign"),80);return}S.tab="set";showTab();setTimeout(()=>{const s=$("#slDesign");if(s)s.scrollIntoView({block:"start"})},80);return}
     if(c("[data-slcam]")){V.cam=true;if(typeof camOn==="function")camOn();return}
     const go=async rows=>{const n=await SL.print(rows);if(n){const ids=new Set((rows||Q).map(r=>r.id));V.last=Q.slice();Q=Q.filter(r=>!ids.has(r.id));saveQ();V.done=n;V.prev=""}V.dup=null;SL.render(1)};
     if((b=c("[data-slprint]"))){const dup=Q.filter(r=>(Math.round(+r.n)||0)>0&&SL.doneOf(item(r.id)));

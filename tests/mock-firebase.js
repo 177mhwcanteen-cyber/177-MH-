@@ -1,3 +1,5 @@
+/* पुराने टेस्ट सेटिंग के हर हिस्से को सीधे छूते हैं → सेटिंग पहले जैसी लंबी (नया मेन्यू tests/menu.py में जाँचा जाता है) */
+if(window.__SET_FLAT__===undefined)window.__SET_FLAT__=true;
 /* टेस्ट के लिए नकली Firebase (असली नेटवर्क नहीं) */
 (()=>{const D=window.__MOCK__||{};window.__MOCK__=D;const subs=[];
 const clone=x=>JSON.parse(JSON.stringify(x));
