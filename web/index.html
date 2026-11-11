@@ -1235,7 +1235,7 @@ function priceAsk(it){const o=+it.oldSale||0;
   <label class="fld">अब का भाव ₹${it.unit==="kg"?" / किलो":""}<input class="inp" id="paV" inputmode="decimal" placeholder="${o||""}" style="font-size:22px"></label>
   <div class="row2" style="margin-top:10px">${o?`<button class="big ghost" data-pakeep>✓ ${rs(o)} ही रखें</button>`:""}<button class="big" data-paok>नया भाव लगाएँ</button></div></div></div>`;
   const done=async v=>{if(!(v>0)){toast("भाव लिखें");return}const old=+it.sale||0;it.sale=v;if(it.cat!=="kirana"||!+it.mrp)it.mrp=v;
-    try{if(!S.demo){await S.db.collection("items").doc(it.id).update({sale:v,mrp:it.mrp});logPrice(it.id,"sale",old,v)}}catch(e){toast("सेव नहीं हुआ — "+(e.code||e.message||""));return}
+    try{if(!S.demo){await S.db.collection("items").doc(it.id).update({sale:v,...(S.isOwner?{mrp:it.mrp}:{}),rateTs:Date.now(),rateBy:S.uid||"",rateByName:biller(),ratePrev:old});logPrice(it.id,"sale",old,v)}}catch(e){toast("सेव नहीं हुआ — "+(e.code||e.message||""));return}
     closeSheet();toast("✓ "+it.name+" · "+rs(v));renderBill()};
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}if(e.target.closest("[data-pakeep]"))done(o);if(e.target.closest("[data-paok]"))done(parseFloat($("#paV").value)||0)};
   setTimeout(()=>{try{$("#paV").focus()}catch(e){}},50)}
