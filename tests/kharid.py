@@ -97,7 +97,7 @@ async def main():
           S.db={collection:c=>({doc:id=>({get:async()=>({exists:!!D[c+'/'+id],data:()=>D[c+'/'+id]}),update:async p=>{Object.assign(D[c+'/'+id],p)}})})};
           const n=await applyUpd({_upd:{items:{a:{sale:{from:0,to:15},rack:{from:null,to:'5-1'}},b:{sale:{from:0,to:15}},zz:{sale:{from:0,to:1}}}}});S.db=db0;return [n,D['items/a'],D['items/b'].sale]})()""")
         assert u[0] == 1 and u[1]["sale"] == 15 and u[1]["rack"] == "5-1" and u[2] == 99, u
-        cat = await pg.evaluate("JSON.parse(SKJ.catalogCode())"); assert cat["app"] == "mh177-cat" and len(cat["items"]) > 10 and "sale" not in json.dumps(cat)
+        cat = await pg.evaluate("JSON.parse(SKJ.catalogCode())"); assert cat["app"] == "mh177-cat" and len(cat["items"]) > 10 and "sale" not in json.dumps(cat) and cat["v"] == 2 and any("s" in it for it in cat["items"])
         # 💵 गल्ले से खरीद के लिए पैसा → 🔁 हिसाब (खरीद + वापस) · फ़र्क · याद
         await pg.evaluate("closeSheet&&closeSheet();S.staff='मनोहर जी';S.billsDate=today()")
         await pg.evaluate("SG.sheet('out')"); await pg.wait_for_timeout(200)

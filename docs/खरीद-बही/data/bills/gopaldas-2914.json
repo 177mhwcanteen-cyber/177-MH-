@@ -63,7 +63,10 @@
    "nm": "TUAR DAL",
    "qty": 30,
    "rate": 120,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-toor-dal-500-g-packed": 0.5
+   }
   },
   {
    "amt": 2100,
@@ -77,7 +80,10 @@
    "nm": "GOLA (NARIYAL)",
    "qty": 3,
    "rate": 420,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-dry-coconut-gola-loose-per-kg": 1
+   }
   },
   {
    "amt": 3650,

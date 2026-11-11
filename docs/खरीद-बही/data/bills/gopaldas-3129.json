@@ -14,7 +14,10 @@
    "nm": "SINGDANA (MOONGFALI)",
    "qty": 25,
    "rate": 144,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-moongfali-dana-raw-peanuts-500-g-loose-p": 0.5
+   }
   },
   {
    "amt": 4050,
@@ -42,14 +45,20 @@
    "nm": "RAJMA",
    "qty": 5,
    "rate": 140,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-rajma-red-kidney-beans-500-g-packed": 0.5
+   }
   },
   {
    "amt": 276,
    "nm": "CHANA DAL",
    "qty": 3,
    "rate": 92,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-chana-dal-500-g-packed": 0.5
+   }
   },
   {
    "amt": 900,
@@ -63,7 +72,10 @@
    "nm": "AJWAIN",
    "qty": 1,
    "rate": 250,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-ajwain-100-g-pack": 0.1
+   }
   },
   {
    "amt": 9.62,

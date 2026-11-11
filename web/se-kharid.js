@@ -49,8 +49,11 @@ SKJ.dupOf=function(x,skip){if(!x||!(+x.total>0))return null;const L=[];const add
   const seen=new Set();for(const y of L){if(seen.has(y.id))continue;seen.add(y.id);if(!y.date||dd(y.date,x.date)>3)continue;if(Math.abs(y.total-x.total)>Math.max(2,x.total*0.005))continue;
     const ln=(x.lines||[]).length?(x.lines||[]).filter(l=>y.lines.some(n=>SKJ.sim(l.nm||l.name,n)>=0.6)).length/(x.lines||[]).length:0;
     if(SKJ.sim(x.sup,y.sup)>=0.5||ln>=0.5)return {id:y.id,txt:`${y.kind} · ${y.sup||""} · ${y.date} · ₹${y.total} · ${y.by||""}`}}return null};
-/* 📤 सामान-सूची (खरीद-बही के लिए): AI बिल की लाइन को ऐप के सही सामान से जोड़ सके — भाव नहीं जाते */
-SKJ.catalogCode=()=>JSON.stringify({app:"mh177-cat",org:SE.org,v:1,ts:Date.now(),items:(S.items||[]).filter(i=>i.active!==false&&!i.virtual&&!["fast","mela"].includes(typeof mcat==="function"?mcat(i):i.cat)).map(i=>({i:i.id,n:SE.capNm(i.short||i.name||""),u:i.unit||"pc",...(+i.perPack>0?{pp:+i.perPack}:{}),...(i.packOf?{pk:i.packOf}:{}),...(String(i.barcode||"").replace(/\D/g,"").length>=8?{b:String(i.barcode).replace(/\D/g,"")}:{})}))});
+/* 📤 सामान-सूची (खरीद-बही के लिए): AI बिल की लाइन को ऐप के सही सामान से जोड़ सके (नाम/इकाई/पैकेट/बारकोड → बही mem, साथी पढ़ें)
+   + 💰 सिर्फ़ मालिक: s = बिक्री, m = MRP, c = ऐप की cost → बही में अलग जगह (rate/*, सिर्फ़ मालिक) — "किस भाव खरीदा, किस भाव बेचा" एक नज़र में।
+   b = सारे बारकोड कॉमा से (दो बारकोड वाले सामान, जैसे 555 चाय) */
+SKJ.catalogCode=()=>{const n=v=>Math.round((+v||0)*100)/100;return JSON.stringify({app:"mh177-cat",org:SE.org,v:2,ts:Date.now(),items:(S.items||[]).filter(i=>i.active!==false&&!i.virtual&&!["fast","mela"].includes(typeof mcat==="function"?mcat(i):i.cat)).map(i=>{const bs=String(i.barcode||"").split(/[^0-9]+/).filter(c=>c.length>=8);
+  return {i:i.id,n:SE.capNm(i.short||i.name||""),u:i.unit||"pc",...(+i.perPack>0?{pp:+i.perPack}:{}),...(i.packOf?{pk:i.packOf}:{}),...(bs.length?{b:bs.join(",")}:{}),...(own()&&+i.sale>0?{s:n(i.sale)}:{}),...(own()&&+i.mrp>0?{m:n(i.mrp)}:{}),...(own()&&+i.cost>0?{c:n(i.cost)}:{})}})})};
 /* 📥 बही → ऐप: हर बिल एक "बाज़ार-खरीद" (mbuys, status sent) — बिलिंग वाला साथी गिनकर पक्का करे तभी स्टॉक + खरीद बने (एक ही बार) */
 const MID=b=>"KB-"+String(b.id||"").replace(/[^A-Za-z0-9-]/g,"").slice(0,60);
 /* 🏷️ बारकोड सबसे पहले (दुकान नाम कुछ भी लिखे), फिर बही वाला id, फिर नाम */

@@ -63,6 +63,12 @@ pre{white-space:pre-wrap;word-break:break-all;font:12px/1.4 var(--mono);backgrou
 .pics{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px}.pics img{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line);cursor:zoom-in}
 .zoom{position:fixed;inset:0;background:#000d;display:flex;align-items:center;justify-content:center;z-index:20;padding:12px}.zoom img{max-width:100%;max-height:100%;border-radius:8px}
 .chk td input{width:70px}
+.pfs{display:flex;gap:6px;flex-wrap:wrap}.pfs button{font:600 13px var(--body);padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.pfs button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.pp{border-bottom:1px solid var(--line);padding:10px 0 10px 10px;border-left:4px solid transparent}.pp:last-child{border-bottom:0}.pp.loss{border-left-color:var(--red)}.pp.low{border-left-color:var(--amb)}.pp.ok{border-left-color:var(--ok)}
+.pp .pr{font-weight:700}.pl2{margin-top:2px;font-size:14.5px}.pl2 b{font-size:15.5px}.pp .pr small{font-weight:500}
+.p3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px;margin-top:6px}.p3>div{min-width:0}.p3 span{display:block;font-size:12px;color:var(--mut)}.p3 b{font-size:16px}.p3 small{display:block;font-size:12px;color:var(--mut);overflow-wrap:anywhere}
+@media (max-width:480px){.p3{grid-template-columns:1fr 1fr}.p3>div:last-child{grid-column:1/-1}}
+.pbar{position:relative;display:flex;height:8px;border-radius:5px;background:var(--inkS);margin-top:6px;overflow:visible}.pbar i{display:block;height:100%}.pbar .pc{background:var(--ink);border-radius:5px 0 0 5px}.pbar .pg{background:var(--ok)}.pbar .pl{background:var(--red)}.pbar .pm{position:absolute;top:-3px;width:2px;height:14px;background:var(--fg);margin-left:-1px}
 </style>
 <div class="w">
 <header><h1>177 MH खरीद-बही</h1><p class="sub" id="sub">खरीद का हर बिल, फोटो और भुगतान एक जगह।</p></header>
@@ -182,14 +188,50 @@ let CAT=[],PACKS={},SHOPS={};
 async function loadMem(){try{const s=await db.collection("mem").get();const c=[];s.docs.forEach(d=>{const v=d.data()||{};if(/^cat\d+$/.test(d.id))c.push(...(v.items||[]));if(d.id==="packs")PACKS=v.m||{};if(d.id==="shops")SHOPS=v.m||{}});CAT=c}catch(e){}}
 const fpOf=(shop,no,date,total)=>{const s=String(shop||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,16)||"DUKAN";const n=String(no||"").replace(/[^A-Za-z0-9]/g,"");/* बिल नंबर हो तो नंबर + कुल रकम (दुकान का नाम हर कोई अलग लिखता है), न हो तो दुकान + तारीख + रकम */return (n?"B"+n+"-"+Math.round(+total||0):s+"-"+String(date||"").replace(/-/g,"")+"-"+Math.round(+total||0)).slice(0,60)};
 async function saveCat(txt){let j;try{const a=txt.indexOf("{");j=JSON.parse(txt.slice(a,txt.lastIndexOf("}")+1))}catch(e){alertMsg("कोड सही नहीं");return}if(j.app!=="mh177-cat"||!Array.isArray(j.items)){alertMsg("यह ऐप की सामान-सूची का कोड नहीं");return}if(j.org&&j.org!=="mh177"){alertMsg("⛔ यह दूसरी संस्था ("+j.org+") की सामान-सूची है — यह 177 MH की बही है");return}
-  const L=j.items.map(x=>({i:String(x.i||"").slice(0,40),n:String(x.n||"").slice(0,40),u:String(x.u||"pc").slice(0,6),...(x.pp?{pp:+x.pp}:{}),...(x.pk?{pk:String(x.pk).slice(0,40)}:{}),...(x.b?{b:String(x.b).replace(/\D/g,"").slice(0,20)}:{})})).filter(x=>x.i&&x.n);
+  const L=j.items.map(x=>({i:String(x.i||"").slice(0,80),n:String(x.n||"").slice(0,48),u:String(x.u||"pc").slice(0,6),...(x.pp?{pp:+x.pp}:{}),...(x.pk?{pk:String(x.pk).slice(0,80)}:{}),...(x.b?{b:String(x.b).split(/[^0-9]+/).filter(c=>c.length>=8).join(",").slice(0,60)}:{})})).filter(x=>x.i&&x.n);
+  /* 💰 भाव (s बिक्री, m MRP, c ऐप की cost) — सिर्फ़ मालिक की जगह rate/*, साथी के mem में कभी नहीं */
+  const R={};j.items.forEach(x=>{const i=String(x.i||"").slice(0,80);if(!i)return;const o={};["s","m","c"].forEach(k=>{if(+x[k]>0)o[k]=Math.round(+x[k]*100)/100});if(Object.keys(o).length)R[i]=o});
   const old=(await db.collection("mem").get()).docs.filter(d=>/^cat\d+$/.test(d.id)).map(d=>d.id);const N=Math.ceil(L.length/400);
   for(let k=0;k<N;k++)await db.doc("mem/cat"+k).set({items:L.slice(k*400,k*400+400),ts:Date.now()});for(const id of old)if(+id.slice(3)>=N)await db.doc("mem/"+id).delete();
-  CAT=L;alertMsg("✓ "+L.length+" सामान याद हो गए — अब AI बिल की लाइन ऐप के सही सामान से जोड़ेगा");render()}
+  const RK=Object.keys(R);if(RK.length){const oldR=(await db.collection("rate").get()).docs.map(d=>d.id),NR=Math.ceil(RK.length/400);
+    for(let k=0;k<NR;k++){const m={};RK.slice(k*400,k*400+400).forEach(i=>m[i]=R[i]);await db.doc("rate/r"+k).set({m,ts:Date.now()})}for(const id of oldR)if(+id.slice(1)>=NR)await db.doc("rate/"+id).delete();RATE=R}
+  CAT=L;alertMsg("✓ "+L.length+" सामान याद हो गए"+(RK.length?" · 💰 "+RK.length+" के बिक्री-भाव":" · ⚠ बिक्री-भाव नहीं आए (ऐप अपडेट करके फिर कॉपी करें)"));render()}
+/* ---------- 💰 खरीद ↔ बिक्री (सिर्फ़ मालिक): ऐप का हर सामान — बही की आख़िरी खरीद (1 का पड़ा) बनाम ऐप का बिक्री-भाव ---------- */
+let RATE={},pf="";
+async function loadRate(){try{const s=await db.collection("rate").get();const R={};s.docs.forEach(d=>Object.assign(R,(d.data()||{}).m||{}));RATE=R}catch(e){}}
+const codesOf=c=>String(c.b||"").split(",").map(bcN).filter(x=>x.length>=8);
+/* बिल की लाइन किस सामान की है: fit (1 kg भाव → पैकेट) > बारकोड > ऐप id > पूरा नाम; पैकेट वाली लाइन से खुले पीस का भाव भी */
+function lineHits(l,CI,CB,CN){const o=[],f=l.fit||{};Object.keys(f).forEach(i=>{if(CI[i]&&+f[i]>0)o.push({c:CI[i],f:+f[i]})});if(o.length)return o;
+  const t=(bcN(l.bc).length>=8&&CB[bcN(l.bc)])||(l.iid&&CI[l.iid])||(!l.iid&&!bcN(l.bc)&&CN[nk(l.nm||l.n)]);if(!t)return o;
+  const pp=+l.pp||+t.pp||0;o.push({c:t,div:!t.pk&&+l.pp>1?+l.pp:1});if(t.pk&&CI[t.pk]&&pp>1)o.push({c:CI[t.pk],div:pp});return o}
+function ppData(){const CI={},CB={},CN={};CAT.forEach(c=>{CI[c.i]=c;codesOf(c).forEach(b=>CB[b]=c);CN[nk(c.n)]=CN[nk(c.n)]||c});
+  const H={},loose=[];[...BILLS].sort((a,b)=>(a.date||"").localeCompare(b.date||"")).forEach(b=>(b.lines||[]).forEach(l=>{if(/ROUND|गोलाई/i.test(l.nm||l.n||""))return;const uc=lineCost(b,l),hs=lineHits(l,CI,CB,CN);
+    if(!hs.length){loose.push({b,l,uc});return}hs.forEach(h=>(H[h.c.i]=H[h.c.i]||[]).push({uc:h.f?uc*h.f:uc/(h.div||1),date:b.date||"",sup:b.sup,no:b.no,qty:l.qty,u:l.u,f:h.f||0,div:h.div||1,nm:l.nm||l.n||""}))}));
+  const rows=CAT.map(c=>{const L=H[c.i]||[],last=L[L.length-1],prev=L.length>1?L[L.length-2]:null,r=RATE[c.i]||{},s=+r.s||0,cost=last?last.uc:0,pr=s&&cost?s-cost:null,pct=pr!=null?pr/cost*100:null,ac=+r.c||0;
+    const k=!last?"none":!s?"nosale":pr<-0.004?"loss":pct<5?"low":"ok";return {c,L,last,prev,s,m:+r.m||0,cost,pr,pct,ac,adiff:ac&&cost?(ac-cost)/cost*100:0,up:prev&&last.uc>prev.uc+0.009,k}});
+  return {rows,loose}}
+const PF=[["","सब (खरीद मिली)"],["loss","🔴 घाटा"],["low","🟡 5% से कम"],["up","🔺 महँगा हुआ"],["appc","⚠ ऐप की cost अलग"],["nosale","❔ बिक्री-भाव नहीं"],["none","⚪ बही में खरीद नहीं"]];
+const pfOk=(r,f)=>f==="none"?r.k==="none":r.k==="none"?false:!f?true:f==="up"?r.up:f==="appc"?Math.abs(r.adiff)>2:r.k===f;
+function ppHTML(){if(!CAT.length)return `<div class="box empty">पहले "🧠 याद" में ऐप की सामान-सूची चिपकाएँ।</div>`;
+  const {rows,loose}=ppData(),hasR=Object.keys(RATE).length,cnt=f=>rows.filter(r=>pfOk(r,f)).length;
+  const L=rows.filter(r=>pfOk(r,pf)&&(!q||(r.c.n+" "+(r.c.b||"")).toLowerCase().includes(q.toLowerCase()))).sort((a,b)=>{const o={loss:0,low:1,nosale:3,ok:2,none:4};return (o[a.k]-o[b.k])||(a.k==="loss"||a.k==="low"?a.pct-b.pct:a.c.n.localeCompare(b.c.n))});
+  const bar=r=>{if(!r.cost||!r.s)return "";const mx=Math.max(r.m,r.s,r.cost)||1,w=v=>Math.max(0,Math.min(100,v/mx*100)).toFixed(1);
+    return `<div class="pbar" aria-hidden="true"><i class="pc" style="width:${w(Math.min(r.cost,r.s))}%"></i>${r.s>r.cost?`<i class="pg" style="width:${(w(r.s)-w(r.cost)).toFixed(1)}%"></i>`:`<i class="pl" style="width:${(w(r.cost)-w(r.s)).toFixed(1)}%"></i>`}${r.m?`<b class="pm" style="left:${w(r.m)}%"></b>`:""}</div>`};
+  const tag={loss:`<span class="chip missing">🔴 घाटा</span>`,low:`<span class="chip pending">🟡 कम मुनाफ़ा</span>`,ok:`<span class="chip ok">🟢 ठीक</span>`,nosale:`<span class="chip pending">❔ बिक्री-भाव नहीं</span>`,none:`<span class="chip">⚪ बही में खरीद नहीं</span>`};
+  return `${hasR?"":`<div class="alert" style="background:var(--ambS);color:var(--amb)">💰 बिक्री-भाव अभी नहीं आए। ऐप में "अपडेट करें" दबाएँ → ⚙️ → 🔍 खरीद-जाँच → "📤 सामान-सूची कॉपी" → यहाँ "🧠 याद" में फिर चिपकाएँ। तब हर सामान का मुनाफ़ा दिखेगा।</div>`}
+  <div class="box"><div class="pfs" role="group" aria-label="छाँटें">${PF.map(([k,v])=>`<button type="button" data-pf="${k}" aria-pressed="${pf===k}">${v} <b class="num">${cnt(k)}</b></button>`).join("")}</div>
+  <input class="srch" id="srch" type="search" placeholder="🔍 सामान या बारकोड खोजें" value="${esc(q)}" aria-label="सामान खोजें" style="margin-top:8px">
+  <p class="note" style="margin-top:6px">खरीद = बही का आख़िरी बिल, 1 पीस/इकाई का पड़ा (GST, भाड़ा, छूट मिलाकर) · बिक्री/MRP = ऐप में अभी · मुनाफ़ा % = खरीद पर। पट्टी: नीला खरीद, हरा मुनाफ़ा, लाल घाटा, | MRP।</p>
+  ${L.map(r=>{const x=r.last,pv=r.prev,ch=pv?(r.up?`<span class="up">▲ +${rs(x.uc-pv.uc)}</span>`:x.uc<pv.uc-0.009?`<span class="dn">▼ ${rs(pv.uc-x.uc)}</span>`:"="):"";
+    return `<div class="pp ${r.k}"><div class="ih"><b>${esc(r.c.n)}</b>${r.k==="ok"?"":tag[r.k]}${r.pr!=null?`<span class="num pr ${r.pr<0?"up":"dn"}">${r.pr<0?"−":"+"}${rs(Math.abs(r.pr))} <small>(${r.pct.toFixed(1)}%)</small></span>`:""}</div>
+    ${x?`<div class="pl2">खरीद <b class="num">${rs(r.cost)}</b> → बिक्री <b class="num">${r.s?rs(r.s):"—"}</b>${r.m?` <span class="note">· MRP ${rs(r.m)}</span>`:""}${pv?` <span class="note">· पिछली ${rs(pv.uc)} ${ch}</span>`:""}</div>
+    <div class="hist">${esc(x.sup||"")} · ${fd(x.date)} · #${esc(x.no||"")}${x.f?` · ${rs(x.uc/x.f)}/kg × ${x.f}`:x.div>1?` · 1 ${esc(x.u||"")} ÷ ${x.div}`:""}${r.L.length>1?` · ${r.L.length} बार खरीदा`:""}</div>${bar(r)}
+    ${Math.abs(r.adiff)>2?`<p class="note" style="color:var(--amb)">⚠ ऐप में cost ${rs(r.ac)} लिखी है, बही में पड़ता ${rs(r.cost)} — ऐप में ${Math.abs(r.adiff).toFixed(1)}% ${r.adiff>0?"ज़्यादा":"कम"} (मुनाफ़ा बही वाले पड़ते से गिना)</p>`:""}`:r.s?`<p class="note">बिक्री ${rs(r.s)}${r.m?" · MRP "+rs(r.m):""}${r.ac?" · ऐप की cost "+rs(r.ac):""} — बही में इसका कोई बिल नहीं</p>`:""}</div>`}).join("")||`<p class="empty">इस छाँट में कुछ नहीं</p>`}</div>
+  ${loose.length?`<details class="box"><summary><b>🔗 ${loose.length} बिल-लाइनें किसी ऐप-सामान से नहीं जुड़ीं</b> <span class="note">(खुला माल, कच्चा माल, या नाम अलग)</span></summary>${loose.slice().reverse().map(o=>`<div class="hist">${esc(o.l.nm||o.l.n)} — ${rs(o.uc)}/${esc(o.l.u||"")} · ${esc(o.b.sup)} #${esc(o.b.no)} ${fd(o.b.date)}</div>`).join("")}<p class="note" style="margin-top:6px">जोड़ना हो तो चैट में Claude से कहें: "बही की बिना जुड़ी लाइनें ऐप के सामान से जोड़ो"।</p></details>`:""}`}
 async function learn(x){/* बही में चढ़ाते समय: पैकेट-गिनती और दुकान याद */const pk={...PACKS},sh={...SHOPS};let ch=false;
   (x.lines||[]).forEach(l=>{if(+l.pp>0&&l.nm&&pk[l.nm]!==+l.pp){pk[l.nm]=+l.pp;ch=true}});if(x.shop&&!sh[x.shop]){sh[x.shop]={ph:x.phone||"",ts:Date.now()};ch=true}
   if(ch){PACKS=pk;SHOPS=sh;try{await db.doc("mem/packs").set({m:pk});await db.doc("mem/shops").set({m:sh})}catch(e){}}}
-function memHTML(){return `<div class="box form"><h2>🧠 याद — ऐप की सामान-सूची</h2><p class="note">कैंटीन ऐप → ⚙️ → 🔍 खरीद-जाँच → "📤 सामान-सूची कॉपी" → यहाँ चिपकाएँ। हफ़्ते में एक बार (नया सामान जुड़े तो)। भाव नहीं जाते — साथी के AI को सिर्फ़ नाम, इकाई, पैकेट दिखते हैं।</p>
+function memHTML(){return `<div class="box form"><h2>🧠 याद — ऐप की सामान-सूची</h2><p class="note">कैंटीन ऐप → ⚙️ → 🔍 खरीद-जाँच → "📤 सामान-सूची कॉपी" → यहाँ चिपकाएँ। हफ़्ते में एक बार (नया सामान जुड़े तो)। साथी के AI को सिर्फ़ नाम, इकाई, पैकेट, बारकोड दिखते हैं; बिक्री-भाव/MRP/cost सिर्फ़ आपकी "💰 खरीद-बिक्री" में जाते हैं।</p>
   <p class="note">अभी याद: <b>${CAT.length}</b> सामान · <b>${Object.keys(PACKS).length}</b> पैकेट-गिनती · <b>${Object.keys(SHOPS).length}</b> दुकानें</p>
   <textarea id="catIn" class="srch" rows="4" placeholder='{"app":"mh177-cat",...}' style="font:12px var(--mono)"></textarea><button type="button" class="big" data-savecat>🧠 याद करो</button>
   ${Object.keys(PACKS).length?`<div class="hist">📦 ${Object.entries(PACKS).map(([k,v])=>esc(k)+" = "+v).join(" · ")}</div>`:""}</div>`}
@@ -286,11 +328,11 @@ async function book(key){const [u,id]=key.split("|"),x=BUYS.find(y=>y.uid===u&&y
 async function showPics(key){const [u,id]=key.split("|"),box=document.querySelector(`[data-pics="${CSS.escape(key)}"]`);if(!box)return;box.innerHTML=`<span class="note">⏳</span>`;
   try{const s=await db.collection("buys/"+u+"/p").where("e","==",id).get();box.innerHTML=s.docs.map(d=>{const v=d.data();const t={bill:"🧾",card:"🪪",goods:"📦",qr:"🔳"}[v.k]||"";return /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v.d||"")?`<img src="${v.d}" alt="${t} फोटो" data-zoom title="${t}">`:""}).join("")||"<span class='note'>फोटो नहीं मिली</span>"}catch(e){box.innerHTML="<span class='note'>फोटो नहीं खुली</span>"}}
 /* ---------- रेंडर ---------- */
-function tabsFor(){return role==="owner"?[["today","📅 आज"],["buys","📥 साथियों की खरीद"+(newBuys().length?" ("+newBuys().length+")":"")],["bills","🧾 बही"],["items","📈 भाव"],["qs","❓ सवाल"],["app","📲 ऐप में भेजो"],["mem","🧠 याद"]]:[["new","🛒 नई खरीद"],["chat","💬 चैट से"]]}
+function tabsFor(){return role==="owner"?[["today","📅 आज"],["buys","📥 साथियों की खरीद"+(newBuys().length?" ("+newBuys().length+")":"")],["pp","💰 खरीद-बिक्री"],["bills","🧾 बही"],["items","📈 भाव"],["qs","❓ सवाल"],["app","📲 ऐप में भेजो"],["mem","🧠 याद"]]:[["new","🛒 नई खरीद"],["chat","💬 चैट से"]]}
 function render(){if(!role)return;tiles();const T=tabsFor();if(!T.some(t=>t[0]===tab))tab=T[0][0];
   $("#tabs").innerHTML=T.map(([k,v])=>`<button role="tab" aria-selected="${k===tab}" data-t="${k}">${v}</button>`).join("");
   $("#sub").textContent=role==="owner"?"👑 विक्रम जी — हर बिल की पक्की नकल, साथियों की भेजी खरीद, पड़ता भाव, पिछली खरीद से तुलना, और ऐप में चढ़ा या नहीं।":"🛒 खरीद करके यहाँ बिल, दुकान, सामान और QR की फोटो डालें, भुगतान लिखें, भेजें — बस। पुरानी खरीद यहाँ नहीं दिखती।";
-  const v=$("#view");v.innerHTML=role==="owner"?(tab==="today"?todayHTML():tab==="buys"?buysHTML():tab==="items"?itemsHTML():tab==="qs"?qsHTML():tab==="app"?appHTML():tab==="mem"?memHTML():billsHTML()):(tab==="inbox"?inboxHTML():tab==="chat"?chatHTML():staffHTML())}
+  const v=$("#view");v.innerHTML=role==="owner"?(tab==="today"?todayHTML():tab==="buys"?buysHTML():tab==="items"?itemsHTML():tab==="pp"?ppHTML():tab==="qs"?qsHTML():tab==="app"?appHTML():tab==="mem"?memHTML():billsHTML()):(tab==="inbox"?inboxHTML():tab==="chat"?chatHTML():staffHTML())}
 function alertMsg(m){$("#warn").innerHTML=`<div class="alert">${esc(m)}</div>`;setTimeout(()=>{if(role==="owner")tiles();else $("#warn").innerHTML=""},6000)}
 document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b;
   if((b=g("[data-t]"))){tab=b.dataset.t;LSs("kb_tab_"+role,tab);render();return}
@@ -305,6 +347,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   if((b=g("[data-edit]"))){const x=MINE.find(y=>y.id===b.dataset.edit);if(!x)return;F={...blank(),editId:x.id,shop:x.shop||"",phone:x.phone||"",billNo:x.billNo||"",date:x.date,pay:x.pay||"cash",paid:x.paid||"",payTo:x.payTo||"",note:x.note||"",lines:(x.lines||[]).map(l=>({...l})),ask:x.ask||[],ans:x.ans||"",total:x.total||0,aiWarn:x.aiWarn||""};tab="new";render();scrollTo(0,0);return}
   if(g("[data-rename]")){me.name="";LSs("kb_name","");render();return}
   if((b=g("[data-chk]"))){doChk(b.dataset.chk);return}
+  if((b=g("[data-pf]"))){pf=b.dataset.pf;render();return}
   if(g("[data-savecat]")){saveCat(($("#catIn")||{}).value||"");return}
   if(g("[data-bookall]")){for(const x of newBuys().filter(y=>!y.dupOf))await book(x.uid+"|"+x.id);return}
   if(g("[data-cpchat]")){const txt=chatPrompt();try{await navigator.clipboard.writeText(txt);$("#cpm2").textContent="✓ कॉपी हो गया — अब Claude की नई चैट में चिपकाएँ"}catch(_){const r=document.createRange();r.selectNodeContents($("#cpTxt"));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);$("#cpm2").textContent="संदेश चुन लिया — कॉपी दबाएँ"}return}
@@ -323,7 +366,7 @@ render();
   let u=null;try{u=await claude.use("user")}catch(e){}
   const owner=!!(u&&(u.isOwner()||u.canEdit()));role=owner?"owner":"staff";tab=LSg("kb_tab_"+role,"");
   try{me.id=u?await u.id():""}catch(e){}me.name=LSg("kb_name","");
-  if(owner){db.collection("bills").onSnapshot(s=>{clearTimeout(tm);loaded=true;BILLS=s.docs.map(d=>({id:d.id,...d.data()}));render()},err=>{clearTimeout(tm);loaded=true;$("#view").innerHTML=`<div class="box empty">बिल नहीं पढ़ पाए (${esc(err&&err.code||"")})</div>`});loadBuys();loadMem().then(render)}
+  if(owner){db.collection("bills").onSnapshot(s=>{clearTimeout(tm);loaded=true;BILLS=s.docs.map(d=>({id:d.id,...d.data()}));render()},err=>{clearTimeout(tm);loaded=true;$("#view").innerHTML=`<div class="box empty">बिल नहीं पढ़ पाए (${esc(err&&err.code||"")})</div>`});loadBuys();Promise.all([loadMem(),loadRate()]).then(render)}
   else{clearTimeout(tm);loaded=true;await loadF();if(!me.name&&me.id){try{const d=await db.doc("buys/"+me.id).get();const v=d.data&&d.data();if(v&&v.name){me.name=v.name;LSs("kb_name",me.name)}}catch(e){}}
     try{sample=await claude.use("sample")}catch(e){sample=null}
     if(me.id&&me.name){db.doc("buys/"+me.id).get().then(d=>{if(!(d&&d.exists))db.doc("buys/"+me.id).set({name:me.name,last:Date.now()}).catch(()=>{})}).catch(()=>{})}

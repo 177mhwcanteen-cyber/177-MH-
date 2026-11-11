@@ -49,14 +49,20 @@
    "nm": "MOONG SABUT",
    "qty": 15,
    "rate": 105,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-sabut-moong-whole-green-gram-500-g-loose": 0.5
+   }
   },
   {
    "amt": 6336,
    "nm": "SINGDANA (MOONGFALI)",
    "qty": 44,
    "rate": 144,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-moongfali-dana-raw-peanuts-500-g-loose-p": 0.5
+   }
   },
   {
    "amt": 2640,
@@ -70,14 +76,20 @@
    "nm": "CHANA DAL",
    "qty": 15,
    "rate": 92,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-chana-dal-500-g-packed": 0.5
+   }
   },
   {
    "amt": 700,
    "nm": "RAJMA",
    "qty": 5,
    "rate": 140,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-rajma-red-kidney-beans-500-g-packed": 0.5
+   }
   },
   {
    "amt": 575,
@@ -91,7 +103,10 @@
    "nm": "GOND",
    "qty": 0.25,
    "rate": 230,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-khane-ka-gond-edible-gum-200-g-loose-pac": 0.2
+   }
   },
   {
    "amt": 375,
@@ -175,7 +190,10 @@
    "nm": "KALI MIRCH",
    "qty": 4,
    "rate": 430,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-kali-mirch-black-pepper-100-g-pack": 0.1
+   }
   },
   {
    "amt": 35,

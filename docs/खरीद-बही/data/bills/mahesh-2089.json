@@ -10,75 +10,83 @@
  "gst": 0,
  "lines": [
   {
+   "amt": 1836.32,
+   "mrp": 115,
    "nm": "EVEREST GARAM MASALA 100G",
    "qty": 20,
-   "u": "pcs",
-   "mrp": 115,
    "rate": 91.8158,
-   "amt": 1836.32
+   "u": "pcs",
+   "iid": "g-everest-garam-masala-100g"
   },
   {
+   "amt": 1708.63,
+   "mrp": 107,
    "nm": "EVEREST CHICKEN MASALA 100G",
    "qty": 20,
-   "u": "pcs",
-   "mrp": 107,
    "rate": 85.4313,
-   "amt": 1708.63
+   "u": "pcs",
+   "iid": "g-everest-chicken-masala-100g"
   },
   {
+   "amt": 854.31,
+   "mrp": 107,
    "nm": "EVEREST MEAT MASALA 100G",
    "qty": 10,
-   "u": "pcs",
-   "mrp": 107,
    "rate": 85.4313,
-   "amt": 854.31
+   "u": "pcs",
+   "iid": "b8901786151004"
   },
   {
+   "amt": 878.26,
+   "mrp": 110,
    "nm": "EVEREST SHAHI PANEER MASALA 100G",
    "qty": 10,
-   "u": "pcs",
-   "mrp": 110,
    "rate": 87.8255,
-   "amt": 878.26
+   "u": "pcs",
+   "iid": "g-everest-shahi-paneer-masala-100g"
   },
   {
+   "amt": 766.43,
+   "mrp": 96,
    "nm": "EVEREST DRY MANGO (AMCHUR) 100G",
    "qty": 10,
-   "u": "pcs",
-   "mrp": 96,
    "rate": 76.6428,
-   "amt": 766.43
+   "u": "pcs",
+   "iid": "g-everest-dry-mango-amchur-100g"
   },
   {
+   "amt": 742.49,
+   "mrp": 93,
    "nm": "EVEREST CHAAT MASALA 100G",
    "qty": 10,
-   "u": "pcs",
-   "mrp": 93,
    "rate": 74.2487,
-   "amt": 742.49
+   "u": "pcs",
+   "iid": "g-everest-chaat-masala-100g"
   },
   {
+   "amt": 355.28,
+   "mrp": 445,
    "nm": "EVEREST CHAAT MASALA 500G",
    "qty": 1,
-   "u": "pcs",
-   "mrp": 445,
    "rate": 355.2823,
-   "amt": 355.28
+   "u": "pcs",
+   "iid": "g-everest-chaat-masala-500g"
   },
   {
+   "amt": 838.29,
+   "mrp": 525,
    "nm": "EVEREST GARAM MASALA 500G",
    "qty": 2,
-   "u": "pcs",
-   "mrp": 525,
    "rate": 419.1463,
-   "amt": 838.29
+   "u": "pcs",
+   "iid": "g-everest-garam-masala-500g"
   },
   {
+   "amt": -0.01,
    "nm": "ROUND OFF",
    "qty": 1,
-   "u": "pcs",
    "rate": -0.01,
-   "amt": -0.01
+   "u": "pcs"
   }
  ],
  "no": "2089/26-27",

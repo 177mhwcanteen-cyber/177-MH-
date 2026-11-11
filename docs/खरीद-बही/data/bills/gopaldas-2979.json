@@ -14,7 +14,10 @@
    "nm": "SINGDANA (MOONGFALI)",
    "qty": 10,
    "rate": 183,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-moongfali-dana-raw-peanuts-500-g-loose-p": 0.5
+   }
   },
   {
    "amt": 1950,
@@ -35,7 +38,10 @@
    "nm": "METHI DANA",
    "qty": 5,
    "rate": 88,
-   "u": "kg"
+   "u": "kg",
+   "fit": {
+    "g-methi-dana-fenugreek-200-g": 0.2
+   }
   },
   {
    "amt": 870,
