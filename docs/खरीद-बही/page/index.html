@@ -323,7 +323,8 @@ function pendHTML(){if(!PEND)return "";const N=PEND.j,d=PEND.d,w=PEND.warn;
   ${w.map(x=>`<div class="alert" style="margin-top:6px">${esc(x)}</div>`).join("")}${chgHTMLof(d,12)}
   <p style="margin:10px 0 6px"><b>विक्रम जी, यह नया डेटा याद कर लूँ?</b> <span class="note">हाँ = दुकान इसी से दिखेगी और ये बदलाव "🔔 बदलाव" में दर्ज होंगे। नहीं = कुछ नहीं बदलेगा।</span></p>
   <div class="row2"><button type="button" class="big" data-pendok>✓ हाँ, याद करो</button><button type="button" class="big ghost" data-pendno>✖ नहीं, रहने दो</button></div></div>`}
-function checkShop(txt){let j;try{j=parseShop(txt)}catch(e){alertMsg("कोड सही नहीं — ऐप से फिर कॉपी करें ("+(e.message||"")+")");return}
+let pendErr="";
+function checkShop(txt){let j;pendErr="";txt=String(txt||"");try{j=parseShop(txt)}catch(e){pendErr=!txt.trim()?"खाना खाली है — पहले ऐप से कॉपी करके यहाँ चिपकाएँ।":"कोड अधूरा या कटा हुआ आया ("+Math.round(txt.length/1024)+" KB मिला"+(/\}\s*$/.test(txt)?"":" · आख़िर का हिस्सा नहीं आया")+")। ऐप में फिर से कॉपी दबाकर दोबारा चिपकाएँ, या वही कोड चैट में Claude को भेज दें — वह खुद चढ़ा देगा।";render();return}
   if(j.app==="mh177-cat"){saveCat(txt);return}if(j.app!=="mh177-shop"||!Array.isArray(j.items)){alertMsg("यह ऐप की दुकान का डेटा नहीं है");return}if(j.org&&j.org!=="mh177"){alertMsg("⛔ यह दूसरी संस्था ("+j.org+") का डेटा है — यह 177 MH की बही है");return}
   const warn=[];if(SHOP&&j.ts<SHOP.ts)warn.push("⚠ यह डेटा पिछले से पुराना है ("+fd(j.day)+" < "+fd(SHOP.day)+") — शायद पुराना कोड चिपक गया।");if(SHOP&&j.items.length<SHOP.items.length*0.8)warn.push("⚠ सामान बहुत कम हैं ("+j.items.length+" < "+SHOP.items.length+") — कॉपी अधूरा रह गया हो सकता है।");
   if(!j.items.some(x=>+x.s>0))warn.push("⚠ किसी सामान का बिक्री-भाव नहीं आया — मालिक के फोन से कॉपी करें।");if(SHOP&&j.ts===SHOP.ts){alertMsg("यह डेटा पहले से याद है ✓");return}
@@ -342,16 +343,17 @@ async function saveShop(btn){if(!PEND)return;const N=PEND.j,d=PEND.d;btn.disable
     /* 📸 फोन में खींची फोटो की छोटी नकलें */
     const T=Object.entries(N.th||{}).filter(([i,v])=>okImg(v)&&v.length<12000);if(T.length){const m={};T.forEach(([i,v])=>{m[i]=v;PH[i]=v});try{const g=await db.doc("ph/app").get();const old=(g&&g.exists&&g.data().m)||{};const all={...old,...m},o2={};let sz=0;Object.keys(all).reverse().forEach(k=>{if(sz+all[k].length<200000){o2[k]=all[k];sz+=all[k].length}});await db.doc("ph/app").set({m:o2,ts:Date.now()})}catch(e){}}
     PEND=null;tab="shop";LSs("kb_tab_owner",tab);alertMsg("✓ दुकान का नया डेटा याद हो गया — "+IT.length+" सामान"+(d.n?" · 🔔 "+d.n+" बदलाव दर्ज":""));render();scrollTo(0,0)}
-  catch(e){btn.disabled=false;btn.textContent="✓ हाँ, याद करो";alertMsg("सेव नहीं हुआ ("+(e&&e.code||"नेट")+") — फिर दबाएँ")}}
+  catch(e){btn.disabled=false;btn.textContent="✓ हाँ, याद करो";pendErr="सेव नहीं हुआ ("+(e&&(e.code||e.message)||"नेट")+") — फिर \"हाँ\" दबाएँ; न हो तो यही कोड चैट में Claude को भेज दें।";render()}}
 async function learn(x){/* बही में चढ़ाते समय: पैकेट-गिनती और दुकान याद */const pk={...PACKS},sh={...SHOPS};let ch=false;
   (x.lines||[]).forEach(l=>{if(+l.pp>0&&l.nm&&pk[l.nm]!==+l.pp){pk[l.nm]=+l.pp;ch=true}});if(x.shop&&!sh[x.shop]){sh[x.shop]={ph:x.phone||"",ts:Date.now()};ch=true}
   if(ch){PACKS=pk;SHOPS=sh;try{await db.doc("mem/packs").set({m:pk});await db.doc("mem/shops").set({m:sh})}catch(e){}}}
 function memHTML(){return `<div class="box form"><h2>📥 ऐप का डेटा</h2><p class="note">कैंटीन ऐप → ⚙️ → 🔍 खरीद-जाँच → <b>"🏪 पूरी दुकान का डेटा कॉपी"</b> → यहाँ चिपकाएँ → "जाँचो"। रोज़ या 2-3 दिन में एक बार। पहले दिखेगा क्या बदला, आप "हाँ" कहें तभी याद होगा।</p>
   <p class="note">अभी याद: ${SHOP?`🏪 दुकान <b>${fd(SHOP.day)}</b> (${SHOP.items.length} सामान) · `:""}🧠 <b>${CAT.length}</b> सामान · 💰 <b>${Object.keys(RATE).length}</b> के भाव · 🖼️ <b>${Object.keys(PH).length}</b> फोटो · <b>${Object.keys(PACKS).length}</b> पैकेट-गिनती · <b>${Object.keys(SHOPS).length}</b> दुकानें</p>
   <textarea id="catIn" class="srch" rows="4" placeholder='यहाँ चिपकाएँ — {"app":"mh177-shop",...}' style="font:12px var(--mono)"></textarea>
-  <div class="row2"><button type="button" class="big" data-savecat>🔎 जाँचो</button><label class="big ghost" style="text-align:center;box-sizing:border-box">📁 फ़ाइल से<input type="file" id="shopFile" accept=".json,.txt,.html,.md,application/json,text/plain" hidden></label></div>
+  <button type="button" class="big" data-clip>📋 कॉपी किया हुआ सीधे लो और जाँचो</button>
+  <div class="row2"><button type="button" class="big ghost" data-savecat>🔎 ऊपर चिपकाया हुआ जाँचो</button><label class="big ghost" style="text-align:center;box-sizing:border-box">📁 फ़ाइल से<input type="file" id="shopFile" accept=".json,.txt,.html,.md,application/json,text/plain" hidden></label></div>
   <p class="note">साथियों के AI को सिर्फ़ नाम, इकाई, पैकेट, बारकोड दिखते हैं; भाव, स्टॉक, बिक्री सिर्फ़ आपको।</p>
-  ${Object.keys(PACKS).length?`<div class="hist">📦 ${Object.entries(PACKS).map(([k,v])=>esc(k)+" = "+v).join(" · ")}</div>`:""}</div>${pendHTML()}`}
+  ${Object.keys(PACKS).length?`<div class="hist">📦 ${Object.entries(PACKS).map(([k,v])=>esc(k)+" = "+v).join(" · ")}</div>`:""}</div>${pendErr?`<div class="alert">⚠ ${esc(pendErr)}</div>`:""}${pendHTML()}`}
 /* ---------- 🛒 साथी: नई खरीद ---------- */
 const SLOTS=[["bill","🧾 बिल","पूरा बिल, सीधा, साफ़"],["card","🪪 दुकान / कार्ड","विज़िटिंग कार्ड या दुकान का बोर्ड"],["goods","📦 सामान","आगे-पीछे, सब पैकेट दिखें"],["qr","🔳 QR / भुगतान","QR या पैसे की रसीद"]];
 let F=null;const blank=()=>({shop:"",phone:"",billNo:"",date:today(),pay:"cash",paid:"",payTo:"",note:"",ph:{bill:[],card:[],goods:[],qr:[]},lines:[],ask:[],ans:"",total:0,aiWarn:"",sent:false});
@@ -466,6 +468,7 @@ document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);let b
   if((b=g("[data-chk]"))){doChk(b.dataset.chk);return}
   if((b=g("[data-pf]"))){pf=b.dataset.pf;render();return}
   if(g("[data-savecat]")){checkShop(($("#catIn")||{}).value||"");return}
+  if(g("[data-clip]")){try{const t=await navigator.clipboard.readText();checkShop(t)}catch(_){pendErr="फोन ने सीधे लेने नहीं दिया — ऊपर के खाने में चिपकाकर \"जाँचो\" दबाएँ।";render()}return}
   if((b=g("[data-pendok]"))){saveShop(b);return}
   if(g("[data-pendno]")){PEND=null;render();return}
   if((b=g("[data-sf]"))){sf=b.dataset.sf;smax=60;render();return}
