@@ -3600,6 +3600,22 @@
      "from": 0,
      "to": 24.75
     }
+   },
+   "g-krusherz-dodo-surprise-egg-choco-toy-jar-pc": {
+    "barcode": {
+     "from": null,
+     "to": "8908005285014"
+    }
+   },
+   "b8908005285014": {
+    "barcode": {
+     "from": "8908005285014",
+     "to": ""
+    },
+    "sale": {
+     "from": 10,
+     "to": 300
+    }
    }
   },
   "pstock": {
