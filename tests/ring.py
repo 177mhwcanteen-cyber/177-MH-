@@ -22,7 +22,8 @@ window.__BP={ringStatus:async o=>{__rc.push(['status',o]);const r=st();if(o&&o.c
  ringStop:async()=>{__rc.push(['stop']);Object.assign(__rs,{on:false,running:false});return st()},
  ringSilence:async()=>{__rc.push(['silence']);Object.assign(__rs,{ringing:false,pending:0,opened:false});return st()},
  ringTest:async()=>{__rc.push(['test']);return st()},ringBattery:async()=>{__rc.push(['battery']);__rs.battery=true;return st()},
- ringSettings:async o=>{__rc.push(['settings',o]);if(o.what==='fsi')__rs.fsi=true;return st()}};"""
+ ringSettings:async o=>{__rc.push(['settings',o]);if(o.what==='fsi')__rs.fsi=true;return st()},
+ authSet:async o=>{__rc.push(['authSet',o]);window.__auth=o;return {ok:true}},authClear:async()=>{__rc.push(['authClear']);return {}}};"""
 
 
 async def page(br, native, old=False):
@@ -79,12 +80,31 @@ async def main():
         last = (await pg.evaluate("__rc.filter(c=>c[0]==='start').pop()"))[1]
         assert last["loud"] is False and last["ask"] is False, last
         await pg.evaluate("s=>document.querySelector(s).click()", "[data-srgloud]"); await pg.wait_for_timeout(300)
-        # 7) सूचना से ऐप खुला → ऑर्डर-शीट + चुप
-        await pg.evaluate("document.querySelector('#sheet').innerHTML='';__rs.opened=true;__rs.ringing=true;__rc=[];SX.orders=[{id:'o1',name:'राम',phone:'9999999999',items:[{n:'A',q:1}],status:'new',ts:Date.now()}];SRG.checkOpened()")
+        # 7) सूचना से ऐप खुला → पूरी स्क्रीन का पॉप-अप (नाम, सामान, स्वीकार 15/30/45) + चुप
+        await pg.evaluate("document.querySelector('#sheet').innerHTML='';__rs.opened=true;__rs.ringing=true;__rc=[];SX.orders=[{id:'o1',name:'राम',phone:'9999999999',addr:'गली 4',note:'🛵|💵|⏰ अभी|📍25.75,71.39|₹120¦',items:[{n:'maggi 70g',q:2,u:'pc',s:14}],status:'new',ts:Date.now()}];SRG.checkOpened()")
         await pg.wait_for_timeout(500)
-        assert await pg.locator("#sheet .son-sheet").count() == 1, "ऑर्डर-शीट खुली"
+        assert await pg.locator("#srgPop:not([hidden])").count() == 1, "पॉप-अप खुला"
+        txt = await pg.inner_text("#srgPop")
+        assert "राम" in txt and "MAGGI 70G" in txt and "₹120" in txt and "गली 4" in txt, txt
+        assert await pg.locator("#srgPop [data-spacc]").count() == 3
+        await pg.evaluate("(()=>{const l=document.getElementById('lock');if(l)l.hidden=true})()")
+        await pg.screenshot(path=os.path.join(SHOTS, "ring_popup.png"))
+        await pg.evaluate("window.__steps=[];SON.step=async(id,st,ex)=>{__steps.push([id,st,ex&&ex.mins]);return true};0")
+        await pg.evaluate("s=>document.querySelector(s).click()", '[data-spacc="30"]'); await pg.wait_for_timeout(300)
+        assert await pg.evaluate("__steps") == [["o1", "acc", 30]] and await pg.locator("#srgPop:not([hidden])").count() == 0
         assert ["silence"] in await pg.evaluate("__rc.map(c=>[c[0]])")
-        assert await pg.locator("#sheet [data-srgopen]").count() == 1  # शीट में 🔔 घंटी बटन
+        # "सब ऑर्डर" → ऑर्डर-शीट (उसमें 🔔 घंटी बटन)
+        await pg.evaluate("SRG.popup(SX.orders[0])"); await pg.evaluate("s=>document.querySelector(s).click()", "[data-spall]"); await pg.wait_for_timeout(300)
+        assert await pg.locator("#sheet .son-sheet").count() == 1 and await pg.locator("#sheet [data-srgopen]").count() == 1
+        # 🎵 10 धुनें + फोन का अलार्म; चुनने पर ringStart(tone)
+        await pg.evaluate("SRG.sheet()"); await pg.wait_for_timeout(300)
+        assert await pg.locator("[data-srgtone]").count() == 11 and await pg.evaluate("SRG.tone()") == "t1"
+        await pg.evaluate("s=>document.querySelector(s).click()", '[data-srgtone="t6"]'); await pg.wait_for_timeout(400)
+        assert await pg.evaluate("localStorage.getItem('srg_tone')") == "t6" and (await pg.evaluate("__rc.filter(c=>c[0]==='start').pop()"))[1]["tone"] == "t6"
+        ok = await pg.evaluate("Promise.all(SRG.TONES.filter(t=>t[0]!=='sys').map(t=>fetch('sounds/'+t[0]+'.wav').then(r=>r.ok&&r.headers.get('content-type')!=='text/html')))")
+        assert all(ok), ok
+        # 🔑 लॉगिन की चाबी APK को (ऐप बंद हो तब भी लोकेशन/घंटी)
+        assert "authSet" in await pg.evaluate("__rc.map(c=>c[0]).join()") or await pg.evaluate("window.__auth||0"), "authSet"
         # 8) नेटिव घंटी चल रही → JS बीप नहीं; कोई नया नहीं बचा → चुप
         await pg.evaluate("window.__beeps=0;window.beep=()=>{__beeps++};SX._seen=new Set();SX._oInit=1;SRG.st.running=true;SX.orders=[{id:'o2',name:'श्याम',items:[{n:'B',q:1}],status:'new',ts:Date.now()}];SX.orderPill()")
         assert await pg.evaluate("__beeps") == 0
@@ -99,8 +119,19 @@ async def main():
         # 10) लॉग-आउट से पहले घंटी बंद
         assert await pg.evaluate("!!SE.logout._srg"), "SE.logout लिपटा"
         await pg.evaluate("async()=>{const w=SE.logout;window.__out=0;SE.logout=async()=>{__out=1};SRG.wrapLogout();__rc=[];await SE.logout();SE.logout=w}")
-        assert await pg.evaluate("__out") == 1
+        assert await pg.evaluate("__out") == 1 and ["authClear"] in await pg.evaluate("__rc.map(c=>[c[0]])"), "लॉग-आउट पर चाबी भी मिटी"
         assert ["stop"] in await pg.evaluate("__rc.map(c=>[c[0]])"), "लॉग-आउट पर बंद"
+
+        # 🛵 डिलीवरी की जाँच (मालिक का लोकेशन टैब): ग्राहक के घर से "पहुँच गया" की दूरी + रास्ता
+        await pg.evaluate("""(async()=>{const db=firebase.firestore(),d=today(),t=Date.now();
+          await db.collection('orders').doc('d1').set({name:'सीता',status:'done',note:'🛵|💵|📍25.752000,71.396000|₹200¦',addr:'गली 7',items:[],ts:t-3600e3,outTs:t-1800e3,doneTs:t-60e3,dts:t-60e3,doneUid:'u9',rider:'मनोहर',doneLoc:{lat:25.7521,lng:71.3961,acc:10,ts:t}});
+          await db.collection('orders').doc('d2').set({name:'गीता',status:'done',note:'🛵|💵|📍25.760000,71.410000|₹90¦',items:[],ts:t-3600e3,outTs:t-1700e3,doneTs:t-50e3,dts:t-50e3,doneUid:'u9',rider:'मनोहर',doneLoc:{lat:25.7521,lng:71.3961,acc:10,ts:t}});
+          await db.collection('trk').doc(d+'_u9_10').set({uid:'u9',name:'मनोहर',date:d,hr:10,pts:[(t-1000e3)+',25.751900,71.396100,8',(t-900e3)+',25.752050,71.396020,8']})})()""")
+        await pg.evaluate("S.tab='route';(()=>{let e=document.getElementById('p-route');if(!e){e=document.createElement('div');e.id='p-route';document.body.appendChild(e)}})();SR.renderRoute()")
+        await pg.wait_for_timeout(1500); await pg.evaluate("SR.renderRoute()"); await pg.wait_for_timeout(500)
+        t = await pg.inner_text(".rdv")
+        assert "2 ऑर्डर" in t and "सीता" in t and "पहुँचा — पक्का" in t and "गीता" in t and "दूर से" in t, t
+        assert await pg.locator("[data-rdv]").count() == 2
 
         # 11) पुराना APK (प्लगइन में घंटी नहीं) → "नया ऐप डाउनलोड करें", कोई गलती नहीं
         pg = await page(br, True, old=True)

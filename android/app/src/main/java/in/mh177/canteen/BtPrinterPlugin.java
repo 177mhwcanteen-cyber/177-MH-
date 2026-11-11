@@ -429,8 +429,11 @@ public class BtPrinterPlugin extends Plugin {
         e.putInt("open", call.getInt("open", -1));
         e.putInt("close", call.getInt("close", -1));
         e.putBoolean("loud", call.getBoolean("loud", true));
+        String tone = call.getString("tone", "");
+        if (tone != null && tone.length() > 0) e.putString("tone", tone);
         e.putBoolean("on", true);
         e.apply();
+        Fs.set(getContext(), rt, call.getString("key", ""), call.getString("pid", ""), call.getString("name", null));
         if (Build.VERSION.SDK_INT >= 33 && getPermissionState("notif") != PermissionState.GRANTED && call.getBoolean("ask", true)) {
             requestPermissionForAlias("notif", call, "afterRingNotif");
             return;
@@ -453,6 +456,23 @@ public class BtPrinterPlugin extends Plugin {
             return;
         }
         call.resolve(ringState());
+    }
+
+    /** 🔑 लॉगिन की चाबी ऐप की निजी जगह में — ऐप बंद हो तब भी घंटी और लोकेशन Firestore से बात कर सकें */
+    @PluginMethod
+    public void authSet(PluginCall call) {
+        Fs.set(getContext(), call.getString("rt", ""), call.getString("key", ""), call.getString("pid", ""), call.getString("name", null));
+        JSObject o = new JSObject();
+        o.put("ok", Fs.ready(getContext()));
+        o.put("lastUp", TrackService.lastUp);
+        o.put("upErr", TrackService.upErr);
+        call.resolve(o);
+    }
+
+    @PluginMethod
+    public void authClear(PluginCall call) {
+        Fs.clear(getContext());
+        call.resolve();
     }
 
     @PluginMethod

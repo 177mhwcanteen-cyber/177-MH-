@@ -167,6 +167,7 @@ SX.orderPill=function(){let el=document.getElementById("sxOrd");const n=SX.order
   const seen=SX._seen||(SX._seen=new Set());const fresh=SX.orders.filter(o=>o.status==="new"&&!seen.has(o.id));fresh.forEach(o=>seen.add(o.id));
   if(!n&&window.SRG&&SRG.st&&SRG.st.ringing)SRG.silence();
   if(fresh.length&&SX._oInit){if(!(window.SRG&&SRG.running())){try{beep(true);setTimeout(()=>beep(true),350);setTimeout(()=>beep(true),700)}catch(e){}try{if(navigator.vibrate)navigator.vibrate([200,100,200,100,300])}catch(e){}}
+    if(window.SRG&&SRG.popup)SRG.popup(fresh[0]);
     toast("📥 नया ऑर्डर: "+fresh.map(o=>(o.name||"ग्राहक")+" ("+(o.items||[]).length+" सामान)").join(", ")+" — ऊपर 📥 दबाएँ")}
   else if(n&&!SX._oInit){try{beep(true)}catch(e){}}SX._oInit=1};
 SX.ordersSheet=function(){const L=SX.orders;$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="ऑर्डर"><div class="grab"></div>

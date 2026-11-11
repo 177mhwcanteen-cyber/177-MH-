@@ -363,7 +363,7 @@ function liveHTML(){
   return `<h3 style="margin:0 0 4px">📍 कर्मचारी अभी कहाँ हैं</h3>`+[...R.live].sort((a,b)=>(b.seen||0)-(a.seen||0)).map(v=>{
     const fresh=v.ts&&Date.now()-v.ts<6*60000;const pl=v.lat!=null?placeAt(v):null;
     const bad=v.unsupported?"नई APK नहीं डली":v.perm===false?"लोकेशन की अनुमति नहीं दी":v.gps===false?"फोन की लोकेशन बंद":v.running===false?"लोकेशन रुकी":"";
-    return `<div class="livep"><span class="dot ${fresh&&!bad?"on":""}"></span><div class="mid"><b>${esc(v.name||"")}</b><span>${v.ts?(pl?"📍 "+esc(pl.name)+" · ":"")+"आखिरी जगह "+agoTxt(v.ts):"अभी जगह नहीं मिली"}${bad?` · <b style="color:var(--chili)">⚠ ${bad}</b>`:""}${v.seen?" · ऐप "+agoTxt(v.seen):""}</span></div>${v.lat!=null?`<a class="lnk" href="https://maps.google.com/?q=${v.lat},${v.lng}" target="_blank" rel="noopener">नक्शा ↗</a>`:""}</div>`}).join("");
+    return `<div class="livep"><span class="dot ${fresh&&!bad?"on":""}"></span><div class="mid"><b>${esc(v.name||"")}</b><span>${v.ts?(pl?"📍 "+esc(pl.name)+" · ":"")+"आखिरी जगह "+agoTxt(v.ts):"अभी जगह नहीं मिली"}${bad?` · <b style="color:var(--chili)">⚠ ${bad}</b>`:""}${v.seen?" · ऐप "+agoTxt(v.seen):""}${v.bg&&Date.now()-v.bg<8*60000&&v.bg>=(+v.seen||0)-2000?` · <b style="color:var(--leaf)">📴 ऐप बंद है, फिर भी जगह आ रही</b>`:""}</span></div>${v.lat!=null?`<a class="lnk" href="https://maps.google.com/?q=${v.lat},${v.lng}" target="_blank" rel="noopener">नक्शा ↗</a>`:""}</div>`}).join("");
 }
 SR.updateLive=function(){const el=document.getElementById("rLive");if(el)el.innerHTML=liveHTML();drawLive()};
 function drawLive(){
@@ -464,6 +464,32 @@ const OP={};
 function opensHTML(){const d=R.date;if(!OP[d]&&S.db&&!S.demo){OP[d]={loading:true,list:[]};S.db.collection("opens").where("date","==",d).get().then(q=>{OP[d]={list:q.docs.map(x=>x.data()).sort((a,b)=>b.ts-a.ts)};if(S.tab==="route")SR.renderRoute()}).catch(()=>{OP[d]={list:[],err:1}})}
   const o=OP[d]||{list:[]};const L=o.list.filter(x=>!R.who||x.uid===R.who);
   return `<div class="card2"><h3 style="margin:0 0 6px">🚪 ऐप कब-कहाँ खुला <small class="note">${L.length} बार</small></h3>${o.loading?'<p class="note">लोड हो रहा है…</p>':L.length?`<div class="list">${L.slice(0,60).map(x=>`<div class="li"><div class="mid"><b>${esc(x.name||"फोन")} · ${ftime(x.ts)} <small class="note">${esc(x.what||"")}</small></b><span>${x.lat!=null?`📍 ±${x.acc||"?"} मी`:"📍 जगह नहीं मिली (GPS बंद?)"}</span></div>${x.lat!=null?`<a class="chip" target="_blank" rel="noopener" href="https://maps.google.com/?q=${x.lat},${x.lng}">🗺️ नक्शा</a>`:""}</div>`).join("")}</div>`:'<p class="note">इस दिन किसी ने ऐप नहीं खोला (या नियम अभी Firebase में नहीं डाले)</p>'}</div>`}
+/* ======================= 🛵 डिलीवरी की जाँच (सिर्फ़ मालिक) =======================
+   "भेज दिया"/"पहुँच गया" दबाते समय फोन की जगह (orders.outLoc/doneLoc, se-online SON.step) + उस साथी का रास्ता (trk) बनाम ग्राहक का घर (नोट का 📍lat,lng)।
+   ✅ पक्का: पहुँचा दबाते समय घर से ≤150 मी, या रास्ता घर के 120 मी अंदर से गुज़रा · 🟡 शक · 🔴 दूर से "पहुँचा" · ⚪ जगह नहीं मिली */
+const DV={};
+function custLL(o){try{const p=window.SON&&SON.parse?SON.parse(o):{};if(p.mode==="p")return null;const m=String(p.ll||"").match(/(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/);return m?{lat:+m[1],lng:+m[2]}:null}catch(e){return null}}
+function delivRows(date){const d=DV[date];if(!d||!d.list)return [];const day=R.day&&R.day.date===date?R.day:null;
+  return d.list.map(o=>{const c=custLL(o),uid=o.doneUid||o.outUid||"",t1=+o.outTs||+o.accTs||(+o.doneTs||+o.dts)-3600000,t2=+o.doneTs||+o.dts;
+    const dl=o.doneLoc&&c?Math.round(dist(c,o.doneLoc)):null;let near=null;
+    if(c&&day){const u=day.pts.find(x=>x.uid===uid);if(u)u.P.forEach(p=>{if(p.ts<t1-5*60000||p.ts>t2+10*60000)return;const m=dist(c,p);if(!near||m<near.m)near={m:Math.round(m),ts:p.ts}})}
+    const ok=(dl!=null&&dl<=150)||(near&&near.m<=120),far=(dl==null||dl>600)&&(!near||near.m>600)&&(dl!=null||near);
+    const k=!c?"nogeo":ok?"ok":far?"bad":(dl==null&&!near)?"none":"doubt";
+    return {o,c,uid,t1,t2,dl,near,k,who:o.rider||o.byName||""}})}
+function delivHTML(){const date=R.date;if(!DV[date]&&S.db&&!S.demo){DV[date]={loading:true};
+    S.db.collection("orders").where("status","==","done").get().then(q=>{DV[date]={list:q.docs.map(x=>({id:x.id,...x.data()})).filter(o=>dOf(+o.doneTs||+o.dts||+o.ts)===date).sort((a,b)=>(+b.dts||0)-(+a.dts||0))};if(S.tab==="route")SR.renderRoute()}).catch(e=>{DV[date]={list:[],err:e.code||""}})}
+  const d=DV[date];if(!d||d.loading)return `<div class="card2"><h3 style="margin:0">🛵 डिलीवरी की जाँच</h3><p class="note" style="margin:0">⏳ लोड हो रहा है…</p></div>`;
+  const L=delivRows(date);const V={ok:["✅","पहुँचा — पक्का","var(--leaf)"],doubt:["🟡","शक — थोड़ी दूरी से","#d97706"],bad:["🔴","दूर से \"पहुँचा\" दबाया","var(--chili)"],none:["⚪","फोन की जगह नहीं मिली","var(--muted)"],nogeo:["🏪","ग्राहक की जगह नहीं (दुकान से लिया/पता बिना 📍)","var(--muted)"]};
+  const cnt=k=>L.filter(r=>r.k===k).length,m=x=>x>=1000?(x/1000).toFixed(1)+" km":x+" मी";
+  return `<div class="card2 rdv"><h3 style="margin:0 0 4px">🛵 डिलीवरी की जाँच · ${L.length} ऑर्डर</h3>
+  ${L.length?`<div class="rdv-k">${["ok","doubt","bad","none"].map(k=>`<span style="color:${V[k][2]}">${V[k][0]} ${cnt(k)}</span>`).join("")}</div>
+  ${L.map((r,i)=>{const v=V[r.k],o=r.o,mn=r.t2&&r.t1?Math.max(0,Math.round((r.t2-r.t1)/60000)):null;
+    return `<div class="rdv-r"><div class="rdv-h"><b>${v[0]} ${esc(o.name||"ग्राहक")}</b><span style="color:${v[2]};font-weight:800">${v[1]}</span></div>
+    <div class="note">🛵 ${esc(r.who||"—")} · भेजा ${o.outTs?ftime(o.outTs):"—"} → पहुँचा ${r.t2?ftime(r.t2):"—"}${mn!=null&&o.outTs?` (${mn} मि)`:""}${o.addr?" · 📍 "+esc(o.addr):""}</div>
+    ${r.c?`<div class="note">${r.dl!=null?`"पहुँच गया" दबाते समय फोन घर से <b>${m(r.dl)}</b>`:`"पहुँच गया" दबाते समय फोन की जगह नहीं मिली`}${r.near?` · रास्ते में घर से सबसे पास <b>${m(r.near.m)}</b> (${ftime(r.near.ts)})`:r.uid?" · इस समय का रास्ता नहीं मिला":""}</div>
+    <button class="chip" data-rdv="${i}" style="margin-top:4px">🗺️ नक्शे पर देखें</button>`:""}</div>`}).join("")}`:`<p class="note" style="margin:0">इस दिन कोई घर-डिलीवरी "पहुँच गया" नहीं हुई।</p>`}
+  <p class="note" style="margin:6px 0 0">कैसे: साथी "🛵 भेज दिया" और "✅ पहुँच गया" दबाता है — उस समय फोन की जगह और पूरे रास्ते को ग्राहक के घर (ऑर्डर का 📍) से मिलाया जाता है।</p></div>`}
+SR.delivRows=delivRows;
 SR.renderRoute=function(){
   const el=document.getElementById("p-route");if(!el)return;bindRoute(el);if(!R.date)R.date=today();
   if((!R.raw||R.raw.date!==R.date)&&!R.loading)SR.loadDay(R.date);
@@ -471,7 +497,7 @@ SR.renderRoute=function(){
   el.innerHTML=`<div class="daterow"><h2 class="sec" style="margin:0;flex:1">📍 लोकेशन ट्रैकर</h2><button class="chip" data-rref aria-label="ताज़ा करें">🔄</button></div>
   <div class="rt-f"><div class="rt-chips">${[[today(),"आज"],[yd,"कल"]].map(([v,t])=>`<button class="chip" data-rday="${v}" aria-pressed="${R.date===v}">${t}</button>`).join("")}<input class="inp" type="date" id="rDate" value="${R.date}" aria-label="तारीख"></div>
     ${P.length?`<div class="rt-chips"><button class="chip" data-rwho="" aria-pressed="${!R.who}">👥 सब</button>${P.map(([u,n])=>`<button class="chip" data-rwho="${esc(u)}" aria-pressed="${R.who===u}"><i class="rdot" style="background:${colorOf(u)}"></i>${esc(n||"फोन")}</button>`).join("")}</div>`:""}</div>
-  <div class="card2 rlive" id="rLive">${liveHTML()}</div>${opensHTML()}
+  <div class="card2 rlive" id="rLive">${liveHTML()}</div>${delivHTML()}${opensHTML()}
   <div class="seg" style="margin:0 0 10px"><span class="note" style="align-self:center">लोकेशन बंद हो तो कर्मचारी की बिलिंग रोकें:</span><button class="chip" data-locreq="1" aria-pressed="${locReq()}">✅ हाँ, रोकें</button><button class="chip" data-locreq="0" aria-pressed="${!locReq()}">नहीं</button></div>
   <div class="rmapw${R.big?" big":""}" id="rmapw"><div id="rmap" class="rmap" role="img" aria-label="कर्मचारी का रास्ता नक्शे पर"></div>
     <div class="rctl"><button data-rsat aria-label="नक्शे का प्रकार बदलें">${{osm:"🗺️ नक्शा",clean:"🧭 साफ़",sat:"🛰️ सैटेलाइट"}[R.sty]} ▾</button><button data-rlbl aria-pressed="${R.lbl}">🏷️ नाम</button><button data-rme>📍 मैं</button><button data-rbig>${R.big?"✕ छोटा":"⛶ बड़ा"}</button></div></div>
@@ -528,6 +554,10 @@ SR.drawMap=async function(){
         .on("click",()=>SR.stopSheet(i)).bindTooltip(`${i+1}. ${s.place?esc(s.place.name):"बिना नाम"} · ${ftime(s.start)} · ${durTxt(mins(s.end-s.start))} · ${s.bills.length} बिल · ${rs(r2(s.sales))}`);B.push([s.lat,s.lng])});
     R.billLayer=L.layerGroup();d.bills.forEach(b=>{if(!b.loc)return;L.circleMarker([b.loc.lat,b.loc.lng],{radius:4,color:"#fff",weight:1,fillColor:"#ef4444",fillOpacity:1}).addTo(R.billLayer).bindTooltip(ftime(b.ts)+" · "+rs(b.total)+" · "+esc(b.byName||""));B.push([b.loc.lat,b.loc.lng])});
   }
+  try{delivRows(R.date).forEach(r=>{if(!r.c||(R.who&&r.uid!==R.who))return;L.marker([r.c.lat,r.c.lng],{icon:pin("🏠","rpin",26,26),zIndexOffset:700}).addTo(m).bindTooltip("🏠 "+esc(r.o.name||"ग्राहक")+" · "+(r.t2?ftime(r.t2):""));
+    if(r.o.doneLoc)L.circleMarker([r.o.doneLoc.lat,r.o.doneLoc.lng],{radius:6,color:"#fff",weight:2,fillColor:r.k==="ok"?"#16a34a":r.k==="bad"?"#dc2626":"#d97706",fillOpacity:1}).addTo(m).bindTooltip("✅ यहाँ से \"पहुँच गया\" दबाया · "+(r.t2?ftime(r.t2):""));
+    B.push([r.c.lat,r.c.lng])})}catch(e){}
+  if(R.focus){B.length=0;B.push([R.focus.lat,R.focus.lng]);if(R.focus.p)B.push([R.focus.p.lat,R.focus.p.lng])}
   const dec=()=>{const z=m.getZoom();el.classList.toggle("nolbl",!(R.lbl&&z>=15));if(R.billLayer){if(z>=17)R.billLayer.addTo(m);else m.removeLayer(R.billLayer)}};
   m.on("zoomend",dec);
   if(R.date===today())R.live.forEach(v=>{if(v.lat!=null&&(!R.who||v.id===R.who))B.push([v.lat,v.lng])});
@@ -736,11 +766,12 @@ function bindRoute(el){
     if(e.target.id==="rpT"){R.play.t=+e.target.value;playDraw();return}
   });
   el.addEventListener("click",e=>{
-    const t=e.target.closest("[data-plhere],[data-plfix],[data-ragg],[data-rname],[data-pren],[data-pdel],[data-chist],[data-ccsv],[data-callc],[data-rref],[data-aggname],[data-rday],[data-rwho],[data-rsat],[data-rlbl],[data-rme],[data-rbig],[data-rplay],[data-rspd],[data-rpl],[data-cmap],[data-rstop]");if(!t)return;
+    const t=e.target.closest("[data-plhere],[data-plfix],[data-ragg],[data-rname],[data-pren],[data-pdel],[data-chist],[data-ccsv],[data-callc],[data-rref],[data-aggname],[data-rday],[data-rwho],[data-rsat],[data-rlbl],[data-rme],[data-rbig],[data-rplay],[data-rspd],[data-rpl],[data-cmap],[data-rstop],[data-rdv]");if(!t)return;
+    if(t.dataset.rdv!==undefined){const r=delivRows(R.date)[+t.dataset.rdv];if(r&&r.c){R.who=r.uid||R.who;R.focus={lat:r.c.lat,lng:r.c.lng,p:r.o.doneLoc||null};SR.renderRoute();setTimeout(()=>{const w=document.getElementById("rmapw");if(w)w.scrollIntoView({behavior:"smooth",block:"center"});R.focus=null},300)}return}
     if(t.dataset.plhere!==undefined){SR.lockSheet("");return}
     if(t.dataset.plfix){SR.lockSheet(t.dataset.plfix);return}
     if(t.dataset.ragg){SR.loadAgg(+t.dataset.ragg);return}
-    if(t.dataset.rref!==undefined){R.raw=null;R.day=null;R.agg=null;R.bcache={};SR.renderRoute();return}
+    if(t.dataset.rref!==undefined){R.raw=null;R.day=null;R.agg=null;R.bcache={};delete DV[R.date];SR.renderRoute();return}
     if(t.dataset.rname!==undefined){const s=R.day&&R.day.stops[+t.dataset.rname];if(s)nameSheet(s.lat,s.lng,s.place);return}
     if(t.dataset.aggname){const [la,ln]=t.dataset.aggname.split(",");nameSheet(+la,+ln,null);return}
     if(t.dataset.pren){const old=t.dataset.pren;const nn=(prompt("नया नाम",old)||"").trim();if(!nn||nn===old)return;SR.places.filter(p=>p.name===old).forEach(p=>S.db.collection("places").doc(p.id).update({name:nn}).catch(()=>{}));toast("नाम बदला");return}

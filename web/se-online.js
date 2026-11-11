@@ -67,7 +67,10 @@ SON.step=async function(id,st,extra){extra=extra||{};const o=(SX.orders||[]).fin
   const etaTs=extra.mins?Date.now()+extra.mins*60000:(o.etaTs||0);
   const pubSt={new:"new",billing:"pack",acc:"acc",pack:"pack",out:"out",done:"done",cancel:"cancel"}[st]||st;
   const msg=extra.msg?rom(extra.msg):(st==="out"&&extra.rider?"🛵 "+rom(extra.rider)+" is bringing your order":st==="pack"?"Your items are being packed":"");
-  try{if(!S.demo&&S.db){await S.db.collection("orders").doc(id).update({status:st,dts:Date.now(),byName:biller()||"",...(etaTs?{etaTs}:{}),...(extra.rider?{rider:extra.rider}:{}),...(extra.billNo?{billNo:extra.billNo}:{}),...(extra.reason?{reason:extra.reason}:{})});
+  /* 📍 डिलीवरी का सबूत: "भेज दिया"/"पहुँच गया" दबाते समय किसने, कब, फोन कहाँ था — मालिक लोकेशन टैब में ग्राहक के घर से दूरी देखें */
+  const loc=(st==="out"||st==="done")&&window.SR&&SR.locNow?SR.locNow():null;if((st==="out"||st==="done")&&!loc&&window.SR&&SR.quickFix)SR.quickFix();
+  const stamp=["acc","out","done","cancel"].includes(st)?{[st+"Ts"]:Date.now(),[st+"Uid"]:S.uid||"",...(loc?{[st+"Loc"]:loc}:{})}:{};
+  try{if(!S.demo&&S.db){await S.db.collection("orders").doc(id).update({status:st,dts:Date.now(),byName:biller()||"",...stamp,...(etaTs?{etaTs}:{}),...(extra.rider?{rider:extra.rider}:{}),...(extra.billNo?{billNo:extra.billNo}:{}),...(extra.reason?{reason:extra.reason}:{})});
       const pp=window.SA&&SA.points&&o.phone?SA.points(String(o.phone).replace(/\D/g,"").slice(-10)):null;/* 🎁 ग्राहक को उसके पॉइंट दिखें (सिर्फ़ गिनती) */
       await S.db.collection("pub").doc("ot_"+id).set({st:pubSt,ts:Date.now(),by,...(pp?{pts:pp.left,ptsPer:+((S.settings&&S.settings.pts&&S.settings.pts.per)||100)}:{}),...(etaTs?{eta:etaTs}:{}),...(msg?{msg}:{}),...(extra.billNo?{billNo:extra.billNo}:{})},{merge:true})}}
   catch(e){toast("नहीं हुआ: "+(e.code||e.message||""));return false}

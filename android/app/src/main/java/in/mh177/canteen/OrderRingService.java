@@ -25,12 +25,6 @@ import android.os.Vibrator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -67,8 +61,6 @@ public class OrderRingService extends Service {
     private MediaPlayer mp;
     private Vibrator vib;
     private int oldVol = -1;
-    private String idTok = "";
-    private long idExp = 0;
     private long ringStart = 0, ringEnd = 0;
     private final Set<String> silenced = new HashSet<>();
     private List<String[]> cur = new ArrayList<>();
@@ -179,48 +171,6 @@ public class OrderRingService extends Service {
         return open ? ev : Math.max(ev, 120);
     }
 
-    private static String readAll(InputStream in) throws Exception {
-        ByteArrayOutputStream bo = new ByteArrayOutputStream();
-        byte[] buf = new byte[8192];
-        int r;
-        while ((r = in.read(buf)) > 0) bo.write(buf, 0, r);
-        in.close();
-        return bo.toString("UTF-8");
-    }
-
-    private static String post(String url, String body, String type, String auth) throws Exception {
-        HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
-        c.setConnectTimeout(15000);
-        c.setReadTimeout(20000);
-        c.setRequestMethod("POST");
-        c.setDoOutput(true);
-        c.setRequestProperty("Content-Type", type);
-        if (auth != null) c.setRequestProperty("Authorization", "Bearer " + auth);
-        OutputStream os = c.getOutputStream();
-        os.write(body.getBytes("UTF-8"));
-        os.close();
-        int code = c.getResponseCode();
-        String s = readAll(code >= 400 ? c.getErrorStream() : c.getInputStream());
-        if (code >= 400) throw new Exception("HTTP " + code + (code == 403 ? " (इजाज़त नहीं)" : code == 400 || code == 401 ? " (फिर लॉगिन)" : ""));
-        return s;
-    }
-
-    private String token() throws Exception {
-        if (idTok.length() > 0 && System.currentTimeMillis() < idExp - 120000) return idTok;
-        SharedPreferences p = prefs(this);
-        String rt = p.getString("rt", ""), key = p.getString("key", "");
-        if (rt.length() == 0 || key.length() == 0) throw new Exception("लॉगिन की चाबी नहीं — ऐप एक बार खोलें");
-        String s = post("https://securetoken.googleapis.com/v1/token?key=" + URLEncoder.encode(key, "UTF-8"),
-                "grant_type=refresh_token&refresh_token=" + URLEncoder.encode(rt, "UTF-8"),
-                "application/x-www-form-urlencoded", null);
-        JSONObject j = new JSONObject(s);
-        idTok = j.getString("id_token");
-        idExp = System.currentTimeMillis() + j.optLong("expires_in", 3600) * 1000L;
-        String nrt = j.optString("refresh_token", "");
-        if (nrt.length() > 0 && !nrt.equals(rt)) p.edit().putString("rt", nrt).apply();
-        return idTok;
-    }
-
     private static String sv(JSONObject f, String k) {
         JSONObject o = f.optJSONObject(k);
         if (o == null) return "";
@@ -233,15 +183,13 @@ public class OrderRingService extends Service {
     private void poll() throws Exception {
         SharedPreferences p = prefs(this);
         String pid = p.getString("pid", "");
+        if (pid.length() == 0) pid = Fs.pid(this);
         if (pid.length() == 0) throw new Exception("प्रोजेक्ट नहीं");
         String q = "{\"structuredQuery\":{\"from\":[{\"collectionId\":\"orders\"}],\"where\":{\"fieldFilter\":{\"field\":{\"fieldPath\":\"status\"},\"op\":\"EQUAL\",\"value\":{\"stringValue\":\"new\"}}},\"limit\":30}}";
-        String s;
-        try {
-            s = post("https://firestore.googleapis.com/v1/projects/" + pid + "/databases/(default)/documents:runQuery", q, "application/json", token());
-        } catch (Exception e) {
-            if (String.valueOf(e.getMessage()).contains("401")) { idTok = ""; }
-            throw e;
+        if (!Fs.ready(this)) { // पुरानी APK से आई चाबी (se_ring) हो तो उसे साझा जगह में ले जाओ
+            Fs.set(this, p.getString("rt", ""), p.getString("key", ""), pid, null);
         }
+        String s = Fs.runQuery(this, q);
         JSONArray arr = new JSONArray(s);
         List<String[]> now = new ArrayList<>();
         for (int i = 0; i < arr.length(); i++) {
@@ -326,7 +274,13 @@ public class OrderRingService extends Service {
         try { ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NID_ALARM); } catch (Exception ignore) { }
     }
 
+    /** 🎵 चुनी हुई धुन: t1..t10 (APK में res/raw/order_tN) या "sys" = फोन का अलार्म */
     private Uri tone() {
+        String t = prefs(this).getString("tone", "t1");
+        if (t != null && t.matches("t\\d{1,2}")) {
+            int id = getResources().getIdentifier("order_" + t, "raw", getPackageName());
+            if (id != 0) return Uri.parse("android.resource://" + getPackageName() + "/" + id);
+        }
         Uri u = null;
         try { u = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM); } catch (Exception ignore) { }
         if (u == null) u = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
