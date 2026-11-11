@@ -19,6 +19,10 @@ body{-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:Lora,
 .cn{position:absolute;width:46px;height:46px;z-index:2}
 .cn.tl{top:-3px;left:-3px}.cn.tr{top:-3px;right:-3px;transform:scaleX(-1)}
 .cn.bl{bottom:-3px;left:-3px;transform:scaleY(-1)}.cn.br{bottom:-3px;right:-3px;transform:scale(-1,-1)}
+.paper:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M22 2l20 20-20 20L2 22z M22 10l12 12-12 12-12-12z' fill='none' stroke='%237a1c1c' stroke-width='1.2'/%3E%3Ccircle cx='22' cy='22' r='3' fill='%23b8893a'/%3E%3C/svg%3E")}
+.paper>*{position:relative;z-index:1}.paper>.cn{position:absolute;z-index:2}
+.slot{border:3px double #b8893a;outline:1.5px solid #6e4a17;border-radius:3px;background:linear-gradient(135deg,#4a2810,#6b3d1b);box-shadow:0 2px 5px rgba(60,30,5,.35)}
 .rule{display:flex;align-items:center;gap:8px;color:#9a6b22}
 .rule:before,.rule:after{content:"";flex:1;height:1.5px;background:linear-gradient(90deg,transparent,#b8893a 30%,#b8893a 70%,transparent)}
 
@@ -34,21 +38,22 @@ body{-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:Lora,
 .free .pts{display:flex;gap:12px;justify-content:center;margin-top:9px}
 .free .pt{background:#fff8e6;color:#1b4d26;border-radius:99px;padding:5px 14px 6px;font-size:14px;font-weight:700;line-height:1.15;box-shadow:0 1px 0 #0d3a18}
 .free .pt .hi{font-size:15px}.free .pt small{display:block;font:600 12.5px Lora;color:#3e6b46}
-.cards{display:grid;gap:12px;margin-top:14px}
-.cd{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:center;padding:11px 14px 12px 12px;border-radius:6px;
+.cards{display:grid;gap:10px;margin-top:12px}
+.cd{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;padding:11px 14px 12px 12px;border-radius:6px;
  background:linear-gradient(90deg,rgba(255,255,255,.75),rgba(255,250,236,.55));border:1.5px solid #c9a35a;border-left:7px solid var(--c);box-shadow:0 1px 3px rgba(90,50,10,.18)}
+.cd>.slot{width:150px;height:122px}
 .ic{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:38px;background:radial-gradient(#fffaf0,#f3e3bd);
  box-shadow:inset 0 0 0 2.5px #b8893a,inset 0 0 0 5px #fffaf0,inset 0 0 0 6.5px var(--c)}
 .tt{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;line-height:1.1}
-.tt .hi{font-size:25px;font-weight:700;color:var(--c)}.tt .en{font:700 20px Lora;color:#3a2410}
+.tt .hi{font-size:23px;font-weight:700;color:var(--c)}.tt .en{font:700 18px Lora;color:#3a2410}
 .ds{font-size:14px;margin-top:3px;color:#4a3418}.ds .hi{font-size:14.5px;font-weight:600}
 .tg{display:flex;flex-wrap:wrap;gap:5px 6px;margin-top:7px}
 .tg>span{border:1.2px solid #c9a35a;background:#fffaf0;border-radius:99px;padding:2px 10px 3px;font:600 13px Lora;color:#3a2410;white-space:nowrap}
 .tg span .hi{font-size:13.5px;font-weight:600;color:var(--c)}
 .tm{margin-top:6px;font-size:13.5px;font-weight:700;color:#7a1c1c}.tm .hi{font-size:14px}
 .how{display:grid;grid-template-columns:1fr 206px;gap:16px;margin-top:14px;align-items:stretch}
-.steps{display:grid;gap:8px;align-content:center}
-.st{display:flex;gap:10px;align-items:center;background:rgba(255,250,236,.8);border:1.2px solid #d2b274;border-radius:6px;padding:7px 10px}
+.steps{display:grid;gap:6px;align-content:center}
+.st{display:flex;gap:10px;align-items:center;background:rgba(255,250,236,.8);border:1.2px solid #d2b274;border-radius:6px;padding:5px 10px}
 .st .n{flex:none;width:30px;height:30px;border-radius:50%;background:linear-gradient(#9a2a22,#741913);color:#ffe08a;display:grid;place-items:center;font:700 16px Lora;box-shadow:inset 0 0 0 1.5px #d6b25e}
 .st div{line-height:1.2}.st .hi{font-size:15.5px;font-weight:700;color:#3a2410}.st small{display:block;font:600 13px Lora;color:#6a4a1a}
 .qr{background:#fff;border-radius:6px;padding:10px 10px 8px;text-align:center;box-shadow:inset 0 0 0 2px #b8893a,inset 0 0 0 5px #fff,inset 0 0 0 6.5px #7a1c1c,0 2px 4px rgba(0,0,0,.2)}
@@ -77,7 +82,7 @@ body{-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:Lora,
 <div class="free"><div class="hi big">फ्री होम डिलीवरी</div><div class="en">FREE HOME DELIVERY</div>
 <div class="pts"><div class="pt">✓ <span class="hi">कोई डिलीवरी चार्ज नहीं</span><small>No delivery charge</small></div>
 <div class="pt">✓ <span class="hi">कोई न्यूनतम ऑर्डर नहीं</span><small>No minimum order</small></div></div></div>
-<div class="cards"><div class="cd" style="--c:#b4530e"><div class="ic">🛒</div><div><div class="tt"><span class="hi">किराना और रोज़ की ज़रूरत</span><span class="en">Grocery &amp; Daily Needs</span></div><div class="ds"><span class="hi">घर की हर ज़रूरत का सामान</span> · Everything for your home</div><div class="tg"><span><span class="hi">किराना</span> Grocery</span><span><span class="hi">मिठाई</span> Sweets</span><span><span class="hi">दूध</span> Milk</span><span><span class="hi">आइसक्रीम</span> Ice Cream</span><span><span class="hi">कोल्ड ड्रिंक</span> Cold Drinks</span><span><span class="hi">ड्राई फ्रूट</span> Dry Fruits</span><span><span class="hi">नमकीन-बिस्कुट</span> Snacks</span></div></div></div><div class="cd" style="--c:#3f7d20"><div class="ic">🥬</div><div><div class="tt"><span class="hi">सब्ज़ी एक्सप्रेस</span><span class="en">Sabji Express</span></div><div class="ds"><span class="hi">ताज़ी हरी सब्ज़ियाँ और फल</span> · Fresh vegetables &amp; fruits</div><div class="tg"><span><span class="hi">हरी सब्ज़ियाँ</span> Vegetables</span><span><span class="hi">फल</span> Fruits</span><span><span class="hi">धनिया-मिर्च</span> Herbs</span></div></div></div><div class="cd" style="--c:#8a1d17"><div class="ic">🍛</div><div><div class="tt"><span class="hi">मारवाड़ रसोई</span><span class="en">Marwar Rasoi</span></div><div class="ds"><span class="hi">रेस्टोरेंट — शाकाहारी और मांसाहारी खाना</span> · Veg &amp; Non-Veg Restaurant</div><div class="tg"><span><span class="hi">पनीर</span> Paneer</span><span><span class="hi">तंदूर</span> Tandoor</span><span><span class="hi">बिरयानी</span> Biryani</span><span><span class="hi">चाइनीज़</span> Chinese</span><span><span class="hi">चिकन</span> Chicken</span></div><div class="tm"><span class="hi">दोपहर</span> 11:30 AM–2:30 PM &nbsp;·&nbsp; <span class="hi">रात</span> 6:30 PM–10:30 PM &nbsp;·&nbsp; 📞 8696283600</div></div></div></div>
+<div class="cards"><div class="cd" style="--c:#b4530e"><div class="slot" id="f-grocery"></div><div><div class="tt"><span class="hi">किराना और रोज़ की ज़रूरत</span><span class="en">Grocery &amp; Daily Needs</span></div><div class="ds"><span class="hi">घर की हर ज़रूरत का सामान</span> · Everything for your home</div><div class="tg"><span><span class="hi">किराना</span> Grocery</span><span><span class="hi">मिठाई</span> Sweets</span><span><span class="hi">दूध</span> Milk</span><span><span class="hi">आइसक्रीम</span> Ice Cream</span><span><span class="hi">कोल्ड ड्रिंक</span> Cold Drinks</span><span><span class="hi">ड्राई फ्रूट</span> Dry Fruits</span><span><span class="hi">नमकीन-बिस्कुट</span> Snacks</span></div></div></div><div class="cd" style="--c:#3f7d20"><div class="slot" id="f-sabji"></div><div><div class="tt"><span class="hi">सब्ज़ी एक्सप्रेस</span><span class="en">Sabji Express</span></div><div class="ds"><span class="hi">ताज़ी हरी सब्ज़ियाँ और फल</span> · Fresh vegetables &amp; fruits</div><div class="tg"><span><span class="hi">हरी सब्ज़ियाँ</span> Vegetables</span><span><span class="hi">फल</span> Fruits</span><span><span class="hi">धनिया-मिर्च</span> Herbs</span></div></div></div><div class="cd" style="--c:#8a1d17"><div class="slot" id="f-rasoi"></div><div><div class="tt"><span class="hi">मारवाड़ रसोई</span><span class="en">Marwar Rasoi</span></div><div class="ds"><span class="hi">रेस्टोरेंट — शाकाहारी और मांसाहारी खाना</span> · Veg &amp; Non-Veg Restaurant</div><div class="tg"><span><span class="hi">पनीर</span> Paneer</span><span><span class="hi">तंदूर</span> Tandoor</span><span><span class="hi">बिरयानी</span> Biryani</span><span><span class="hi">चाइनीज़</span> Chinese</span><span><span class="hi">चिकन</span> Chicken</span></div><div class="tm"><span class="hi">दोपहर</span> 11:30 AM–2:30 PM &nbsp;·&nbsp; <span class="hi">रात</span> 6:30 PM–10:30 PM &nbsp;·&nbsp; 📞 8696283600</div></div></div></div>
 <div class="how"><div class="steps">
 <div class="st"><span class="n">1</span><div><span class="hi">QR स्कैन करें, दुकान चुनें</span><small>Scan the QR &amp; choose a store</small></div></div>
 <div class="st"><span class="n">2</span><div><span class="hi">सामान चुनें, ऑर्डर करें</span><small>Pick items &amp; place your order</small></div></div>

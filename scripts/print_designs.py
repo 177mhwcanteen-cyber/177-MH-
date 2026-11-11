@@ -70,6 +70,10 @@ body{-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:Lora,
 .cn{position:absolute;width:46px;height:46px;z-index:2}
 .cn.tl{top:-3px;left:-3px}.cn.tr{top:-3px;right:-3px;transform:scaleX(-1)}
 .cn.bl{bottom:-3px;left:-3px;transform:scaleY(-1)}.cn.br{bottom:-3px;right:-3px;transform:scale(-1,-1)}
+.paper:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M22 2l20 20-20 20L2 22z M22 10l12 12-12 12-12-12z' fill='none' stroke='%237a1c1c' stroke-width='1.2'/%3E%3Ccircle cx='22' cy='22' r='3' fill='%23b8893a'/%3E%3C/svg%3E")}
+.paper>*{position:relative;z-index:1}.paper>.cn{position:absolute;z-index:2}
+.slot{border:3px double #b8893a;outline:1.5px solid #6e4a17;border-radius:3px;background:linear-gradient(135deg,#4a2810,#6b3d1b);box-shadow:0 2px 5px rgba(60,30,5,.35)}
 .rule{display:flex;align-items:center;gap:8px;color:#9a6b22}
 .rule:before,.rule:after{content:"";flex:1;height:1.5px;background:linear-gradient(90deg,transparent,#b8893a 30%,#b8893a 70%,transparent)}
 """
@@ -107,7 +111,8 @@ def menu_html():
     hours = f'<span class="hi">दोपहर</span> · Lunch {t12(h[0][0])}–{t12(h[0][1])}<br><span class="hi">रात</span> · Dinner {t12(h[1][0])}–{t12(h[1][1])}'
     phones = "📞 " + " · ".join(SHOP["phones"][:2]) + "<br>" + " · ".join(SHOP["phones"][2:])
     css = BASE_CSS + """
-.hd{text-align:center;line-height:1}
+.hd{text-align:center;line-height:1;position:relative}
+.hd .slot{position:absolute;top:2px;width:158px;height:118px}.hd .slot.l{left:-4px}.hd .slot.r{right:-4px}
 .hd .hi.big{font-size:40px;font-weight:700;color:#7a1c1c;letter-spacing:.5px;margin-top:-2px}
 .hd .en{font:700 21px Lora;letter-spacing:7px;color:#5b3510;margin-top:1px}
 .hd .sub{font-size:12.5px;color:#7a5a2a;margin-top:5px;font-style:italic;display:flex;justify-content:center;gap:16px;align-items:center}
@@ -125,6 +130,7 @@ def menu_html():
 .r i{flex:1;margin:0 6px;border-bottom:2px dotted #c4a46a;transform:translateY(4px);min-width:10px}
 .r b{font-weight:700;color:#7a1c1c;font-variant-numeric:tabular-nums}
 .bot{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:8px}
+.bw{display:flex;gap:12px;align-items:center}.bw .sg{flex:1}.bw .slot{flex:none;width:112px;height:118px;margin-top:5px}
 .bot .r{font-size:15px}
 .note{font:italic 600 13.5px Lora;color:#7a5a2a;margin-top:3px;padding-left:21px}.note .hi{font-style:normal}
 .ft{margin:auto -22px 0;background:linear-gradient(#7a1c1c,#5a120e);color:#fbe6b0;padding:8px 20px 9px;
@@ -135,10 +141,10 @@ def menu_html():
 """
     left = "".join(group(*g) for g in LEFT)
     right = "".join(group(*g) for g in RIGHT)
-    bot = "".join(f'<div><div class="ch b"><span class="hi">{E(hi)}</span><span>· {E(en.upper())}</span></div><div class="sg">{rows(ids)}</div></div>' for hi, en, ids in BOTTOM)
+    bot = "".join(f'<div><div class="ch b"><span class="hi">{E(hi)}</span><span>· {E(en.upper())}</span></div><div class="bw"><div class="sg">{rows(ids)}</div><div class="slot" id="m-{k}"></div></div></div>' for (hi, en, ids), k in zip(BOTTOM, ("bread", "rice")))
     return f"""<!doctype html><html><head><meta charset="utf-8"><title>Marwar Rasoi Menu</title><style>{css}</style></head><body>
 <div class="frame"><div class="paper">{CORNERS}
-<div class="hd">{ARCH}<div class="hi big">{E(SHOP['hi'])}</div><div class="en">{E(SHOP['name'])}</div>
+<div class="hd"><div class="slot l" id="m-veg"></div><div class="slot r" id="m-nonveg"></div>{ARCH}<div class="hi big">{E(SHOP['hi'])}</div><div class="en">{E(SHOP['name'])}</div>
 <div class="sub"><span>Barmer · Rajasthan</span><span class="key">{mark(True)}<span class="hi">शाकाहारी</span> Veg</span><span class="key">{mark(False)}<span class="hi">मांसाहारी</span> Non-Veg</span></div></div>
 <div class="cols"><div><div class="ch v"><span class="hi">शाकाहारी</span><span>· VEG MAIN COURSE</span></div>{left}</div>
 <div><div class="ch nv"><span class="hi">मांसाहारी</span><span>· NON-VEG</span></div>{right}</div></div>
@@ -164,21 +170,22 @@ def flyer_html():
 .free .pts{display:flex;gap:12px;justify-content:center;margin-top:9px}
 .free .pt{background:#fff8e6;color:#1b4d26;border-radius:99px;padding:5px 14px 6px;font-size:14px;font-weight:700;line-height:1.15;box-shadow:0 1px 0 #0d3a18}
 .free .pt .hi{font-size:15px}.free .pt small{display:block;font:600 12.5px Lora;color:#3e6b46}
-.cards{display:grid;gap:12px;margin-top:14px}
-.cd{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:center;padding:11px 14px 12px 12px;border-radius:6px;
+.cards{display:grid;gap:10px;margin-top:12px}
+.cd{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;padding:11px 14px 12px 12px;border-radius:6px;
  background:linear-gradient(90deg,rgba(255,255,255,.75),rgba(255,250,236,.55));border:1.5px solid #c9a35a;border-left:7px solid var(--c);box-shadow:0 1px 3px rgba(90,50,10,.18)}
+.cd>.slot{width:150px;height:122px}
 .ic{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:38px;background:radial-gradient(#fffaf0,#f3e3bd);
  box-shadow:inset 0 0 0 2.5px #b8893a,inset 0 0 0 5px #fffaf0,inset 0 0 0 6.5px var(--c)}
 .tt{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;line-height:1.1}
-.tt .hi{font-size:25px;font-weight:700;color:var(--c)}.tt .en{font:700 20px Lora;color:#3a2410}
+.tt .hi{font-size:23px;font-weight:700;color:var(--c)}.tt .en{font:700 18px Lora;color:#3a2410}
 .ds{font-size:14px;margin-top:3px;color:#4a3418}.ds .hi{font-size:14.5px;font-weight:600}
 .tg{display:flex;flex-wrap:wrap;gap:5px 6px;margin-top:7px}
 .tg>span{border:1.2px solid #c9a35a;background:#fffaf0;border-radius:99px;padding:2px 10px 3px;font:600 13px Lora;color:#3a2410;white-space:nowrap}
 .tg span .hi{font-size:13.5px;font-weight:600;color:var(--c)}
 .tm{margin-top:6px;font-size:13.5px;font-weight:700;color:#7a1c1c}.tm .hi{font-size:14px}
 .how{display:grid;grid-template-columns:1fr 206px;gap:16px;margin-top:14px;align-items:stretch}
-.steps{display:grid;gap:8px;align-content:center}
-.st{display:flex;gap:10px;align-items:center;background:rgba(255,250,236,.8);border:1.2px solid #d2b274;border-radius:6px;padding:7px 10px}
+.steps{display:grid;gap:6px;align-content:center}
+.st{display:flex;gap:10px;align-items:center;background:rgba(255,250,236,.8);border:1.2px solid #d2b274;border-radius:6px;padding:5px 10px}
 .st .n{flex:none;width:30px;height:30px;border-radius:50%;background:linear-gradient(#9a2a22,#741913);color:#ffe08a;display:grid;place-items:center;font:700 16px Lora;box-shadow:inset 0 0 0 1.5px #d6b25e}
 .st div{line-height:1.2}.st .hi{font-size:15.5px;font-weight:700;color:#3a2410}.st small{display:block;font:600 13px Lora;color:#6a4a1a}
 .qr{background:#fff;border-radius:6px;padding:10px 10px 8px;text-align:center;box-shadow:inset 0 0 0 2px #b8893a,inset 0 0 0 5px #fff,inset 0 0 0 6.5px #7a1c1c,0 2px 4px rgba(0,0,0,.2)}
@@ -189,14 +196,14 @@ def flyer_html():
 """
     chips = [("किराना", "Grocery"), ("मिठाई", "Sweets"), ("दूध", "Milk"), ("आइसक्रीम", "Ice Cream"), ("कोल्ड ड्रिंक", "Cold Drinks"), ("ड्राई फ्रूट", "Dry Fruits"), ("नमकीन-बिस्कुट", "Snacks")]
     chip = lambda L: "".join(f'<span><span class="hi">{E(a)}</span> {E(b)}</span>' for a, b in L)
-    card = lambda c, ic, hi, en, ds, tg, extra="": f'<div class="cd" style="--c:{c}"><div class="ic">{ic}</div><div><div class="tt"><span class="hi">{hi}</span><span class="en">{en}</span></div><div class="ds">{ds}</div><div class="tg">{chip(tg)}</div>{extra}</div></div>'
+    card = lambda c, ic, hi, en, ds, tg, extra="": f'<div class="cd" style="--c:{c}"><div class="slot" id="f-{ic}"></div><div><div class="tt"><span class="hi">{hi}</span><span class="en">{en}</span></div><div class="ds">{ds}</div><div class="tg">{chip(tg)}</div>{extra}</div></div>'
     tm = f'<div class="tm"><span class="hi">दोपहर</span> {t12(h[0][0])}–{t12(h[0][1])} &nbsp;·&nbsp; <span class="hi">रात</span> {t12(h[1][0])}–{t12(h[1][1])} &nbsp;·&nbsp; 📞 {SHOP["phones"][0]}</div>'
-    cards = (card("#b4530e", "🛒", "किराना और रोज़ की ज़रूरत", "Grocery &amp; Daily Needs",
+    cards = (card("#b4530e", "grocery", "किराना और रोज़ की ज़रूरत", "Grocery &amp; Daily Needs",
                   '<span class="hi">घर की हर ज़रूरत का सामान</span> · Everything for your home', chips)
-             + card("#3f7d20", "🥬", "सब्ज़ी एक्सप्रेस", "Sabji Express",
+             + card("#3f7d20", "sabji", "सब्ज़ी एक्सप्रेस", "Sabji Express",
                     '<span class="hi">ताज़ी हरी सब्ज़ियाँ और फल</span> · Fresh vegetables &amp; fruits',
                     [("हरी सब्ज़ियाँ", "Vegetables"), ("फल", "Fruits"), ("धनिया-मिर्च", "Herbs")])
-             + card("#8a1d17", "🍛", "मारवाड़ रसोई", "Marwar Rasoi",
+             + card("#8a1d17", "rasoi", "मारवाड़ रसोई", "Marwar Rasoi",
                     '<span class="hi">रेस्टोरेंट — शाकाहारी और मांसाहारी खाना</span> · Veg &amp; Non-Veg Restaurant',
                     [("पनीर", "Paneer"), ("तंदूर", "Tandoor"), ("बिरयानी", "Biryani"), ("चाइनीज़", "Chinese"), ("चिकन", "Chicken")], tm))
     return f"""<!doctype html><html><head><meta charset="utf-8"><title>Order From Home</title><style>{css}</style></head><body>
@@ -231,6 +238,8 @@ def render(name, doc):
         over = pg.evaluate("""()=>{const bad=[];const P=document.querySelector('.paper').getBoundingClientRect();
           document.querySelectorAll('.paper *').forEach(e=>{const r=e.getBoundingClientRect();if(r.width&&(r.bottom>P.bottom+1||r.right>P.right+1))bad.push((e.className||e.tagName)+':'+Math.round(r.bottom)+'/'+Math.round(r.right))});
           document.querySelectorAll('.r').forEach(r=>{const n=r.querySelector('.n'),b=r.querySelector('b');if(n&&b&&n.getBoundingClientRect().right>b.getBoundingClientRect().left-4)bad.push('भीड़:'+n.textContent)});return bad}""")
+        slots = pg.evaluate("""()=>Object.fromEntries([...document.querySelectorAll('.slot')].map(e=>{const r=e.getBoundingClientRect();return [e.id,[r.left+3,r.top+3,r.width-6,r.height-6].map(v=>Math.round(v*10)/10)]}))""")
+        json.dump(slots, open(os.path.join(OUT, name + "-slots.json"), "w"), indent=1)
         pg.screenshot(path=os.path.join(OUT, name + ".png"))
         pg.pdf(path=os.path.join(OUT, name + ".pdf"), width="210mm", height="297mm", print_background=True, prefer_css_page_size=True)
         b.close()
