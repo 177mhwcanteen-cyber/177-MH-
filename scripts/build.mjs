@@ -23,7 +23,7 @@ await build({ entryPoints: [path.join(W, "src/vendor.js")], bundle: true, minify
   target: ["chrome90"], charset: "ascii", outfile: path.join(OUT, "lib/vendor.js"), legalComments: "none", logLevel: "warning" });
 
 // 2) बाकी फ़ाइलें
-for (const f of ["index.html", "pehchan.json", "se-platform.js", "se-features.js", "se-nutri.js", "se-route.js", "se-pay.js", "se-bill.js", "se-stock.js", "se-intake.js", "se-market.js", "se-label.js", "se-receipt.js", "se-quick.js", "se-photo.js", "se-bcode.js", "se-rack.js", "se-rkx.js", "se-menu.js", "se-kharid.js", "se-packs.js", "se-khula.js", "se-watch.js", "se-plus.js", "se-online.js", "se-galla.js", "se-open.js", "se-return.js", "se-items.js", "se-order.js", "h.html", "o.html", "config.js", "manifest.webmanifest", "migrate.json", "icon.png"])
+for (const f of ["index.html", "pehchan.json", "se-platform.js", "se-features.js", "se-nutri.js", "se-route.js", "se-pay.js", "se-bill.js", "se-stock.js", "se-intake.js", "se-market.js", "se-label.js", "se-receipt.js", "se-quick.js", "se-photo.js", "se-bcode.js", "se-rack.js", "se-rkx.js", "se-menu.js", "se-ring.js", "se-kharid.js", "se-packs.js", "se-khula.js", "se-watch.js", "se-plus.js", "se-online.js", "se-galla.js", "se-open.js", "se-return.js", "se-items.js", "se-order.js", "h.html", "o.html", "config.js", "manifest.webmanifest", "migrate.json", "icon.png"])
   if (fs.existsSync(path.join(W, f))) cp(path.join(W, f), path.join(OUT, f));
 if (fs.existsSync(path.join(W, "order"))) cp(path.join(W, "order"), path.join(OUT, "order")); /* 🛵 ग्राहक का ऑर्डर पेज (/order/) */
 if (fs.existsSync(path.join(W, "img"))) cp(path.join(W, "img"), path.join(OUT, "img")); else fs.mkdirSync(path.join(OUT, "img"), { recursive: true });

@@ -1,0 +1,27 @@
+177 MH — 🔔 ऑर्डर की घंटी (Blinkit के राइडर जैसी) — किसी भी Claude के लिए
+==========================================================================
+विक्रम जी (11-11-2026): "घर से ऑर्डर हो तो APK वाले फोन में, ऐप खुला न हो तब भी, अपने-आप अलार्म बजे — डिफ़ॉल्ट इजाज़तें देकर
+हर समय ऐप सक्रिय रहे — Blinkit के राइडर के फोन जैसी घंटी।"
+
+1. ढाँचा
+   • APK: android/.../OrderRingService.java — foreground service (specialUse, स्थायी छोटी सूचना "🔔 ऑर्डर की घंटी चालू"), partial WakeLock,
+     हर 20 सेकंड (दुकान के खुले समय ±30 मिनट; बाकी समय 2 मिनट) Firestore REST runQuery: orders where status == "new" (src "signup" छोड़कर)।
+     लॉगिन: JS से मिला refresh token → securetoken.googleapis.com → id token (1 घंटा, अपने-आप नया)। चाबी सिर्फ़ SharedPreferences "se_ring" में।
+     नया ऑर्डर: अलार्म-आवाज़ (USAGE_ALARM, लूप, फोन का अलार्म टोन) + कंपन + HIGH सूचना (CATEGORY_ALARM, लॉक-स्क्रीन पर full-screen intent),
+     60 सेकंड बजे → 45 सेकंड रुके → फिर — जब तक status "new" से हटे (कोई साथी स्वीकार/बिल करे) या सूचना में "🔕 चुप" (उस ऑर्डर के लिए)।
+     "loud" चालू हो तो अलार्म-आवाज़ कम से कम 85% (बाद में पहले जैसी)। फोन चालू होने/APK अपडेट पर Boot receiver से फिर चालू।
+     MainActivity: सूचना से खुले (extra seRing) तो लॉक-स्क्रीन के ऊपर + स्क्रीन जगाकर; OrderRingService.opened = true।
+   • प्लगइन (BtPrinterPlugin): ringStart{rt,key,pid,every,open,close,loud,ask} · ringStop · ringStatus{consume} · ringSilence · ringTest ·
+     ringBattery (बैटरी-बचत से छूट का संवाद) · ringSettings{what:"fsi"|"notif"}।
+   • JS web/se-ring.js = window.SRG: लॉगिन के 3 सेकंड बाद अपने-आप ringStart (हर फोन — मालिक और साथी; फोन पर "बंद" किया हो तो नहीं: localStorage srg_off),
+     इजाज़त कम हो तो दिन में एक बार शीट (🔔 सूचना · 🔋 बैटरी · 📱 पूरी स्क्रीन), 🔔 जाँच-घंटी (8 सेकंड), सूचना से खुले → ऑर्डर-शीट + चुप,
+     ऑर्डर-शीट खुली / कोई "new" न बचे → ringSilence; नेटिव घंटी चल रही हो तो JS की 3 बीप नहीं (दोहरी आवाज़ नहीं)। लॉग-आउट से पहले ringStop (चाबी मिटे)।
+     पुराना APK (प्लगइन में ring* नहीं) → SRG.unsupported → शीट में "⬇️ नया ऐप डाउनलोड करें"।
+   • कहाँ से खुले: ☰ → 🔔 ऑर्डर की घंटी · ऑर्डर-शीट नीचे 🔔 घंटी · ⚙️ ऑनलाइन दुकान में बटन।  जाँच: tests/ring.py
+
+2. नियम / सीमाएँ
+   • firestore.rules नहीं बदले — orders read: active() पहले से (साथी/मालिक)। बंद किया साथी = 403 → सूचना में "⚠ इजाज़त नहीं"।
+   • Firestore पढ़त: 20 सेकंड = दिन में ~3 हज़ार/फोन (खुले समय); मुफ़्त सीमा 50 हज़ार/दिन — 5-6 फोन तक आराम से। ज़्यादा फोन हों तो every 30 करें।
+   • NATIVE_MIN नहीं बढ़ाया (सबको ज़बरदस्ती नया APK नहीं) — जिसे घंटी चाहिए वह एक बार नया APK डाले।
+   • Xiaomi/Vivo/Oppo/Realme: Autostart + बैटरी "No restrictions" + रीसेंट में 🔒 — शीट के "ℹ️" में लिखा है।
+   • आगे (चाहें तो): FCM push (सर्वर चाहिए — Blaze/Cloud Function या Apps Script + service account) — तब पूछताछ की ज़रूरत नहीं, बैटरी कम।

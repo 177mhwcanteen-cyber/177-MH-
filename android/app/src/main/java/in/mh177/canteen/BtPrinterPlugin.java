@@ -373,4 +373,143 @@ public class BtPrinterPlugin extends Plugin {
             call.resolve();
         } catch (Exception e) { call.reject("फाइल नहीं बनी: " + e.getMessage()); }
     }
+
+    /* ================= 🔔 ऑर्डर की घंटी (ऐप बंद हो तब भी) ================= */
+    private JSObject ringState() {
+        Context c = getContext();
+        JSObject o = new JSObject();
+        android.content.SharedPreferences p = OrderRingService.prefs(c);
+        o.put("on", p.getBoolean("on", false));
+        o.put("running", OrderRingService.running);
+        o.put("ringing", OrderRingService.ringing);
+        o.put("pending", OrderRingService.pending);
+        o.put("lastOk", OrderRingService.lastOk);
+        o.put("lastErr", OrderRingService.lastErr);
+        o.put("checks", OrderRingService.checks);
+        o.put("opened", OrderRingService.opened);
+        o.put("notif", Build.VERSION.SDK_INT < 33 || getPermissionState("notif") == PermissionState.GRANTED);
+        boolean bat = true;
+        try {
+            if (Build.VERSION.SDK_INT >= 23) bat = ((android.os.PowerManager) c.getSystemService(Context.POWER_SERVICE)).isIgnoringBatteryOptimizations(c.getPackageName());
+        } catch (Exception ignore) { }
+        o.put("battery", bat);
+        boolean fsi = true;
+        try {
+            if (Build.VERSION.SDK_INT >= 34) fsi = ((android.app.NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).canUseFullScreenIntent();
+        } catch (Exception ignore) { }
+        o.put("fsi", fsi);
+        boolean chOn = true;
+        try {
+            if (Build.VERSION.SDK_INT >= 26) {
+                android.app.NotificationManager nm = (android.app.NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+                chOn = nm.areNotificationsEnabled();
+                android.app.NotificationChannel ch = nm.getNotificationChannel(OrderRingService.CH_ALARM);
+                if (ch != null && ch.getImportance() == android.app.NotificationManager.IMPORTANCE_NONE) chOn = false;
+            }
+        } catch (Exception ignore) { }
+        o.put("chan", chOn);
+        return o;
+    }
+
+    @PluginMethod
+    public void ringStatus(PluginCall call) {
+        JSObject o = ringState();
+        if (call.getBoolean("consume", false)) OrderRingService.opened = false;
+        call.resolve(o);
+    }
+
+    @PluginMethod
+    public void ringStart(PluginCall call) {
+        android.content.SharedPreferences.Editor e = OrderRingService.prefs(getContext()).edit();
+        String rt = call.getString("rt", "");
+        if (rt != null && rt.length() > 0) e.putString("rt", rt);
+        e.putString("key", call.getString("key", ""));
+        e.putString("pid", call.getString("pid", ""));
+        e.putInt("every", call.getInt("every", 20));
+        e.putInt("open", call.getInt("open", -1));
+        e.putInt("close", call.getInt("close", -1));
+        e.putBoolean("loud", call.getBoolean("loud", true));
+        e.putBoolean("on", true);
+        e.apply();
+        if (Build.VERSION.SDK_INT >= 33 && getPermissionState("notif") != PermissionState.GRANTED && call.getBoolean("ask", true)) {
+            requestPermissionForAlias("notif", call, "afterRingNotif");
+            return;
+        }
+        startRing(call, false);
+    }
+
+    @PermissionCallback
+    private void afterRingNotif(PluginCall call) { startRing(call, false); }
+
+    private void startRing(PluginCall call, boolean now) {
+        try {
+            Intent it = new Intent(getContext(), OrderRingService.class);
+            if (now) it.putExtra("now", true);
+            androidx.core.content.ContextCompat.startForegroundService(getContext(), it);
+        } catch (Exception e) {
+            JSObject o = ringState();
+            o.put("error", String.valueOf(e.getMessage()));
+            call.resolve(o);
+            return;
+        }
+        call.resolve(ringState());
+    }
+
+    @PluginMethod
+    public void ringStop(PluginCall call) {
+        OrderRingService.prefs(getContext()).edit().putBoolean("on", false).remove("rt").apply();
+        try { getContext().stopService(new Intent(getContext(), OrderRingService.class)); } catch (Exception ignore) { }
+        call.resolve(ringState());
+    }
+
+    @PluginMethod
+    public void ringSilence(PluginCall call) {
+        if (OrderRingService.running) {
+            try {
+                androidx.core.content.ContextCompat.startForegroundService(getContext(), new Intent(getContext(), OrderRingService.class).setAction(OrderRingService.A_SILENCE));
+            } catch (Exception ignore) { }
+        }
+        OrderRingService.opened = false;
+        call.resolve(ringState());
+    }
+
+    @PluginMethod
+    public void ringTest(PluginCall call) {
+        try {
+            androidx.core.content.ContextCompat.startForegroundService(getContext(), new Intent(getContext(), OrderRingService.class).setAction(OrderRingService.A_TEST));
+        } catch (Exception e) { call.reject("घंटी नहीं बजी: " + e.getMessage()); return; }
+        call.resolve(ringState());
+    }
+
+    /** 🔋 बैटरी बचत से छूट (नहीं तो कुछ फोन घंटी को सुला देते हैं) */
+    @PluginMethod
+    public void ringBattery(PluginCall call) {
+        try {
+            Intent it = new Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getContext().getPackageName()));
+            getActivity().startActivity(it);
+        } catch (Exception e) {
+            try { getActivity().startActivity(new Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)); } catch (Exception ignore) { }
+        }
+        call.resolve(ringState());
+    }
+
+    /** 📱 लॉक-स्क्रीन पर पूरी स्क्रीन वाली सूचना (Android 14+) / सूचना की सेटिंग */
+    @PluginMethod
+    public void ringSettings(PluginCall call) {
+        String what = call.getString("what", "notif");
+        try {
+            Intent it;
+            if ("fsi".equals(what) && Build.VERSION.SDK_INT >= 34) {
+                it = new Intent(android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:" + getContext().getPackageName()));
+            } else if (Build.VERSION.SDK_INT >= 26) {
+                it = new Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, getContext().getPackageName());
+            } else {
+                it = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getContext().getPackageName()));
+            }
+            getActivity().startActivity(it);
+        } catch (Exception e) {
+            try { getActivity().startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getContext().getPackageName()))); } catch (Exception ignore) { }
+        }
+        call.resolve(ringState());
+    }
 }

@@ -74,7 +74,7 @@ SON.step=async function(id,st,extra){extra=extra||{};const o=(SX.orders||[]).fin
   toast(({acc:"✓ ऑर्डर स्वीकार — ग्राहक को दिख रहा",pack:"📦 पैक हो रहा",out:"🛵 रास्ते में",done:"✅ ऑर्डर पूरा",cancel:"✕ रद्द"})[st]||"✓");return true};
 if(window.SX)SX.orderSet=(id,status,extra)=>SON.step(id,status,extra);
 const ago=ts=>{const m=Math.floor((Date.now()-num(ts))/60000);return m<1?"अभी":m<60?m+" मि पहले":Math.floor(m/60)+" घं पहले"};
-SON.sheet=function(){const L=SX.orders||[];const link=SON.link();
+SON.sheet=function(){if(window.SRG)SRG.silence();const L=SX.orders||[];const link=SON.link();
   const card=o=>{const p=SON.parse(o),st=o.status||"new",[ic,tx]=ST[st]||["",st],old=st==="new"&&Date.now()-num(o.ts)>3*60000;
     const items=(window.SRK?SRK.sortItems(o.items||[]):(o.items||[])).map(x=>{const r=window.SRK?SRK.norm((item(x.id)||{}).rack):"";return `${r?`<i class="son-rk">📍${esc(r)}</i> `:""}${esc(SE.capNm(x.n))} <b>${fq(num(x.q),x.u||"pc")}</b>`}).join(" · ");/* 📍 रैक के क्रम में — एक चक्कर में पूरा ऑर्डर */
     const est=p.total||(o.items||[]).reduce((a,x)=>a+num(x.q)*num(x.s),0);const eta=o.etaTs?new Date(o.etaTs).toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"}):"";
@@ -93,7 +93,7 @@ SON.sheet=function(){const L=SX.orders||[];const link=SON.link();
   <div class="sh-head"><div><h3>📥 घर बैठे ऑर्डर (${L.length})</h3><span class="note">नया ऑर्डर तुरंत स्वीकार करें — ग्राहक अपने फोन पर देख रहा है</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
   ${L.length?L.map(card).join(""):'<div class="empty">अभी कोई ऑर्डर नहीं 🙂</div>'}
   <details class="card2 son-acc"><summary><b>👤 ऑनलाइन खाते (${(SON.accts||[]).length})</b></summary>${SON.acctHTML(30)}</details>
-  <div class="son-ft"><button class="big ghost" data-sxolink>🔗 लिंक भेजें</button><button class="big ghost" data-sonqr>📲 QR कार्ड</button></div>
+  <div class="son-ft"><button class="big ghost" data-srgopen>🔔 घंटी</button><button class="big ghost" data-sxolink>🔗 लिंक भेजें</button><button class="big ghost" data-sonqr>📲 QR कार्ड</button></div>
   <p class="note" style="text-align:center;margin:6px 0 0">${esc(link)}</p></div></div>`};
 document.addEventListener("click",async e=>{const t=e.target;let b;
   if((b=t.closest("[data-sona]"))){b.disabled=true;await SON.step(b.dataset.sona,"acc",{mins:+b.dataset.mins});SON.alarm();return}
@@ -156,6 +156,7 @@ SON.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const c=SON.cfg(),L
     <label class="fld">दुकान खुलती<input class="inp" type="time" data-sonf="open" value="${esc(c.open)}"></label><label class="fld">बंद होती<input class="inp" type="time" data-sonf="close" value="${esc(c.close)}"></label></div>
   <div class="son-ln"><code>${esc(SON.link())}</code></div>
   <div class="row2" style="margin:0"><a class="big ghost" href="${esc(SON.link())}" target="_blank" rel="noopener">👀 ग्राहक-पेज देखें</a><button class="big ghost" data-sxolink>💬 WhatsApp पर भेजें</button></div>
+  <button class="big ghost" data-srgopen style="width:100%;margin:0 0 6px">🔔 ऑर्डर की घंटी — ऐप बंद हो तब भी अलार्म</button>
   <div class="row2" style="margin:0"><button class="big" data-sonqr>📲 घर-घर का QR कार्ड</button><button class="big ghost" data-sxposter>🖼️ भाव-पोस्टर</button></div><div class="row2" style="margin:0"><button class="big ghost" data-sonpub>🔄 भाव/स्टॉक अभी भेजें</button></div>
   <details class="son-acc"><summary><b>👤 ऑनलाइन खाते (${(SON.accts||[]).length})</b> <span class="note">— किसने खाता बनाया / नंबर बदला</span></summary>${SON.acctHTML(50)}</details>
   <p class="note" style="margin:0">हर सामान को ऑनलाइन से छिपाने के लिए नीचे सामान की पंक्ति में 🌐 दबाएँ। सिगरेट-तम्बाकू अपने-आप कभी नहीं दिखते।</p></div>`};
@@ -172,7 +173,7 @@ const css=document.createElement("style");css.textContent=`
 .son-b .g{background:var(--bg);color:var(--ink);border:1.5px solid var(--line);padding:7px 10px}.son-b .r{color:var(--chili)}.son-b button:disabled{opacity:.5}
 .son-acc summary{cursor:pointer;list-style:none;padding:4px 0}.son-acc summary::-webkit-details-marker{display:none}.son-acl{display:grid;gap:4px;max-height:320px;overflow:auto}
 .son-ac{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:5px 0}.son-ac div{flex:1;min-width:0;display:grid}.son-ac b{font-size:14px}.son-ac span{font-size:12px;color:var(--muted)}.son-ac a{text-decoration:none;font-size:18px}
-.son-ft{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.son-ft{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .son-set{display:grid;gap:10px}.son-k{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.son-k div{background:var(--bg);border-radius:10px;padding:6px;display:grid}.son-k span{font-size:11px;color:var(--muted)}.son-k b{font-size:18px}
 .son-sw{display:flex;flex-wrap:wrap;gap:6px;margin:0}.son-f{display:grid;grid-template-columns:1fr 1fr;gap:6px}.son-ln code{display:block;font-size:12px;word-break:break-all;background:var(--bg);padding:8px;border-radius:8px}`;document.head.appendChild(css);
 
