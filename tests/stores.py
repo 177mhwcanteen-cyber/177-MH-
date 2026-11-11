@@ -46,6 +46,7 @@ async def main():
             return await route.fulfill(status=404, json={})
         c = await ctx.new_page()
         c.on("pageerror", lambda e: errs.append("page: " + str(e)))
+        c.on("dialog", lambda d: asyncio.ensure_future(d.accept()))  # रात में "रसोई बंद है — फिर भी?" पूछे तो हाँ
         await c.route("https://firestore.googleapis.com/**", fs)
         await c.route("https://177mhwcanteen-cyber.github.io/**", lambda r: r.fulfill(status=404, body=""))
         await c.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={firebase:{projectId:'mh177-canteen',apiKey:'k'},stores:{sabji:{pid:'sabji-express-9a8f0',key:'s',base:'https://177mhwcanteen-cyber.github.io/sabji-express-app/'}}};", content_type="application/javascript"))
