@@ -61,11 +61,11 @@ SKJ.shopCode=async function(days){if(!own())return "";days=Math.min(60,+days||30
   const ds=[];for(let k=days-1;k>=0;k--)ds.push(dOf(k));const d7=dOf(6),d14=dOf(13);
   const snaps=await Promise.all(ds.map(d=>d===S.billsDate&&S.dayBills?Promise.resolve(S.dayBills):(S.demo||!S.db?Promise.resolve([]):S.db.collection("days/"+d+"/bills").get().then(q=>q.docs.map(x=>x.data())).catch(()=>[]))));
   const A={},sd={},dayL=[];
-  ds.forEach((d,k)=>{const bl=(snaps[k]||[]).filter(b=>b&&!b.cancelled&&b.mode!=="inst");let pr=0,ud=0;
-    bl.forEach(b=>{pr-=(+b.disc||0);ud+=+(b.pay&&b.pay.udhar)||0;(b.lines||[]).forEach(l=>{if(!l.id)return;const o=A[l.id]||(A[l.id]={q7:0,q30:0,a30:0,p30:0,nb:0,ls:"",ns:0});const q=+l.qty||0;
+  ds.forEach((d,k)=>{const bl=(snaps[k]||[]).filter(b=>b&&!b.cancelled&&b.mode!=="inst");let pr=0,ud=0,me=0;
+    bl.forEach(b=>{pr-=(+b.disc||0);ud+=+(b.pay&&b.pay.udhar)||0;(b.lines||[]).forEach(l=>{if(!l.id)return;{const it=item(l.id);if(it&&typeof mcat==="function"&&mcat(it)==="mela")me+=+l.amt||0}const o=A[l.id]||(A[l.id]={q7:0,q30:0,a30:0,p30:0,nb:0,ls:"",ns:0});const q=+l.qty||0;
       o.q30+=q;o.a30+=+l.amt||0;o.nb++;if(d>=d7)o.q7+=q;if(d>o.ls)o.ls=d;if(l.ns!=null)o.ns++;if(+l.cost>0){const m=((+l.rate||0)-(+l.cost))*q;o.p30+=m;pr+=m}
       if(d>=d14){const [pid,pq]=packMap(l.id,q);(sd[d]=sd[d]||{})[pid]=n2(((sd[d]||{})[pid]||0)+pq)}})});
-    dayL.push({d,sale:n2(bl.reduce((a,b)=>a+(+b.total||0),0)),profit:n2(pr),n:bl.length,...(ud?{udhar:n2(ud)}:{}),...((snaps[k]||[]).some(b=>b&&b.cancelled)?{can:(snaps[k]||[]).filter(b=>b&&b.cancelled).length}:{})})});
+    dayL.push({d,sale:n2(bl.reduce((a,b)=>a+(+b.total||0),0)),profit:n2(pr),n:bl.length,...(ud?{udhar:n2(ud)}:{}),...(me?{mela:n2(me)}:{}),...((snaps[k]||[]).some(b=>b&&b.cancelled)?{can:(snaps[k]||[]).filter(b=>b&&b.cancelled).length}:{})})});
   const exp={};(S.batches||[]).forEach(b=>{if(b.itemId&&b.exp&&b.exp>=T&&(!exp[b.itemId]||b.exp<exp[b.itemId]))exp[b.itemId]=b.exp});
   const L=(S.items||[]).filter(i=>i.active!==false&&!i.virtual),th={};let nth=0;
   const items=L.map(i=>{const bs=String(i.barcode||"").split(/[^0-9]+/).filter(c=>c.length>=8),a=A[i.id],ps=S.pstock&&S.pstock[i.id],src=SE.photoSrc?SE.photoSrc(i):"";

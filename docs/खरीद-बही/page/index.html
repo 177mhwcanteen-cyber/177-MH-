@@ -253,7 +253,7 @@ async function loadShop(){try{const s=await db.collection("shop").get();const D=
   try{const s=await db.collection("ph").get();const P={};s.docs.forEach(d=>Object.assign(P,(d.data()||{}).m||{}));PH=P;if(tab==="shop")render()}catch(e){}}
 function parseShop(txt){txt=String(txt||"");const a=txt.search(/\{\s*"app"\s*:\s*"mh177-/);if(a<0)throw new Error("इसमें ऐप का कोड नहीं मिला");const j=JSON.parse(txt.slice(a,txt.lastIndexOf("}")+1));return j}
 /* हर सामान का हिसाब: पड़ता (बही का आख़िरी बिल, न हो तो ऐप की cost), मुनाफ़ा, रोज़ की खपत, कितने दिन चलेगा, मँगाना */
-function shopRows(S0){S0=S0||SHOP;if(!S0)return [];const by={};S0.items.forEach(x=>by[x.i]=x);const BH={};try{ppData().rows.forEach(r=>{if(r.last)BH[r.c.i]=r})}catch(e){}
+function shopRows(S0,all){S0=S0||SHOP;if(!S0)return [];if(!all)S0={...S0,items:S0.items.filter(x=>x.cat!=="mela")};const by={};S0.items.forEach(x=>by[x.i]=x);const BH={};try{ppData().rows.forEach(r=>{if(r.last)BH[r.c.i]=r})}catch(e){}
   const pkq={};S0.items.forEach(x=>{if(x.pk&&by[x.pk]&&+x.pp>0){const o=pkq[x.pk]=pkq[x.pk]||{q30:0,q7:0};o.q30+=(+x.q30||0)*x.pp;o.q7+=(+x.q7||0)*x.pp}});
   const span=Math.max(1,Math.min(30,(S0.days||[]).length||30));
   return S0.items.map(x=>{const bh=BH[x.i],cost=bh?bh.cost:(+x.c||0),s=+x.s||0,pr=s&&cost?s-cost:null,pct=pr!=null?pr/cost*100:null,par=x.pk&&by[x.pk],
@@ -265,14 +265,17 @@ function shopRows(S0){S0=S0||SHOP;if(!S0)return [];const by={};S0.items.forEach(
 const SFL=[["","सब"],["need","🛒 मँगाना"],["out","⛔ खत्म"],["slow","🐢 30 दिन से नहीं बिका"],["loss","🔴 घाटा / कम मुनाफ़ा"],["gap","🧩 अधूरी जानकारी"],["top","🔥 सबसे ज़्यादा बिके"]];
 const sfOk=(r,f)=>!f?true:f==="need"?r.need>0:f==="out"?r.out:f==="slow"?r.slow:f==="loss"?(r.pct!=null&&r.pct<5):f==="gap"?r.gaps.length>0:f==="top"?(+r.x.a30||0)>0:true;
 function shopSum(R){const o={n:R.length,val:0,vals:0,out:0,need:0,slow:0,slowVal:0,gap:0,loss:0};R.forEach(r=>{o.val+=r.val;o.vals+=r.vals;if(r.out)o.out++;if(r.need)o.need++;if(r.slow){o.slow++;o.slowVal+=r.val}if(r.gaps.length)o.gap++;if(r.pct!=null&&r.pct<5)o.loss++});return o}
-function daysChart(D){if(!D||!D.length)return "";const mx=Math.max(1,...D.map(d=>+d.sale||0)),ts=D.reduce((a,d)=>a+(+d.sale||0),0),tp=D.reduce((a,d)=>a+(+d.profit||0),0),tn=D.reduce((a,d)=>a+(+d.n||0),0);
-  return `<div class="box"><div class="ih"><b>📊 ${D.length} दिन की बिक्री</b><span class="num"><b>${rs(Math.round(ts))}</b></span></div><p class="note">${tn} बिल · मुनाफ़ा (जिनका खरीद-भाव भरा है) ${rs(Math.round(tp))} · रोज़ का औसत ${rs(Math.round(ts/D.length))}</p>
+/* 🎪 मेला (31-10, 01-11 का स्टॉल) दुकान की बिक्री में नहीं गिनते — अलग दिखाते हैं */
+const MELA=()=>SHOP?SHOP.items.filter(x=>x.cat==="mela"):[];
+function daysChart(D0){if(!D0||!D0.length)return "";const mi=new Set(MELA().map(x=>x.i)),mt=MELA().reduce((a,x)=>a+(+x.a30||0),0),hasM=D0.some(d=>d.mela!=null);
+  const D=D0.map(d=>({...d,sale:Math.max(0,(+d.sale||0)-(+d.mela||0))}));const mx=Math.max(1,...D.map(d=>+d.sale||0)),ts=D.reduce((a,d)=>a+(+d.sale||0),0)-(hasM?0:mt),tp=D.reduce((a,d)=>a+(+d.profit||0),0),tn=D.reduce((a,d)=>a+(+d.n||0),0);
+  return `<div class="box"><div class="ih"><b>📊 ${D.length} दिन की बिक्री</b><span class="num"><b>${rs(Math.round(ts))}</b></span></div>${mt?`<p class="note" style="color:var(--amb)">🎪 मेला स्टॉल की बिक्री ${rs(Math.round(mt))} इसमें नहीं गिनी (${hasM?"डंडों से भी निकाली":"डंडों में अभी शामिल — ऐप अपडेट के बाद की कॉपी से अलग होगी"})</p>`:""}${SHOP&&!SHOP.live?`<p class="note">ℹ️ ऐप में बिलिंग अभी "चालू" नहीं — ये बिक्री जाँच/शुरुआती बिल हैं, असली दुकान की पूरी बिक्री नहीं।</p>`:""}<p class="note">${tn} बिल · मुनाफ़ा (जिनका खरीद-भाव भरा है) ${rs(Math.round(tp))} · रोज़ का औसत ${rs(Math.round(ts/D.length))}</p>
   <div class="dch" role="img" aria-label="रोज़ की बिक्री">${D.map(d=>`<i style="height:${Math.max(2,(+d.sale||0)/mx*100).toFixed(0)}%" title="${fd(d.d)}: ${rs(d.sale)} · ${d.n} बिल"></i>`).join("")}</div><div class="dcx"><span>${fd(D[0].d).slice(0,5)}</span><span>${fd(D[D.length-1].d).slice(0,5)}</span></div></div>`}
 function thumbHTML(x){const d=PH[x.i];return okImg(d)?`<img class="sth" src="${d}" alt="" loading="lazy" data-zoom>`:`<span class="sth ph0" aria-hidden="true">${esc((x.n||"?").slice(0,1))}</span>`}
 function shopHTML(){if(!shopLoaded)return `<div class="box empty">दुकान का डेटा लोड हो रहा है…</div>`;
   if(!SHOP)return `<div class="box empty">अभी दुकान का डेटा नहीं आया।<br>कैंटीन ऐप → ⚙️ → 🔍 खरीद-जाँच → "🏪 पूरी दुकान का डेटा कॉपी" → यहाँ "📥 ऐप का डेटा" टैब में चिपकाएँ।</div>`;
   const R=shopRows(),sm=shopSum(R),age=Math.floor((Date.now()-SHOP.ts)/864e5),cats=[...new Set(R.map(r=>r.x.cat).filter(Boolean))];
-  let L=R.filter(r=>sfOk(r,sf)&&(!scat||r.x.cat===scat||("rk:"+String(r.x.rk||"").split("-")[0])===scat)&&(!q||(r.x.n+" "+(r.x.hi||"")+" "+(r.x.b||"")+" "+(r.x.rk||"")).toLowerCase().includes(q.toLowerCase())));
+  let L=R.filter(r=>(r.x.cat!=="mela"||scat==="mela")&&sfOk(r,sf)&&(!scat||r.x.cat===scat||("rk:"+String(r.x.rk||"").split("-")[0])===scat)&&(!q||(r.x.n+" "+(r.x.hi||"")+" "+(r.x.b||"")+" "+(r.x.rk||"")).toLowerCase().includes(q.toLowerCase())));
   const so={sale:(a,b)=>(+b.x.a30||0)-(+a.x.a30||0)||a.x.n.localeCompare(b.x.n),name:(a,b)=>a.x.n.localeCompare(b.x.n),rack:(a,b)=>String(a.x.rk||"zz").localeCompare(String(b.x.rk||"zz"),"en",{numeric:true})||a.x.n.localeCompare(b.x.n),val:(a,b)=>b.val-a.val,cover:(a,b)=>(a.cover==null?1e9:a.cover)-(b.cover==null?1e9:b.cover),pct:(a,b)=>(a.pct==null?1e9:a.pct)-(b.pct==null?1e9:b.pct)};
   L.sort(sf==="need"?(a,b)=>(a.cover==null?-1:a.cover)-(b.cover==null?-1:b.cover):sf==="slow"?so.val:sf==="loss"?so.pct:so[ssort]||so.sale);
   const racks=[...new Set(R.map(r=>String(r.x.rk||"").split("-")[0]).filter(Boolean))].sort((a,b)=>a-b),last=CHG[0],sd=SHOP.sd||{},sdD=Object.keys(sd).sort();
