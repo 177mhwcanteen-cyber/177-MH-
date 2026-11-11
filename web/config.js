@@ -18,5 +18,7 @@ window.SE_CONFIG = {
   ownerHash: ["faa61c07b7ccc34cd10502cf475eb852ff0413a045c95108294f12fbe07c2d37", "d05c53d3cdca521782c90e21f807a1add61726965096709cb1ae4f3612b96151"],
   ownerName: "विक्रम जी",
   photoUrl: "",
-  updateUrl: "https://177mhwcanteen-cyber.github.io/177-MH-/"
+  updateUrl: "https://177mhwcanteen-cyber.github.io/177-MH-/",
+  // 🛍️ एक ऑर्डर-पेज पर तीन दुकानें (11-11-2026): 🛒 177 MH (यही) · 🥬 सब्ज़ी एक्सप्रेस (उसका सार्वजनिक भाव pub/rates) · 🍛 मारवाड़ रसोई (order/rasoi.json)
+  stores: { sabji: { pid: "sabji-express-9a8f0", key: "AIzaSyBBaZF1E58Ybxemy5HPj8T3L0gnyg9eOPI", base: "https://177mhwcanteen-cyber.github.io/sabji-express-app/" } }
 };

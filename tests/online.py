@@ -105,6 +105,7 @@ async def main():
         c.on("pageerror", lambda e: errs.append("page: " + str(e)))
         c.on("console", lambda m: m.type == "error" and "Failed to load resource" not in m.text and errs.append("page: " + m.text))
         await c.route("https://firestore.googleapis.com/**", fs)
+        await c.add_init_script("if(!localStorage.getItem('mh_seg'))localStorage.setItem('mh_seg','\"mh\"')")  # 🛍️ यह टेस्ट सिर्फ़ 177 MH दुकान का (तीन दुकानें: tests/stores.py)
         await c.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={firebase:{projectId:'mh177-canteen',apiKey:'k'},updateUrl:'https://177mhwcanteen-cyber.github.io/177-MH-/'};", content_type="application/javascript"))
         await c.goto("http://127.0.0.1:8770/order/"); await c.wait_for_selector("#wgo")
         # 👋 खाता: नाम + मोबाइल बिना सामान/भाव नहीं (धुंधला), भरोसे की लाइन

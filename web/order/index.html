@@ -76,10 +76,29 @@ button{font:inherit;cursor:pointer;color:inherit}input,textarea{font:inherit;col
 .acc{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:12px;padding:8px 12px;margin-bottom:6px}.acc div{display:grid}.acc span{font-size:13px;color:var(--mut)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.trust .accs{padding:0;border:0;background:none}.accs:empty{display:none}.accs .lnk{font-size:12px;font-weight:800;background:var(--gbg);border:1px solid var(--g);border-radius:99px;padding:3px 9px}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
+
+.stores{display:flex;gap:8px;overflow-x:auto;padding:10px 12px 2px;scrollbar-width:none}.stores::-webkit-scrollbar{display:none}
+.cats[hidden]{display:none}.stores button{flex:1 1 0;min-width:0;white-space:nowrap;border:2px solid #e5e7eb;background:#fff;border-radius:14px;padding:9px 4px;font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:6px;justify-content:center;color:#111;position:relative}
+.stores button[aria-pressed="true"]{border-color:#111;background:#111;color:#fff}.stores button i{font-style:normal;background:#16a34a;color:#fff;border-radius:99px;font-size:11px;padding:1px 6px}
+.ch{padding:8px 14px 20px}.ch h2{margin:10px 2px 2px;font-size:22px}.ch .hint{margin:0 2px 12px}
+.chc{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:20px;padding:16px 14px;margin:0 0 12px;text-align:left;color:#111;box-shadow:0 6px 18px #0002;cursor:pointer}
+.chi{font-size:44px;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:#ffffffb0;border-radius:18px;flex:none}
+.cht{flex:1;display:grid;gap:1px;min-width:0}.cht b{font-size:21px}.cht small{font-weight:700;opacity:.85}.cht em{font-style:normal;font-size:12.5px;opacity:.8}.chn{font-weight:900;font-size:13px;background:#ffffffc8;border-radius:99px;padding:5px 9px;white-space:nowrap}
+.vegbar{display:flex;gap:8px;align-items:center;padding:8px 12px 0;flex-wrap:wrap}.vegbar[hidden]{display:none}
+.vegbar button{border:1.5px solid #d1d5db;background:#fff;border-radius:99px;padding:6px 12px;font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:6px;color:#111}
+.vegbar button[aria-pressed="true"]{border-color:#111;box-shadow:0 0 0 1.5px #111 inset}.vgc{font-size:12.5px;color:#b45309;font-weight:700}
+.vd{display:inline-block;width:13px;height:13px;border:1.6px solid #15803d;border-radius:3px;position:relative;vertical-align:-1px;margin-right:4px;flex:none;background:#fff}
+.vd::after{content:"";position:absolute;inset:2.3px;border-radius:50%;background:#15803d}.vd.nv{border-color:#92400e}.vd.nv::after{background:#92400e;border-radius:0;inset:auto;left:1.5px;right:1.5px;bottom:2px;top:2px;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.vd.big{width:26px;height:26px;border-width:2.5px}.vd.big::after{inset:5px}.vd.nv.big::after{left:4px;right:4px;top:4px;bottom:5px;inset:auto}
+.va{display:grid;grid-template-columns:1fr 1fr;gap:10px}.va button{border:2px solid #e5e7eb;background:#fff;border-radius:16px;padding:16px 8px;display:grid;justify-items:center;gap:6px;color:#111}.va b{font-size:17px}.va small{font-size:12px;color:#666;text-align:center}
+.rsh{margin:10px 12px 0;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff;display:grid}.rsh b{font-size:19px}.rsh span{font-size:12.5px;opacity:.9}
+.csh{display:flex;justify-content:space-between;align-items:baseline}.csh span{font-size:15px}
 </style></head><body>
 <div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1>177 MH Canteen</h1><small id="sub">Military Hospital · Akashvani Rd, Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
 <label class="srch"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search — milk, Parle, samosa…" autocomplete="off" aria-label="Search items"></label></div>
+<nav class="stores" id="stores" aria-label="Shops"></nav>
 <div id="livebar"></div><div class="trust" id="trust"></div><div id="closed"></div>
+<div class="vegbar" id="vegbar" hidden></div>
 <nav class="cats" id="cats" aria-label="Categories"></nav>
 <main id="m"><div class="g"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></main>
 <footer>177 MH (Military Hospital) Canteen · Akashvani Road, Barmer<br>Prices come live from the shop · <button class="lnk" id="myo" type="button">📦 My orders</button></footer>
@@ -97,7 +116,26 @@ const fq=(q,u)=>u==="kg"?(q<1?Math.round(q*1000)+"g":q+"kg"):q+(u==="pc"?"":" "+
 const rs=n=>"₹"+(Math.round(n*100)/100).toLocaleString("en-IN");
 const CATS=[["all","All","🛍️"],["mithai","Sweets","🍬"],["fast","Snacks","🥟"],["kirana","Grocery","🛒"],["daily","Daily Needs","🧴"],["sabzi","Fruits & Veg","🥬"],["stationery","Stationery","✏️"],["gift","Gifts & Toys","🎁"],["kapde","Clothing","👕"]];
 const EM={mithai:"🍬",fast:"🥟",kirana:"🛒",daily:"🧴",sabzi:"🥬",stationery:"✏️",gift:"🎁",kapde:"👕"};
-let R=null,CF={},L=[],cat="all",qs="",Q=LS.get("mh_cart",{}),me=LS.get("mh_me",{});
+let R=null,CF={},L=[],LM=[],LX=[],LR=[],RJ=null,cat="all",qs="",Q=LS.get("mh_cart",{}),me=LS.get("mh_me",{});
+/* 🛍️ तीन दुकानें, एक पेज (11-11-2026): हर दुकान का अलग ऑर्डर/बिल — एक ही बार में ऑर्डर */
+const SC=((window.SE_CONFIG||{}).stores||{}).sabji||{};
+const STS={mh:{n:"177 MH Canteen",ic:"🛒",t:"Grocery",d:"Grocery · Dry fruits · Cold drinks · Ice cream · Sweets",bg:"linear-gradient(135deg,#fde68a,#f59e0b)"},
+  sabji:{n:"Sabji Express",ic:"🥬",t:"Vegetables",d:"Fresh vegetables & fruits · daily mandi rates",bg:"linear-gradient(135deg,#bbf7d0,#16a34a)"},
+  rasoi:{n:"Marwar Rasoi",ic:"🍛",t:"Restaurant",d:"Veg & Non-veg · Tandoor · Biryani",bg:"linear-gradient(135deg,#fecaca,#dc2626)"}};
+let SEG=LS.get("mh_seg",""),VEG=LS.get("mh_veg","");
+const XCATS=[["all","All","🥬"],["sabzi","Vegetables","🥕"],["patta","Leafy greens","🌿"],["fal","Fruits","🍎"],["packed","Packed","📦"]];
+const stOn=k=>{const o=(CF.stores||{})[k];return k==="mh"?CF.on!==false:!(o&&o.on===false)};
+const stOf=i=>i.st||"mh";
+const vegDot=i=>stOf(i)==="rasoi"?`<i class="vd ${i.veg?"v":"nv"}" title="${i.veg?"Veg":"Non-veg"}"></i>`:"";
+const rasoiOpen=()=>{const H=(RJ&&RJ.shop&&RJ.shop.hours)||[];if(!H.length)return true;const n=new Date(),m=n.getHours()*60+n.getMinutes(),p=s=>{const[a,b]=String(s).split(":");return(+a)*60+(+b||0)};return H.some(h=>m>=p(h[0])&&m<p(h[1]))};
+async function loadSabji(){if(!SC.pid)return;const c=LS.get("mh_sx",null);if(c&&!LX.length){LX=c;build()}
+  try{const r=await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/pub/rates?key="+SC.key,{cache:"no-store"});if(!r.ok)throw 0;
+    const X=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
+    LX=(X.items||[]).filter(i=>i&&i.id&&+i.s>0).map(i=>({id:"sx-"+i.id,n:String(i.e||i.n||"").toUpperCase(),hi:i.e?i.n:"",u:i.u||"kg",s:+i.s,c:["sabzi","patta","fal","packed"].includes(i.c)?i.c:"sabzi",p:i.p?(/^https?:/.test(i.p)?i.p:SC.base+String(i.p).replace(/^\.?\//,"")):"",h:i.h,em:"🥬",st:"sabji"}));
+    LS.set("mh_sx",LX);build()}catch(e){}}
+async function loadRasoi(){try{const r=await fetch("rasoi.json",{cache:"no-store"});if(!r.ok)throw 0;RJ=await r.json();
+    LR=(RJ.items||[]).map(i=>({...i,st:"rasoi",p:i.p||""}));build()}catch(e){}}
+function build(){L=[...LM,...LX,...LR];Object.keys(Q).forEach(id=>{const i=L.find(x=>x.id===id);if(!i&&(LM.length&&LX.length&&LR.length))delete Q[id]});heads();draw()}
 const toast=t=>{const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)};
 const photo=i=>PH&&PH[i.id]?PH[i.id]:i.p?(/^(https?:|data:)/.test(i.p)?i.p:"../"+i.p):"";
 const bg=i=>photo(i)?`background-image:url('${esc(photo(i))}')`:`background:linear-gradient(135deg,hsl(${(+i.h||((i.id||"").length*47))%360} 70% 92%),hsl(${(+i.h||((i.id||"").length*47))%360} 60% 80%))`;
@@ -109,30 +147,45 @@ let MODE=LS.get("mh_mode","d");const mode=()=>CF.del===false?"p":CF.pick===false
 async function load(){const cached=LS.get("mh_rates",null);if(cached&&!R){R=cached;prep();draw()}
   try{const r=await fetch(B+"pub/rates?key="+C.apiKey,{cache:"no-store"});if(!r.ok)throw 0;R=V({mapValue:{fields:(await r.json()).fields||{}}});LS.set("mh_rates",R);prep();draw()}
   catch(e){if(!R)$("#m").innerHTML='<div class="empty">📶 Could not load prices — check internet and <button class="lnk" onclick="location.reload()">try again</button></div>'}}
-function prep(){CF=R.cfg||{};L=(R.items||[]).filter(i=>i&&i.id&&+i.s>0&&!(CF.stockOnly&&i.k===0));
-  Object.keys(Q).forEach(id=>{const i=L.find(x=>x.id===id);if(!i||i.k===0)delete Q[id]});
+function prep(){CF=R.cfg||{};LM=(R.items||[]).filter(i=>i&&i.id&&+i.s>0&&!(CF.stockOnly&&i.k===0));L=[...LM,...LX,...LR];
+  Object.keys(Q).forEach(id=>{if(/^(sx|rs)-/.test(id))return;const i=LM.find(x=>x.id===id);if(!i||i.k===0)delete Q[id]});
   const ph=String(CF.phone||R.phone||"");
   $("#eta").innerHTML=CF.on===false?"":`<b>⚡ ${+CF.eta||30} min</b><span>${mode()==="d"?"delivery":"pickup"}</span>`;
   $("#trust").innerHTML='<span id="acc" class="accs"></span>'+[`✅ Army canteen`,`🏷️ Same price as shop`,CF.freeAbove?`🛵 Free delivery above ₹${CF.freeAbove}`:"",`💵 Cash / 📱 UPI`,ph?`<a href="tel:+91${esc(ph)}" style="color:inherit;text-decoration:none">📞 ${esc(ph)}</a>`:""].filter(Boolean).map(x=>`<span>${x}</span>`).join("");accChip();
   $("#closed").innerHTML=CF.on===false?`<div class="closed">⛔ Online orders are paused right now — please visit or call the shop.</div>`:!openNow()?`<div class="closed">🌙 Shop is closed now (open ${esc(CF.open)}–${esc(CF.close)}). You can still order — we will prepare it when we open.</div>`:"";
-  const have=new Set(L.map(i=>i.c));$("#cats").innerHTML=CATS.filter(c=>c[0]==="all"||have.has(c[0])).map(c=>`<button type="button" data-c="${c[0]}" aria-pressed="${cat===c[0]}">${c[2]} ${c[1]}</button>`).join("")}
+  heads()}
+/* ऊपर की पट्टी: दुकान बदलें + उस दुकान की श्रेणियाँ + (रेस्टोरेंट में) वेज/नॉन-वेज */
+function catsOf(st){return st==="sabji"?XCATS:st==="rasoi"?[["all","All","🍽️"],...((RJ&&RJ.cats)||[]).filter(c=>!(VEG==="veg"&&LR.some(i=>i.c===c.k)&&LR.filter(i=>i.c===c.k).every(i=>!i.veg))).map(c=>[c.k,c.n,c.em])]:CATS}
+function heads(){const sw=$("#stores");if(sw)sw.innerHTML=SEG?Object.entries(STS).filter(([k])=>stOn(k)).map(([k,v])=>{const n=L.filter(i=>stOf(i)===k&&Q[i.id]>0).length;return `<button type="button" data-st="${k}" aria-pressed="${SEG===k}">${v.ic} ${v.t}${n?`<i>${n}</i>`:""}</button>`}).join(""):"";
+  const vg=$("#vegbar");if(vg){vg.hidden=SEG!=="rasoi";vg.innerHTML=SEG==="rasoi"?`<button type="button" data-veg="veg" aria-pressed="${VEG==="veg"}"><i class="vd v"></i> Veg only</button><button type="button" data-veg="nonveg" aria-pressed="${VEG!=="veg"}"><i class="vd nv"></i> Non-veg + Veg</button>${rasoiOpen()?"":`<span class="vgc">🌙 Kitchen opens ${esc(((RJ&&RJ.shop&&RJ.shop.hours)||[]).map(h=>h[0]+"–"+h[1]).join(" & "))}</span>`}`:""}
+  const C2=catsOf(SEG||"mh"),have=new Set(L.filter(i=>stOf(i)===(SEG||"mh")).map(i=>i.c));if(!C2.some(c=>c[0]===cat))cat="all";
+  $("#cats").hidden=!SEG;$("#cats").innerHTML=C2.filter(c=>c[0]==="all"||have.has(c[0])).map(c=>`<button type="button" data-c="${c[0]}" aria-pressed="${cat===c[0]}">${c[2]} ${c[1]}</button>`).join("");
+  const q=$("#q");if(q)q.placeholder=SEG==="sabji"?"Search — tomato, palak, apple…":SEG==="rasoi"?"Search — paneer, biryani, naan…":"Search — milk, Parle, ice cream…"}
 function card(i){const q=Q[i.id]||0,off=i.m>i.s?Math.round((i.m-i.s)/i.m*100):0,out=i.k===0;
   return `<div class="t${out?" out":""}"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||EM[i.c]||"🛍️")}${off>=3?`<span class="off">${off}%<br>OFF</span>`:""}</div>
-  <div class="b"><div class="nm">${esc(i.n)}</div>${i.hi?`<div class="hi">${esc(i.hi)}</div>`:""}<div class="un">${i.u==="kg"?"per kg":esc(i.sz||"1 "+(U[i.u]||i.u))}</div>
+  <div class="b"><div class="nm">${vegDot(i)}${esc(i.n)}</div>${i.hi?`<div class="hi">${esc(i.hi)}</div>`:""}<div class="un">${i.u==="kg"?"per kg":esc(i.sz||"1 "+(U[i.u]||i.u))}</div>
   <div class="pr"><div><b>${rs(i.s)}</b>${off?`<s>${rs(i.m)}</s>`:""}</div>${out?`<span class="nostock">Sold out</span>`:q?`<div class="stp"><button type="button" data-m="${esc(i.id)}" aria-label="Less">−</button><span>${fq(q,i.u)}</span><button type="button" data-p="${esc(i.id)}" aria-label="More">+</button></div>`:`<button type="button" class="add" data-p="${esc(i.id)}" ${CF.on===false?"disabled":""}>ADD</button>`}</div></div></div>`}
-function draw(){if(!R)return;const s=qs.toLowerCase();
-  let F=L.filter(i=>(cat==="all"||i.c===cat)&&(!s||(i.n+" "+(i.hi||"")+" "+(i.e||"")+" "+(i.sb||"")).toLowerCase().includes(s)));
-  F.sort((a,b)=>(a.k===0)-(b.k===0)||(b.t||0)-(a.t||0));
+function chooser(){const A=Object.entries(STS).filter(([k])=>stOn(k));
+  return `<div class="ch"><h2>What would you like to order?</h2><p class="hint">One order — each shop sends its own items & bill</p>${A.map(([k,v])=>{const n=L.filter(i=>stOf(i)===k).length;return `<button type="button" class="chc" data-st="${k}" style="background:${v.bg}"><span class="chi">${v.ic}</span><span class="cht"><b>${v.t}</b><small>${esc(v.n)}</small><em>${esc(v.d)}</em></span><span class="chn">${n?n+" items ›":"›"}</span></button>`}).join("")}</div>`}
+function draw(){if(!R&&!LX.length&&!LR.length)return;if(!SEG){$("#m").innerHTML=chooser();bar();return}const s=qs.toLowerCase();
+  let F=L.filter(i=>stOf(i)===SEG&&(cat==="all"||i.c===cat)&&(SEG!=="rasoi"||VEG!=="veg"||i.veg)&&(!s||(i.n+" "+(i.hi||"")+" "+(i.e||"")+" "+(i.sb||"")).toLowerCase().includes(s)));
+  F.sort((a,b)=>(a.k===0)-(b.k===0)||(SEG==="rasoi"&&VEG!=="veg"?(a.veg?1:0)-(b.veg?1:0):0)||(b.t||0)-(a.t||0));
+  if(!F.length&&!s&&!L.some(i=>stOf(i)===SEG)){$("#m").innerHTML=`<div class="empty">⏳ Loading ${esc(STS[SEG].n)} menu…</div>`;bar();return}
   let html="";if(!F.length)html=`<div class="empty">😕 No match for "${esc(qs)}" — try another name or call the shop.</div>`;
-  else if(cat==="all"&&!s){CATS.slice(1).forEach(c=>{const G=F.filter(i=>i.c===c[0]);if(G.length)html+=`<div class="sec">${c[2]} ${c[1]} <small>${G.length} items</small></div><div class="g">${G.slice(0,60).map(card).join("")}</div>`});
-    const rest=F.filter(i=>!CATS.some(c=>c[0]===i.c));if(rest.length)html+=`<div class="sec">🛍️ More <small>${rest.length}</small></div><div class="g">${rest.map(card).join("")}</div>`}
+  else if(cat==="all"&&!s){const C2=catsOf(SEG),ord=SEG==="rasoi"&&VEG!=="veg"?[...C2.slice(1).filter(c=>LR.some(i=>i.c===c[0]&&!i.veg)),...C2.slice(1).filter(c=>!LR.some(i=>i.c===c[0]&&!i.veg))]:C2.slice(1);
+    if(SEG==="rasoi")html+=`<div class="rsh"><b>🍛 ${esc((RJ&&RJ.shop&&RJ.shop.name)||"Marwar Rasoi")}</b><span>${esc((RJ&&RJ.shop&&RJ.shop.tag)||"")}${RJ&&RJ.shop&&RJ.shop.freeDelivery?" · 🛵 Free delivery":""}</span></div>`;
+    ord.forEach(c=>{const G=F.filter(i=>i.c===c[0]);if(G.length)html+=`<div class="sec">${c[2]} ${c[1]} <small>${G.length} items</small></div><div class="g">${G.slice(0,80).map(card).join("")}</div>`});
+    const rest=F.filter(i=>!C2.some(c=>c[0]===i.c));if(rest.length)html+=`<div class="sec">🛍️ More <small>${rest.length}</small></div><div class="g">${rest.map(card).join("")}</div>`}
   else html=`<div class="g">${F.slice(0,300).map(card).join("")}</div>`;
   $("#m").innerHTML=html;bar()}
 function bar(){const n=cnt(),b=$("#cbar");LS.set("mh_cart",Q);b.hidden=!n;if(!n)return;const t=tot();$("#cbN").textContent=n+(n>1?" items · ":" item · ")+rs(t);
   const f=CF.freeAbove&&mode()==="d"&&t<CF.freeAbove?`Add ₹${Math.ceil(CF.freeAbove-t)} more for free delivery`:mode()==="d"?"Home delivery":"Pickup from shop";$("#cbS").textContent=f}
 function bump(id,dir){const i=L.find(x=>x.id===id);if(!i||i.k===0)return;const s=stepOf(i.u);let q=Math.round(((Q[id]||0)+dir*s)*100)/100;
   if(q<0)q=0;if(q>99)q=99;if(q)Q[id]=q;else delete Q[id];try{if(dir>0&&navigator.vibrate)navigator.vibrate(12)}catch(e){}}
-document.addEventListener("click",e=>{const p=e.target.closest("[data-p]"),m=e.target.closest("[data-m]");
+document.addEventListener("click",e=>{const sb=e.target.closest("[data-st]"),vb=e.target.closest("[data-veg]");
+  if(sb&&!e.target.closest("#ov")){SEG=sb.dataset.st;LS.set("mh_seg",SEG);cat="all";qs="";const q=$("#q");if(q)q.value="";heads();draw();scrollTo({top:0,behavior:"smooth"});if(SEG==="rasoi"&&!VEG)vegAsk();return}
+  if(vb){VEG=vb.dataset.veg;LS.set("mh_veg",VEG);close();heads();draw();return}
+  const p=e.target.closest("[data-p]"),m=e.target.closest("[data-m]");
   if(p||m){bump((p||m).dataset[p?"p":"m"],p?1:-1);if(e.target.closest("#ov"))cart();else draw();return}
   const c=e.target.closest("[data-c]");if(c){cat=c.dataset.c;document.querySelectorAll("#cats button").forEach(b=>b.setAttribute("aria-pressed",String(b===c)));draw();window.scrollTo({top:0,behavior:"smooth"});return}});
 $("#q").addEventListener("input",e=>{qs=e.target.value.trim();draw()});
@@ -142,10 +195,11 @@ const sheet=(title,body,btn)=>{$("#ov").innerHTML=`<div class="scrim" data-x><di
   $("#ov .scrim").addEventListener("click",e=>{if(e.target.matches("[data-x]")){clearTimeout(trkT);close()}})};
 
 /* ---------- 🛒 कार्ट + चेकआउट ---------- */
+function vegAsk(){sheet("🍽️ What do you eat?",`<div class="box va"><button type="button" data-veg="veg"><i class="vd v big"></i><b>Pure Veg</b><small>Show only vegetarian food</small></button><button type="button" data-veg="nonveg"><i class="vd nv big"></i><b>Non-veg</b><small>Chicken, fish & biryani first — plus all veg</small></button></div><p class="hint" style="text-align:center">You can switch anytime from the bar on top.</p>`)}
 function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();return}const sub=tot(),fe=fee(sub),total=sub+fe,min=+CF.min||0;
-  const minOk=sub>=min;
-  sheet("🛒 Your cart",`<div class="box">${I.map(i=>`<div class="ci"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||EM[i.c]||"🛍️")}</div><div><div class="nm">${esc(i.n)}</div><div class="un">${rs(i.s)} / ${U[i.u]||i.u}</div></div>
-    <div class="stp"><button type="button" data-m="${esc(i.id)}">−</button><span>${fq(Q[i.id],i.u)}</span><button type="button" data-p="${esc(i.id)}">+</button></div><div class="amt">${rs(Q[i.id]*i.s)}</div></div>`).join("")}</div>
+  const minOk=sub>=min,GS=Object.keys(STS).filter(k=>I.some(i=>stOf(i)===k));
+  sheet("🛒 Your cart",`${GS.length>1?`<p class="hint" style="margin:0 2px 8px">🧾 ${GS.length} shops — each sends its own items with a separate bill, in one delivery trip where possible.</p>`:""}${GS.map(k=>{const G=I.filter(i=>stOf(i)===k);return `<div class="box"><h3 class="csh">${STS[k].ic} ${esc(STS[k].n)}<span>${rs(G.reduce((a,i)=>a+Q[i.id]*i.s,0))}</span></h3>${G.map(i=>`<div class="ci"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||EM[i.c]||"🛍️")}</div><div><div class="nm">${esc(i.n)}</div><div class="un">${rs(i.s)} / ${U[i.u]||i.u}</div></div>
+    <div class="stp"><button type="button" data-m="${esc(i.id)}">−</button><span>${fq(Q[i.id],i.u)}</span><button type="button" data-p="${esc(i.id)}">+</button></div><div class="amt">${rs(Q[i.id]*i.s)}</div></div>`).join("")}</div>`}).join("")}
   <div class="box"><h3>🧾 Bill details</h3><div class="row"><span>Items total</span><span>${rs(sub)}</span></div>
     ${mode()==="d"?`<div class="row"><span>Delivery fee</span>${fe?`<span>${rs(fe)}</span>`:`<span class="fr">FREE</span>`}</div>`:""}
     <div class="row tot"><span>To pay (approx.)</span><span>${rs(total)}</span></div>
@@ -177,17 +231,22 @@ async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.
   const qt=g("qt"),un=g("un"),ar=g("ad"),ad=[qt?"Qtr "+qt:"",un,ar].filter(Boolean).join(" · ");
   if(mode()==="d"&&!qt&&!me.ll){toast("Add Quarter No. or 📍 location");if($("#qt"))$("#qt").focus();return}
   if(alt&&alt.length!==10){toast("Call number must be 10 digits");$("#alt").focus();return}
-  const I=L.filter(i=>Q[i.id]>0).slice(0,40),sub=tot(),total=Math.round((sub+fee(sub))*100)/100;
-  const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"c")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"","₹"+total].filter(Boolean).join("|");
-  const note=(meta+"¦"+nt).slice(0,200);const btn=$("#place");btn.disabled=true;btn.textContent="⏳ Placing order…";
-  const S=v=>({stringValue:String(v)});const ts=Date.now();
-  const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S((mode()==="d"?ad:"Pickup from shop").slice(0,80)),note:S(note),ts:{integerValue:String(ts)},status:S("new"),src:S("web2"),
-    items:{arrayValue:{values:I.map(i=>({mapValue:{fields:{id:S(i.id),n:S(i.n),q:{doubleValue:Q[i.id]},u:S(i.u),s:{doubleValue:+i.s}}}}))}}}};
-  try{const r=await fetch(B+"orders?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw new Error(r.status);
-    const j=await r.json();const id=String(j.name||"").split("/").pop();
-    const mine=LS.get("mh_orders",[]);mine.unshift({id,ts,total,n:I.length,items:I.map(i=>[i.id,Q[i.id]]),mode:mode()});LS.set("mh_orders",mine.slice(0,20));
-    Q={};LS.set("mh_cart",Q);draw();track(id,true)}
-  catch(e){btn.disabled=false;btn.textContent="✓ Place order";toast("Order not sent — check internet and try again")}}
+  /* 🧾 हर दुकान का अलग ऑर्डर (अलग बिल) — एक ही ग्राहक के ऑर्डर "🧺" से जुड़े; डिलीवरी शुल्क एक बार (पहले ऑर्डर पर) */
+  const all=L.filter(i=>Q[i.id]>0),GS=Object.keys(STS).filter(k=>all.some(i=>stOf(i)===k)),sub=tot(),fe=fee(sub),grp=GS.length>1?"G"+Date.now().toString(36).slice(-6):"";
+  if(GS.includes("rasoi")&&!rasoiOpen()&&!confirm("Marwar Rasoi kitchen is closed now — your food will be prepared when it opens. Continue?"))return;
+  const btn=$("#place");btn.disabled=true;btn.textContent="⏳ Placing order…";
+  const S=v=>({stringValue:String(v)});const ts=Date.now(),ids=[];
+  try{for(const k of GS){const I=all.filter(i=>stOf(i)===k).slice(0,40),st=Math.round(I.reduce((a,i)=>a+Q[i.id]*i.s,0)*100)/100,total=Math.round((st+(k===GS[0]?fe:0))*100)/100;
+      const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"c")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"","₹"+total,k!=="mh"?"🏬"+k:"",grp?"🧺"+grp+"/"+GS.length:""].filter(Boolean).join("|");
+      const note=(meta+"¦"+nt).slice(0,200);
+      const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S((mode()==="d"?ad:"Pickup from shop").slice(0,80)),note:S(note),ts:{integerValue:String(ts)},status:S("new"),src:S(k==="mh"?"web2":"web2:"+k),
+        items:{arrayValue:{values:I.map(i=>({mapValue:{fields:{id:S(i.id),n:S(i.n),q:{doubleValue:Q[i.id]},u:S(i.u),s:{doubleValue:+i.s}}}}))}}}};
+      const r=await fetch(B+"orders?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw new Error(r.status);
+      const j=await r.json();const id=String(j.name||"").split("/").pop();ids.push(id);
+      const mine=LS.get("mh_orders",[]);mine.unshift({id,ts,total,n:I.length,items:I.map(i=>[i.id,Q[i.id]]),mode:mode(),st:k});LS.set("mh_orders",mine.slice(0,30));
+      I.forEach(i=>delete Q[i.id]);LS.set("mh_cart",Q)}
+    Q={};LS.set("mh_cart",Q);draw();track(ids[0],true);if(ids.length>1)setTimeout(()=>toast("✅ "+ids.length+" orders placed — one per shop"),600)}
+  catch(e){btn.disabled=false;btn.textContent="✓ Place order";bar();toast(ids.length?"Some orders sent ("+ids.length+") — tap Place order again for the rest":"Order not sent — check internet and try again")}}
 
 /* ---------- 📦 ट्रैकिंग (pub/ot_<id> — दुकान का ऐप हर कदम पर भरता है) ---------- */
 const STEPS=[["new","Order placed","Received at the shop"],["acc","Accepted","The shop has confirmed your order"],["pack","Packing","Your items are being packed"],["out","On the way","🛵 Coming to you"],["done","Delivered","Thank you! 🙏"]];
@@ -256,6 +315,6 @@ async function loadPhotos(){try{const r=await fetch(B+"pub/phx?key="+C.apiKey,{c
   for(let k=0;k<n;k++){try{const q=await fetch(B+"pub/ph_"+k+"?key="+C.apiKey);if(!q.ok)continue;const d=V({mapValue:{fields:(await q.json()).fields||{}}})||{};Object.assign(PH,d.m||{});clearTimeout(phT);phT=setTimeout(()=>{if(!$("#ov .sheet"))draw()},150)}catch(e){}}
   try{LS.set("mh_ph",PH);LS.set("mh_phv",v)}catch(e){}}catch(e){}}
 if(!ACC().ph)welcome(false);else accChip();meBtn();
-load();loadPhotos();setInterval(()=>{if(!$("#ov .sheet"))load()},5*60000);
+load();loadSabji();loadRasoi();loadPhotos();setInterval(()=>{if(!$("#ov .sheet"))load()},5*60000);
 })();
 </script></body></html>

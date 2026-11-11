@@ -43,7 +43,17 @@ if(window.SX)SX.pubRates=SON.publish;
 /* ================= 📥 ऑर्डर ================= */
 const ACTIVE=["new","billing","acc","pack","out"];
 SON.parse=function(o){const n=String(o.note||"");if(!n.includes("¦"))return {note:n};const [meta,rest]=n.split("¦");const p=meta.split("|");const r={note:rest||""};
-  p.forEach(x=>{if(x==="🛵")r.mode="d";else if(x==="🏪")r.mode="p";else if(x==="💵")r.pay="नकद";else if(x==="📱")r.pay="UPI";else if(x.startsWith("⏰"))r.when=x.slice(1).trim();else if(x.startsWith("📍"))r.ll=x.slice(2);else if(x.startsWith("☎️"))r.alt=x.slice(2).replace(/\D/g,"");else if(x.startsWith("₹"))r.total=num(x.slice(1))});return r};
+  p.forEach(x=>{if(x==="🛵")r.mode="d";else if(x==="🏪")r.mode="p";else if(x==="💵")r.pay="नकद";else if(x==="📱")r.pay="UPI";else if(x.startsWith("⏰"))r.when=x.slice(1).trim();else if(x.startsWith("📍"))r.ll=x.slice(2);else if(x.startsWith("☎️"))r.alt=x.slice(2).replace(/\D/g,"");else if(x.startsWith("₹"))r.total=num(x.slice(1));else if(x.startsWith("🏬"))r.store=x.slice(2).trim();else if(x.startsWith("🧺"))r.grp=x.slice(2).trim()});return r};
+/* 🛍️ तीन दुकानें एक पेज पर (11-11-2026): 🛒 177 MH (यही) · 🥬 सब्ज़ी एक्सप्रेस · 🍛 मारवाड़ रसोई — हर दुकान का अलग ऑर्डर/बिल */
+SON.STORES={mh:{i:"🛒",n:"177 MH कैंटीन"},sabji:{i:"🥬",n:"सब्ज़ी एक्सप्रेस",ph:""},rasoi:{i:"🍛",n:"मारवाड़ रसोई",ph:"8696283600"}};
+SON.storeOf=o=>{const s=String(o.src||"");return s.startsWith("web2:")?s.slice(5):(SON.parse(o).store||"mh")};
+SON.storePh=k=>{const c=((SON.cfg().stores||{})[k])||{};return String(c.ph||(SON.STORES[k]||{}).ph||"").replace(/\D/g,"").slice(-10)};
+SON.storeText=function(o){const p=SON.parse(o),k=SON.storeOf(o),st=SON.STORES[k]||{n:k};const items=(o.items||[]).map((x,i)=>`${i+1}. ${SE.capNm(x.n)} — *${fq(num(x.q),x.u||"pc")}*${num(x.s)?" × ₹"+num(x.s):""}`).join("\n");
+  const est=p.total||(o.items||[]).reduce((a,x)=>a+num(x.q)*num(x.s),0);
+  return `🛵 *नया ऑर्डर — ${st.n}*\n👤 ${o.name||"ग्राहक"} · 📞 ${o.phone||""}${p.alt?" / "+p.alt:""}\n${p.mode==="p"?"🏪 दुकान से लेंगे":"📍 "+(o.addr||"")}${p.ll?"\n🗺️ https://maps.google.com/?q="+p.ll:""}\n⏰ ${p.when||"अभी"} · ${p.pay==="UPI"?"📱 UPI":"💵 नकद"}\n\n${items}\n\n💰 लगभग ₹${Math.round(est)}${p.note?"\n📝 "+p.note:""}\n— 177 MH ऑनलाइन (${new Date(num(o.ts)||Date.now()).toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"})})`};
+SON.billText=function(o){const p=SON.parse(o),k=SON.storeOf(o),st=SON.STORES[k]||{n:k};const L=(o.items||[]).map(x=>`${SE.capNm(x.n)} ${fq(num(x.q),x.u||"pc")} = ₹${Math.round(num(x.q)*num(x.s)*100)/100}`).join("\n");
+  const sub=(o.items||[]).reduce((a,x)=>a+num(x.q)*num(x.s),0),tot=p.total||sub;
+  return `🧾 *${st.n}* — बिल\n${o.name||""} जी\n\n${L}\n\nसामान ₹${Math.round(sub*100)/100}${tot>sub+0.5?"\nडिलीवरी ₹"+Math.round(tot-sub):""}\n*कुल ₹${Math.round(tot)}*\n🙏 धन्यवाद — 177 MH ऑनलाइन`};
 const ST={new:["🆕","नया"],billing:["🧾","बिल बन रहा"],acc:["✓","स्वीकार"],pack:["📦","पैक"],out:["🛵","रास्ते में"],done:["✅","पहुँचा"],cancel:["✕","रद्द"]};
 SON.accts=[];
 SON.watch=function(){if(S.demo||!S.db||SON._un)return;
@@ -81,7 +91,8 @@ SON.sheet=function(){if(window.SRG)SRG.silence();const L=SX.orders||[];const lin
   const card=o=>{const p=SON.parse(o),st=o.status||"new",[ic,tx]=ST[st]||["",st],old=st==="new"&&Date.now()-num(o.ts)>3*60000;
     const items=(window.SRK?SRK.sortItems(o.items||[]):(o.items||[])).map(x=>{const r=window.SRK?SRK.norm((item(x.id)||{}).rack):"";return `${r?`<i class="son-rk">📍${esc(r)}</i> `:""}${esc(SE.capNm(x.n))} <b>${fq(num(x.q),x.u||"pc")}</b>`}).join(" · ");/* 📍 रैक के क्रम में — एक चक्कर में पूरा ऑर्डर */
     const est=p.total||(o.items||[]).reduce((a,x)=>a+num(x.q)*num(x.s),0);const eta=o.etaTs?new Date(o.etaTs).toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"}):"";
-    return `<div class="card2 son-o ${st}${old?" late":""}"><div class="son-h"><span class="son-st">${ic} ${tx}</span><b>${esc(o.name||"ग्राहक")}</b><small>${ago(o.ts)}${eta?" · ⏱️ "+eta:""}</small></div>
+    const sk=SON.storeOf(o),so=SON.STORES[sk]||{i:"🏬",n:sk},sph=sk!=="mh"?SON.storePh(sk):"",gp=p.grp?String(p.grp).split("/"):null;
+    return `<div class="card2 son-o ${st}${old?" late":""} son-s-${esc(sk)}"><div class="son-sb"><span>${so.i} ${esc(so.n)}</span>${gp?`<i>🧺 एक ही ग्राहक के ${esc(gp[1]||"")} ऑर्डर</i>`:""}</div><div class="son-h"><span class="son-st">${ic} ${tx}</span><b>${esc(o.name||"ग्राहक")}</b><small>${ago(o.ts)}${eta?" · ⏱️ "+eta:""}</small></div>
     <div class="son-m">${p.mode==="p"?"🏪 दुकान से लेंगे":"🛵 घर पहुँचाना"} · ${p.pay?(p.pay==="UPI"?"📱 UPI":"💵 नकद"):""} · ⏰ ${esc(p.when||"अभी")} · <b>≈ ${rs(Math.round(est))}</b></div>
     ${o.addr&&p.mode!=="p"?`<div class="son-a">📍 ${esc(o.addr)}${p.ll?` · <a href="https://www.google.com/maps/search/?api=1&query=${esc(p.ll)}" target="_blank" rel="noopener">नक्शा ↗</a>`:""}</div>`:""}
     <div class="son-i">${items}</div>${p.note?`<div class="son-a">📝 ${esc(p.note)}</div>`:""}${p.alt?`<div class="son-a">☎️ कॉल के लिए: <a href="tel:+91${esc(p.alt)}">${esc(p.alt)}</a></div>`:""}${o.rider?`<div class="son-a">🛵 ${esc(o.rider)}</div>`:""}
@@ -89,7 +100,7 @@ SON.sheet=function(){if(window.SRG)SRG.silence();const L=SX.orders||[];const lin
       :st==="acc"||st==="billing"?`<button data-sonst="pack" data-id="${esc(o.id)}">📦 पैक हो गया</button>`
       :st==="pack"?(p.mode==="p"?`<button data-sonst="done" data-id="${esc(o.id)}">✅ ग्राहक ले गया</button>`:`<button data-sonout="${esc(o.id)}">🛵 भेज दिया</button>`)
       :st==="out"?`<button data-sonst="done" data-id="${esc(o.id)}">✅ पहुँच गया</button>`:""}
-      ${st!=="billing"?`<button class="g" data-sxobill="${esc(o.id)}">🧾 बिल</button>`:""}
+      ${sk!=="mh"?`<a class="g" target="_blank" rel="noopener" href="${wa(SON.storeText(o),sph)}">📲 ${esc(so.n.split(" ")[0])} को भेजें</a><a class="g" target="_blank" rel="noopener" href="${wa(SON.billText(o),o.phone)}">🧾 बिल</a>`:st!=="billing"?`<button class="g" data-sxobill="${esc(o.id)}">🧾 बिल</button>`:""}
       <a class="g" href="tel:+91${esc(o.phone||"")}">📞</a><a class="g" target="_blank" rel="noopener" href="${wa(`🙏 नमस्ते ${o.name||""} जी, 177 MH कैंटीन — आपका ऑर्डर ${st==="new"?"मिल गया":"तैयार हो रहा"} है।${eta?" लगभग "+eta+" तक।":""}`,o.phone)}">💬</a>
       <button class="g r" data-sonx="${esc(o.id)}">✕</button></div></div>`};
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px son-sheet" role="dialog" aria-label="ग्राहकों के ऑर्डर"><div class="grab"></div>
@@ -103,6 +114,10 @@ document.addEventListener("click",async e=>{const t=e.target;let b;
   if((b=t.closest("[data-sonst]"))){b.disabled=true;await SON.step(b.dataset.id,b.dataset.sonst);return}
   if((b=t.closest("[data-sonout]"))){const r=prompt("कौन ले जा रहा है? (नाम)",LSx.get("son_rider")||String(biller()||"").split(/\s+/)[0]);if(r===null)return;LSx.set("son_rider",r.trim());await SON.step(b.dataset.sonout,"out",{rider:r.trim().slice(0,20)});return}
   if((b=t.closest("[data-sonx]"))){const r=prompt("रद्द क्यों? (ग्राहक को अंग्रेज़ी में दिखेगा)","Item out of stock");if(r===null)return;await SON.step(b.dataset.sonx,"cancel",{reason:r.slice(0,60),msg:r.slice(0,60)});return}
+  if((b=t.closest("[data-sonstore]"))){const k=b.dataset.sonstore,st={...(SON.cfg().stores||{})};st[k]={...(st[k]||{}),on:(st[k]||{}).on===false};SON.save({stores:st});try{renderSettings()}catch(x){}return}
+  if(t.closest("[data-sonmenu]")){SON.menuSheet();return}
+  if((b=t.closest("[data-somt]"))){SON._mt=b.dataset.somt;SON.menuSheet();return}
+  if((b=t.closest("[data-somveg]"))){SON._mv=b.dataset.somveg;SON.menuSheet();return}
   if((b=t.closest("[data-sonon]"))){SON.save({[b.dataset.sonon]:!SON.cfg()[b.dataset.sonon]});try{renderSettings()}catch(x){}return}
   if(t.closest("[data-sonqr]")){SON.qrSheet();return}
   if((b=t.closest("[data-sonqrsh]"))){SON.qrShare(b.dataset.sonqrsh);return}
@@ -149,6 +164,30 @@ SON.qrShare=async function(how){const c=SON._qr||await SON.qrCanvas(),name="MH17
     const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("⬇️ QR कार्ड सेव हो गया")}
   catch(e){if(e&&e.name!=="AbortError")toast("शेयर नहीं हुआ")}};
 
+/* ================= 🌐 ऑनलाइन मेन्यू — ग्राहक को अभी क्या दिख रहा (तीनों दुकानें) ================= */
+SON.menus={};
+SON.loadMenus=async function(){const sc=((window.SE_CONFIG||{}).stores||{}).sabji||{};
+  try{if(sc.pid){const r=await fetch("https://firestore.googleapis.com/v1/projects/"+sc.pid+"/databases/(default)/documents/pub/rates?key="+sc.key,{cache:"no-store"});if(r.ok){const j=await r.json();const it=(((j.fields||{}).items||{}).arrayValue||{}).values||[];
+      SON.menus.sabji=it.map(v=>{const f=(v.mapValue||{}).fields||{},g=k=>{const x=f[k]||{};return x.stringValue??(x.integerValue!=null?+x.integerValue:x.doubleValue)};const pp=String(g("p")||"");return {id:g("id"),n:String(g("e")||g("n")||"").toUpperCase(),hi:g("e")?g("n"):"",s:+g("s")||0,u:g("u")||"kg",c:g("c")||"sabzi",p:pp?(/^https?:/.test(pp)?pp:sc.base+pp.replace(/^\.?\//,"")):""}}).filter(x=>x.s>0)}}}catch(e){SON.menus.sabjiErr=1}
+  try{const r=await fetch("order/rasoi.json",{cache:"no-store"});if(r.ok)SON.menus.rasoi=await r.json()}catch(e){}
+  SON.menus.ts=Date.now()};
+SON.menuSheet=async function(){const t=SON._mt||"mh",cfg=SON.cfg(),T=[["mh","🛒 177 MH"],["sabji","🥬 सब्ज़ी"],["rasoi","🍛 रसोई"]];
+  if(!SON.menus.ts||Date.now()-SON.menus.ts>120000){$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px"><div class="empty">⏳ मेन्यू ला रहे हैं…</div></div></div>`;await SON.loadMenus()}
+  let L=[],head="",cats=[];
+  if(t==="mh"){L=SON.list().map(i=>({n:i.n,hi:i.hi,s:i.s,m:i.m,u:i.u,c:i.c,p:i.p,out:i.k===0}));head=`${L.length} सामान · ${L.filter(x=>x.out).length} स्टॉक ख़त्म (${cfg.stockOnly?"ग्राहक को छिपे":"धूसर दिखते"}) · 🔒 तम्बाकू कभी नहीं`}
+  else if(t==="sabji"){L=SON.menus.sabji||[];head=SON.menus.sabjiErr?"⚠ सब्ज़ी एक्सप्रेस के भाव नहीं आए (इंटरनेट/उसका ऐप)":`${L.length} सब्ज़ी-फल · भाव सब्ज़ी एक्सप्रेस ऐप से अपने-आप (वहाँ भाव बदलें)`}
+  else{const R=SON.menus.rasoi||{items:[],cats:[]};cats=R.cats||[];const v=SON._mv||"all";L=(R.items||[]).filter(i=>v==="all"||(v==="veg"?i.veg:!i.veg)).map(i=>({...i,vg:i.veg?"v":"nv"}));
+    head=`${(R.items||[]).length} आइटम · 🟩 ${(R.items||[]).filter(i=>i.veg).length} वेज · 🟥 ${(R.items||[]).filter(i=>!i.veg).length} नॉन-वेज · समय ${((R.shop||{}).hours||[]).map(h=>h[0]+"–"+h[1]).join(", ")} · भाव बदलने हों तो Claude को बताएँ`}
+  const on=k=>k==="mh"?cfg.on!==false:((cfg.stores||{})[k]||{}).on!==false;
+  const row=x=>`<div class="som-r${x.out?" out":""}"><span class="som-p" style="${x.p?`background-image:url('${esc(/^(https?:|data:)/.test(x.p)?x.p:x.p)}')`:""}">${x.p?"":(x.em||"🛍️")}</span><span class="som-n">${x.vg?`<i class="som-vd ${x.vg}"></i>`:""}<b>${esc(x.n)}</b>${x.hi?`<small>${esc(x.hi)}</small>`:""}</span><span class="som-s">₹${x.s}${x.m>x.s?`<s>₹${x.m}</s>`:""}<small>/${esc(x.u||"")}</small></span></div>`;
+  const body=t==="rasoi"&&cats.length?cats.map(c=>{const G=L.filter(i=>i.c===c.k);return G.length?`<h4 class="som-h">${c.em} ${esc(c.n)} <small>${G.length}</small></h4>${G.map(row).join("")}`:""}).join(""):L.map(row).join("");
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px som" role="dialog" aria-label="ऑनलाइन मेन्यू"><div class="grab"></div>
+  <div class="sh-head"><div><h3>🌐 ऑनलाइन मेन्यू</h3><span class="note">ग्राहक को ${esc(SON.link())} पर यही दिखता है</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  <div class="seg" style="margin:0 0 8px">${T.map(([k,n])=>`<button type="button" class="chip" data-somt="${k}" aria-pressed="${t===k}">${n}${on(k)?"":" ⛔"}</button>`).join("")}</div>
+  ${!on(t)?`<div class="son-a" style="color:var(--chili);font-weight:800">⛔ यह दुकान अभी ग्राहकों को नहीं दिख रही — ⚙️ ऑनलाइन दुकान में ✅ करें</div>`:""}
+  ${t==="rasoi"?`<div class="seg" style="margin:0 0 6px">${[["all","सब"],["veg","🟩 वेज"],["nv","🟥 नॉन-वेज"]].map(([k,n])=>`<button type="button" class="chip" data-somveg="${k}" aria-pressed="${(SON._mv||"all")===k}">${n}</button>`).join("")}</div>`:""}
+  <p class="note" style="margin:0 0 6px">${head}</p><div class="som-l">${body||'<div class="empty">कुछ नहीं</div>'}</div></div></div>`};
+
 /* ================= ⚙️ 🛵 ऑनलाइन दुकान ================= */
 SON.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const c=SON.cfg(),L=SON.list(),out=L.filter(i=>i.k===0).length,tob=S.items.filter(i=>i.active!==false&&typeof isTob==="function"&&isTob(i)).length;
   const sw=(k,t)=>`<button type="button" class="chip" data-sonon="${k}" aria-pressed="${!!c[k]}">${c[k]?"✅":"⬜"} ${t}</button>`;
@@ -159,11 +198,14 @@ SON.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const c=SON.cfg(),L
     <label class="fld">दुकान खुलती<input class="inp" type="time" data-sonf="open" value="${esc(c.open)}"></label><label class="fld">बंद होती<input class="inp" type="time" data-sonf="close" value="${esc(c.close)}"></label></div>
   <div class="son-ln"><code>${esc(SON.link())}</code></div>
   <div class="row2" style="margin:0"><a class="big ghost" href="${esc(SON.link())}" target="_blank" rel="noopener">👀 ग्राहक-पेज देखें</a><button class="big ghost" data-sxolink>💬 WhatsApp पर भेजें</button></div>
+  <div class="son-shops"><b>🛍️ एक पेज पर तीन दुकानें</b>${["sabji","rasoi"].map(k=>{const v=(c.stores||{})[k]||{},m=SON.STORES[k];return `<div class="son-shop"><button type="button" class="chip" data-sonstore="${k}" aria-pressed="${v.on!==false}">${v.on!==false?"✅":"⬜"} ${m.i} ${m.n}</button><input class="inp" inputmode="tel" maxlength="10" placeholder="ऑर्डर भेजने का WhatsApp नंबर" data-sonsph="${k}" value="${esc(String(v.ph||m.ph||""))}"></div>`}).join("")}
+    <button class="big ghost" data-sonmenu style="width:100%;margin:6px 0 0">🌐 ऑनलाइन मेन्यू देखें (तीनों दुकानें)</button></div>
   <button class="big ghost" data-srgopen style="width:100%;margin:0 0 6px">🔔 ऑर्डर की घंटी — ऐप बंद हो तब भी अलार्म</button>
   <div class="row2" style="margin:0"><button class="big" data-sonqr>📲 घर-घर का QR कार्ड</button><button class="big ghost" data-sxposter>🖼️ भाव-पोस्टर</button></div><div class="row2" style="margin:0"><button class="big ghost" data-sonpub>🔄 भाव/स्टॉक अभी भेजें</button></div>
   <details class="son-acc"><summary><b>👤 ऑनलाइन खाते (${(SON.accts||[]).length})</b> <span class="note">— किसने खाता बनाया / नंबर बदला</span></summary>${SON.acctHTML(50)}</details>
   <p class="note" style="margin:0">हर सामान को ऑनलाइन से छिपाने के लिए नीचे सामान की पंक्ति में 🌐 दबाएँ। सिगरेट-तम्बाकू अपने-आप कभी नहीं दिखते।</p></div>`};
-document.addEventListener("change",e=>{const t=e.target;if(!t.dataset||!t.dataset.sonf)return;const k=t.dataset.sonf;SON.save({[k]:k==="open"||k==="close"?t.value:num(t.value)})});
+document.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.sonsph){const k=t.dataset.sonsph,st={...(SON.cfg().stores||{})};st[k]={...(st[k]||{}),ph:String(t.value).replace(/\D/g,"").slice(-10)};SON.save({stores:st});toast("✓ नंबर याद");return}
+  if(!t.dataset||!t.dataset.sonf)return;const k=t.dataset.sonf;SON.save({[k]:k==="open"||k==="close"?t.value:num(t.value)})});
 
 const css=document.createElement("style");css.textContent=`
 .son-o{display:grid;gap:5px;border-left:4px solid var(--line)}.son-o.new{border-left-color:var(--chili);animation:sonp 1.6s infinite}.son-o.acc,.son-o.billing{border-left-color:var(--haldi)}.son-o.pack{border-left-color:#3b82f6}.son-o.out{border-left-color:var(--leaf)}
@@ -176,6 +218,12 @@ const css=document.createElement("style");css.textContent=`
 .son-b .g{background:var(--bg);color:var(--ink);border:1.5px solid var(--line);padding:7px 10px}.son-b .r{color:var(--chili)}.son-b button:disabled{opacity:.5}
 .son-acc summary{cursor:pointer;list-style:none;padding:4px 0}.son-acc summary::-webkit-details-marker{display:none}.son-acl{display:grid;gap:4px;max-height:320px;overflow:auto}
 .son-ac{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:5px 0}.son-ac div{flex:1;min-width:0;display:grid}.son-ac b{font-size:14px}.son-ac span{font-size:12px;color:var(--muted)}.son-ac a{text-decoration:none;font-size:18px}
+.son-sb{display:flex;justify-content:space-between;gap:6px;align-items:center;font-size:12.5px;font-weight:900;margin:-2px 0 4px}.son-sb span{padding:2px 9px;border-radius:99px;background:#f59e0b22;color:#92400e}.son-s-sabji .son-sb span{background:#16a34a22;color:#166534}.son-s-rasoi .son-sb span{background:#dc262622;color:#991b1b}.son-sb i{font-style:normal;color:var(--muted)}
+.son-shops{display:grid;gap:6px;background:var(--bg);border-radius:12px;padding:10px}.son-shop{display:grid;grid-template-columns:auto 1fr;gap:6px;align-items:center}.son-shop .inp{min-width:0}
+.som-l{display:grid}.som-r{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}.som-r.out{opacity:.45}
+.som-p{width:48px;height:48px;border-radius:10px;background:var(--bg) center/cover;display:flex;align-items:center;justify-content:center;font-size:24px}.som-n{display:grid;min-width:0}.som-n b{font-size:14px}.som-n small{font-size:12px;color:var(--muted)}
+.som-s{text-align:right;font-weight:900}.som-s s{display:block;font-weight:500;font-size:11px;color:var(--muted)}.som-s small{font-weight:500;font-size:11px;color:var(--muted)}.som-h{margin:10px 0 2px;font-size:15px}.som-h small{color:var(--muted)}
+.som-vd{display:inline-block;width:11px;height:11px;border:1.5px solid #15803d;border-radius:2px;margin-right:4px;position:relative;vertical-align:-1px}.som-vd::after{content:"";position:absolute;inset:2px;border-radius:50%;background:#15803d}.som-vd.nv{border-color:#92400e}.som-vd.nv::after{background:#92400e}
 .son-ft{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .son-set{display:grid;gap:10px}.son-k{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.son-k div{background:var(--bg);border-radius:10px;padding:6px;display:grid}.son-k span{font-size:11px;color:var(--muted)}.son-k b{font-size:18px}
 .son-sw{display:flex;flex-wrap:wrap;gap:6px;margin:0}.son-f{display:grid;grid-template-columns:1fr 1fr;gap:6px}.son-ln code{display:block;font-size:12px;word-break:break-all;background:var(--bg);padding:8px;border-radius:8px}`;document.head.appendChild(css);

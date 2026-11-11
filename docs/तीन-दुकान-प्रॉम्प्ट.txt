@@ -1,0 +1,93 @@
+177 MH — 🛍️ एक ऑर्डर-पेज पर तीन दुकानें (11-11-2026) — किसी भी Claude के लिए
+====================================================================
+विक्रम जी: "177 MH वेट कैंटीन, मारवाड़ रसोई रेस्टोरेंट, सब्ज़ी एक्सप्रेस — तीनों पास-पास। ग्राहक एक ही पेज से तीनों से मँगाए;
+पेज खुलते ही पूछे रेस्टोरेंट / हरी सब्ज़ी / ग्रोसरी; तीनों के बिल अलग, ताकि हर दुकान अपना माल समय पर भेजे; रेस्टोरेंट में Swiggy जैसा
+वेज/नॉन-वेज (वेज = सिर्फ़ वेज, नॉन-वेज = नॉन-वेज पहले + वेज भी); मुझे ऐप में दिखे कि ऑनलाइन क्या-क्या है।"
+
+1. ग्राहक पेज web/order/index.html (…github.io/177-MH-/order/)
+   • पहली बार "What would you like to order?" — 3 बड़े कार्ड (🛒 Grocery = 177 MH · 🥬 Vegetables = Sabji Express · 🍛 Restaurant = Marwar Rasoi);
+     फिर ऊपर दुकान-पट्टी (#stores, कार्ट की गिनती), दुकान की श्रेणियाँ, खोज उसी दुकान में। चुनाव याद: localStorage mh_seg।
+   • डेटा: 177 MH = अपना pub/rates (पहले जैसा) · सब्ज़ी = सब्ज़ी एक्सप्रेस Firebase (sabji-express-9a8f0) का pub/rates, REST, बिना लॉगिन
+     (config.js stores.sabji {pid,key,base}), फोटो उसकी साइट base+img/… · रसोई = web/order/rasoi.json (मेन्यू कार्ड से, 60 आइटम)।
+     id: सब्ज़ी "sx-<id>", रसोई "rs-<slug>" — MH के id से कभी नहीं टकराते। L = तीनों का जोड़, हर आइटम st: mh/sabji/rasoi।
+   • रसोई: पहली बार "What do you eat?" (Pure Veg / Non-veg) → mh_veg; पट्टी पर 🟩 Veg only / 🟥 Non-veg + Veg; हर कार्ड पर
+     भारतीय वेज/नॉन-वेज निशान (हरा गोला / भूरा त्रिकोण)। नॉन-वेज = नॉन-वेज की श्रेणियाँ पहले। रसोई का समय (rasoi.json shop.hours) के बाहर
+     "Kitchen opens…" और ऑर्डर से पहले पूछे।
+   • कार्ट दुकान-वार (हर दुकान का जोड़) · "Place order" = हर दुकान का अलग orders doc (Firestore नियम वाले खाने ही):
+     src "web2" (MH) / "web2:sabji" / "web2:rasoi"; नोट में "🏬sabji" और समूह "🧺G…/3"; डिलीवरी शुल्क सिर्फ़ पहले ऑर्डर पर।
+     mh_orders में तीनों (st के साथ) — ट्रैकिंग हर ऑर्डर की अलग।
+2. दुकान का ऐप (web/se-online.js)
+   • ऑर्डर-कार्ड पर दुकान का ठप्पा (🛒/🥬/🍛) + "🧺 एक ही ग्राहक के 3 ऑर्डर"। सब्ज़ी/रसोई के ऑर्डर पर "📲 … को भेजें" (उस दुकान के WhatsApp पर पूरी
+     सूची, पता, नक्शा) और "🧾 बिल" (ग्राहक को उस दुकान का अलग बिल) — MH वाला बिल-बटन सिर्फ़ MH के ऑर्डर पर। स्वीकार/पैक/रास्ते/पहुँचा वही।
+   • ⚙️ ऑनलाइन दुकान → "🛍️ एक पेज पर तीन दुकानें": सब्ज़ी/रसोई ✅/⬜ (ग्राहक-पेज पर छिपे) + हर दुकान का ऑर्डर-WhatsApp नंबर (settings.online.stores).
+   • 🌐 ऑनलाइन मेन्यू (SON.menuSheet; ☰ में भी): ग्राहक को अभी क्या दिख रहा — तीनों दुकानें, फोटो, भाव, रसोई में वेज/नॉन-वेज छाँट।
+   • 🔔 घंटी/पॉप-अप तीनों दुकानों के ऑर्डर पर (पॉप-अप पर दुकान का नाम)।  जाँच: tests/stores.py (+ tests/online.py MH वाला)।
+3. भाव
+   • सब्ज़ी: सब्ज़ी एक्सप्रेस ऐप में भाव बदलें → उसका मालिक-फोन pub/rates अपने-आप भेजता है (6 घंटे/बदलाव पर) → यहाँ अपने-आप।
+   • रसोई: web/order/rasoi.json — विक्रम जी भाव/नया आइटम बताएँ तो Claude यहीं बदले (id न बदलें; हटाना = "off":true जोड़ें, मिटाएँ नहीं)।
+4. 📸 रसोई की फोटो (अभी इमोजी) — विक्रम जी Gemini से बनवाकर ZIP दें: Claude हर फोटो को 480px, ≤20 KB JPEG बनाकर
+   web/order/rasoi/<id>.jpg में रखे और rasoi.json में "p":"order/rasoi/<id>.jpg" जोड़े (असली दुकान की फोटो मिलें तो वही बेहतर)।
+   Gemini प्रॉम्प्ट (हर डिश के लिए, नाम बदलकर):
+   "Realistic restaurant food photo of <DISH NAME>, Indian Rajasthani dhaba style, served in a copper/steel kadai or plate on a wooden table,
+    top-angle 45°, warm natural light, steam, garnish of coriander, appetising, no text, no logo, no hands, square 1:1, high detail."
+   फाइल के नाम ठीक यही रखें:
+   rs-dal-tadka.jpg = DAL TADKA
+   rs-dal-fry.jpg = DAL FRY
+   rs-mushroom-masala.jpg = MUSHROOM MASALA
+   rs-mushroom-paneer.jpg = MUSHROOM PANEER
+   rs-mushroom-matar.jpg = MUSHROOM MATAR
+   rs-mushroom-kaju-masala.jpg = MUSHROOM KAJU MASALA
+   rs-kaju-masala.jpg = KAJU MASALA
+   rs-kaju-paneer-masala.jpg = KAJU PANEER MASALA
+   rs-kaju-curry.jpg = KAJU CURRY
+   rs-matar-paneer.jpg = MATAR PANEER
+   rs-shahi-paneer.jpg = SHAHI PANEER
+   rs-paneer-butter-masala.jpg = PANEER BUTTER MASALA
+   rs-paneer-lababdar.jpg = PANEER LABABDAR
+   rs-paneer-bhurji.jpg = PANEER BHURJI
+   rs-paneer-handi.jpg = PANEER HANDI
+   rs-paneer-masala.jpg = PANEER MASALA
+   rs-kadai-paneer.jpg = KADAI PANEER
+   rs-mix-veg.jpg = MIX VEG
+   rs-sev-tamatar.jpg = SEV TAMATAR
+   rs-manchurian-gravy.jpg = MANCHURIAN GRAVY
+   rs-manchurian-dry.jpg = MANCHURIAN DRY
+   rs-paneer-tikka.jpg = PANEER TIKKA
+   rs-chilli-paneer-gravy.jpg = CHILLI PANEER GRAVY
+   rs-chilli-paneer-dry.jpg = CHILLI PANEER DRY
+   rs-paneer-malai-tikka.jpg = PANEER MALAI TIKKA
+   rs-paneer-hariyali-tikka.jpg = PANEER HARIYALI TIKKA
+   rs-kadai-chicken.jpg = KADAI CHICKEN (नॉन-वेज)
+   rs-chicken-curry.jpg = CHICKEN CURRY (नॉन-वेज)
+   rs-chicken-handi.jpg = CHICKEN HANDI (नॉन-वेज)
+   rs-masala-chicken.jpg = MASALA CHICKEN (नॉन-वेज)
+   rs-garlic-chicken.jpg = GARLIC CHICKEN (नॉन-वेज)
+   rs-butter-chicken.jpg = BUTTER CHICKEN (नॉन-वेज)
+   rs-desi-chicken-half.jpg = DESI CHICKEN (HALF) (नॉन-वेज)
+   rs-desi-chicken-full.jpg = DESI CHICKEN (FULL) (नॉन-वेज)
+   rs-chilli-chicken-dry.jpg = CHILLI CHICKEN DRY (नॉन-वेज)
+   rs-chicken-chilli-gravy.jpg = CHICKEN CHILLI GRAVY (नॉन-वेज)
+   rs-tandoori-chicken-plate.jpg = TANDOORI CHICKEN (PLATE) (नॉन-वेज)
+   rs-tandoori-chicken-half.jpg = TANDOORI CHICKEN (HALF) (नॉन-वेज)
+   rs-tandoori-chicken-full.jpg = TANDOORI CHICKEN (FULL) (नॉन-वेज)
+   rs-chicken-tikka.jpg = CHICKEN TIKKA (नॉन-वेज)
+   rs-chicken-hariyali-tikka.jpg = CHICKEN HARIYALI TIKKA (नॉन-वेज)
+   rs-plain-tandoori-roti.jpg = PLAIN TANDOORI ROTI
+   rs-butter-tandoori-roti.jpg = BUTTER TANDOORI ROTI
+   rs-plain-naan.jpg = PLAIN NAAN
+   rs-butter-naan.jpg = BUTTER NAAN
+   rs-garlic-naan.jpg = GARLIC NAAN
+   rs-lachha-paratha.jpg = LACHHA PARATHA
+   rs-jeera-rice.jpg = JEERA RICE
+   rs-fried-rice.jpg = FRIED RICE
+   rs-veg-pulao.jpg = VEG PULAO
+   rs-plain-rice.jpg = PLAIN RICE
+   rs-veg-biryani.jpg = VEG BIRYANI
+   rs-chicken-biryani.jpg = CHICKEN BIRYANI (नॉन-वेज)
+   rs-hyderabadi-chicken-biryani.jpg = HYDERABADI CHICKEN BIRYANI (नॉन-वेज)
+   rs-chicken-dum-biryani.jpg = CHICKEN DUM BIRYANI (नॉन-वेज)
+   rs-fish-curry.jpg = FISH CURRY (नॉन-वेज)
+   rs-fish-masala.jpg = FISH MASALA (नॉन-वेज)
+   rs-green-salad.jpg = GREEN SALAD
+   rs-dahi.jpg = DAHI
+   rs-water-bottle.jpg = WATER BOTTLE

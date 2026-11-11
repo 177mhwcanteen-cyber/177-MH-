@@ -22,6 +22,7 @@ const ACTS=[
  {k:"udhar",i:"📒",t:"उधार खाता",d:"किस पर कितना बाकी · जमा लें",g:"roz",tab:"udhar",kw:"credit baki khata बाकी जमा"},
  {k:"day",i:"🌙",t:"दिन का हिसाब",d:"गल्ला · खर्चा · रात का स्टॉक",g:"roz",tab:"day",kw:"galla cash kharcha expense गल्ला नकद"},
  {k:"ring",i:"🔔",t:"ऑर्डर की घंटी",d:"घर बैठे ऑर्डर पर अलार्म — ऐप बंद हो तब भी",g:"roz",run:()=>SRG.sheet(),need:"SRG",kw:"order alarm ghanti bell notification"},
+ {k:"omenu",i:"🌐",t:"ऑनलाइन मेन्यू",d:"ग्राहक को क्या दिख रहा — किराना · सब्ज़ी · रसोई",g:"roz",run:()=>SON.menuSheet(),need:"SON",kw:"online menu order rasoi sabji restaurant"},
  {k:"khula",i:"🪙",t:"खुले का डिब्बा",d:"₹10-20-50 के खुले पैसे · बदलाव",g:"roz",run:()=>SKH.sheet(),need:"SKH",kw:"change chillar चिल्लर"},
  {k:"kharid",i:"🚚",t:"माल आया",d:"सप्लायर का बिल चढ़ाएँ · कार्टून",g:"maal",tab:"kharid",kw:"purchase kharid खरीद supplier"},
  {k:"mkt",i:"🛍️",t:"बाज़ार खरीद",d:"बाज़ार से लाया सामान लिखें",g:"maal",tab:"mkt",kw:"market bazaar"},

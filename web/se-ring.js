@@ -53,7 +53,7 @@ SRG.popup=function(o,fromNote){if(!o)return;let el=document.getElementById("srgP
   const items=(o.items||[]),est=p.total||items.reduce((a,x)=>a+(+x.q||0)*(+x.s||0),0),cap=t=>window.SE&&SE.capNm?SE.capNm(t):t;
   if(!el){el=document.createElement("div");el.id="srgPop";el.className="srg-pop";el.setAttribute("role","alertdialog");el.setAttribute("aria-label","नया ऑर्डर");document.body.appendChild(el)}
   el.dataset.id=o.id;
-  el.innerHTML=`<div class="sp-box"><div class="sp-ring" aria-hidden="true">🛵</div><div class="sp-k">नया ऑर्डर${more?` <i>+${more} और</i>`:""}</div>
+  el.innerHTML=`<div class="sp-box"><div class="sp-ring" aria-hidden="true">🛵</div><div class="sp-k">${(()=>{try{const k=SON.storeOf(o),m=SON.STORES[k];return k!=="mh"&&m?m.i+" "+m.n+" · ":""}catch(e){return ""}})()}नया ऑर्डर${more?` <i>+${more} और</i>`:""}</div>
     <h2>${esc(o.name||"ग्राहक")}</h2><div class="sp-m">${p.mode==="p"?"🏪 दुकान से लेंगे":"🛵 घर पहुँचाना"}${p.pay?" · "+(p.pay==="UPI"?"📱 UPI":"💵 नकद"):""} · ⏰ ${esc(p.when||"अभी")}</div>
     ${o.addr&&p.mode!=="p"?`<div class="sp-a">📍 ${esc(o.addr)}</div>`:""}
     <div class="sp-i">${items.slice(0,8).map(x=>`<div><span>${esc(cap(x.n||""))}</span><b>${esc(x.q)} ${esc(x.u||"")}</b></div>`).join("")}${items.length>8?`<div><span>…और ${items.length-8} सामान</span></div>`:""}</div>
