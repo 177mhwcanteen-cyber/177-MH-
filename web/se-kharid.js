@@ -14,7 +14,7 @@ const dd=(a,b)=>Math.abs((new Date(a+"T12:00:00")-new Date(b+"T12:00:00"))/864e5
 SKJ.parse=function(t){t=String(t||"");const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a<0)throw new Error("कोड में { } नहीं");const j=JSON.parse(t.slice(a,b+1));
   if(j.app!=="mh177-kharid"||!Array.isArray(j.bills))throw new Error("यह खरीद-बही का कोड नहीं");if(!SE.orgOk(j.org))throw new Error(SE.orgErr(j.org));return j.bills};
 const LN=l=>({id:l.id||"",name:l.name||"",qty:+l.qty||0,rate:+l.rate||0,amt:+l.amt||+l.billAmt||0,...(l.unit?{u:l.unit}:{}),...(l.ctn?{ctn:l.ctn}:{}),...(l.exp?{exp:l.exp}:{})});
-const XT=p=>({ts:+p.ts||0,...(p.supPhone?{ph:p.supPhone}:{}),...(p.paid!=null?{paid:+p.paid||0}:{}),...(p.pay?{pay:p.pay}:{}),...(p.late?{late:1}:{}),phn:(p.photos||[]).length+(+p.photoPending||0)});
+const XT=p=>({ts:+p.ts||0,...(p.noStock?{noStock:1}:{}),...(p.supPhone?{ph:p.supPhone}:{}),...(p.paid!=null?{paid:+p.paid||0}:{}),...(p.pay?{pay:p.pay}:{}),...(p.late?{late:1}:{}),phn:(p.photos||[]).length+(+p.photoPending||0)});
 SKJ.appBuys=(f,t)=>appBuys(f,t);
 async function appBuys(from,to){const L=[];const seen=new Set();const add=(x,k)=>{if(!x||seen.has(k+x.id))return;seen.add(k+x.id);L.push(x)};
   [...(S.purchHist||[]),...(S.purch||[])].forEach(p=>add({id:p.id,kind:"खरीद",date:p.date,sup:p.supName||"",total:+p.total||+p.gross||0,by:p.byName||"",lines:(p.lines||[]).map(LN),cancelled:!!p.cancelled,note:p.note||"",...XT(p)},"p"));
@@ -54,6 +54,36 @@ SKJ.dupOf=function(x,skip){if(!x||!(+x.total>0))return null;const L=[];const add
    b = सारे बारकोड कॉमा से (दो बारकोड वाले सामान, जैसे 555 चाय) */
 SKJ.catalogCode=()=>{const n=v=>Math.round((+v||0)*100)/100;return JSON.stringify({app:"mh177-cat",org:SE.org,v:2,ts:Date.now(),items:(S.items||[]).filter(i=>i.active!==false&&!i.virtual&&!["fast","mela"].includes(typeof mcat==="function"?mcat(i):i.cat)).map(i=>{const bs=String(i.barcode||"").split(/[^0-9]+/).filter(c=>c.length>=8);
   return {i:i.id,n:SE.capNm(i.short||i.name||""),u:i.unit||"pc",...(+i.perPack>0?{pp:+i.perPack}:{}),...(i.packOf?{pk:i.packOf}:{}),...(bs.length?{b:bs.join(",")}:{}),...(own()&&+i.sale>0?{s:n(i.sale)}:{}),...(own()&&+i.mrp>0?{m:n(i.mrp)}:{}),...(own()&&+i.cost>0?{c:n(i.cost)}:{})}})})};
+/* 🏪 पूरी दुकान का डेटा (सिर्फ़ मालिक) → Claude की बही: हर सामान का भाव/स्टॉक/रैक/बिक्री, रोज़ की बिक्री, उधार, खरीद, भाव-बदलाव।
+   ऐप में कुछ नहीं बदलता — सिर्फ़ पढ़कर एक कोड बनता है। ढाँचा: docs/दुकान-डेटा-प्रॉम्प्ट.txt */
+const thumb=(src,px)=>new Promise(ok=>{try{const im=new Image();im.onload=()=>{try{const k=Math.min(1,px/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));const g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",.6))}catch(e){ok("")}};im.onerror=()=>ok("");im.src=src}catch(e){ok("")}});
+SKJ.shopCode=async function(days){if(!own())return "";days=Math.min(60,+days||30);const n2=v=>Math.round((+v||0)*100)/100,T=today(),dOf=k=>{const x=new Date();x.setDate(x.getDate()-k);return today(x)};
+  const ds=[];for(let k=days-1;k>=0;k--)ds.push(dOf(k));const d7=dOf(6),d14=dOf(13);
+  const snaps=await Promise.all(ds.map(d=>d===S.billsDate&&S.dayBills?Promise.resolve(S.dayBills):(S.demo||!S.db?Promise.resolve([]):S.db.collection("days/"+d+"/bills").get().then(q=>q.docs.map(x=>x.data())).catch(()=>[]))));
+  const A={},sd={},dayL=[];
+  ds.forEach((d,k)=>{const bl=(snaps[k]||[]).filter(b=>b&&!b.cancelled&&b.mode!=="inst");let pr=0,ud=0;
+    bl.forEach(b=>{pr-=(+b.disc||0);ud+=+(b.pay&&b.pay.udhar)||0;(b.lines||[]).forEach(l=>{if(!l.id)return;const o=A[l.id]||(A[l.id]={q7:0,q30:0,a30:0,p30:0,nb:0,ls:"",ns:0});const q=+l.qty||0;
+      o.q30+=q;o.a30+=+l.amt||0;o.nb++;if(d>=d7)o.q7+=q;if(d>o.ls)o.ls=d;if(l.ns!=null)o.ns++;if(+l.cost>0){const m=((+l.rate||0)-(+l.cost))*q;o.p30+=m;pr+=m}
+      if(d>=d14){const [pid,pq]=packMap(l.id,q);(sd[d]=sd[d]||{})[pid]=n2(((sd[d]||{})[pid]||0)+pq)}})});
+    dayL.push({d,sale:n2(bl.reduce((a,b)=>a+(+b.total||0),0)),profit:n2(pr),n:bl.length,...(ud?{udhar:n2(ud)}:{}),...((snaps[k]||[]).some(b=>b&&b.cancelled)?{can:(snaps[k]||[]).filter(b=>b&&b.cancelled).length}:{})})});
+  const exp={};(S.batches||[]).forEach(b=>{if(b.itemId&&b.exp&&b.exp>=T&&(!exp[b.itemId]||b.exp<exp[b.itemId]))exp[b.itemId]=b.exp});
+  const L=(S.items||[]).filter(i=>i.active!==false&&!i.virtual),th={};let nth=0;
+  const items=L.map(i=>{const bs=String(i.barcode||"").split(/[^0-9]+/).filter(c=>c.length>=8),a=A[i.id],ps=S.pstock&&S.pstock[i.id],src=SE.photoSrc?SE.photoSrc(i):"";
+    return {i:i.id,n:SE.capNm(i.short||i.name||""),u:i.unit||"pc",cat:typeof mcat==="function"?mcat(i):(i.cat||""),...(i.sub?{sub:i.sub}:{}),...(i.hi?{hi:String(i.hi).slice(0,40)}:{}),...(i.brand?{br:String(i.brand).slice(0,24)}:{}),...(i.size?{sz:String(i.size).slice(0,12)}:{}),
+      ...(+i.perPack>0?{pp:+i.perPack}:{}),...(i.packOf?{pk:i.packOf}:{}),...(bs.length?{b:bs.join(",")}:{}),...(+i.sale>0?{s:n2(i.sale)}:{}),...(+i.mrp>0?{m:n2(i.mrp)}:{}),...(+i.cost>0?{c:n2(i.cost)}:{}),
+      ...(i.track?{tr:1}:{}),...(ps&&ps.qty!=null?{st:n2(ps.qty)}:{}),...(+i.min>0?{min:+i.min}:{}),...(i.rack?{rk:String(i.rack)}:{}),...(i.rkx&&Object.keys(i.rkx).length?{rx:i.rkx}:{}),...(i.grack?{gr:String(i.grack)}:{}),
+      ...(i.mfr?{co:i.mfr}:{}),...(exp[i.id]?{ex:exp[i.id]}:{}),...(typeof isTob==="function"&&isTob(i)?{tob:1}:{}),...(i.pending?{pend:1}:{}),...(i.offer?{of:String(i.offer).slice(0,20)}:{}),
+      ph:src?(/^data:/.test(src)?2:1):0,...(a?{q7:n2(a.q7),q30:n2(a.q30),a30:n2(a.a30),p30:n2(a.p30),nb:a.nb,ls:a.ls,...(a.ns?{ns:a.ns}:{})}:{})}});
+  /* 📸 फोन में खींची फोटो (जो GitHub में नहीं): छोटी 96px नकल, 80 तक */
+  for(const i of L){const src=SE.photos&&SE.photos[i.id];if(!src||nth>=80)continue;const t=await thumb(src,96);if(t&&t.length<9000){th[i.id]=t;nth++}}
+  const from=ds[0],B=(await appBuys(from,T)).sort((a,b)=>String(a.date).localeCompare(b.date)),bd={};
+  B.forEach(x=>{if(x.date<d14||x.noStock)return;(x.lines||[]).forEach(l=>{if(!l.id||!item(l.id))return;const [pid,pq]=packMap(l.id,+l.qty||0);(bd[x.date]=bd[x.date]||{})[pid]=n2(((bd[x.date]||{})[pid]||0)+pq)})});
+  const supD=(S.suppliers||[]).map(x=>{const due=(S.purchHist||[]).concat(S.purch||[]).filter((p,k,a)=>!p.cancelled&&p.supId===x.id&&a.findIndex(y=>y.id===p.id)===k).reduce((a,p)=>a+(+p.due||0),0),paid=(S.supPay||[]).filter(y=>y.supId===x.id).reduce((a,y)=>a+(+y.amt||0),0);
+    return {id:x.id,n:String(x.name||"").slice(0,60),...(x.phone?{ph:String(x.phone)}:{}),...(x.kind?{k:x.kind}:{}),...(x.gst?{gst:x.gst}:{}),...(x.city?{city:String(x.city).slice(0,30)}:{}),...(n2(due-paid)?{due:n2(due-paid)}:{}),...(x.lastTs?{last:today(new Date(x.lastTs))}:{})}});
+  const out={app:"mh177-shop",org:SE.org,v:1,ts:Date.now(),day:T,from,ver:SE.version||"",live:!!(S.settings&&S.settings.live),items,days:dayL,sd,bd,sup:supD,
+    buys:B.map(x=>({k:x.kind,id:x.id,d:x.date,sup:x.sup,t:n2(x.total),...(x.pay?{pay:x.pay}:{}),...(x.paid!=null?{paid:n2(x.paid)}:{}),by:x.by,...(x.noStock?{ns:1}:{}),lines:(x.lines||[]).map(l=>({...(l.id?{i:l.id}:{}),n:String(l.name||"").slice(0,40),q:l.qty,r:n2(l.rate)}))})),
+    plog:(S.priceLog||[]).filter(l=>l.ts>Date.now()-days*864e5).slice(0,200).map(l=>({i:l.itemId,f:l.field,o:n2(l.old),w:n2(l.new),ts:l.ts,by:l.byName||""})),th};
+  let txt=JSON.stringify(out);if(txt.length>850000){out.th={};txt=JSON.stringify(out)}if(txt.length>850000){out.buys.forEach(b=>delete b.lines);txt=JSON.stringify(out)}return txt};
 /* 📥 बही → ऐप: हर बिल एक "बाज़ार-खरीद" (mbuys, status sent) — बिलिंग वाला साथी गिनकर पक्का करे तभी स्टॉक + खरीद बने (एक ही बार) */
 const MID=b=>"KB-"+String(b.id||"").replace(/[^A-Za-z0-9-]/g,"").slice(0,60);
 /* 🏷️ बारकोड सबसे पहले (दुकान नाम कुछ भी लिखे), फिर बही वाला id, फिर नाम */
@@ -131,6 +161,8 @@ SKJ.open=function(){if(!own()){toast("सिर्फ़ विक्रम ज�
   <textarea id="skjIn" class="inp" rows="4" placeholder='{"app":"mh177-kharid","bills":[…]}' style="width:100%;font:12px monospace"></textarea>
   <div style="display:flex;gap:6px;margin:6px 0"><button type="button" class="pri big" data-skjgo>🔍 मिलान करें</button>${B.length?`<button type="button" class="big ghost" data-skjold>♻️ याद वाले ${B.length} बिल फिर जाँचें</button>`:""}</div>
   <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 0 6px"><button type="button" class="big" data-skjplan>📥 बही से ऐप में चढ़ाओ</button><button type="button" class="big ghost" data-skjcat>📤 सामान-सूची कॉपी (बही के लिए)</button></div>
+  <button type="button" class="pri big" data-skjshop style="width:100%;margin:0 0 4px">🏪 पूरी दुकान का डेटा कॉपी (बही के लिए)</button>
+  <p class="note" style="margin:0 0 8px">हर सामान का भाव, स्टॉक, रैक, 30 दिन की बिक्री, उधार, खरीद — एक कोड में। रोज़ या 2-3 दिन में कॉपी करके खरीद-बही → "📥 ऐप का डेटा" में चिपकाएँ; बही बताएगी क्या बदला और क्या गड़बड़ है। ऐप में कुछ नहीं बदलता।</p>
   <div class="skj-ac" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 6px"><span class="note">📋 ऐप की सारी खरीद Claude को (मिलान के लिए):</span>${[7,30,90].map(d=>`<button type="button" class="big ghost" data-skjapp="${d}" style="flex:1">${d} दिन</button>`).join("")}</div>
   <button type="button" class="big ghost" data-skjitems style="margin:0 0 6px">🆕 बही से नए सामान बनाओ (भाव, पैकेट, कोड — स्टॉक नहीं छूता)</button><div id="skjItems">${itemsHTML(V.I)}</div>
   <div id="skjPlan">${planHTML(V.P)}</div>
@@ -140,6 +172,7 @@ SKJ.open=function(){if(!own()){toast("सिर्फ़ विक्रम ज�
     if(t.closest("[data-skjgo]")||t.closest("[data-skjold]")){let bills;try{bills=t.closest("[data-skjold]")?LS.get("skj_b",[]):SKJ.parse($("#skjIn").value)}catch(err){toast(err.message);return}
       if(!t.closest("[data-skjold]")){const m={};LS.get("skj_b",[]).concat(bills).forEach(b=>m[b.id||b.sup+b.no]=b);LS.set("skj_b",Object.values(m).slice(-400))}
       $("#skjOut").innerHTML=`<p class="note">⏳ ${bills.length} बिल मिला रहे हैं…</p>`;V.R=await SKJ.check(bills);$("#skjOut").innerHTML=resHTML(V.R);return}
+    const sb=t.closest("[data-skjshop]");if(sb){sb.disabled=true;const o=sb.textContent;sb.textContent="⏳ डेटा जोड़ रहे हैं…";try{const code=await SKJ.shopCode(30);SKJ._shop=code;await navigator.clipboard.writeText(code);const j=JSON.parse(code);toast("✓ दुकान का डेटा कॉपी — "+j.items.length+" सामान, "+Math.round(code.length/1024)+" KB। खरीद-बही में चिपकाएँ")}catch(err){toast("कॉपी नहीं हुआ — फिर दबाएँ")}sb.disabled=false;sb.textContent=o;return}
     if(t.closest("[data-skjcat]")){try{await navigator.clipboard.writeText(SKJ.catalogCode());toast("✓ सामान-सूची कॉपी — खरीद-बही → ⚙️ सामान-सूची में चिपकाएँ")}catch(err){toast("कॉपी नहीं हुआ")}return}
     if(t.closest("[data-skjitems]")){let bills;try{bills=SKJ.parse($("#skjIn").value)}catch(err){toast(err.message);return}V.I=SKJ.itemPlan(bills);$("#skjItems").innerHTML=itemsHTML(V.I);return}
     if(t.closest("[data-skjmk]")){t.closest("[data-skjmk]").disabled=true;const r=await SKJ.makeItems(V.I||[]);$("#skjItems").innerHTML=itemsHTML(V.I);beep(true);toast("✓ "+r.n+" सामान बने — अब बही में 🧠 याद ताज़ा करें (📤 सामान-सूची कॉपी)");if(typeof renderSettings==="function")setTimeout(()=>{},0);return}

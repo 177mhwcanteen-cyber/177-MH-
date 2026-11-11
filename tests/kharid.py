@@ -98,6 +98,10 @@ async def main():
           const n=await applyUpd({_upd:{items:{a:{sale:{from:0,to:15},rack:{from:null,to:'5-1'}},b:{sale:{from:0,to:15}},zz:{sale:{from:0,to:1}}}}});S.db=db0;return [n,D['items/a'],D['items/b'].sale]})()""")
         assert u[0] == 1 and u[1]["sale"] == 15 and u[1]["rack"] == "5-1" and u[2] == 99, u
         cat = await pg.evaluate("JSON.parse(SKJ.catalogCode())"); assert cat["app"] == "mh177-cat" and len(cat["items"]) > 10 and "sale" not in json.dumps(cat) and cat["v"] == 2 and any("s" in it for it in cat["items"])
+        shop = await pg.evaluate("SKJ.shopCode(30).then(JSON.parse)")
+        assert shop["app"] == "mh177-shop" and shop["org"] == "mh177" and len(shop["items"]) > 10 and len(shop["days"]) == 30, "दुकान का डेटा"
+        assert all("i" in it and "n" in it and "ph" in it for it in shop["items"]) and any("s" in it for it in shop["items"]) and isinstance(shop["sup"], list) and "sd" in shop and "bd" in shop
+        print("  🏪 दुकान का डेटा:", len(shop["items"]), "सामान,", len(json.dumps(shop)) // 1024, "KB")
         # 💵 गल्ले से खरीद के लिए पैसा → 🔁 हिसाब (खरीद + वापस) · फ़र्क · याद
         await pg.evaluate("closeSheet&&closeSheet();S.staff='मनोहर जी';S.billsDate=today()")
         await pg.evaluate("SG.sheet('out')"); await pg.wait_for_timeout(200)
