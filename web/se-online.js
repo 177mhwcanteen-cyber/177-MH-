@@ -180,6 +180,10 @@ SON.menuSheet=async function(){const t=SON._mt||"mh",cfg=SON.cfg(),T=[["mh","�
   if(!SON.menus.ts||Date.now()-SON.menus.ts>120000){$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px"><div class="empty">⏳ मेन्यू ला रहे हैं…</div></div></div>`;await SON.loadMenus()}
   let L=[],head="",cats=[];
   if(t==="rev"){let RV=[];try{if(S.db&&!S.demo){const q=await S.db.collection("reviews").orderBy("ts","desc").limit(60).get();RV=q.docs.map(d=>d.data())}}catch(e){RV=null}
+    /* ⭐ दुकान-वार औसत + 🔥 सबसे ज़्यादा मँगाई चीज़ें → ग्राहक-पेज (cfg.rat, cfg.top) */
+    try{if(RV&&S.isOwner){const rat={};RV.forEach(r=>{const k=r.store||"mh",a=rat[k]||(rat[k]=[0,0]);a[0]+=+r.stars||0;a[1]++});Object.keys(rat).forEach(k=>rat[k]=[Math.round(rat[k][0]/rat[k][1]*10)/10,rat[k][1]]);
+      const cnt={};((window.SX&&SX.orders)||[]).forEach(o=>(o.items||[]).forEach(x=>{if(/^(rs|sx)-/.test(x.id))cnt[x.id]=(cnt[x.id]||0)+1}));const top=Object.entries(cnt).filter(e=>e[1]>=2).sort((a,b)=>b[1]-a[1]).slice(0,12).map(e=>e[0]);
+      const c0=SON.cfg();if(JSON.stringify([c0.rat||{},c0.top||[]])!==JSON.stringify([rat,top]))await SON.save({rat,top})}}catch(e){}
     const avg=RV&&RV.length?(RV.reduce((a,r)=>a+(+r.stars||0),0)/RV.length).toFixed(1):"";
     $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px som" role="dialog" aria-label="ग्राहकों की राय"><div class="grab"></div><div class="sh-head"><div><h3>⭐ ग्राहकों की राय</h3><span class="note">${RV===null?"⚠ राय पढ़ने की इजाज़त नहीं — Firebase में नए नियम डालें (firestore.rules)":RV.length?`औसत ${avg} ⭐ · ${RV.length} राय`:"अभी कोई राय नहीं — ऑर्डर पहुँचने के बाद ग्राहक ⭐ देता है"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     <div class="seg" style="margin:0 0 8px">${T.map(([k,n])=>`<button type="button" class="chip" data-somt="${k}" aria-pressed="${t===k}">${n}</button>`).join("")}</div>
