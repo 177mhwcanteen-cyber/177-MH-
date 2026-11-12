@@ -462,11 +462,11 @@
   "note": "स्रोत: फोटो r6-0074.jpg — डिब्बे पर पता/नंबर नहीं छपा ('Smart Consumer app से स्कैन करें')। नंबर बाद में भरें",
   "id": "c-everest",
   "phone": "",
-  "care": "",
+  "care": "+91-22-25259915",
   "email": "",
-  "web": "",
+  "web": "everestspices.com",
   "addr": "",
-  "city": "",
+  "city": "Mumbai",
   "fssai": "",
   "gst": "",
   "dist": "खरीद: MAHESH ENTERPRISES (बिल 1723/26-27, 10-खरीद-भाव)"
@@ -806,7 +806,7 @@
   "phone": "",
   "care": "+91-0291-2722463",
   "email": "info@jalani.in",
-  "web": "",
+  "web": "jalani.in",
   "addr": "C-34 & C-39, M.I. Area, 1st Phase Basni",
   "city": "Jodhpur 342005, Rajasthan",
   "fssai": "10012013000474",
@@ -1277,5 +1277,398 @@
   ],
   "dist": "",
   "note": ""
+ },
+ {
+  "id": "c-sandeep-foods",
+  "name": "SANDEEP FOODS (PROTEIN)",
+  "phone": "9408562701",
+  "care": "1800-180-6030",
+  "email": "sandeepfoods29@gmail.com",
+  "web": "",
+  "addr": "F-(33) A, RIICO Industries Samdari, Teh. Samdari",
+  "city": "Balotra, Rajasthan 344021",
+  "fssai": "12225014000331",
+  "gst": "",
+  "brands": [
+   "PROTEIN"
+  ],
+  "dist": "खुद सप्लाई करते हैं — बिल 10-11-2026 (Name: M.H)",
+  "note": "स्रोत: फोटो r21-0008.jpg (पैकेट पर Mfg. By), बिल r21-0012-bill.jpg"
+ },
+ {
+  "id": "c-bishnoi-foods",
+  "name": "BISHNOI FOODS (PROTEIN)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "1-8, Khodiyar Industrial Estate, Village Jolwa, Tal. Palsana",
+  "city": "Surat, Gujarat 394305",
+  "fssai": "10723022000116",
+  "gst": "",
+  "brands": [
+   "PROTEIN"
+  ],
+  "dist": "Sandeep Foods के बिल से आया",
+  "note": "स्रोत: r21-0001.jpg / r21-0002.jpg। Customer care नंबर कटा हुआ था ('80003 0295…') — नहीं लिखा"
+ },
+ {
+  "id": "c-navneet",
+  "name": "NAVNEET EDUCATION LTD (YOUVA)",
+  "phone": "",
+  "care": "022 66626300",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "Mumbai",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "YOUVA"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0016…0018"
+ },
+ {
+  "id": "c-jwi",
+  "name": "JWI STATIONERY PVT LTD (PENTONIC)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "Mandideep",
+  "city": "Raisen, Madhya Pradesh",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "PENTONIC"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0025…0027"
+ },
+ {
+  "id": "c-hindustan-pencils",
+  "name": "HINDUSTAN PENCILS PVT LTD",
+  "phone": "",
+  "care": "1800-222621",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "Mumbai",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "APSARA",
+   "NATARAJ"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0035…0037 (Nataraj पैक पर toll free)"
+ },
+ {
+  "id": "c-shape",
+  "name": "SHAPE (STATIONERY GIFT SETS)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "Ratlam, Madhya Pradesh",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "SHAPE"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0040/0041"
+ },
+ {
+  "id": "c-atul-paper",
+  "name": "ATUL PAPER PVT LTD (ODDY)",
+  "phone": "",
+  "care": "+91-11-23245146",
+  "email": "",
+  "web": "",
+  "addr": "Nai Sarak",
+  "city": "Delhi",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "ODDY"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0044/0045"
+ },
+ {
+  "id": "c-asian-chem",
+  "name": "ASIAN CHEM WORKS PVT LTD (TREE BIRDS)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "Waghodia",
+  "city": "Vadodara, Gujarat",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "TREE BIRDS"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0049/0050 — care नंबर का आख़िरी अंक कटा था, नहीं लिखा"
+ },
+ {
+  "id": "c-camlin",
+  "name": "KOKUYO CAMLIN LTD",
+  "phone": "",
+  "care": "022-6655 7007",
+  "email": "",
+  "web": "",
+  "addr": "Andheri",
+  "city": "Mumbai",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "CAMLIN"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0051…0053"
+ },
+ {
+  "id": "c-gillette",
+  "name": "GILLETTE INDIA LTD",
+  "phone": "",
+  "care": "1800-202-1364",
+  "email": "",
+  "web": "",
+  "addr": "P&G Plaza, Andheri",
+  "city": "Mumbai",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "GILLETTE"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0067/0068"
+ },
+ {
+  "id": "c-miracle",
+  "name": "MIRACLE PLASTIC INDUSTRIES",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "miracle-ind.com",
+  "addr": "",
+  "city": "",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "MIRACLE"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0069/0070"
+ },
+ {
+  "id": "c-shree-jd",
+  "name": "SHREE J.D. MARKETING & EXIM PVT LTD (PEARL)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "Ahmedabad, Gujarat",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "PEARL"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0071/0072 (Marketed by) · Mfg by Tilak Enterprise"
+ },
+ {
+  "id": "c-bonfix",
+  "name": "BONFIX",
+  "phone": "9910053425",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "BONFIX"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0082/0083 (पैक पर customer care)"
+ },
+ {
+  "id": "c-hul",
+  "name": "HINDUSTAN UNILEVER LTD (VIM)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "Kurali, Chamkaur Sahib (Mfd at)",
+  "city": "Punjab",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "VIM"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0084…0086"
+ },
+ {
+  "id": "c-vimal-udyog",
+  "name": "VIMAL UDYOG (VIMAL SURYA CANDLES)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "Dodhi Daro Ka Mohalla, Near City Police",
+  "city": "Jodhpur, Rajasthan",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "VIMAL SURYA"
+  ],
+  "dist": "जोधपुर — सीधा मँगा सकते हैं",
+  "note": "स्रोत: r11-0093 (Manufactured By)"
+ },
+ {
+  "id": "c-marico",
+  "name": "MARICO LTD (NIHAR)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "marico.com",
+  "addr": "",
+  "city": "Mumbai",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "NIHAR"
+  ],
+  "dist": "",
+  "note": "स्रोत: r11-0095 (लेबल उल्टा छपा, नंबर नहीं पढ़ा)"
+ },
+ {
+  "id": "c-pidilite",
+  "name": "PIDILITE INDUSTRIES LTD",
+  "phone": "9892247447",
+  "care": "1800-266-6066",
+  "email": "",
+  "web": "pidilite.com",
+  "addr": "Regent Chambers",
+  "city": "Mumbai 400021",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "FEVISTIK",
+   "FEVIKWIK"
+  ],
+  "dist": "",
+  "note": "स्रोत: r12-0011 (Fevikwik पैक पर 09892247447 / 1800-266-6066), r11-0099"
+ },
+ {
+  "id": "c-midas",
+  "name": "MIDAS HYGIENE INDUSTRIES PVT LTD (LAXMANREKHAA)",
+  "phone": "8104192278",
+  "care": "",
+  "email": "info@midashygiene.net",
+  "web": "midashygiene.net",
+  "addr": "Pranay, 170, Sector 12, Vashi",
+  "city": "Navi Mumbai 400703",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "LAXMANREKHAA"
+  ],
+  "dist": "",
+  "note": "स्रोत: r12-0005/0006 (Marketed by) · Mfd by Pesticides Chemical India"
+ },
+ {
+  "id": "c-godrej",
+  "name": "GODREJ CONSUMER PRODUCTS LTD",
+  "phone": "",
+  "care": "1-800-266-0007",
+  "email": "care@godrejcp.com",
+  "web": "",
+  "addr": "Vikhroli",
+  "city": "Mumbai",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "GODREJ"
+  ],
+  "dist": "",
+  "note": "स्रोत: r12-0015"
+ },
+ {
+  "id": "c-vi-john",
+  "name": "VI-JOHN HEALTH CARE INDIA LLP",
+  "phone": "",
+  "care": "1800 102 1655",
+  "email": "customercare@vijohngroup.com",
+  "web": "vijohngroup.com",
+  "addr": "Udyog Vihar",
+  "city": "Gurugram, Haryana 122016",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "VI-JOHN"
+  ],
+  "dist": "",
+  "note": "स्रोत: r12-0019"
+ },
+ {
+  "id": "c-nestle",
+  "name": "NESTLE INDIA LTD",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "Gurugram",
+  "fssai": "10012011000168",
+  "gst": "",
+  "brands": [
+   "NESCAFE"
+  ],
+  "dist": "",
+  "note": "स्रोत: r12-0029"
+ },
+ {
+  "id": "c-pci",
+  "name": "PEST CONTROL (INDIA) PVT LTD",
+  "phone": "",
+  "care": "1800-212-212-5",
+  "email": "",
+  "web": "pestcontrolindia.com",
+  "addr": "",
+  "city": "Goa 403515",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "TRUBBLE GUM"
+  ],
+  "dist": "",
+  "note": "स्रोत: r12-0031"
+ },
+ {
+  "id": "c-mayuri",
+  "name": "MAYURI HENNA",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "Khumadi",
+  "city": "Gujarat",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "MAYURI"
+  ],
+  "dist": "",
+  "note": "स्रोत: r12-0033"
  }
 ]

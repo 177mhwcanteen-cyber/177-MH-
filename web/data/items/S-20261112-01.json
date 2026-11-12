@@ -1,0 +1,2099 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261112-01",
+ "date": "2026-11-12",
+ "by": "स्वरूप जी (विक्रम जी के लिए)",
+ "note": "दूसरे Claude का काम — रैक 11, 12, 21 · फोटो 10–12 नवंबर 2026 · 5 अधूरे सामान 'pending' में (ऐप में नहीं चढ़ाने) · DOMS UNICORN KIT (11-45) और HATHI BLACK SALT (12-7) पहले से ऐप में → अलग xloc खेप S-20261112-02 · किट v6",
+ "items": [
+  {
+   "id": "b8906119620165",
+   "name": "PROTEIN DABELI PAV 350 G",
+   "short": "PROTEIN DABELI PAV 350G",
+   "hi": "प्रोटीन दाबेली पाव 350 ग्राम",
+   "brand": "PROTEIN",
+   "size": "350g",
+   "alias": "dabeli pav pao paav दाबेली पाव protein प्रोटीन bun",
+   "cat": "mithai",
+   "sub": "bakery",
+   "unit": "pc",
+   "barcode": "8906119620165",
+   "mrp": 45,
+   "sale": 45,
+   "cost": 35,
+   "perPack": 0,
+   "rack": "21-1",
+   "ph": "926a17b6",
+   "mfr": "c-bishnoi-foods",
+   "fotos": [
+    "r21/20261112-c82bd760.jpg",
+    "r21/20261112-a81084ea.jpg",
+    "r21/20261112-6769b275.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906119620424",
+   "name": "PROTEIN ATTA BREAD 400 G",
+   "short": "PROTEIN ATTA BREAD 400G",
+   "hi": "प्रोटीन आटा ब्रेड 400 ग्राम",
+   "brand": "PROTEIN",
+   "size": "400g",
+   "alias": "atta bread brown bread aata bred आटा ब्रेड ब्राउन protein",
+   "cat": "mithai",
+   "sub": "bakery",
+   "unit": "pc",
+   "barcode": "8906119620424",
+   "mrp": 0,
+   "sale": 60,
+   "cost": 40,
+   "perPack": 0,
+   "rack": "21-1",
+   "ph": "53994f11",
+   "mfr": "c-bishnoi-foods",
+   "fotos": [
+    "r21/20261112-093aadc0.jpg",
+    "r21/20261112-781c8d03.jpg",
+    "r21/20261112-5c93f0ea.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-protein-sandwich-bread-400-g",
+   "name": "PROTEIN SANDWICH BREAD 400 G",
+   "short": "PROTEIN SANDWICH 400G",
+   "hi": "प्रोटीन सैंडविच ब्रेड 400 ग्राम",
+   "brand": "PROTEIN",
+   "size": "400g",
+   "alias": "sandwich bread sendwich bred सैंडविच ब्रेड protein प्रोटीन",
+   "cat": "mithai",
+   "sub": "bakery",
+   "unit": "pc",
+   "mrp": 55,
+   "sale": 55,
+   "cost": 30,
+   "perPack": 0,
+   "rack": "21-1",
+   "ph": "2dc50a56",
+   "mfr": "c-sandeep-foods",
+   "fotos": [
+    "r21/20261112-f99a46fb.jpg",
+    "r21/20261112-7250344c.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "2026-11-16",
+    "batchNo": "09"
+   }
+  },
+  {
+   "id": "g-protein-white-bread-200-g",
+   "name": "PROTEIN WHITE BREAD 200 G",
+   "short": "PROTEIN WHITE BREAD 200G",
+   "hi": "प्रोटीन व्हाइट ब्रेड 200 ग्राम",
+   "brand": "PROTEIN",
+   "size": "200g",
+   "alias": "white bread bred chhoti bread व्हाइट ब्रेड छोटी ब्रेड protein",
+   "cat": "mithai",
+   "sub": "bakery",
+   "unit": "pc",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 15,
+   "perPack": 0,
+   "rack": "21-1",
+   "ph": "f3ee1263",
+   "mfr": "c-sandeep-foods",
+   "fotos": [
+    "r21/20261112-7225d351.jpg",
+    "r21/20261112-bb6c7231.jpg",
+    "r21/20261112-22e1b48a.jpg"
+   ],
+   "open": {
+    "qty": 7,
+    "exp": "",
+    "batchNo": "06"
+   }
+  },
+  {
+   "id": "b8901207043482",
+   "name": "DABUR ODONIL GEL POCKET WILD FOREST 10 G 1 PC",
+   "short": "ODONIL GEL POCKET 10G",
+   "hi": "डाबर ओडोनिल जेल पॉकेट वाइल्ड फॉरेस्ट 10 ग्राम",
+   "brand": "DABUR ODONIL",
+   "size": "10g",
+   "alias": "odonil odonel gel pocket air freshener bathroom ओडोनिल खुशबू बाथरूम",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "barcode": "8901207043482",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 4,
+   "rack": "11-45",
+   "ph": "9e76c206",
+   "mfr": "c-dabur",
+   "fotos": [
+    "r11/20261112-0c25486a.jpg",
+    "r11/20261112-928c5c7f.jpg",
+    "r11/20261112-f229089d.jpg",
+    "r11/20261112-2021ed1f.jpg",
+    "r11/20261112-e552f90f.jpg",
+    "r11/20261112-48c147df.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "2028-04-30",
+    "batchNo": "NG60086"
+   },
+   "packMrp": 180
+  },
+  {
+   "id": "b8901207049835",
+   "name": "DABUR ODONIL GEL POCKET WILD FOREST 10 G PACK (4 PC)",
+   "short": "ODONIL GEL 10G 4PC",
+   "hi": "डाबर ओडोनिल जेल पॉकेट वाइल्ड फॉरेस्ट 10 ग्राम",
+   "brand": "DABUR ODONIL",
+   "size": "10g",
+   "alias": "odonil odonel gel pocket air freshener bathroom ओडोनिल खुशबू बाथरूम",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "barcode": "8901207049835",
+   "mrp": 180,
+   "sale": 180,
+   "cost": 0,
+   "perPack": 4,
+   "packOf": "b8901207043482",
+   "track": false,
+   "rack": "11-45",
+   "ph": "9e76c206",
+   "mfr": "c-dabur",
+   "fotos": [
+    "r11/20261112-0c25486a.jpg",
+    "r11/20261112-928c5c7f.jpg",
+    "r11/20261112-f229089d.jpg",
+    "r11/20261112-2021ed1f.jpg",
+    "r11/20261112-e552f90f.jpg",
+    "r11/20261112-48c147df.jpg"
+   ],
+   "packMrp": 180
+  },
+  {
+   "id": "b8904461900041",
+   "name": "PREMIER PAPER CUTTER",
+   "short": "PREMIER CUTTER",
+   "hi": "प्रीमियर पेपर कटर",
+   "brand": "PREMIER",
+   "size": "1 PC",
+   "alias": "cutter katar paper cutter blade कटर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8904461900041",
+   "mrp": 15,
+   "sale": 15,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-36",
+   "ph": "98d34088",
+   "fotos": [
+    "r11/20261112-74b8e5ea.jpg",
+    "r11/20261112-7da5a10f.jpg"
+   ],
+   "open": {
+    "qty": 19,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901238910036",
+   "name": "KANGARO STAPLES 24/6 1M",
+   "short": "KANGARO PIN 24/6",
+   "hi": "कंगारू स्टेपलर पिन 24/6",
+   "brand": "KANGARO",
+   "size": "1 BOX",
+   "alias": "kangaro kangaroo staple pin stapler pin 24/6 पिन स्टेपलर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8901238910036",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-36",
+   "ph": "c9db2470",
+   "mfr": "c-kangaro",
+   "fotos": [
+    "r11/20261112-389dd051.jpg",
+    "r11/20261112-59b77144.jpg"
+   ],
+   "open": {
+    "qty": 20,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8902442216310",
+   "name": "YOUVA CLEAR EXAM BOARD 24X36 CM",
+   "short": "YOUVA EXAM BOARD",
+   "hi": "यूवा पारदर्शी एग्ज़ाम बोर्ड",
+   "brand": "YOUVA",
+   "size": "24X36CM",
+   "alias": "exam board pad clipboard youva एग्ज़ाम पैड बोर्ड",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8902442216310",
+   "mrp": 150,
+   "sale": 150,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-36",
+   "ph": "dd4c98d0",
+   "mfr": "c-navneet",
+   "fotos": [
+    "r11/20261112-3a4276b2.jpg",
+    "r11/20261112-46dbabdf.jpg",
+    "r11/20261112-ec1016aa.jpg",
+    "r11/20261112-57e54dfb.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-flair-super-glow-highlighter-1-pc-pc",
+   "name": "FLAIR SUPER GLOW HIGHLIGHTER 1 PC",
+   "short": "FLAIR HIGHLIGHTER 1PC",
+   "hi": "फ्लेयर सुपर ग्लो हाइलाइटर",
+   "brand": "FLAIR",
+   "size": "1 PC",
+   "alias": "highlighter marker flair हाइलाइटर मार्कर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 5,
+   "rack": "11-36",
+   "ph": "a5a5a40b",
+   "mfr": "c-flair",
+   "fotos": [
+    "r11/20261112-bf64aaae.jpg",
+    "r11/20261112-900ea48c.jpg",
+    "r11/20261112-8cb421a9.jpg"
+   ],
+   "open": {
+    "qty": 12,
+    "exp": "",
+    "batchNo": ""
+   },
+   "packMrp": 125
+  },
+  {
+   "id": "b8901765091635",
+   "name": "FLAIR SUPER GLOW HIGHLIGHTER 5 PC",
+   "short": "FLAIR HIGHLIGHTER 5PC",
+   "hi": "फ्लेयर सुपर ग्लो हाइलाइटर",
+   "brand": "FLAIR",
+   "size": "1 PC",
+   "alias": "highlighter marker flair हाइलाइटर मार्कर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8901765091635",
+   "mrp": 125,
+   "sale": 125,
+   "cost": 0,
+   "perPack": 5,
+   "packOf": "g-flair-super-glow-highlighter-1-pc-pc",
+   "track": false,
+   "rack": "11-36",
+   "ph": "a5a5a40b",
+   "mfr": "c-flair",
+   "fotos": [
+    "r11/20261112-bf64aaae.jpg",
+    "r11/20261112-900ea48c.jpg",
+    "r11/20261112-8cb421a9.jpg"
+   ],
+   "packMrp": 125
+  },
+  {
+   "id": "b8901765009791",
+   "name": "HAUSER SOFT GLOW HIGHLIGHTER 5 PC",
+   "short": "HAUSER HIGHLIGHTER 5PC",
+   "hi": "हाउज़र सॉफ्ट ग्लो हाइलाइटर 5 पीस",
+   "brand": "HAUSER",
+   "size": "5 PC",
+   "alias": "hauser highlighter marker हाउज़र हाइलाइटर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8901765009791",
+   "mrp": 125,
+   "sale": 125,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-36",
+   "ph": "8d572b97",
+   "mfr": "c-flair",
+   "fotos": [
+    "r11/20261112-6162d689.jpg",
+    "r11/20261112-66dceb4a.jpg",
+    "r11/20261112-45ccb105.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-pentonic-0-6-gel-pen-blue-1-pc-pc",
+   "name": "PENTONIC 0.6 GEL PEN BLUE 1 PC",
+   "short": "PENTONIC GEL PEN BL 1 PC",
+   "hi": "पेंटोनिक जेल पेन नीला",
+   "brand": "PENTONIC",
+   "size": "1 PC",
+   "alias": "pentonic gel pen blue pen पेन पेंटोनिक नीला",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 10,
+   "rack": "11-36",
+   "ph": "c3ebbde0",
+   "mfr": "c-jwi",
+   "fotos": [
+    "r11/20261112-26106b69.jpg",
+    "r11/20261112-099610c2.jpg",
+    "r11/20261112-135380b5.jpg"
+   ],
+   "open": {
+    "qty": 46,
+    "exp": "",
+    "batchNo": ""
+   },
+   "packMrp": 100
+  },
+  {
+   "id": "b8904106881797",
+   "name": "PENTONIC 0.6 GEL PEN BLUE PACK (10 PC)",
+   "short": "PENTONIC GEL PEN B 10PC",
+   "hi": "पेंटोनिक जेल पेन नीला",
+   "brand": "PENTONIC",
+   "size": "1 PC",
+   "alias": "pentonic gel pen blue pen पेन पेंटोनिक नीला",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8904106881797",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 10,
+   "packOf": "g-pentonic-0-6-gel-pen-blue-1-pc-pc",
+   "track": false,
+   "rack": "11-36",
+   "ph": "c3ebbde0",
+   "mfr": "c-jwi",
+   "fotos": [
+    "r11/20261112-26106b69.jpg",
+    "r11/20261112-099610c2.jpg",
+    "r11/20261112-135380b5.jpg"
+   ],
+   "packMrp": 100
+  },
+  {
+   "id": "g-apsara-platinum-extra-dark-pencils-1-pc-pc",
+   "name": "APSARA PLATINUM EXTRA DARK PENCILS 1 PC",
+   "short": "APSARA PLATINUM PEN 1 PC",
+   "hi": "अप्सरा प्लैटिनम पेंसिल",
+   "brand": "APSARA",
+   "size": "1 PC",
+   "alias": "apsara platinum pencil pensil अप्सरा पेंसिल",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 5.8,
+   "sale": 5.8,
+   "cost": 0,
+   "perPack": 10,
+   "rack": "11-36",
+   "ph": "11955dd1",
+   "mfr": "c-hindustan-pencils",
+   "fotos": [
+    "r11/20261112-6120d0b1.jpg",
+    "r11/20261112-a021182b.jpg"
+   ],
+   "open": {
+    "qty": 20,
+    "exp": "",
+    "batchNo": ""
+   },
+   "packMrp": 58
+  },
+  {
+   "id": "b8901324055795",
+   "name": "APSARA PLATINUM EXTRA DARK PENCILS 10 PC",
+   "short": "APSARA PLATINUM PE 10PC",
+   "hi": "अप्सरा प्लैटिनम पेंसिल",
+   "brand": "APSARA",
+   "size": "1 PC",
+   "alias": "apsara platinum pencil pensil अप्सरा पेंसिल",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8901324055795",
+   "mrp": 58,
+   "sale": 58,
+   "cost": 0,
+   "perPack": 10,
+   "packOf": "g-apsara-platinum-extra-dark-pencils-1-pc-pc",
+   "track": false,
+   "rack": "11-36",
+   "ph": "11955dd1",
+   "mfr": "c-hindustan-pencils",
+   "fotos": [
+    "r11/20261112-6120d0b1.jpg",
+    "r11/20261112-a021182b.jpg"
+   ],
+   "packMrp": 58
+  },
+  {
+   "id": "g-doms-x-tra-super-dark-pencils-1-pc-pc",
+   "name": "DOMS X-TRA SUPER DARK PENCILS 1 PC",
+   "short": "DOMS XTRA PENCIL 1 PC",
+   "hi": "डोम्स एक्स्ट्रा सुपर डार्क पेंसिल",
+   "brand": "DOMS",
+   "size": "1 PC",
+   "alias": "doms pencil pensil xtra डोम्स पेंसिल",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 6,
+   "sale": 6,
+   "cost": 0,
+   "perPack": 10,
+   "rack": "11-45",
+   "ph": "27e83baa",
+   "mfr": "c-doms",
+   "fotos": [
+    "r11/20261112-52c9a27b.jpg",
+    "r11/20261112-8a9b9eb4.jpg",
+    "r11/20261112-01fccfa7.jpg"
+   ],
+   "open": {
+    "qty": 110,
+    "exp": "",
+    "batchNo": ""
+   },
+   "packMrp": 60
+  },
+  {
+   "id": "b8908004279304",
+   "name": "DOMS X-TRA SUPER DARK PENCILS 10 PC",
+   "short": "DOMS XTRA PENCIL 10PC",
+   "hi": "डोम्स एक्स्ट्रा सुपर डार्क पेंसिल",
+   "brand": "DOMS",
+   "size": "1 PC",
+   "alias": "doms pencil pensil xtra डोम्स पेंसिल",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8908004279304",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 10,
+   "packOf": "g-doms-x-tra-super-dark-pencils-1-pc-pc",
+   "track": false,
+   "rack": "11-45",
+   "ph": "27e83baa",
+   "mfr": "c-doms",
+   "fotos": [
+    "r11/20261112-52c9a27b.jpg",
+    "r11/20261112-8a9b9eb4.jpg",
+    "r11/20261112-01fccfa7.jpg"
+   ],
+   "packMrp": 60
+  },
+  {
+   "id": "g-nataraj-621-bold-pencils-1-pc-pc",
+   "name": "NATARAJ 621 BOLD PENCILS 1 PC",
+   "short": "NATARAJ 621 PENCIL 1 PC",
+   "hi": "नटराज 621 पेंसिल",
+   "brand": "NATARAJ",
+   "size": "1 PC",
+   "alias": "nataraj natraj 621 pencil pensil नटराज पेंसिल",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 5,
+   "sale": 5,
+   "cost": 0,
+   "perPack": 10,
+   "rack": "11-45",
+   "ph": "0c5ae29e",
+   "mfr": "c-hindustan-pencils",
+   "fotos": [
+    "r11/20261112-711e3337.jpg",
+    "r11/20261112-77d13a21.jpg",
+    "r11/20261112-d7633239.jpg"
+   ],
+   "open": {
+    "qty": 60,
+    "exp": "",
+    "batchNo": ""
+   },
+   "packMrp": 50
+  },
+  {
+   "id": "b8901324054972",
+   "name": "NATARAJ 621 BOLD PENCILS 10 PC",
+   "short": "NATARAJ 621 PENCIL 10PC",
+   "hi": "नटराज 621 पेंसिल",
+   "brand": "NATARAJ",
+   "size": "1 PC",
+   "alias": "nataraj natraj 621 pencil pensil नटराज पेंसिल",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8901324054972",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 10,
+   "packOf": "g-nataraj-621-bold-pencils-1-pc-pc",
+   "track": false,
+   "rack": "11-45",
+   "ph": "0c5ae29e",
+   "mfr": "c-hindustan-pencils",
+   "fotos": [
+    "r11/20261112-711e3337.jpg",
+    "r11/20261112-77d13a21.jpg",
+    "r11/20261112-d7633239.jpg"
+   ],
+   "packMrp": 50
+  },
+  {
+   "id": "b8904389815946",
+   "name": "SHAPE SUPERHERO STATIONERY GIFT SET",
+   "short": "SHAPE SUPERHERO GIFT SET",
+   "hi": "शेप सुपरहीरो स्टेशनरी गिफ्ट सेट",
+   "brand": "SHAPE",
+   "size": "1 SET",
+   "alias": "shape gift set stationery kit superhero गिफ्ट सेट",
+   "cat": "stationery",
+   "sub": "art",
+   "unit": "pc",
+   "barcode": "8904389815946",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-45",
+   "ph": "c3e71948",
+   "mfr": "c-shape",
+   "fotos": [
+    "r11/20261112-e0628d78.jpg",
+    "r11/20261112-2186834c.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904389812129",
+   "name": "SHAPE PANDA STATIONERY GIFT SET",
+   "short": "SHAPE PANDA GIFT SET",
+   "hi": "शेप पांडा स्टेशनरी गिफ्ट सेट",
+   "brand": "SHAPE",
+   "size": "1 SET",
+   "alias": "shape gift set stationery kit panda गिफ्ट सेट",
+   "cat": "stationery",
+   "sub": "art",
+   "unit": "pc",
+   "barcode": "8904389812129",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-45",
+   "ph": "32208030",
+   "mfr": "c-shape",
+   "fotos": [
+    "r11/20261112-0e51c8e4.jpg",
+    "r11/20261112-6fee20ee.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904389815960",
+   "name": "SHAPE CARS STATIONERY GIFT SET",
+   "short": "SHAPE CARS GIFT SET",
+   "hi": "शेप कार्स स्टेशनरी गिफ्ट सेट",
+   "brand": "SHAPE",
+   "size": "1 SET",
+   "alias": "shape gift set stationery kit cars गिफ्ट सेट",
+   "cat": "stationery",
+   "sub": "art",
+   "unit": "pc",
+   "barcode": "8904389815960",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-45",
+   "ph": "5bacf0c5",
+   "mfr": "c-shape",
+   "fotos": [
+    "r11/20261112-e0d6a1d0.jpg",
+    "r11/20261112-678e5334.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-oddy-inkjet-glossy-paper-a4-130-gsm-1-pc-pc",
+   "name": "ODDY INKJET GLOSSY PAPER A4 130 GSM 1 PC",
+   "short": "ODDY GLOSSY A4 130G 1 PC",
+   "hi": "ऑडी ग्लॉसी फोटो पेपर A4 130 GSM",
+   "brand": "ODDY",
+   "size": "1 SHEET",
+   "alias": "oddy glossy paper photo paper a4 फोटो पेपर ग्लॉसी",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "mrp": 5.5,
+   "sale": 5.5,
+   "cost": 0,
+   "perPack": 50,
+   "rack": "11-45",
+   "ph": "018b13ba",
+   "mfr": "c-atul-paper",
+   "fotos": [
+    "r11/20261112-5e3a7ff0.jpg",
+    "r11/20261112-929ee174.jpg"
+   ],
+   "open": {
+    "qty": 150,
+    "exp": "",
+    "batchNo": ""
+   },
+   "packMrp": 275
+  },
+  {
+   "id": "b8906044232877",
+   "name": "ODDY INKJET GLOSSY PAPER A4 130 GSM 50 SHEETS",
+   "short": "ODDY GLOSSY A4 130 50PC",
+   "hi": "ऑडी ग्लॉसी फोटो पेपर A4 130 GSM",
+   "brand": "ODDY",
+   "size": "1 SHEET",
+   "alias": "oddy glossy paper photo paper a4 फोटो पेपर ग्लॉसी",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8906044232877",
+   "mrp": 275,
+   "sale": 275,
+   "cost": 0,
+   "perPack": 50,
+   "packOf": "g-oddy-inkjet-glossy-paper-a4-130-gsm-1-pc-pc",
+   "track": false,
+   "rack": "11-45",
+   "ph": "018b13ba",
+   "mfr": "c-atul-paper",
+   "fotos": [
+    "r11/20261112-5e3a7ff0.jpg",
+    "r11/20261112-929ee174.jpg"
+   ],
+   "packMrp": 275
+  },
+  {
+   "id": "b8906044235724",
+   "name": "ODDY SNAPSHOT INKJET ID PAPER A4 180 GSM 50 SHEETS",
+   "short": "ODDY ID PAPER A4 180GSM",
+   "hi": "ऑडी आईडी कार्ड पेपर A4 180 GSM",
+   "brand": "ODDY",
+   "size": "50 SHEETS",
+   "alias": "oddy id paper card paper a4 आईडी पेपर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8906044235724",
+   "mrp": 350,
+   "sale": 350,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-45",
+   "ph": "bac644a3",
+   "mfr": "c-atul-paper",
+   "fotos": [
+    "r11/20261112-33a50dc1.jpg",
+    "r11/20261112-c7a8274d.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-tree-birds-vanilla-special-essence-100-m",
+   "name": "TREE BIRDS VANILLA SPECIAL ESSENCE 100 ML",
+   "short": "TREE BIRDS VANILLA 100ML",
+   "hi": "ट्री बर्ड्स वनीला एसेंस 100 मिली",
+   "brand": "TREE BIRDS",
+   "size": "100ml",
+   "alias": "vanilla essence venila esens वनीला एसेंस केक",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 135,
+   "sale": 135,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-54",
+   "ph": "39c7e4b1",
+   "mfr": "c-asian-chem",
+   "fotos": [
+    "r11/20261112-ddf6061d.jpg",
+    "r11/20261112-3920cf7a.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-12-31",
+    "batchNo": "10125"
+   }
+  },
+  {
+   "id": "b8901425044957",
+   "name": "CAMLIN RUBBER STAMP INK 25 ML",
+   "short": "CAMLIN STAMP INK 25ML",
+   "hi": "कैमलिन स्टैम्प पैड इंक 25 मिली",
+   "brand": "CAMLIN",
+   "size": "25ml",
+   "alias": "stamp ink stamp pad ink camlin स्याही स्टैम्प इंक",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8901425044957",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-54",
+   "ph": "47bdae19",
+   "mfr": "c-camlin",
+   "fotos": [
+    "r11/20261112-1f5ac887.jpg",
+    "r11/20261112-3562bc33.jpg",
+    "r11/20261112-2238853a.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "",
+    "batchNo": "C09"
+   }
+  },
+  {
+   "id": "g-doms-pencil-sharpener-1-pc-pc",
+   "name": "DOMS PENCIL SHARPENER 1 PC",
+   "short": "DOMS SHARPENER 1PC",
+   "hi": "डोम्स शार्पनर (कटर)",
+   "brand": "DOMS",
+   "size": "1 PC",
+   "alias": "sharpener sharpner shaarpner cutter doms शार्पनर कटर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 3,
+   "sale": 3,
+   "cost": 0,
+   "perPack": 20,
+   "rack": "11-45",
+   "ph": "f0a97bab",
+   "mfr": "c-doms",
+   "fotos": [
+    "r11/20261112-cd7fa475.jpg",
+    "r11/20261112-e505fecd.jpg",
+    "r11/20261112-0542fd16.jpg"
+   ],
+   "open": {
+    "qty": 48,
+    "exp": "",
+    "batchNo": ""
+   },
+   "packMrp": 60
+  },
+  {
+   "id": "b8908000034235",
+   "name": "DOMS PENCIL SHARPENER 20 PC PACK",
+   "short": "DOMS SHARPENER 20PC",
+   "hi": "डोम्स शार्पनर (कटर)",
+   "brand": "DOMS",
+   "size": "1 PC",
+   "alias": "sharpener sharpner shaarpner cutter doms शार्पनर कटर",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8908000034235",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 20,
+   "packOf": "g-doms-pencil-sharpener-1-pc-pc",
+   "track": false,
+   "rack": "11-45",
+   "ph": "f0a97bab",
+   "mfr": "c-doms",
+   "fotos": [
+    "r11/20261112-cd7fa475.jpg",
+    "r11/20261112-e505fecd.jpg",
+    "r11/20261112-0542fd16.jpg"
+   ],
+   "packMrp": 60
+  },
+  {
+   "id": "g-apsara-non-dust-eraser-1-pc-pc",
+   "name": "APSARA NON DUST ERASER 1 PC",
+   "short": "APSARA ERASER 1PC",
+   "hi": "अप्सरा नॉन डस्ट रबर",
+   "brand": "APSARA",
+   "size": "1 PC",
+   "alias": "eraser rubber apsara रबर इरेज़र",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 3,
+   "sale": 3,
+   "cost": 0,
+   "perPack": 20,
+   "rack": "11-45",
+   "ph": "524e3dc0",
+   "mfr": "c-hindustan-pencils",
+   "fotos": [
+    "r11/20261112-2cfb5313.jpg",
+    "r11/20261112-4e20693c.jpg"
+   ],
+   "open": {
+    "qty": 40,
+    "exp": "",
+    "batchNo": ""
+   },
+   "packMrp": 60
+  },
+  {
+   "id": "b8901324060027",
+   "name": "APSARA NON DUST ERASER 20 PC BOX",
+   "short": "APSARA ERASER 20PC",
+   "hi": "अप्सरा नॉन डस्ट रबर",
+   "brand": "APSARA",
+   "size": "1 PC",
+   "alias": "eraser rubber apsara रबर इरेज़र",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "barcode": "8901324060027",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 20,
+   "packOf": "g-apsara-non-dust-eraser-1-pc-pc",
+   "track": false,
+   "rack": "11-45",
+   "ph": "524e3dc0",
+   "mfr": "c-hindustan-pencils",
+   "fotos": [
+    "r11/20261112-2cfb5313.jpg",
+    "r11/20261112-4e20693c.jpg"
+   ],
+   "packMrp": 60
+  },
+  {
+   "id": "b8901425009772",
+   "name": "CAMLIN CARBON PAPER 100 SHEETS",
+   "short": "CAMLIN CARBON PAPER 100",
+   "hi": "कैमलिन कार्बन पेपर 100 शीट",
+   "brand": "CAMLIN",
+   "size": "100 SHEETS",
+   "alias": "carbon paper karban कार्बन पेपर",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8901425009772",
+   "mrp": 220,
+   "sale": 220,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-45",
+   "ph": "f883c649",
+   "mfr": "c-camlin",
+   "fotos": [
+    "r11/20261112-73c98144.jpg",
+    "r11/20261112-2267a308.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": "109"
+   }
+  },
+  {
+   "id": "g-supreme-register-180-pages",
+   "name": "SUPREME REGISTER 180 PAGES",
+   "short": "SUPREME REGISTER 180P",
+   "hi": "सुप्रीम रजिस्टर 180 पेज",
+   "brand": "SUPREME",
+   "size": "180 PAGES",
+   "alias": "register rajistar long book रजिस्टर कॉपी",
+   "cat": "stationery",
+   "sub": "copy",
+   "unit": "pc",
+   "mrp": 101.05,
+   "sale": 101,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-53",
+   "ph": "af760868",
+   "fotos": [
+    "r11/20261112-661c443e.jpg",
+    "r11/20261112-9a4db6a1.jpg"
+   ],
+   "open": {
+    "qty": 22,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-manoj-stainless-steel-5-compartment-plat",
+   "name": "MANOJ STAINLESS STEEL 5 COMPARTMENT PLATE",
+   "short": "MANOJ STEEL PLATE 5KHANA",
+   "hi": "मनोज स्टील 5 खाने वाली थाली",
+   "brand": "MANOJ",
+   "size": "1 PC",
+   "alias": "steel thali plate 5 khana bhojan thali स्टील थाली खाने वाली",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "mrp": 240,
+   "sale": 240,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-53",
+   "ph": "4cbb3dc3",
+   "fotos": [
+    "r11/20261112-92b2a492.jpg",
+    "r11/20261112-c238e705.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b4987176286215",
+   "name": "GILLETTE DISPOSABLE RAZOR 2 BLADE",
+   "short": "GILLETTE RAZOR 1PC",
+   "hi": "जिलेट डिस्पोज़ेबल रेज़र",
+   "brand": "GILLETTE",
+   "size": "1 PC",
+   "alias": "gillette razor shaving rezar जिलेट रेज़र दाढ़ी",
+   "cat": "daily",
+   "sub": "personal",
+   "unit": "pc",
+   "barcode": "4987176286215",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-53",
+   "ph": "677a74be",
+   "mfr": "c-gillette",
+   "fotos": [
+    "r11/20261112-3810afd4.jpg",
+    "r11/20261112-866b181c.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-miracle-garbage-bags-large-61x81-cm-15-b",
+   "name": "MIRACLE GARBAGE BAGS LARGE 61X81 CM 15 BAGS",
+   "short": "MIRACLE GARBAGE BAG L15",
+   "hi": "मिरेकल गार्बेज बैग बड़ा (15 बैग)",
+   "brand": "MIRACLE",
+   "size": "15 BAGS",
+   "alias": "garbage bag dustbin bag kachra thaili कचरा थैली गार्बेज बैग",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "mrp": 210,
+   "sale": 210,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-52",
+   "ph": "b4a6921e",
+   "mfr": "c-miracle",
+   "fotos": [
+    "r11/20261112-7cbdd532.jpg",
+    "r11/20261112-ee822937.jpg",
+    "r11/20261112-a839bbac.jpg",
+    "r11/20261112-8d4ee6fc.jpg",
+    "r11/20261112-4b6bc302.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-pearl-premium-garbage-bags-10-bags",
+   "name": "PEARL PREMIUM GARBAGE BAGS 10 BAGS",
+   "short": "PEARL GARBAGE BAG 10",
+   "hi": "पर्ल गार्बेज बैग (10 बैग)",
+   "brand": "PEARL",
+   "size": "10 BAGS",
+   "alias": "garbage bag dustbin bag pearl कचरा थैली",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "mrp": 154,
+   "sale": 154,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-52",
+   "ph": "e65ed064",
+   "mfr": "c-shree-jd",
+   "fotos": [
+    "r11/20261112-e63ca716.jpg",
+    "r11/20261112-90c11af5.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "",
+    "batchNo": "07/2026"
+   }
+  },
+  {
+   "id": "g-miracle-garbage-bags-medium-48x54-cm-30-",
+   "name": "MIRACLE GARBAGE BAGS MEDIUM 48X54 CM 30 BAGS",
+   "short": "MIRACLE GARBAGE BAG M30",
+   "hi": "मिरेकल गार्बेज बैग मीडियम (30 बैग)",
+   "brand": "MIRACLE",
+   "size": "30 BAGS",
+   "alias": "garbage bag dustbin bag kachra thaili medium कचरा थैली",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "mrp": 170,
+   "sale": 170,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-52",
+   "ph": "f4942f4a",
+   "mfr": "c-miracle",
+   "fotos": [
+    "r11/20261112-205548e5.jpg",
+    "r11/20261112-bdfca14c.jpg",
+    "r11/20261112-612b4785.jpg",
+    "r11/20261112-eac1916a.jpg",
+    "r11/20261112-8dfd9ed1.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-ball-pen-loose",
+   "name": "BALL PEN (LOOSE)",
+   "short": "BALL PEN 1PC",
+   "hi": "बॉल पेन (खुला)",
+   "size": "1 PC",
+   "alias": "ball pen pen blue pen पेन बॉल पेन",
+   "cat": "stationery",
+   "sub": "pen",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 5,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-52",
+   "ph": "3f766f38",
+   "fotos": [
+    "r11/20261112-1fb48b22.jpg"
+   ],
+   "open": {
+    "qty": 32,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-bonfix-all-purpose-adhesive-10-ml",
+   "name": "BONFIX ALL PURPOSE ADHESIVE 10 ML",
+   "short": "BONFIX ADHESIVE 10ML",
+   "hi": "बॉनफिक्स ग्लू 10 मिली",
+   "brand": "BONFIX",
+   "size": "10ml",
+   "alias": "bonfix glue adhesive fevikwik gond गोंद ग्लू",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-52",
+   "ph": "abe3e782",
+   "mfr": "c-bonfix",
+   "fotos": [
+    "r11/20261112-cb8cb05c.jpg",
+    "r11/20261112-3d62b806.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8909106092488",
+   "name": "VIM DISHWASH BAR LEMON 275 G",
+   "short": "VIM BAR 275G",
+   "hi": "विम बर्तन धोने की टिकिया 275 ग्राम",
+   "brand": "VIM",
+   "size": "275g",
+   "alias": "vim bar bartan sabun dishwash विम बर्तन साबुन",
+   "cat": "daily",
+   "sub": "clean",
+   "unit": "pc",
+   "barcode": "8909106092488",
+   "mrp": 30,
+   "sale": 30,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-51",
+   "ph": "493652ea",
+   "mfr": "c-hul",
+   "fotos": [
+    "r11/20261112-0f27bdb0.jpg",
+    "r11/20261112-67b35dde.jpg",
+    "r11/20261112-f14e7555.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "",
+    "batchNo": "10B4"
+   }
+  },
+  {
+   "id": "b8909106083691",
+   "name": "VIM DISHWASH BAR TUB 480 G",
+   "short": "VIM TUB 480G",
+   "hi": "विम बर्तन बार टब 480 ग्राम",
+   "brand": "VIM",
+   "size": "480g",
+   "alias": "vim tub bar bartan dishwash विम टब बर्तन",
+   "cat": "daily",
+   "sub": "clean",
+   "unit": "pc",
+   "barcode": "8909106083691",
+   "mrp": 55,
+   "sale": 55,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-51",
+   "ph": "b86d7e20",
+   "mfr": "c-hul",
+   "fotos": [
+    "r11/20261112-68bb9172.jpg",
+    "r11/20261112-e67e4187.jpg"
+   ],
+   "open": {
+    "qty": 4,
+    "exp": "",
+    "batchNo": "A8"
+   }
+  },
+  {
+   "id": "b8906174780095",
+   "name": "RAJORIA PUJAN SAMAGRI BOX",
+   "short": "RAJORIA PUJAN SAMAGRI",
+   "hi": "राजोरिया पूजन सामग्री",
+   "brand": "RAJORIA",
+   "size": "1 BOX",
+   "alias": "pujan samagri pooja kit puja saman पूजन सामग्री पूजा",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "barcode": "8906174780095",
+   "mrp": 81,
+   "sale": 81,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-49",
+   "ph": "a1e54874",
+   "fotos": [
+    "r11/20261112-9153e1bb.jpg",
+    "r11/20261112-29f8baee.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-vimal-surya-stand-candles-4-pc",
+   "name": "VIMAL SURYA STAND CANDLES 4 PC",
+   "short": "VIMAL SURYA CANDLE 4PC",
+   "hi": "विमल सूर्या मोमबत्ती (4)",
+   "brand": "VIMAL SURYA",
+   "size": "4 PC",
+   "alias": "candle mombatti mombati मोमबत्ती कैंडल",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-52",
+   "ph": "202ae923",
+   "mfr": "c-vimal-udyog",
+   "fotos": [
+    "r11/20261112-fe8294e0.jpg",
+    "r11/20261112-cf9396b9.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901088705639",
+   "name": "NIHAR SHANTI AMLA BADAM HAIR OIL 62 ML",
+   "short": "NIHAR AMLA BADAM 62ML",
+   "hi": "निहार शांति आंवला बादाम तेल",
+   "brand": "NIHAR",
+   "size": "62ml",
+   "alias": "nihar amla badam hair oil tel निहार आंवला तेल",
+   "cat": "daily",
+   "sub": "hair",
+   "unit": "pc",
+   "barcode": "8901088705639",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-50",
+   "ph": "0b0912da",
+   "mfr": "c-marico",
+   "fotos": [
+    "r11/20261112-94aa5c92.jpg",
+    "r11/20261112-cd0f9202.jpg"
+   ],
+   "open": {
+    "qty": 19,
+    "exp": "2029-07-31",
+    "batchNo": "KK167.C"
+   }
+  },
+  {
+   "id": "g-jay-mahakali-cotton-wicks-gol-batti",
+   "name": "JAY MAHAKALI COTTON WICKS (GOL BATTI)",
+   "short": "MAHAKALI GOL BATTI",
+   "hi": "जय महाकाली रूई की गोल बत्ती",
+   "brand": "JAY MAHAKALI",
+   "size": "1 PKT",
+   "alias": "batti baati cotton wick diya gol batti बत्ती रूई दीपक",
+   "cat": "kirana",
+   "sub": "pooja",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-50",
+   "ph": "b1e00623",
+   "fotos": [
+    "r11/20261112-71604347.jpg"
+   ],
+   "open": {
+    "qty": 10,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901860633662",
+   "name": "FEVISTIK GLUE STICK 25 G",
+   "short": "FEVISTIK 25G",
+   "hi": "फेविस्टिक ग्लू स्टिक 25 ग्राम",
+   "brand": "FEVISTIK",
+   "size": "25g",
+   "alias": "fevistik glue stick gond फेविस्टिक गोंद",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8901860633662",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-50",
+   "ph": "fad51a07",
+   "mfr": "c-pidilite",
+   "fotos": [
+    "r11/20261112-03d98a9e.jpg",
+    "r11/20261112-c0d6b2d2.jpg"
+   ],
+   "open": {
+    "qty": 14,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-vimal-brite-stainless-steel-scrubber",
+   "name": "VIMAL BRITE STAINLESS STEEL SCRUBBER",
+   "short": "VIMAL BRITE SCRUBBER",
+   "hi": "विमल ब्राइट स्टील जूना",
+   "brand": "VIMAL BRITE",
+   "size": "1 PC",
+   "alias": "steel scrubber juna jona स्टील जूना स्क्रबर",
+   "cat": "daily",
+   "sub": "clean",
+   "unit": "pc",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-5",
+   "ph": "ee30513b",
+   "fotos": [
+    "r12/20261112-1daabb19.jpg"
+   ],
+   "open": {
+    "qty": 18,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906003511388",
+   "name": "JALANI JALJIRA 20 G",
+   "short": "JALANI JALJIRA 20G",
+   "hi": "जालानी जलजीरा 20 ग्राम",
+   "brand": "JALANI",
+   "size": "20g",
+   "alias": "jaljira jaljeera jal jeera जलजीरा",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8906003511388",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-5",
+   "ph": "b376bc35",
+   "mfr": "c-jalani",
+   "fotos": [
+    "r12/20261112-f09ea63c.jpg",
+    "r12/20261112-5b08a506.jpg"
+   ],
+   "open": {
+    "qty": 6,
+    "exp": "2027-06-30",
+    "batchNo": "JJ07K"
+   }
+  },
+  {
+   "id": "b8904058700375",
+   "name": "LAXMANREKHAA COCKROACH CHALK 15 G",
+   "short": "LAXMANREKHA CHALK",
+   "hi": "लक्ष्मणरेखा कॉकरोच चॉक",
+   "brand": "LAXMANREKHAA",
+   "size": "15g",
+   "alias": "laxman rekha laxmanrekha chalk cockroach लक्ष्मण रेखा कॉकरोच",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "barcode": "8904058700375",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-5",
+   "ph": "a7e3d137",
+   "mfr": "c-midas",
+   "fotos": [
+    "r12/20261112-bcdae5c5.jpg",
+    "r12/20261112-03e69268.jpg",
+    "r12/20261112-f9f8c6fe.jpg"
+   ],
+   "open": {
+    "qty": 3,
+    "exp": "2027-09-30",
+    "batchNo": "PCI/017"
+   }
+  },
+  {
+   "id": "b8904176411399",
+   "name": "NOVEX VEGETABLE PEELER DA-139",
+   "short": "NOVEX PEELER",
+   "hi": "नोवेक्स सब्ज़ी छीलने का पीलर",
+   "brand": "NOVEX",
+   "size": "1 PC",
+   "alias": "peeler chilni chhilni novex पीलर छिलनी",
+   "cat": "daily",
+   "sub": "tools",
+   "unit": "pc",
+   "barcode": "8904176411399",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-6",
+   "ph": "9968ea65",
+   "fotos": [
+    "r12/20261112-a9134cc3.jpg",
+    "r12/20261112-187cc418.jpg"
+   ],
+   "open": {
+    "qty": 8,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-novex-fruit-and-kitchen-knife",
+   "name": "NOVEX FRUIT AND KITCHEN KNIFE",
+   "short": "NOVEX FRUIT KNIFE",
+   "hi": "नोवेक्स फल-सब्ज़ी चाकू",
+   "brand": "NOVEX",
+   "size": "1 PC",
+   "alias": "knife chaku chhuri चाकू छुरी",
+   "cat": "daily",
+   "sub": "tools",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-6",
+   "ph": "c4333dab",
+   "fotos": [
+    "r12/20261112-b30ea0b9.jpg"
+   ],
+   "open": {
+    "qty": 9,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901860010005",
+   "name": "FEVIKWIK INSTANT ADHESIVE 450 MG",
+   "short": "FEVIKWIK 450MG",
+   "hi": "फेविक्विक",
+   "brand": "FEVIKWIK",
+   "size": "450mg",
+   "alias": "fevikwik fevi kwik feviquick glue gond फेविक्विक गोंद",
+   "cat": "stationery",
+   "sub": "office",
+   "unit": "pc",
+   "barcode": "8901860010005",
+   "mrp": 5,
+   "sale": 5,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-6",
+   "ph": "6851909f",
+   "mfr": "c-pidilite",
+   "fotos": [
+    "r12/20261112-09e6de88.jpg",
+    "r12/20261112-e7b6e996.jpg",
+    "r12/20261112-00d46803.jpg"
+   ],
+   "open": {
+    "qty": 180,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901023031359",
+   "name": "GODREJ RICH CREME HAIR COLOUR NATURAL BLACK 1.00",
+   "short": "GODREJ RICH CREME BLACK",
+   "hi": "गोदरेज रिच क्रीम हेयर कलर नेचुरल ब्लैक",
+   "brand": "GODREJ",
+   "size": "11g+11ml",
+   "alias": "godrej rich creme hair colour dye kala गोदरेज हेयर कलर डाई",
+   "cat": "daily",
+   "sub": "hair",
+   "unit": "pc",
+   "barcode": "8901023031359",
+   "mrp": 15,
+   "sale": 15,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-7",
+   "ph": "b9eef0c8",
+   "mfr": "c-godrej",
+   "fotos": [
+    "r12/20261112-92144994.jpg",
+    "r12/20261112-6080264f.jpg",
+    "r12/20261112-82d92a29.jpg"
+   ],
+   "open": {
+    "qty": 41,
+    "exp": "2028-03-31",
+    "batchNo": "MN-NA2604192A"
+   }
+  },
+  {
+   "id": "b8906000013045",
+   "name": "SUGANDH ELAICHI CHAI RS 10",
+   "short": "SUGANDH ELAICHI CHAI 10",
+   "hi": "सुगन्ध इलायची चाय ₹10",
+   "brand": "SUGANDH",
+   "size": "₹10 PACK",
+   "alias": "chai tea elaichi chai patti सुगंध इलायची चाय पत्ती",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8906000013045",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-7",
+   "ph": "5bd438c6",
+   "fotos": [
+    "r12/20261112-732ef7dd.jpg",
+    "r12/20261112-c87004b0.jpg"
+   ],
+   "open": {
+    "qty": 20,
+    "exp": "2027-04-30",
+    "batchNo": "A-07713"
+   }
+  },
+  {
+   "id": "b8904456100364",
+   "name": "VI-JOHN SHAVEPRO DISPOSABLE RAZOR",
+   "short": "VI-JOHN SHAVEPRO RAZOR",
+   "hi": "वी-जॉन शेवप्रो रेज़र",
+   "brand": "VI-JOHN",
+   "size": "1 PC",
+   "alias": "vijohn vi john razor shaving रेज़र",
+   "cat": "daily",
+   "sub": "personal",
+   "unit": "pc",
+   "barcode": "8904456100364",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-7",
+   "ph": "733bfb56",
+   "mfr": "c-vi-john",
+   "fotos": [
+    "r12/20261112-1e9e0657.jpg",
+    "r12/20261112-3936212c.jpg",
+    "r12/20261112-3079f9a7.jpg"
+   ],
+   "open": {
+    "qty": 2,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904252301262",
+   "name": "SPECIAL CHOICE POPPY SEEDS (KHAS KHAS) 100 G",
+   "short": "SPECIAL CHOICE KHASKHAS",
+   "hi": "स्पेशल चॉइस खसखस 100 ग्राम",
+   "brand": "SPECIAL CHOICE",
+   "size": "100g",
+   "alias": "khaskhas khus khus poppy seeds खसखस पोस्ता",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8904252301262",
+   "mrp": 290,
+   "sale": 270,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-7",
+   "ph": "4e3bb8b8",
+   "fotos": [
+    "r12/20261112-1a0c52aa.jpg",
+    "r12/20261112-ff383594.jpg"
+   ],
+   "open": {
+    "qty": 5,
+    "exp": "2026-11-30",
+    "batchNo": "234"
+   }
+  },
+  {
+   "id": "b8901786650071",
+   "name": "EVEREST TASTEETO PASTA MASALA 7 G",
+   "short": "EVEREST PASTA MSL 7G",
+   "hi": "एवरेस्ट टेस्टीटो पास्ता मसाला 7 ग्राम",
+   "brand": "EVEREST",
+   "size": "7g",
+   "alias": "pasta masala everest tasteeto पास्ता मसाला",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786650071",
+   "mrp": 5,
+   "sale": 5,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-7",
+   "ph": "7c6e9f9b",
+   "mfr": "c-everest",
+   "fotos": [
+    "r12/20261112-e0f4c700.jpg",
+    "r12/20261112-19651a62.jpg"
+   ],
+   "open": {
+    "qty": 77,
+    "exp": "2027-07-31",
+    "batchNo": "U03D765672"
+   }
+  },
+  {
+   "id": "b89081211",
+   "name": "NESCAFE SUNRISE INSTANT COFFEE RS 10",
+   "short": "NESCAFE SUNRISE 10",
+   "hi": "नेस्कैफ़े सनराइज़ कॉफ़ी ₹10",
+   "brand": "NESCAFE",
+   "size": "₹10 PACK",
+   "alias": "nescafe coffee kafi sunrise नेस्कैफ़े कॉफ़ी",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "89081211",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-7",
+   "ph": "ebd57d6f",
+   "mfr": "c-nestle",
+   "fotos": [
+    "r12/20261112-8fba08ea.jpg",
+    "r12/20261112-f4672291.jpg"
+   ],
+   "open": {
+    "qty": 178,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8908012440055",
+   "name": "PCI TRUBBLE GUM RAT TRAP ECO",
+   "short": "TRUBBLE GUM RAT TRAP",
+   "hi": "ट्रबल गम चूहा पकड़ने की पट्टी",
+   "brand": "PCI",
+   "size": "33.5X10.8CM",
+   "alias": "rat trap chuha gum trubble gum चूहा पकड़ने गोंद",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "barcode": "8908012440055",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-7",
+   "ph": "af0fc333",
+   "mfr": "c-pci",
+   "fotos": [
+    "r12/20261112-1b4687c5.jpg",
+    "r12/20261112-0cb89457.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2028-02-08",
+    "batchNo": "TE060/25"
+   }
+  },
+  {
+   "id": "b8904242800126",
+   "name": "MAYURI HENNA NATURAL BLACK 25 G",
+   "short": "MAYURI HENNA BLACK 25G",
+   "hi": "मयूरी हिना ब्लैक 25 ग्राम",
+   "brand": "MAYURI",
+   "size": "25g",
+   "alias": "mehndi henna mayuri hair colour मेहंदी हिना",
+   "cat": "daily",
+   "sub": "hair",
+   "unit": "pc",
+   "barcode": "8904242800126",
+   "mrp": 25,
+   "sale": 25,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "12-8",
+   "ph": "a660b918",
+   "mfr": "c-mayuri",
+   "fotos": [
+    "r12/20261112-e21f332d.jpg",
+    "r12/20261112-272caa25.jpg"
+   ],
+   "open": {
+    "qty": 27,
+    "exp": "2027-02-28",
+    "batchNo": "BL-BN-75"
+   }
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-sandeep-foods",
+   "name": "SANDEEP FOODS (PROTEIN)",
+   "phone": "9408562701",
+   "care": "1800-180-6030",
+   "email": "sandeepfoods29@gmail.com",
+   "addr": "F-(33) A, RIICO Industries Samdari, Teh. Samdari",
+   "city": "Balotra, Rajasthan 344021",
+   "fssai": "12225014000331",
+   "brands": [
+    "PROTEIN"
+   ],
+   "dist": "खुद सप्लाई करते हैं — बिल 10-11-2026 (Name: M.H)",
+   "note": "स्रोत: फोटो r21-0008.jpg (पैकेट पर Mfg. By), बिल r21-0012-bill.jpg"
+  },
+  {
+   "id": "c-bishnoi-foods",
+   "name": "BISHNOI FOODS (PROTEIN)",
+   "addr": "1-8, Khodiyar Industrial Estate, Village Jolwa, Tal. Palsana",
+   "city": "Surat, Gujarat 394305",
+   "fssai": "10723022000116",
+   "brands": [
+    "PROTEIN"
+   ],
+   "dist": "Sandeep Foods के बिल से आया",
+   "note": "स्रोत: r21-0001.jpg / r21-0002.jpg। Customer care नंबर कटा हुआ था ('80003 0295…') — नहीं लिखा"
+  },
+  {
+   "id": "c-dabur",
+   "name": "DABUR INDIA LTD (ODONIL)",
+   "brands": [
+    "ODONIL"
+   ],
+   "note": "स्रोत: r11-0001…0006 — नंबर नहीं पढ़ा गया"
+  },
+  {
+   "id": "c-doms",
+   "name": "DOMS INDUSTRIES LTD",
+   "brands": [
+    "DOMS"
+   ],
+   "note": "स्रोत: r11-0007, r11-0032, r11-0054 — नंबर नहीं पढ़ा गया"
+  },
+  {
+   "id": "c-navneet",
+   "name": "NAVNEET EDUCATION LTD (YOUVA)",
+   "care": "022 66626300",
+   "city": "Mumbai",
+   "brands": [
+    "YOUVA"
+   ],
+   "note": "स्रोत: r11-0016…0018"
+  },
+  {
+   "id": "c-flair",
+   "name": "FLAIR WRITING INDUSTRIES LTD",
+   "care": "+91 22 2868 3084",
+   "city": "Mumbai",
+   "brands": [
+    "FLAIR",
+    "HAUSER"
+   ],
+   "note": "स्रोत: r11-0022…0024 (Hauser पैक)"
+  },
+  {
+   "id": "c-jwi",
+   "name": "JWI STATIONERY PVT LTD (PENTONIC)",
+   "addr": "Mandideep",
+   "city": "Raisen, Madhya Pradesh",
+   "brands": [
+    "PENTONIC"
+   ],
+   "note": "स्रोत: r11-0025…0027"
+  },
+  {
+   "id": "c-hindustan-pencils",
+   "name": "HINDUSTAN PENCILS PVT LTD",
+   "care": "1800-222621",
+   "city": "Mumbai",
+   "brands": [
+    "APSARA",
+    "NATARAJ"
+   ],
+   "note": "स्रोत: r11-0035…0037 (Nataraj पैक पर toll free)"
+  },
+  {
+   "id": "c-shape",
+   "name": "SHAPE (STATIONERY GIFT SETS)",
+   "city": "Ratlam, Madhya Pradesh",
+   "brands": [
+    "SHAPE"
+   ],
+   "note": "स्रोत: r11-0040/0041"
+  },
+  {
+   "id": "c-atul-paper",
+   "name": "ATUL PAPER PVT LTD (ODDY)",
+   "care": "+91-11-23245146",
+   "addr": "Nai Sarak",
+   "city": "Delhi",
+   "brands": [
+    "ODDY"
+   ],
+   "note": "स्रोत: r11-0044/0045"
+  },
+  {
+   "id": "c-asian-chem",
+   "name": "ASIAN CHEM WORKS PVT LTD (TREE BIRDS)",
+   "addr": "Waghodia",
+   "city": "Vadodara, Gujarat",
+   "brands": [
+    "TREE BIRDS"
+   ],
+   "note": "स्रोत: r11-0049/0050 — care नंबर का आख़िरी अंक कटा था, नहीं लिखा"
+  },
+  {
+   "id": "c-camlin",
+   "name": "KOKUYO CAMLIN LTD",
+   "care": "022-6655 7007",
+   "addr": "Andheri",
+   "city": "Mumbai",
+   "brands": [
+    "CAMLIN"
+   ],
+   "note": "स्रोत: r11-0051…0053"
+  },
+  {
+   "id": "c-gillette",
+   "name": "GILLETTE INDIA LTD",
+   "care": "1800-202-1364",
+   "addr": "P&G Plaza, Andheri",
+   "city": "Mumbai",
+   "brands": [
+    "GILLETTE"
+   ],
+   "note": "स्रोत: r11-0067/0068"
+  },
+  {
+   "id": "c-miracle",
+   "name": "MIRACLE PLASTIC INDUSTRIES",
+   "web": "miracle-ind.com",
+   "brands": [
+    "MIRACLE"
+   ],
+   "note": "स्रोत: r11-0069/0070"
+  },
+  {
+   "id": "c-shree-jd",
+   "name": "SHREE J.D. MARKETING & EXIM PVT LTD (PEARL)",
+   "city": "Ahmedabad, Gujarat",
+   "brands": [
+    "PEARL"
+   ],
+   "note": "स्रोत: r11-0071/0072 (Marketed by) · Mfg by Tilak Enterprise"
+  },
+  {
+   "id": "c-bonfix",
+   "name": "BONFIX",
+   "phone": "9910053425",
+   "brands": [
+    "BONFIX"
+   ],
+   "note": "स्रोत: r11-0082/0083 (पैक पर customer care)"
+  },
+  {
+   "id": "c-hul",
+   "name": "HINDUSTAN UNILEVER LTD (VIM)",
+   "addr": "Kurali, Chamkaur Sahib (Mfd at)",
+   "city": "Punjab",
+   "brands": [
+    "VIM"
+   ],
+   "note": "स्रोत: r11-0084…0086"
+  },
+  {
+   "id": "c-vimal-udyog",
+   "name": "VIMAL UDYOG (VIMAL SURYA CANDLES)",
+   "addr": "Dodhi Daro Ka Mohalla, Near City Police",
+   "city": "Jodhpur, Rajasthan",
+   "brands": [
+    "VIMAL SURYA"
+   ],
+   "dist": "जोधपुर — सीधा मँगा सकते हैं",
+   "note": "स्रोत: r11-0093 (Manufactured By)"
+  },
+  {
+   "id": "c-marico",
+   "name": "MARICO LTD (NIHAR)",
+   "web": "marico.com",
+   "city": "Mumbai",
+   "brands": [
+    "NIHAR"
+   ],
+   "note": "स्रोत: r11-0095 (लेबल उल्टा छपा, नंबर नहीं पढ़ा)"
+  },
+  {
+   "id": "c-pidilite",
+   "name": "PIDILITE INDUSTRIES LTD",
+   "phone": "9892247447",
+   "care": "1800-266-6066",
+   "web": "pidilite.com",
+   "addr": "Regent Chambers",
+   "city": "Mumbai 400021",
+   "brands": [
+    "FEVISTIK",
+    "FEVIKWIK"
+   ],
+   "note": "स्रोत: r12-0011 (Fevikwik पैक पर 09892247447 / 1800-266-6066), r11-0099"
+  },
+  {
+   "id": "c-jalani",
+   "name": "JALANI ENTERPRISES",
+   "web": "jalani.in",
+   "brands": [
+    "JALANI"
+   ],
+   "note": "स्रोत: r12-0003"
+  },
+  {
+   "id": "c-midas",
+   "name": "MIDAS HYGIENE INDUSTRIES PVT LTD (LAXMANREKHAA)",
+   "phone": "8104192278",
+   "email": "info@midashygiene.net",
+   "web": "midashygiene.net",
+   "addr": "Pranay, 170, Sector 12, Vashi",
+   "city": "Navi Mumbai 400703",
+   "brands": [
+    "LAXMANREKHAA"
+   ],
+   "note": "स्रोत: r12-0005/0006 (Marketed by) · Mfd by Pesticides Chemical India"
+  },
+  {
+   "id": "c-godrej",
+   "name": "GODREJ CONSUMER PRODUCTS LTD",
+   "care": "1-800-266-0007",
+   "email": "care@godrejcp.com",
+   "addr": "Vikhroli",
+   "city": "Mumbai",
+   "brands": [
+    "GODREJ"
+   ],
+   "note": "स्रोत: r12-0015"
+  },
+  {
+   "id": "c-vi-john",
+   "name": "VI-JOHN HEALTH CARE INDIA LLP",
+   "care": "1800 102 1655",
+   "email": "customercare@vijohngroup.com",
+   "web": "vijohngroup.com",
+   "addr": "Udyog Vihar",
+   "city": "Gurugram, Haryana 122016",
+   "brands": [
+    "VI-JOHN"
+   ],
+   "note": "स्रोत: r12-0019"
+  },
+  {
+   "id": "c-everest",
+   "name": "EVEREST FOOD PRODUCTS PVT LTD",
+   "care": "+91-22-25259915",
+   "web": "everestspices.com",
+   "city": "Mumbai",
+   "brands": [
+    "EVEREST"
+   ],
+   "dist": "Mahesh Enterprises, RIICO, बाड़मेर (मसाले यहीं से आते हैं — विक्रम जी)",
+   "note": "स्रोत: r12-0024"
+  },
+  {
+   "id": "c-nestle",
+   "name": "NESTLE INDIA LTD",
+   "city": "Gurugram",
+   "fssai": "10012011000168",
+   "brands": [
+    "NESCAFE"
+   ],
+   "note": "स्रोत: r12-0029"
+  },
+  {
+   "id": "c-pci",
+   "name": "PEST CONTROL (INDIA) PVT LTD",
+   "care": "1800-212-212-5",
+   "web": "pestcontrolindia.com",
+   "city": "Goa 403515",
+   "brands": [
+    "TRUBBLE GUM"
+   ],
+   "note": "स्रोत: r12-0031"
+  },
+  {
+   "id": "c-mayuri",
+   "name": "MAYURI HENNA",
+   "addr": "Khumadi",
+   "city": "Gujarat",
+   "brands": [
+    "MAYURI"
+   ],
+   "note": "स्रोत: r12-0033"
+  }
+ ]
+}

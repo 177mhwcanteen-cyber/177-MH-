@@ -1,0 +1,29 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261112-02",
+ "date": "2026-11-12",
+ "by": "विक्रम जी",
+ "note": "📍 वही सामान दूसरे खाने में भी (ZIP S-20261112-01 से; विक्रम जी: 'रोकना मत — अलग खाने का अलग माल') — xloc: स्टॉक में जुड़ता है + खाने-वार (items.rkx)",
+ "items": [
+  {
+   "id": "b8904411804740",
+   "name": "DOMS UNICORN STATIONERY KIT",
+   "short": "DOMS UNICORN STATIONERY ",
+   "barcode": "8904411804740",
+   "xloc": {
+    "11-45": 1
+   }
+  },
+  {
+   "id": "b8906012760708",
+   "name": "HATHI BLACK SALT POWDER 100 G",
+   "short": "HATHI BLACK SALT POWDER ",
+   "barcode": "8906012760708",
+   "xloc": {
+    "12-7": 6
+   }
+  }
+ ]
+}

@@ -62,6 +62,22 @@ def from_stock(it):
             "offer": it.get("offer") or "", "packMrp": it.get("packMrp") or "", "subtitle": it.get("subtitle") if it.get("offer") else ""}
     ph = (it.get("photoFile") or (it.get("photos") or [None])[0])
     op = {"qty": it.get("qty"), "exp": it.get("exp", ""), "batchNo": it.get("batchNo", "")} if it.get("qty") not in (None, "") else None
+    if pp > 1 and it.get("sell") in ("both", "pack") and (it.get("packSale") or 0) > 0:
+        # 📦 किट/ZIP का पक्का नियम (5घ): sale/cost = खुले 1 पीस का, packSale = पूरे पैकेट का, qty पहले से पीस में —
+        # यहाँ ÷ perPack या × perPack कभी नहीं (12-11-2026: पेंसिल ₹6 → ₹0.60 और 110 → 1100 बन रही थी)
+        nm = cap(it.get("name")); one = re.sub(r"\s+\d+\s*(PCS?|SHEETS?)(\s+(PACK|BOX|PKT))?$", "", nm) or nm
+        sh0 = cap(it.get("short") or one)
+        packLevel = not it.get("packMrp") and (base["mrp"] or 0) > (base["sale"] or 0) * 1.5  # पुरानी ZIP: mrp/barcode डिब्बे के
+        pc = dict(base, name=one + " 1 PC", barcode="" if packLevel else base["barcode"], mrp=base["sale"] if packLevel else base["mrp"], perPack=pp)
+        pc["id"] = it.get("appId") or (make_id(pc) if make_id(pc).startswith("b") else make_id(dict(pc, barcode="")) + "-pc")
+        pc["short"] = sh0[:24] if re.search(r"1 ?PC$", sh0) else sh0[:19] + " 1 PC"
+        pk = dict(base, name=nm if nm != one else f"{nm} PACK ({pp} PC)", barcode=it.get("packBarcode") or (base["barcode"] if packLevel else ""),
+                  mrp=it.get("packMrp") or (base["mrp"] if packLevel else round((base["mrp"] or 0) * pp, 2)), sale=it["packSale"],
+                  cost=round((base["cost"] or 0) * pp, 2), perPack=pp, packOf=pc["id"], track=False)
+        pk["short"] = re.sub(r"\s*1 ?PC$", "", sh0)[:18] + f" {pp}PC"
+        pk["id"] = make_id(pk) if make_id(pk) != pc["id"] else make_id(dict(pk, barcode="")) + "-pk"
+        if op: pc["open"] = op
+        return [dict(pc, photo=ph), dict(pk, photo=ph)]
     if pp > 1 and it.get("sell") in ("both", "pack"):
         pc = dict(base, name=cap(it.get("name")) + " 1 PC", barcode="", mrp=round((base["mrp"] or 0) / pp, 2),
                   sale=it.get("saleOne") or round((base["sale"] or 0) / pp, 2), cost=round((base["cost"] or 0) / pp, 2), perPack=pp)
