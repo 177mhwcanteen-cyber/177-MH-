@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 📦 स्टॉक: कम स्टॉक, एक्सपायरी (खेप-वार), गिनती, खराब माल
+/* 177 वेट कैंटीन — 📦 स्टॉक: कम स्टॉक, एक्सपायरी (खेप-वार), गिनती, खराब माल
    गिनती में कर्मचारी को ऐप वाला स्टॉक नहीं दिखता — वो सिर्फ़ गिनकर लिखते हैं; फर्क की रिपोर्ट सिर्फ़ मालिक को। */
 (function(){
 "use strict";
@@ -59,7 +59,7 @@ function drawList(){
     return `<div class="li"><span class="sith">${SE.photoSrc(it)?`<img src="${esc(SE.photoSrc(it))}" alt="" loading="lazy">`:esc(it.emoji||"📦")}</span><div class="mid"><b>${esc(SE.capNm(it.name))}</b><span>#${esc(it.code||"")}${e?` · <span class="xpb ${e.k}">${e.t}</span>`:""}</span><span class="skbar ${lv}"><i style="width:${v<=0?4:Math.max(6,pc)}%"></i></span></div><div class="rt" style="color:${isLow(it)?"var(--chili)":"var(--ink)"}">${v<=0?"खत्म":fq(v,it.unit)}${S.isOwner?`<small>${rs(r2(Math.max(0,v)*costOf(it)))}</small>`:""}</div></div>`}).join("")||'<p class="note">कुछ नहीं मिला</p>';
 }
 function orderText(low){
-  return `🛒 *177 MH कैंटीन — ऑर्डर लिस्ट*\n${fdate(today())}\n────────\n`+low.map((it,i)=>`${i+1}. ${it.name}${it.size&&!String(it.name).includes(it.size)?" "+it.size:""} — बचे ${qOf(it)<=0?0:qOf(it)} · मँगाएँ ${need(it)}${it.supplier?" ("+it.supplier+")":""}`).join("\n")+`\n────────\n${biller()?"भेजा: "+biller():""}`;
+  return `🛒 *177 वेट कैंटीन — ऑर्डर लिस्ट*\n${fdate(today())}\n────────\n`+low.map((it,i)=>`${i+1}. ${it.name}${it.size&&!String(it.name).includes(it.size)?" "+it.size:""} — बचे ${qOf(it)<=0?0:qOf(it)} · मँगाएँ ${need(it)}${it.supplier?" ("+it.supplier+")":""}`).join("\n")+`\n────────\n${biller()?"भेजा: "+biller():""}`;
 }
 
 /* ---------- 🔢 गिनती ---------- */
@@ -152,7 +152,7 @@ function dayNums(){
 function ownerText(){
   const d=dayNums(),T=tracked(),low=T.filter(isLow),xp=T.filter(it=>qOf(it)>0&&expInfo(it)&&expInfo(it).k!=="chk");
   const cnt=(S.counts||[]).filter(c=>c.date===S.billsDate);
-  return `🛒 *177 MH कैंटीन — ${fdate(S.billsDate)} का हिसाब*\n────────\n`+
+  return `🛒 *177 वेट कैंटीन — ${fdate(S.billsDate)} का हिसाब*\n────────\n`+
   `💰 बिक्री: *${rs(d.tot)}* (${d.n} बिल)${window.SV&&SV.saleTotal(S.billsDate)>0?" · वापसी घटाकर "+rs(r2(d.tot-SV.saleTotal(S.billsDate))):""}\n   नकद ${rs(d.cash)} · UPI ${rs(d.upi)} · उधार ${rs(d.ud)}${d.pend?`\n   ⏳ ${d.pend} बिल का भुगतान बाकी`:""}\n`+
   (d.nInst?`🏢 संस्था को: ${rs(d.inst)} (${d.nInst} बिल)\n`:"")+
   `📈 लगभग मुनाफ़ा: *${rs(d.gm)}* (लागत ${rs(d.cost)})\n`+(d.noCost>0?`   ⚠ ${rs(d.noCost)} की बिक्री वाले सामान का खरीद भाव नहीं भरा — उसका मुनाफ़ा इसमें नहीं गिना\n`:"")+
@@ -171,7 +171,7 @@ function ownerText(){
 }
 function staffText(){
   const d=dayNums();
-  return `🛒 *177 MH कैंटीन — ${fdate(S.billsDate)}*\n${biller()} की तरफ़ से आज का हिसाब 🙏\n────────\n`+
+  return `🛒 *177 वेट कैंटीन — ${fdate(S.billsDate)}*\n${biller()} की तरफ़ से आज का हिसाब 🙏\n────────\n`+
   `बिक्री: *${rs(d.tot)}* (${d.n} बिल)\nनकद ${rs(d.cash)} · UPI ${rs(d.upi)} · उधार ${rs(d.ud)}\n`+(d.nInst?`संस्था: ${rs(d.inst)}\n`:"")+(d.kh?`खर्चा: ${rs(d.kh)}\n`:"")+(d.buy||d.mh?`माल आया: ${rs(r2(d.buy+d.mh))}\n`:"");
 }
 SK.reportBtnHTML=function(){return `<div class="card2 nightcard"><div><b>📲 आज का पूरा हिसाब WhatsApp पर</b><span class="note">बिक्री, मुनाफ़ा, खरीद, रद्द बिल, कम स्टॉक, एक्सपायरी — एक मैसेज में</span></div>

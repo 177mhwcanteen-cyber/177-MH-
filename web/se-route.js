@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 📍 गाड़ी की लोकेशन व रूट, जगह की कमाई, 👥 ग्राहक रजिस्टर, 📤 बिल भेजना (WhatsApp/SMS),
+/* 177 वेट कैंटीन — 📍 गाड़ी की लोकेशन व रूट, जगह की कमाई, 👥 ग्राहक रजिस्टर, 📤 बिल भेजना (WhatsApp/SMS),
    ➕ नया सामान, 🅧 XYZ (अन्य पैसा)। मुख्य ऐप (index.html) के S, $, esc, rs, r2, fq, toast… इस्तेमाल करता है। */
 (function(){
 "use strict";
@@ -113,7 +113,7 @@ SR.fixLoc=async function(){
   try{
     if(s.gps===false){await BP().openLocationSettings();setTimeout(SR.tick,4000);return}
     const r=await BP().trackStart({name:biller()});apply(r);
-    if(!r.perm)toast("अनुमति नहीं मिली — फोन की सेटिंग → ऐप → 177 MH कैंटीन → अनुमतियाँ → लोकेशन → 'ऐप इस्तेमाल करते समय' और 'सटीक लोकेशन' चालू करें");
+    if(!r.perm)toast("अनुमति नहीं मिली — फोन की सेटिंग → ऐप → 177 वेट कैंटीन → अनुमतियाँ → लोकेशन → 'ऐप इस्तेमाल करते समय' और 'सटीक लोकेशन' चालू करें");
   }catch(e){}
   SR.banner();setTimeout(SR.tick,1500);
 };
@@ -195,7 +195,7 @@ SR.keepPhone=async function(b,ph,saved){
 };
 SR.smsText=function(b){
   const L=b.lines||[];const it=L.slice(0,6).map(l=>l.name+" "+fq(l.qty,l.unit).replace(" कि.ग्रा","kg")).join(", ");const ph=SF.orderPh();
-  return `177 MH कैंटीन\nबिल ${b.no} · ${fdate(b.date||today())}\n${it}${L.length>6?"…":""}\nकुल: Rs ${b.total}\nधन्यवाद! फिर पधारें${ph?"\nऑर्डर: "+SF.fmtPh(ph)+" (WhatsApp/कॉल)":""}`;
+  return `177 वेट कैंटीन\nबिल ${b.no} · ${fdate(b.date||today())}\n${it}${L.length>6?"…":""}\nकुल: Rs ${b.total}\nधन्यवाद! फिर पधारें${ph?"\nऑर्डर: "+SF.fmtPh(ph)+" (WhatsApp/कॉल)":""}`;
 };
 SR.sendSms=async function(b,ph){
   const t=SR.smsText(b);
@@ -658,7 +658,7 @@ SR.preciseFix=function(onProgress,maxMs){
     try{id=navigator.geolocation.watchPosition(p=>{const c=p.coords;if(!(c.accuracy>0))return;R_.push({lat:c.latitude,lng:c.longitude,acc:c.accuracy});
         const best=Math.min(...R_.map(r=>r.acc));if(onProgress)onProgress({acc:Math.round(best),n:R_.length,ms:Date.now()-t0});
         if((best<=10&&R_.length>=3)||(best<=20&&R_.length>=6))fin()},
-      e=>{if(e.code===1)fin("लोकेशन की अनुमति नहीं — फोन की सेटिंग → ऐप → 177 MH कैंटीन → लोकेशन → 'सटीक लोकेशन' चालू करें");else if(e.code===2)fin("फोन की लोकेशन (GPS) बंद है — चालू करें")},
+      e=>{if(e.code===1)fin("लोकेशन की अनुमति नहीं — फोन की सेटिंग → ऐप → 177 वेट कैंटीन → लोकेशन → 'सटीक लोकेशन' चालू करें");else if(e.code===2)fin("फोन की लोकेशन (GPS) बंद है — चालू करें")},
       {enableHighAccuracy:true,maximumAge:0,timeout:maxMs})}catch(e){fin("GPS नहीं मिला")}
   });
 };
@@ -910,7 +910,7 @@ SR.lockCheck=function(){
   if(!h||!ph)return;
   if(Date.now()-last<IDLE){markAct();return}
   let pin="",bad=0;const el=document.createElement("div");el.id="plock";el.className="plock";document.body.appendChild(el);
-  const draw=(err)=>{el.innerHTML=`<div class="pl-box"><div class="pl-logo">🛒</div><b>177 MH कैंटीन</b><span>नमस्ते ${esc(biller()||"")} 🙏 — अपना PIN डालें</span>
+  const draw=(err)=>{el.innerHTML=`<div class="pl-box"><div class="pl-logo">🛒</div><b>177 वेट कैंटीन</b><span>नमस्ते ${esc(biller()||"")} 🙏 — अपना PIN डालें</span>
     <div class="dots ${err?"bad":""}">${[0,1,2,3].map(i=>`<i class="${i<pin.length?"f":""}"></i>`).join("")}</div>${err?`<p class="pl-err">${esc(err)}</p>`:""}
     <div class="pl-keys">${["1","2","3","4","5","6","7","8","9","c","0","b"].map(k=>`<button data-pk="${k}">${k==="c"?"साफ़":k==="b"?"⌫":k}</button>`).join("")}</div>
     <button class="lnk" data-plout>दूसरा व्यक्ति? लॉग-आउट</button></div>`};
@@ -933,11 +933,11 @@ setInterval(()=>{if(!document.hidden)SR.lockCheck()},60000);
 SR.remindText=function(p,b){
   const L=(S.ledger||[]).filter(l=>l.partyId===p.id).sort((a,c)=>c.ts-a.ts).slice(0,6);
   const ph=window.SF?SF.orderPh():"";
-  return `🙏 नमस्ते ${p.name} जी,\n177 MH कैंटीन का आपका बाकी हिसाब: *₹${b}*\n━━━━━━━━━━━━\n${L.map(l=>`${fdate(l.date).slice(0,5)} · ${l.type==="udhar"?(l.opening?"पुराना बाकी":"बिल "+(l.billNo||"")):"जमा ✓"} · ₹${l.amt}`).join("\n")}\n━━━━━━━━━━━━\nUPI से भुगतान: ${upiId()}${ph?"\nसवाल हो तो कॉल/WhatsApp: "+SF.fmtPh(ph):""}\nधन्यवाद 🙏`;
+  return `🙏 नमस्ते ${p.name} जी,\n177 वेट कैंटीन का आपका बाकी हिसाब: *₹${b}*\n━━━━━━━━━━━━\n${L.map(l=>`${fdate(l.date).slice(0,5)} · ${l.type==="udhar"?(l.opening?"पुराना बाकी":"बिल "+(l.billNo||"")):"जमा ✓"} · ₹${l.amt}`).join("\n")}\n━━━━━━━━━━━━\nUPI से भुगतान: ${upiId()}${ph?"\nसवाल हो तो कॉल/WhatsApp: "+SF.fmtPh(ph):""}\nधन्यवाद 🙏`;
 };
 SR.jamaDone=function(p,amt,mode){
   const b=bal(p.id);if(!p.phone)return;
-  const t=`🙏 ${p.name} जी, 177 MH कैंटीन में आपका ₹${amt} ${mode==="upi"?"UPI":"नकद"} जमा हो गया। धन्यवाद!\nअब बाकी: *₹${b}*`;
+  const t=`🙏 ${p.name} जी, 177 वेट कैंटीन में आपका ₹${amt} ${mode==="upi"?"UPI":"नकद"} जमा हो गया। धन्यवाद!\nअब बाकी: *₹${b}*`;
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="जमा की रसीद"><div class="grab"></div>
   <div class="sh-head"><div><h3>✓ ${rs(amt)} जमा हुए</h3><span class="note">${esc(p.name)} · अब बाकी ${rs(b)}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
   <a class="big" style="display:block;text-align:center;text-decoration:none;background:#1f8a4c;color:#fff" target="_blank" rel="noopener" href="${waLink(t,p.phone)}" data-jrc>🟢 ग्राहक को रसीद भेजें</a></div></div>`;
@@ -1073,7 +1073,7 @@ SR.autoOldUdhar2=async function(db){
     try{renderPane()}catch(x){}
   }catch(e){SR._old2=0}
 };
-/* 📥 03-11 (विक्रम जी की राय के बाद): पुराने रजिस्टर पेज (26-09 से 04-10) + कॉपी की बची एंट्री; MH = 177 MH वेट कैंटीन;
+/* 📥 03-11 (विक्रम जी की राय के बाद): पुराने रजिस्टर पेज (26-09 से 04-10) + कॉपी की बची एंट्री; MH = 177 वेट कैंटीन;
    एडम कमांडर = वसूली नहीं (रकम छिपी, सिर्फ़ नोट); मनोज जी = मालिक के घर की सब्ज़ी (अलग खाता, रकम छिपी) */
 const OLD_UDHAR3=[];
 OLD_UDHAR3.forEach(g=>g.total=g.rows.reduce((a,r)=>a+r[1],0));
@@ -1229,7 +1229,7 @@ SR.applyInst=async function(db,P){
   }catch(e){}finally{SR._inst=0}
 };
 /* =============== 🏢 अपनी संस्थाएँ उधार में नहीं (03-11, विक्रम जी) =============== */
-const INST_K=[[/रसोई|rasoi|मारवाड़\s*रसोई/i,"रसोई","मारवाड़ रसोई (होटल)"],[/डोसा|dosa|रामविनायक/i,"डोसा","रामविनायक डोसा पॉइंट"],[/सब्ज़ी\s*एक्सप्रेस|सब्जी\s*एक्सप्रेस|sabzi|sabji/i,"सब्ज़ी","सब्ज़ी एक्सप्रेस"],[/mh\s*(wet\s*)?canteen|एमएच|177\s*mh|mh\s*(वेट\s*)?कैंटीन|^\s*mh\s*$/i,"MH","177 MH कैंटीन"]];
+const INST_K=[[/रसोई|rasoi|मारवाड़\s*रसोई/i,"रसोई","मारवाड़ रसोई (होटल)"],[/डोसा|dosa|रामविनायक/i,"डोसा","रामविनायक डोसा पॉइंट"],[/सब्ज़ी\s*एक्सप्रेस|सब्जी\s*एक्सप्रेस|sabzi|sabji/i,"सब्ज़ी","सब्ज़ी एक्सप्रेस"],[/mh\s*(wet\s*)?canteen|एमएच|177\s*mh|mh\s*(वेट\s*)?कैंटीन|^\s*mh\s*$/i,"MH","177 वेट कैंटीन"]];
 SR.instOf=function(name){const n=String(name||"");for(const [re,key,def] of INST_K)if(re.test(n)){const IN=typeof insts==="function"?insts():[];return IN.find(x=>x.includes(key))||def}return ""};
 const devId=()=>{try{let d=localStorage.getItem("se_dev");if(!d){d="d"+Math.random().toString(36).slice(2,9);localStorage.setItem("se_dev",d)}return d}catch(e){return "d?"}};
 const devTxt=()=>{const u=navigator.userAgent||"";const m=u.match(/Android[^;)]*;\s*([^;)]+)/);return (m?m[1]:/iPhone/.test(u)?"iPhone":/Windows/.test(u)?"Windows कंप्यूटर":"ब्राउज़र").trim().slice(0,40)};
@@ -1297,7 +1297,7 @@ SR.autoInst2=async function(db){
     const [ps,ls]=await Promise.all([db.collection("parties").get(),db.collection("ledger").get()]);
     const parties=ps.docs.map(d=>({id:d.id,...d.data()})),led=ls.docs.map(d=>({id:d.id,...d.data()}));
     const src="विक्रम जी का आदेश 03-11: अपनी संस्था उधार में नहीं — खरीद भाव पर चालान, उधार खाता हटाया";const out=[],conv=[],cache={};const t=today();
-    for(const p of parties){if(p.deleted)continue;const inst=p.id==="mh-canteen"?SR.instOf("177 MH canteen"):SR.instOf(p.name);if(!inst)continue;
+    for(const p of parties){if(p.deleted)continue;const inst=p.id==="mh-canteen"?SR.instOf("177 Wet Canteen"):SR.instOf(p.name);if(!inst)continue;
       for(const l of led.filter(l=>l.partyId===p.id&&l.type==="udhar"&&l.billNo&&l.date&&l.date<t)){
         try{const cf=cache[l.date]||(cache[l.date]=await SR.costForDay(db,l.date));const r=await SR.convToInst(db,l.date,l.billNo,inst,src,cf);if(r)conv.push(r)}catch(x){}}
       const sp=(S.parties||[]).find(x=>x.id===p.id)||p;await SR.delParty(sp,"अपनी संस्था — उधार नहीं",{movedTo:inst,autoBy:"inst2"});out.push({id:p.id,name:p.name,inst})}

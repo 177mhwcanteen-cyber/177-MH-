@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 💾 पहले बिल सेव, फिर 💰 भुगतान (सेटल); ✏️ सेव के बाद बिल बदलना (सिर्फ़ मात्रा/नया सामान, भाव पक्के) + बदलाव का पूरा हिसाब */
+/* 177 वेट कैंटीन — 💾 पहले बिल सेव, फिर 💰 भुगतान (सेटल); ✏️ सेव के बाद बिल बदलना (सिर्फ़ मात्रा/नया सामान, भाव पक्के) + बदलाव का पूरा हिसाब */
 (function(){
 "use strict";
 const SB=window.SB={};
@@ -331,7 +331,7 @@ const qtxt=l=>fq(l.qty,l.unit).replace(" कि.ग्रा"," kg");
 SB.challanHTML=function(b,o){
   o=o||{};const L=b.lines||[];const miss=L.filter(l=>l.noCost);
   return `<div class="paper pp-ch${o.anim?" pp-anim":""}">
-  <div class="pp-head"><div class="pp-logo">🛒</div><b>177 MH कैंटीन</b><small>माल चालान · आकाशवाणी रोड, बाड़मेर</small></div>
+  <div class="pp-head"><div class="pp-logo">🛒</div><b>177 वेट कैंटीन</b><small>माल चालान · बाड़मेर</small></div>
   <div class="pp-rule"></div>
   <div class="ch-to">🏢 ${esc(b.partyName||"संस्था")}</div>
   <div class="pp-meta"><span>चालान नं <b>${esc(b.no||"…")}</b></span><span>${fdate(b.date||today())} · ${ftime(b.ts||Date.now())}</span></div>
@@ -358,7 +358,7 @@ SB.editNoteHTML=function(b){
 const KINDS={chef:"हलवाई/रसोइया — सिर्फ़ मात्रा",manager:"मैनेजर — मात्रा, भाव, रकम",resale:"आगे बेचने वाले — खरीद, बिक्री भाव, मुनाफ़ा"};
 const DEF_PEOPLE=[
   [/मारवाड़|marwar/i,[{n:"गणेश भाई",role:"मुख्य हलवाई (शेफ)",ph:"",kind:"chef"},{n:"स्वरूप जी",role:"मैनेजर",ph:"9166753417",kind:"manager"}]],
-  [/177|\bMH\b|एमएच/i,[{n:"मनोज सुमालिया जी",role:"मैनेजर, 177 MH कैंटीन",ph:"8619845800",kind:"resale",place:"177 MH कैंटीन"}]],
+  [/177|\bMH\b|एमएच/i,[{n:"मनोज सुमालिया जी",role:"मैनेजर, 177 वेट कैंटीन",ph:"8619845800",kind:"resale",place:"177 वेट कैंटीन"}]],
   [/डोसा|dosa/i,[{n:"रामू जी",role:"डोसा पॉइंट",ph:"8528629338",kind:"manager"}]],
   [/भैरव|bhairav/i,[{n:"दिनेश जी",role:"मैनेजर, 15 भैरव कैंटीन",ph:"8209593527",kind:"resale",place:"भैरव बटालियन"}]]
 ];
@@ -369,7 +369,7 @@ SB.peopleFor=function(inst){
 };
 SB.instText=function(b,p){
   const L=b.lines||[],LN="━━━━━━━━━━━━━━";const kind=p?p.kind:"manager";
-  let t=`🙏 नमस्ते${p?" "+p.n:""},\n🛒 *177 MH कैंटीन* से *${b.partyName}* के लिए सामान भेजी गई है।\n🧾 चालान: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n🚚 माल लाए: ${b.byName||""}\n${LN}\n`;
+  let t=`🙏 नमस्ते${p?" "+p.n:""},\n🛒 *177 वेट कैंटीन* से *${b.partyName}* के लिए सामान भेजी गई है।\n🧾 चालान: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n🚚 माल लाए: ${b.byName||""}\n${LN}\n`;
   if(kind==="chef"){
     L.forEach((l,i)=>t+=`${i+1}. ${l.name} — *${qtxt(l)}*\n`);
     t+=`${LN}\nकुल ${L.length} सामान\n\n✅ कृपया तौलकर/गिनकर मिलान करें और *"मिल गई ✓"* लिखकर जवाब दें।\nकुछ कम, ज़्यादा या खराब हो तो अभी फोटो के साथ बताएँ।\n`;
@@ -378,13 +378,13 @@ SB.instText=function(b,p){
     L.forEach((l,i)=>{const s=saleOf(l),m=r2((s-num(l.rate))*num(l.qty));st+=num(l.qty)*s;pf+=m;
       t+=`${i+1}. ${l.name} — *${qtxt(l)}*\n    खरीद ₹${l.rate} → बेचना *₹${s}*${m>0?" · मुनाफ़ा ₹"+m:" ⚠ मुनाफ़ा नहीं"}\n`});
     st=r2(st);pf=r2(pf);
-    t+=`${LN}\n📦 माल की कीमत (खरीद भाव): *₹${b.total}*\n🏷️ 177 MH कैंटीन के भाव से पूरी बिक्री: *₹${st}*\n💚 *${p?p.n+", ":""}यह सब्ज़ी ${(p&&p.place)||b.partyName} में इन्हीं भाव पर पूरी बिक गई तो ₹${pf} का मुनाफ़ा होगा।*\n\n📌 बिक्री भाव वही रखें जो ऊपर लिखा है (177 MH कैंटीन का भाव) — न कम, न ज़्यादा।\n🌙 रोज़ शाम बिकी और बची सब्ज़ी की जानकारी भेजें।\n✅ माल मिलान करके *"मिल गई ✓"* लिखकर जवाब दें।\n`;
+    t+=`${LN}\n📦 माल की कीमत (खरीद भाव): *₹${b.total}*\n🏷️ 177 वेट कैंटीन के भाव से पूरी बिक्री: *₹${st}*\n💚 *${p?p.n+", ":""}यह सब्ज़ी ${(p&&p.place)||b.partyName} में इन्हीं भाव पर पूरी बिक गई तो ₹${pf} का मुनाफ़ा होगा।*\n\n📌 बिक्री भाव वही रखें जो ऊपर लिखा है (177 वेट कैंटीन का भाव) — न कम, न ज़्यादा।\n🌙 रोज़ शाम बिकी और बची सब्ज़ी की जानकारी भेजें।\n✅ माल मिलान करके *"मिल गई ✓"* लिखकर जवाब दें।\n`;
   }else{
     L.forEach((l,i)=>t+=`${i+1}. ${l.name}\n    ${qtxt(l)} × ₹${l.rate} = *₹${l.amt}*\n`);
     t+=`${LN}\n💰 *कुल: ₹${b.total}* (खरीद भाव पर)\n\n✅ कृपया मिलान करके *"मिल गई ✓"* लिखकर जवाब दें। कुछ फर्क हो तो अभी बताएँ।\n`;
   }
   if((b.edits||[]).length)t+=`✏️ यह चालान सेव के बाद ${b.edits.length} बार बदला गया।\n`;
-  return t+`— 177 MH कैंटीन 🙏`;
+  return t+`— 177 वेट कैंटीन 🙏`;
 };
 const sentKey=b=>"se_isent_"+b.no;
 const sentGet=b=>{try{return JSON.parse(localStorage.getItem(sentKey(b))||"{}")}catch(e){return {}}};

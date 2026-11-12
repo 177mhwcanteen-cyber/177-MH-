@@ -233,7 +233,7 @@ def flyer_html():
 <div class="st"><span class="n">3</span><div><span class="hi">घर पर डिलीवरी — नकद / UPI</span><small>Home delivery · Pay cash or UPI</small></div></div>
 <div class="st"><span class="n">✓</span><div><span class="hi">एक ऑर्डर — हर दुकान का अलग बिल</span><small>One order · Separate bill for each store</small></div></div>
 </div><div class="qr"><small>SCAN TO ORDER</small><div id="q"></div><span class="hi">स्कैन करके ऑर्डर करें</span></div></div>
-<div class="ad">📍 <span class="hi">आकाशवाणी रोड, बाड़मेर</span> · Akashvani Road, Barmer</div>
+<div class="ad">📍 <span class="hi">बाड़मेर</span> · Barmer</div>
 </div></div>
 <script>{QRJS}</script><script>new QRCode(document.getElementById("q"),{{text:{json.dumps(ORDER_URL)},width:340,height:340,correctLevel:QRCode.CorrectLevel.H}});</script>
 </body></html>"""
@@ -292,7 +292,7 @@ def check_flyer():
     if data != ORDER_URL:
         err.append("QR पढ़ा: " + repr(data))
     flat = re.sub(r"\s+", " ", subprocess.run(["pdftotext", os.path.join(OUT, "flyer.pdf"), "-"], capture_output=True, text=True).stdout)
-    for s in ["FREE HOME DELIVERY", "No delivery charge", "No minimum order", "Grocery & Daily Needs", "Sabji Express", "Marwar Rasoi", "Akashvani Road, Barmer"]:
+    for s in ["FREE HOME DELIVERY", "No delivery charge", "No minimum order", "Grocery & Daily Needs", "Sabji Express", "Marwar Rasoi", "Barmer"]:
         if s not in flat:
             err.append("नहीं मिला: " + s)
     if "177" in flat:

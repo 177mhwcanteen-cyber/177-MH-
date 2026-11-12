@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — नए काम (04-11-2026): खरीद सूची, भाव सलाह, समय-जगह, खराबी, हिसाब-लिंक, ऑर्डर, भाव-पोस्टर, बैकअप, महीने का A4, Vyapar फ़ाइल
+/* 177 वेट कैंटीन — नए काम (04-11-2026): खरीद सूची, भाव सलाह, समय-जगह, खराबी, हिसाब-लिंक, ऑर्डर, भाव-पोस्टर, बैकअप, महीने का A4, Vyapar फ़ाइल
    नियम: हर हिसाब तभी जब डिब्बा खोला जाए; पुराने दिन का जोड़ फ़ोन में याद (localStorage); कर्मचारी को बिक्री/मुनाफ़ा नहीं */
 (function(){
 const SX=window.SX={};
@@ -51,7 +51,7 @@ SX.mandiHTML=function(){if(!S.isOwner)return "";
     <div class="row2" style="margin-top:8px"><button class="big" data-sxmandiwa>📤 खरीद सूची WhatsApp पर</button><button class="big ghost" data-sxmandire>🔄 दोबारा</button></div>`})();
   return `<div class="card2 sxc"><div class="rr-h"><h3 style="margin:0">🛒 कल की खरीद सूची</h3><button class="lnk" data-sxo="mandi">${open.mandi?"बंद करें":"खोलें ›"}</button></div>${body}</div>`};
 SX.mandiText=function(){const M=SX.mandi;if(!M)return "";const L=M.rows.filter(r=>r.need>0&&!r.rare);
-  return `🛒 *कल की खरीद सूची* — ${fdate(dayAdd(M.date,1))}\n177 MH कैंटीन\n━━━━━━━━━━━━\n${L.map((r,i)=>`${i+1}. ${r.it.name} — ${fq(r.need,r.it.unit)}`).join("\n")}\n━━━━━━━━━━━━\n🙏 ताज़ा और अच्छा माल ही लें। बिल की फोटो ऐप में डालें।`};
+  return `🛒 *कल की खरीद सूची* — ${fdate(dayAdd(M.date,1))}\n177 वेट कैंटीन\n━━━━━━━━━━━━\n${L.map((r,i)=>`${i+1}. ${r.it.name} — ${fq(r.need,r.it.unit)}`).join("\n")}\n━━━━━━━━━━━━\n🙏 ताज़ा और अच्छा माल ही लें। बिल की फोटो ऐप में डालें।`};
 
 /* ======================= 2) भाव की सलाह ======================= */
 SX.priceRows=function(){const out=[];const P=SF.livePurch?SF.livePurch():[];
@@ -111,10 +111,10 @@ SX.hisabLink=async function(pid){const p=(S.parties||[]).find(x=>x.id===pid);if(
   let tok=p.pubToken;if(!tok){tok=rnd(16);try{if(!S.demo)await S.db.collection("parties").doc(pid).update({pubToken:tok})}catch(e){toast("लिंक नहीं बना (सर्वर नियम नए चिपकाएँ): "+(e.code||""));return}p.pubToken=tok}
   const E=(S.ledger||[]).filter(l=>l.partyId===pid).sort((a,b)=>a.ts-b.ts).slice(-200).map(l=>({d:l.date||"",t:l.type,a:num(l.amt),b:l.billNo||"",m:l.mode||"",o:l.opening?1:0}));
   const b=typeof balRaw==="function"?balRaw(pid):bal(pid);
-  const doc={type:"hisab",name:p.name||"",bal:r2(b),entries:E,upi:upiId(),payee:"177 MH Canteen",ts:Date.now(),by:biller()||""};
+  const doc={type:"hisab",name:p.name||"",bal:r2(b),entries:E,upi:upiId(),payee:"177 Wet Canteen",ts:Date.now(),by:biller()||""};
   try{if(!S.demo)await S.db.collection("pub").doc(tok).set(doc)}catch(e){toast("लिंक नहीं बना (सर्वर नियम नए चिपकाएँ): "+(e.code||""));return}
   const url=pubBase()+"h.html?t="+tok;
-  const txt=`🙏 नमस्ते ${p.name} जी,\n177 MH कैंटीन में आपका हिसाब: *₹${r2(b)} बाकी*\nपूरा तारीख-वार हिसाब और UPI से चुकाने का बटन इस लिंक पर 👇\n${url}\nधन्यवाद 🙏`;
+  const txt=`🙏 नमस्ते ${p.name} जी,\n177 वेट कैंटीन में आपका हिसाब: *₹${r2(b)} बाकी*\nपूरा तारीख-वार हिसाब और UPI से चुकाने का बटन इस लिंक पर 👇\n${url}\nधन्यवाद 🙏`;
   window.open(waLink(txt,p.phone||""),"_blank");SX._lastLink=url;return url};
 
 /* ======================= 5b) 📄 उधार का हिसाब PDF (तारीख-वार + UPI QR) ======================= */
@@ -129,11 +129,11 @@ SX.hisabPdf=async function(pid){const p=(S.parties||[]).find(x=>x.id===pid);if(!
     const R=L.map(l=>{const u=l.type==="udhar",a=num(l.amt);run=r2(run+(u?a:-a));return {d:l.date||"",t:u?(l.opening?"पुराना बाकी"+(l.note?" ("+String(l.note).slice(0,28)+")":""):"बिल "+(l.billNo||"")):"जमा — "+(l.mode==="upi"?"UPI":"नकद"),u:u?a:0,j:u?0:a,b:run}});
     const due=r2(typeof balRaw==="function"?balRaw(pid):bal(pid));
     const W=1240,H=1754,M=80,RH=46,F='"Baloo 2","Noto Sans Devanagari",sans-serif';
-    const qr=due>0?await qrCanvas(`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}&am=${due.toFixed(2)}&cu=INR&tn=${encodeURIComponent("177 MH Canteen hisab "+p.name)}`,320):null;
+    const qr=due>0?await qrCanvas(`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}&am=${due.toFixed(2)}&cu=INR&tn=${encodeURIComponent("177 Wet Canteen hisab "+p.name)}`,320):null;
     const pages=[];let i=0;
     while(i<R.length||!pages.length){const cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,W,H);
       const first=!pages.length;let y=M;
-      if(first){g.fillStyle="#7c2d12";g.fillRect(0,0,W,190);g.fillStyle="#fff";g.font=`800 60px ${F}`;g.fillText("🛒 177 MH कैंटीन",M,95);g.font=`500 30px ${F}`;g.fillText("किराना · फास्ट फूड · सब्ज़ी · आकाशवाणी रोड, बाड़मेर",M,145);
+      if(first){g.fillStyle="#7c2d12";g.fillRect(0,0,W,190);g.fillStyle="#fff";g.font=`800 60px ${F}`;g.fillText("🛒 177 वेट कैंटीन",M,95);g.font=`500 30px ${F}`;g.fillText("किराना · फास्ट फूड · सब्ज़ी · बाड़मेर",M,145);
         y=250;g.fillStyle="#111827";g.font=`800 44px ${F}`;g.fillText("उधार का हिसाब — "+p.name,M,y);y+=48;g.font=`500 28px ${F}`;g.fillStyle="#4b5563";
         g.fillText([p.qtr?"क्वार्टर "+p.qtr:"",p.phone?"मो. "+p.phone:"","तारीख "+fdate(today())].filter(Boolean).join("  ·  "),M,y);y+=40;
         g.fillStyle=due>0?"#fef2f2":"#f0fdf4";g.fillRect(M,y,W-2*M,110);g.fillStyle=due>0?"#b91c1c":"#15803d";g.font=`800 52px ${F}`;g.fillText((due>0?"कुल बाकी: ₹":"हिसाब साफ़ ✓  ₹")+due.toLocaleString("en-IN"),M+30,y+72);y+=150}
@@ -155,7 +155,7 @@ SX.hisabPdf=async function(pid){const p=(S.parties||[]).find(x=>x.id===pid);if(!
     const blob=doc.output("blob"),nm="Hisab_"+String(p.name).replace(/[^A-Za-z0-9ऀ-ॿ]+/g,"_").slice(0,30)+"_"+today();
     if(!S.demo&&S.db)S.db.collection("parties").doc(pid).update({remindTs:Date.now()}).catch(()=>{});
     SX._lastPdf={pages:pages.length,size:blob.size,rows:R.length};
-    await SX.shareBlob(blob,nm,"pdf","application/pdf",`🙏 नमस्ते ${p.name} जी, 177 MH कैंटीन का आपका हिसाब: *₹${due} बाकी*। पूरा तारीख-वार हिसाब PDF में है, नीचे QR से UPI पर चुका सकते हैं।`);
+    await SX.shareBlob(blob,nm,"pdf","application/pdf",`🙏 नमस्ते ${p.name} जी, 177 वेट कैंटीन का आपका हिसाब: *₹${due} बाकी*। पूरा तारीख-वार हिसाब PDF में है, नीचे QR से UPI पर चुका सकते हैं।`);
   }catch(e){toast("PDF नहीं बना: "+(e.message||e))}};
 /* ======================= 7) पहले से ऑर्डर ======================= */
 SX.orders=[];SX._oUn=null;
@@ -174,7 +174,7 @@ SX.ordersSheet=function(){const L=SX.orders;$("#sheet").innerHTML=`<div class="s
   <div class="sh-head"><div><h3>📥 ग्राहकों के ऑर्डर (${L.length})</h3><span class="note">ऑर्डर-लिंक: ${esc(pubBase()+"order/")}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
   ${L.length?L.map(o=>`<div class="card2 sx-o"><div class="rr-h"><b>${esc(o.name||"ग्राहक")} · ${esc(o.phone||"")}</b><small class="note">${ftime(o.ts)}${o.status==="billing"?" · 🧾 बिल बन रहा":""}</small></div>
     ${o.addr?`<p class="note" style="margin:2px 0">📍 ${esc(o.addr)}</p>`:""}<p style="margin:4px 0">${(o.items||[]).map(x=>esc(x.n)+" "+fq(num(x.q),x.u||"kg")).join(", ")}</p>${o.note?`<p class="note" style="margin:0">📝 ${esc(o.note)}</p>`:""}
-    <div class="row2" style="margin-top:6px"><button class="big" data-sxobill="${esc(o.id)}">🧾 बिल बनाएँ</button><a class="big ghost" target="_blank" rel="noopener" href="${waLink(`🙏 नमस्ते ${o.name||""} जी, आपका ऑर्डर मिल गया — 177 MH कैंटीन से आपका सामान जल्द पहुँचेगी 🚐🥬`,o.phone||"")}">✓ WhatsApp पुष्टि</a></div>
+    <div class="row2" style="margin-top:6px"><button class="big" data-sxobill="${esc(o.id)}">🧾 बिल बनाएँ</button><a class="big ghost" target="_blank" rel="noopener" href="${waLink(`🙏 नमस्ते ${o.name||""} जी, आपका ऑर्डर मिल गया — 177 वेट कैंटीन से आपका सामान जल्द पहुँचेगी 🚐🥬`,o.phone||"")}">✓ WhatsApp पुष्टि</a></div>
     <div class="row2" style="margin-top:6px"><button class="big ghost" data-sxodone="${esc(o.id)}">✓ पूरा हो गया</button><button class="big ghost" data-sxono="${esc(o.id)}" style="color:var(--chili)">✕ रद्द</button></div></div>`).join(""):'<div class="empty">अभी कोई ऑर्डर नहीं</div>'}
   <button class="big ghost" data-sxolink style="margin-top:6px">🔗 ऑर्डर-लिंक ग्राहकों को भेजें</button></div></div>`};
 SX.orderBill=async function(id){const o=SX.orders.find(x=>x.id===id);if(!o)return;closeSheet();S.tab="bill";showTab();
@@ -197,7 +197,7 @@ SX.poster=async function(){toast("🖼️ भाव-पोस्टर बन �
   const L=S.items.filter(i=>i.active!==false&&!i.virtual&&!i.pending&&num(i.sale)>0&&i.id!=="xyz"&&!i.track).sort((a,b)=>(+a.order||0)-(+b.order||0)).slice(0,24);
   const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,"#0d1a33");g.addColorStop(1,"#1b3566");x.fillStyle=g;x.fillRect(0,0,W,H);
-  x.fillStyle="#fff";x.font='800 64px "Baloo 2",sans-serif';x.textAlign="center";x.fillText("🛒 177 MH कैंटीन",W/2,92);
+  x.fillStyle="#fff";x.font='800 64px "Baloo 2",sans-serif';x.textAlign="center";x.fillText("🛒 177 वेट कैंटीन",W/2,92);
   x.font='700 34px "Mukta",sans-serif';x.fillStyle="#ffb067";x.fillText("आज के ताज़ा भाव · "+fdate(today()),W/2,142);
   const cols=3,rowsN=Math.ceil(L.length/cols),top=180,bot=1160,cw=(W-80)/cols,ch=Math.min(150,(bot-top)/Math.max(1,rowsN));
   const imgs=await Promise.all(L.map(i=>loadImg(SE.photoSrc(i))));
@@ -214,9 +214,9 @@ SX.poster=async function(){toast("🖼️ भाव-पोस्टर बन �
   const url=pubBase()+"order/";let qr=null;try{if(window.QRCode){const d=document.createElement("div");new QRCode(d,{text:url,width:180,height:180,correctLevel:QRCode.CorrectLevel.M});await new Promise(r=>setTimeout(r,60));qr=d.querySelector("canvas")||await loadImg((d.querySelector("img")||{}).src)}}catch(e){}
   x.fillStyle="#fff";x.fillRect(40,1175,200,200-30);if(qr)x.drawImage(qr,50,1180,160,160);
   x.textAlign="left";x.fillStyle="#fff";x.font='800 40px "Baloo 2",sans-serif';x.fillText("📱 घर बैठे ऑर्डर करें — QR स्कैन करें",270,1235);
-  x.font='600 28px "Mukta",sans-serif';x.fillStyle="#cfe0ff";x.fillText("UPI / नकद · आकाशवाणी रोड, बाड़मेर · सामान आपकी गली में 🚐",270,1285);
+  x.font='600 28px "Mukta",sans-serif';x.fillStyle="#cfe0ff";x.fillText("UPI / नकद · बाड़मेर · सामान आपकी गली में 🚐",270,1285);
   x.fillStyle="#ffb067";x.fillText(url.replace(/^https?:\/\//,""),270,1325);
-  const blob=await new Promise(r=>c.toBlob(r,"image/png"));await SX.shareBlob(blob,"MH177Canteen_Bhav_"+today(),"png","image/png","🛒 177 MH कैंटीन — आज के ताज़ा भाव 👇 घर बैठे ऑर्डर: "+url)};
+  const blob=await new Promise(r=>c.toBlob(r,"image/png"));await SX.shareBlob(blob,"MH177Canteen_Bhav_"+today(),"png","image/png","🛒 177 वेट कैंटीन — आज के ताज़ा भाव 👇 घर बैठे ऑर्डर: "+url)};
 
 /* ---------- फ़ाइल शेयर (APK में सीधे WhatsApp/Drive; ब्राउज़र में शेयर या डाउनलोड) ---------- */
 SX.shareBlob=async function(blob,name,ext,mime,text){
@@ -234,13 +234,13 @@ SX.autoBackup=async function(){if(!S.isOwner||S.demo||!S.db)return;const y=dayAd
     const doc=clean({date:y,ts:Date.now(),bills:bills.docs.map(d=>d.data()),kharch:kh.docs.map(d=>({id:d.id,...d.data()})),stock:st.exists?st.data():null,close:cl.exists?cl.data():null,purchases:pu.docs.map(d=>({id:d.id,...d.data()})),ledger:(S.ledger||[]).filter(l=>l.date===y)});
     let js=JSON.stringify(doc);if(js.length>900000){doc.bills=doc.bills.map(b=>({...b,edits:undefined}));js=JSON.stringify(doc)}
     if(js.length<1000000)await ref.set(JSON.parse(js));LS.set("sx_bk",y)}catch(e){}};
-SX.backupFile=async function(){if(!S.isOwner)return;toast("📦 बैकअप फ़ाइल बन रही है… (30 दिन)");const out={app:"177 MH कैंटीन",made:new Date().toISOString(),days:{}};
+SX.backupFile=async function(){if(!S.isOwner)return;toast("📦 बैकअप फ़ाइल बन रही है… (30 दिन)");const out={app:"177 वेट कैंटीन",made:new Date().toISOString(),days:{}};
   try{const g=async c=>(await S.db.collection(c).get()).docs.map(d=>({id:d.id,...d.data()}));
     [out.items,out.parties,out.ledger,out.suppliers,out.supPay]=await Promise.all(["items","parties","ledger","suppliers","supPay"].map(g));
     out.purchases=(await S.db.collection("purchases").where("date",">=",dayAdd(today(),-30)).get()).docs.map(d=>({id:d.id,...d.data()}));
     for(let k=0;k<30;k++){const d=dayAdd(today(),-k);const b=(await S.db.collection("days/"+d+"/bills").get()).docs.map(x=>x.data());const st=await S.db.doc("days/"+d+"/meta/stock").get();if(b.length||st.exists)out.days[d]={bills:b,stock:st.exists?st.data():null}}
   }catch(e){toast("बैकअप अधूरा: "+(e.code||e.message||""))}
-  const blob=new Blob([JSON.stringify(clean(out))],{type:"application/json"});await SX.shareBlob(blob,"MH177Canteen_Backup_"+today(),"json","application/json","177 MH कैंटीन का बैकअप "+fdate(today())+" — इसे Google Drive में रखें");LS.set("sx_bkf",Date.now());try{renderReport()}catch(e){}};
+  const blob=new Blob([JSON.stringify(clean(out))],{type:"application/json"});await SX.shareBlob(blob,"MH177Canteen_Backup_"+today(),"json","application/json","177 वेट कैंटीन का बैकअप "+fdate(today())+" — इसे Google Drive में रखें");LS.set("sx_bkf",Date.now());try{renderReport()}catch(e){}};
 
 /* ======================= 15) महीने का हिसाब A4 ======================= */
 SX.monthA4=async function(ym){if(!S.isOwner)return;toast("📄 "+ym+" का हिसाब बन रहा है…");
@@ -270,11 +270,11 @@ const csv=rows=>"﻿"+rows.map(r=>r.map(v=>{const s=String(v??"");return /[",\n]
 SX.vyapar=async function(from,to,kind){if(!S.isOwner)return;
   if(kind==="sale"){const B=(await SF.fetchRange(from,to)).filter(b=>!b.cancelled).sort((a,b)=>a.ts-b.ts);const R=[["Date","Invoice No","Party Name","Phone","Item Name","Quantity","Unit","Price/Unit","Amount","Payment Type","Total"]];
     B.forEach(b=>{const pt=b.mode==="inst"?"संस्था":b.payMode==="upi"?"UPI":b.payMode==="cash"?"Cash":b.payMode==="split"?"Cash+Credit":"Credit";(b.lines||[]).forEach(l=>R.push([fdate(b.date),b.no,b.partyName||"VIP ग्राहक",b.custPhone||"",l.name,num(l.qty),UNITS[l.unit]||l.unit,num(l.rate),num(l.amt),pt,num(b.total)]))});
-    await SX.shareBlob(new Blob([csv(R)],{type:"text/csv"}),"MH177Canteen_Bikri_"+from+"_"+to,"csv","text/csv","177 MH कैंटीन बिक्री "+fdate(from)+" – "+fdate(to));return}
+    await SX.shareBlob(new Blob([csv(R)],{type:"text/csv"}),"MH177Canteen_Bikri_"+from+"_"+to,"csv","text/csv","177 वेट कैंटीन बिक्री "+fdate(from)+" – "+fdate(to));return}
   let P=[];try{P=(await S.db.collection("purchases").where("date",">=",from).get()).docs.map(d=>({id:d.id,...d.data()})).filter(p=>!p.cancelled&&p.date<=to).sort((a,b)=>a.ts-b.ts)}catch(e){}
   const R=[["Date","Bill No","Party Name","Phone","Item Name","Quantity","Unit","Price/Unit","Amount","Payment Type","Total"]];
   P.forEach((p,i)=>(p.lines||[]).forEach(l=>R.push([fdate(p.date),p.no||("ख-"+p.date.slice(8)+"/"+p.date.slice(5,7)+"-"+(i+1)),p.supName||"",p.supPhone||"",l.name,num(l.qty),UNITS[l.unit]||l.unit||"",num(l.rate),num(l.amt),p.pay||"",num(p.total)])));
-  await SX.shareBlob(new Blob([csv(R)],{type:"text/csv"}),"MH177Canteen_Kharid_"+from+"_"+to,"csv","text/csv","177 MH कैंटीन खरीद "+fdate(from)+" – "+fdate(to))};
+  await SX.shareBlob(new Blob([csv(R)],{type:"text/csv"}),"MH177Canteen_Kharid_"+from+"_"+to,"csv","text/csv","177 वेट कैंटीन खरीद "+fdate(from)+" – "+fdate(to))};
 
 /* ======================= रिपोर्ट: मालिक के औज़ार ======================= */
 SX.vy={from:today().slice(0,8)+"01",to:today()};
@@ -303,7 +303,7 @@ document.addEventListener("click",async e=>{const t=e.target;
   const ob=t.closest("[data-sxobill]");if(ob){SX.orderBill(ob.dataset.sxobill);return}
   const od=t.closest("[data-sxodone]");if(od){SX.orderSet(od.dataset.sxodone,"done");closeSheet();return}
   const on=t.closest("[data-sxono]");if(on){if(!on.dataset.sure){on.dataset.sure="1";on.textContent="पक्का रद्द?";return}SX.orderSet(on.dataset.sxono,"cancel");closeSheet();return}
-  if(t.closest("[data-sxolink]")){window.open(waLink("🛒 177 MH कैंटीन — अब घर बैठे ऑर्डर करें! सामान चुनें, भेजें, सामान तैयार मिलेगा 🛒\n"+pubBase()+"order/",""),"_blank");return}
+  if(t.closest("[data-sxolink]")){window.open(waLink("🛒 177 वेट कैंटीन — अब घर बैठे ऑर्डर करें! सामान चुनें, भेजें, सामान तैयार मिलेगा 🛒\n"+pubBase()+"order/",""),"_blank");return}
   if(t.closest("[data-sxposter]")){SX.poster();return}
   if(t.closest("[data-sxbk]")){SX.backupFile();return}
   const mo=t.closest("[data-sxmonth]");if(mo){SX.monthA4(mo.dataset.sxmonth);return}

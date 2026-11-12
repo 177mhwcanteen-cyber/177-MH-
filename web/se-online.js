@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 🛵 घर बैठे ऑर्डर: दुकान वाला हिस्सा (se-online.js, window.SON) · नियम: docs/ऑनलाइन-दुकान-प्रॉम्प्ट.txt
+/* 177 वेट कैंटीन — 🛵 घर बैठे ऑर्डर: दुकान वाला हिस्सा (se-online.js, window.SON) · नियम: docs/ऑनलाइन-दुकान-प्रॉम्प्ट.txt
    • pub/rates: सार्वजनिक भाव-सूची — 🔒 तम्बाकू कभी नहीं, 🌐 छिपाए सामान नहीं, स्टॉक है/नहीं, MRP, श्रेणी, सेटिंग
    • ऑर्डर: तुरंत बीप, स्वीकार होने तक हर 45 सेकंड याद · स्वीकार → पैक → रास्ते में → पहुँचा · ग्राहक के फोन पर ट्रैकिंग (pub/ot_<id>)
    • ⚙️ 🛵 ऑनलाइन दुकान: चालू/बंद, सिर्फ़ स्टॉक वाले, कम से कम ऑर्डर, डिलीवरी शुल्क, मुफ़्त सीमा, समय, लिंक + QR */
@@ -45,15 +45,15 @@ const ACTIVE=["new","billing","acc","pack","out"];
 SON.parse=function(o){const n=String(o.note||"");if(!n.includes("¦"))return {note:n};const [meta,rest]=n.split("¦");const p=meta.split("|");const r={note:rest||""};
   p.forEach(x=>{if(x==="🛵")r.mode="d";else if(x==="🏪")r.mode="p";else if(x==="💵")r.pay="नकद";else if(x==="📱")r.pay="UPI";else if(x.startsWith("⏰"))r.when=x.slice(1).trim();else if(x.startsWith("📍"))r.ll=x.slice(2);else if(x.startsWith("☎️"))r.alt=x.slice(2).replace(/\D/g,"");else if(x.startsWith("₹"))r.total=num(x.slice(1));else if(x.startsWith("🎟")){const m=x.slice(2).split("-₹");r.cpn=m[0];r.cpnOff=num(m[1])}else if(x.startsWith("🏬"))r.store=x.slice(2).trim();else if(x.startsWith("🧺"))r.grp=x.slice(2).trim()});return r};
 /* 🛍️ तीन दुकानें एक पेज पर (11-11-2026): 🛒 177 MH (यही) · 🥬 सब्ज़ी एक्सप्रेस · 🍛 मारवाड़ रसोई — हर दुकान का अलग ऑर्डर/बिल */
-SON.STORES={mh:{i:"🛒",n:"177 MH कैंटीन"},sabji:{i:"🥬",n:"सब्ज़ी एक्सप्रेस",ph:""},rasoi:{i:"🍛",n:"मारवाड़ रसोई",ph:"8696283600"}};
+SON.STORES={mh:{i:"🛒",n:"177 वेट कैंटीन"},sabji:{i:"🥬",n:"सब्ज़ी एक्सप्रेस",ph:""},rasoi:{i:"🍛",n:"मारवाड़ रसोई",ph:"8696283600"}};
 SON.storeOf=o=>{const s=String(o.src||"");return s.startsWith("web2:")?s.slice(5):(SON.parse(o).store||"mh")};
 SON.storePh=k=>{const c=((SON.cfg().stores||{})[k])||{};return String(c.ph||(SON.STORES[k]||{}).ph||"").replace(/\D/g,"").slice(-10)};
 SON.storeText=function(o){const p=SON.parse(o),k=SON.storeOf(o),st=SON.STORES[k]||{n:k};const items=(o.items||[]).map((x,i)=>`${i+1}. ${SE.capNm(x.n)} — *${fq(num(x.q),x.u||"pc")}*${num(x.s)?" × ₹"+num(x.s):""}`).join("\n");
   const est=p.total||(o.items||[]).reduce((a,x)=>a+num(x.q)*num(x.s),0);
-  return `🛵 *नया ऑर्डर — ${st.n}*\n👤 ${o.name||"ग्राहक"} · 📞 ${o.phone||""}${p.alt?" / "+p.alt:""}\n${p.mode==="p"?"🏪 दुकान से लेंगे":"📍 "+(o.addr||"")}${p.ll?"\n🗺️ https://maps.google.com/?q="+p.ll:""}\n⏰ ${p.when||"अभी"} · ${p.pay==="UPI"?"📱 UPI":"💵 नकद"}\n\n${items}\n\n💰 लगभग ₹${Math.round(est)}${p.note?"\n📝 "+p.note:""}\n— 177 MH ऑनलाइन (${new Date(num(o.ts)||Date.now()).toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"})})`};
+  return `🛵 *नया ऑर्डर — ${st.n}*\n👤 ${o.name||"ग्राहक"} · 📞 ${o.phone||""}${p.alt?" / "+p.alt:""}\n${p.mode==="p"?"🏪 दुकान से लेंगे":"📍 "+(o.addr||"")}${p.ll?"\n🗺️ https://maps.google.com/?q="+p.ll:""}\n⏰ ${p.when||"अभी"} · ${p.pay==="UPI"?"📱 UPI":"💵 नकद"}\n\n${items}\n\n💰 लगभग ₹${Math.round(est)}${p.note?"\n📝 "+p.note:""}\n— 177 वेट कैंटीन ऑनलाइन (${new Date(num(o.ts)||Date.now()).toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"})})`};
 SON.billText=function(o){const p=SON.parse(o),k=SON.storeOf(o),st=SON.STORES[k]||{n:k};const L=(o.items||[]).map(x=>`${SE.capNm(x.n)} ${fq(num(x.q),x.u||"pc")} = ₹${Math.round(num(x.q)*num(x.s)*100)/100}`).join("\n");
   const sub=(o.items||[]).reduce((a,x)=>a+num(x.q)*num(x.s),0),tot=p.total||sub;
-  return `🧾 *${st.n}* — बिल\n${o.name||""} जी\n\n${L}\n\nसामान ₹${Math.round(sub*100)/100}${tot>sub+0.5?"\nडिलीवरी ₹"+Math.round(tot-sub):""}\n*कुल ₹${Math.round(tot)}*\n🙏 धन्यवाद — 177 MH ऑनलाइन`};
+  return `🧾 *${st.n}* — बिल\n${o.name||""} जी\n\n${L}\n\nसामान ₹${Math.round(sub*100)/100}${tot>sub+0.5?"\nडिलीवरी ₹"+Math.round(tot-sub):""}\n*कुल ₹${Math.round(tot)}*\n🙏 धन्यवाद — 177 वेट कैंटीन ऑनलाइन`};
 const ST={new:["🆕","नया"],billing:["🧾","बिल बन रहा"],acc:["✓","स्वीकार"],pack:["📦","पैक"],out:["🛵","रास्ते में"],done:["✅","पहुँचा"],cancel:["✕","रद्द"]};
 SON.accts=[];
 SON.watch=function(){if(S.demo||!S.db||SON._un)return;
@@ -70,7 +70,7 @@ SON.acctHTML=function(max){const A=SON.accts||[];if(!A.length)return `<p class="
   const today0=new Date();today0.setHours(0,0,0,0);const nT=A.filter(o=>num(o.ts)>=today0.getTime()).length;
   return `<p class="note" style="margin:0 0 4px">कुल ${A.length} · आज ${nT} — इनसे फोन करके पूछ सकते हैं, ऑर्डर में कोई दिक्कत तो नहीं</p><div class="son-acl">${A.slice(0,max||30).map(o=>{const old=SON.old(o);
     return `<div class="son-ac"><div><b>${esc(o.name||"—")}</b><span>${old?`📱 नंबर बदला: <s>${esc(old)}</s> → `:"👤 नया खाता · "}${esc(o.phone)} · ${ago(o.ts)}</span></div>
-    <a href="tel:+91${esc(o.phone)}" aria-label="कॉल">📞</a><a target="_blank" rel="noopener" href="${wa("🙏 नमस्ते "+(o.name||"")+" जी, 177 MH Canteen में आपका स्वागत है! ऑर्डर में कोई मदद चाहिए तो बताइए।",o.phone)}" aria-label="WhatsApp">💬</a></div>`}).join("")}</div>`};
+    <a href="tel:+91${esc(o.phone)}" aria-label="कॉल">📞</a><a target="_blank" rel="noopener" href="${wa("🙏 नमस्ते "+(o.name||"")+" जी, 177 Wet Canteen में आपका स्वागत है! ऑर्डर में कोई मदद चाहिए तो बताइए।",o.phone)}" aria-label="WhatsApp">💬</a></div>`}).join("")}</div>`};
 if(window.SX){SX.watchOrders=SON.watch;SX.ordersSheet=()=>SON.sheet()}
 /* कदम: Firestore ऑर्डर + ग्राहक की ट्रैकिंग (pub/ot_<id>, सिर्फ़ स्थिति — कोई निजी जानकारी नहीं) */
 SON.step=async function(id,st,extra){extra=extra||{};const o=(SX.orders||[]).find(x=>x.id===id)||{};const rom=t=>window.SRc&&SRc.roman?SRc.roman(String(t||"")):String(t||"");const by=rom(String(biller()||"").split(/\s+/)[0]);/* ग्राहक-पेज अंग्रेज़ी में — नाम रोमन (मनोहर → Manohar) */
@@ -101,7 +101,7 @@ SON.sheet=function(){if(window.SRG)SRG.silence();const L=SX.orders||[];const lin
       :st==="pack"?(p.mode==="p"?`<button data-sonst="done" data-id="${esc(o.id)}">✅ ग्राहक ले गया</button>`:`<button data-sonout="${esc(o.id)}">🛵 भेज दिया</button>`)
       :st==="out"?`<button data-sonst="done" data-id="${esc(o.id)}">✅ पहुँच गया</button>`:""}
       ${sk!=="mh"?`<a class="g" target="_blank" rel="noopener" href="${wa(SON.storeText(o),sph)}">📲 ${esc(so.n.split(" ")[0])} को भेजें</a><a class="g" target="_blank" rel="noopener" href="${wa(SON.billText(o),o.phone)}">🧾 बिल</a>`:st!=="billing"?`<button class="g" data-sxobill="${esc(o.id)}">🧾 बिल</button>`:""}
-      <a class="g" href="tel:+91${esc(o.phone||"")}">📞</a><a class="g" target="_blank" rel="noopener" href="${wa(`🙏 नमस्ते ${o.name||""} जी, 177 MH कैंटीन — आपका ऑर्डर ${st==="new"?"मिल गया":"तैयार हो रहा"} है।${eta?" लगभग "+eta+" तक।":""}`,o.phone)}">💬</a>
+      <a class="g" href="tel:+91${esc(o.phone||"")}">📞</a><a class="g" target="_blank" rel="noopener" href="${wa(`🙏 नमस्ते ${o.name||""} जी, 177 वेट कैंटीन — आपका ऑर्डर ${st==="new"?"मिल गया":"तैयार हो रहा"} है।${eta?" लगभग "+eta+" तक।":""}`,o.phone)}">💬</a>
       <button class="g r" data-sonx="${esc(o.id)}">✕</button></div></div>`};
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px son-sheet" role="dialog" aria-label="ग्राहकों के ऑर्डर"><div class="grab"></div>
   <div class="sh-head"><div><h3>📥 घर बैठे ऑर्डर (${L.length})</h3><span class="note">नया ऑर्डर तुरंत स्वीकार करें — ग्राहक अपने फोन पर देख रहा है</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
@@ -144,7 +144,7 @@ SON.qrCanvas=async function(){const link=SON.link(),W=1240,H=1748,c=document.cre
   x.fillStyle="#fffdf5";x.fillRect(0,0,W,H);
   x.fillStyle="#f8cb46";x.fillRect(0,0,W,400);x.fillStyle="#0c831f";x.fillRect(0,400,W,16);
   try{const im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src="icon.png"});x.save();rr(W/2-70,40,140,140,30);x.clip();x.drawImage(im,W/2-70,40,140,140);x.restore()}catch(e){}
-  ctr("177 MH Canteen",262,F(800,92),"#1a1a1a");ctr("Military Hospital · Akashvani Road, Barmer",330,F(700,40),"#3b3b2f");ctr("मिलिट्री हॉस्पिटल कैंटीन",385,F(700,38),"#3b3b2f");
+  ctr("177 Wet Canteen",262,F(800,92),"#1a1a1a");ctr("Barmer",330,F(700,40),"#3b3b2f");ctr("वेट कैंटीन",385,F(700,38),"#3b3b2f");
   ctr("घर बैठे ऑर्डर करें",520,F(800,96),"#0a6b19");ctr("Scan · Order · Get it at your door 🛵",590,F(700,44),"#14181c");
   x.fillStyle="#fff";x.strokeStyle="#0c831f";x.lineWidth=10;rr(W/2-410,640,820,820,48);x.fill();x.stroke();
   let m=null;try{const q=new QRCode(document.createElement("div"),{text:link,width:64,height:64,correctLevel:QRCode.CorrectLevel?QRCode.CorrectLevel.H:2});m=q&&q._oQRCode}catch(e){}
@@ -162,7 +162,7 @@ SON.qrSheet=async function(){toast("📲 QR कार्ड बन रहा ह
     <p class="note">इसे छपवाकर हर घर/क्वार्टर पर लगाएँ — ग्राहक कैमरे से स्कैन करके सीधा ऑर्डर पेज खोलेगा। आकार A6 (पोस्टकार्ड) — A4 पर 4 भी छप सकते हैं।</p>
     <div class="row2" style="margin:0"><button class="big" data-sonqrsh="share">📤 WhatsApp / शेयर</button><button class="big ghost" data-sonqrsh="save">⬇️ फोटो सेव</button></div></div></div>`;
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")||e.target.closest(".x[data-close]"))closeSheet()}};
-SON.qrShare=async function(how){const c=SON._qr||await SON.qrCanvas(),name="MH177_Order_QR.png",txt="🛵 177 MH Canteen — घर बैठे ऑर्डर करें: "+SON.link();
+SON.qrShare=async function(how){const c=SON._qr||await SON.qrCanvas(),name="MH177_Order_QR.png",txt="🛵 177 Wet Canteen — घर बैठे ऑर्डर करें: "+SON.link();
   try{if(window.SENative&&SENative.isNative){await SENative.BtPrinter.shareBytes({name,data:c.toDataURL("image/png").split(",")[1],mime:"image/png"});return}
     const blob=await new Promise(r=>c.toBlob(r,"image/png")),f=new File([blob],name,{type:"image/png"});
     if(how==="share"&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:txt});return}
@@ -176,7 +176,7 @@ SON.loadMenus=async function(){const sc=((window.SE_CONFIG||{}).stores||{}).sabj
       SON.menus.sabji=it.map(v=>{const f=(v.mapValue||{}).fields||{},g=k=>{const x=f[k]||{};return x.stringValue??(x.integerValue!=null?+x.integerValue:x.doubleValue)};const pp=String(g("p")||"");return {id:"sx-"+g("id"),n:String(g("e")||g("n")||"").toUpperCase(),hi:g("e")?g("n"):"",s:+g("s")||0,u:g("u")||"kg",c:g("c")||"sabzi",p:pp?(/^https?:/.test(pp)?pp:sc.base+pp.replace(/^\.?\//,"")):""}}).filter(x=>x.s>0)}}}catch(e){SON.menus.sabjiErr=1}
   try{const r=await fetch("order/rasoi.json",{cache:"no-store"});if(r.ok)SON.menus.rasoi=await r.json()}catch(e){}
   SON.menus.ts=Date.now()};
-SON.menuSheet=async function(){const t=SON._mt||"mh",cfg=SON.cfg(),T=[["mh","🛒 177 MH"],["sabji","🥬 सब्ज़ी"],["rasoi","🍛 रसोई"],["rev","⭐ राय"]],HID=new Set((cfg.hide||{}).i||[]),RP=cfg.rp||{},RX=cfg.rx||[];
+SON.menuSheet=async function(){const t=SON._mt||"mh",cfg=SON.cfg(),T=[["mh","🛒 177 कैंटीन"],["sabji","🥬 सब्ज़ी"],["rasoi","🍛 रसोई"],["rev","⭐ राय"]],HID=new Set((cfg.hide||{}).i||[]),RP=cfg.rp||{},RX=cfg.rx||[];
   if(!SON.menus.ts||Date.now()-SON.menus.ts>120000){$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px"><div class="empty">⏳ मेन्यू ला रहे हैं…</div></div></div>`;await SON.loadMenus()}
   let L=[],head="",cats=[];
   if(t==="rev"){let RV=[];try{if(S.db&&!S.demo){const q=await S.db.collection("reviews").orderBy("ts","desc").limit(60).get();RV=q.docs.map(d=>d.data())}}catch(e){RV=null}

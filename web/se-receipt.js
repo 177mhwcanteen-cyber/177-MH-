@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 🧾 बिल की छपाई: थीम + हर चीज़ चालू/बंद (se-receipt.js)
+/* 177 वेट कैंटीन — 🧾 बिल की छपाई: थीम + हर चीज़ चालू/बंद (se-receipt.js)
    SE.receiptCanvas को बदलता है — प्रिंटर (58/80mm/4 इंच), PDF और WhatsApp तीनों में यही बिल।
    ⚙️ सेटिंग → 🧾 बिल का डिज़ाइन: दुकान का नाम/पता/टैगलाइन/GSTIN, 5 थीम, 24 चीज़ें चालू/बंद, अक्षर का साइज़, लाइव झलक।
    settings/main.rcpt — सब फोन पर एक जैसा। नियम: docs/बिल-छपाई-प्रॉम्प्ट.txt
@@ -17,7 +17,7 @@ const SHOW=[
   ["pay","भुगतान का तरीका"],["balance","खाते में बाकी"],["qr","UPI QR"],["stampPay","✅ PAID ठप्पा"],["stampBy","🧑 बिलर का ठप्पा (नाम+समय)"],
   ["points","🎁 ग्राहक के पॉइंट"],["delivery","📲 घर बैठे मँगाएँ डिब्बा"],["nutri","🥗 सेहत का हिसाब"],["note","💬 अपनी लाइन"],["barcode","🔢 बिल नंबर का बारकोड"],
   ["foot","🙏 धन्यवाद लाइन"],["biller","बिलर का नाम"]];
-const DEF={theme:"classic",size:"m",lang:"en",shop:"177 MH CANTEEN",tag:"Sweets · Snacks · Grocery · Daily Needs",addr:"Akashvani Road, Barmer",gst:"",note:"",foot:"🙏 Thank you! Visit again",
+const DEF={theme:"classic",size:"m",lang:"en",shop:"177 WET CANTEEN",tag:"Sweets · Snacks · Grocery · Daily Needs",addr:"Barmer",gst:"",note:"",foot:"🙏 Thank you! Visit again",
   show:{logo:1,tag:1,addr:1,phone:1,gst:0,custTag:1,billno:1,date:1,cust:1,sr:1,en:1,rate:1,count:1,saved:1,pay:1,balance:1,qr:1,stamps:1,stampPay:1,stampBy:1,delivery:1,points:1,nutri:0,note:0,barcode:1,foot:1,biller:1}};
 SRc.THEMES=THEMES;SRc.SHOW=SHOW;
 SRc.cfg=function(){let s={};try{s=(S.settings&&S.settings.rcpt)||{}}catch(e){}const sh={...DEF.show,...(s.show||{})};
@@ -37,7 +37,7 @@ const EN_R=[[/VIP ग्राहक/,"VIP CUSTOMER"],[/🧑‍🌾 बिलि
   [/खाते में कुल बाकी (₹[\d.,]+) — इसी QR से चुकाएँ/,"Balance due $1 — pay with this QR"],[/✓ भुगतान हो गया · अगली बार भी इसी QR से भुगतान करें/,"✓ Paid · Use this QR for future payments"],
   [/स्कैन करके भुगतान करें/,"Scan & pay"],[/नकद ₹/g,"Cash ₹"],[/उधार ₹/g,"Credit ₹"],[/खाते में ₹/g,"On account ₹"],
   [/(\d) ग्राम/g,"$1 g"],[/ कि\.ग्रा/g," kg"],[/ पीस/g," pc"],[/ पैकेट/g," pkt"],[/ प्लेट/g," plate"],[/ दर्जन/g," dozen"],[/ गड्डी/g," bundle"],
-  [/धन्यवाद! फिर पधारें/,"Thank you! Visit again"],[/किराना · मिठाई · फास्ट फूड/,"Grocery · Sweets · Fast Food"],[/आकाशवाणी रोड, बाड़मेर/,"Akashvani Road, Barmer"],[/177 MH कैंटीन/,"177 MH CANTEEN"]];
+  [/धन्यवाद! फिर पधारें/,"Thank you! Visit again"],[/किराना · मिठाई · फास्ट फूड/,"Grocery · Sweets · Fast Food"],[/बाड़मेर/,"Barmer"],[/177 वेट कैंटीन/,"177 WET CANTEEN"]];
 /* बची हुई हिंदी (ग्राहक/बिलर के नाम) → सरल रोमन: "मुकेश भाई" → "Mukesh Bhai" */
 const DV_C={"क":"k","ख":"kh","ग":"g","घ":"gh","ङ":"n","च":"ch","छ":"chh","ज":"j","झ":"jh","ञ":"n","ट":"t","ठ":"th","ड":"d","ढ":"dh","ण":"n","त":"t","थ":"th","द":"d","ध":"dh","न":"n",
   "प":"p","फ":"ph","ब":"b","भ":"bh","म":"m","य":"y","र":"r","ल":"l","व":"v","श":"sh","ष":"sh","स":"s","ह":"h","क़":"q","ख़":"kh","ग़":"g","ज़":"z","ड़":"d","ढ़":"rh","फ़":"f","ळ":"l"};
@@ -79,7 +79,7 @@ SRc.draw=function(b,o,widthPx,cfg){
   const rr=(a,bb,w,h,r)=>{x.beginPath();x.moveTo(a+r,bb);x.arcTo(a+w,bb,a+w,bb+h,r);x.arcTo(a+w,bb+h,a,bb+h,r);x.arcTo(a,bb+h,a,bb,r);x.arcTo(a,bb,a+w,bb,r);x.closePath()};
   const SEP=()=>th==="modern"||th==="compact"?LINE(th==="compact"?1:1.5):th==="premium"?DLINE():DASH();
   const inst=b.mode==="inst";
-  const shop=(sh.logo&&!inst?"🛒 ":"")+(cfg.shop||o.shop||"177 MH कैंटीन");
+  const shop=(sh.logo&&!inst?"🛒 ":"")+SE.nm177(cfg.shop||o.shop||"177 वेट कैंटीन");
   const tag=inst?(o.tag||""):(sh.tag?cfg.tag:"");
   /* ---------- ऊपर: दुकान ---------- */
   if(th==="modern"){const y0=y;const lines=[];font(fs(28),800,FB);const sL=wrap(x,shop,W-2*P-px(16));
@@ -87,10 +87,10 @@ SRc.draw=function(b,o,widthPx,cfg){
     sL.forEach(l=>{font(fs(28),800,FB);const tw=x.measureText(l).width;x.fillText(l,(W-tw)/2,y);y+=Math.round(fs(28)*1.25)});
     if(tag){font(fs(14),600);const tw=x.measureText(tag).width;x.fillText(tag,(W-tw)/2,y);y+=Math.round(fs(14)*1.35)}x.restore();y=y0+h+px(6);void lines}
   else if(th==="premium"){const y0=y;y+=px(10);T("✦ "+shop+" ✦",fs(27),"c",800,FB);if(tag)T(tag,fs(14),"c",600);
-    if(sh.addr&&cfg.addr)T(cfg.addr,fs(14),"c");if(sh.phone&&o.phone)T("📞 "+o.phone,fs(15),"c",700);if(sh.gst&&cfg.gst)T("GSTIN: "+cfg.gst,fs(13),"c",700);
+    if(sh.addr&&cfg.addr)T(SE.nm177(cfg.addr)||"Barmer",fs(14),"c");if(sh.phone&&o.phone)T("📞 "+o.phone,fs(15),"c",700);if(sh.gst&&cfg.gst)T("GSTIN: "+cfg.gst,fs(13),"c",700);
     y+=px(8);x.lineWidth=px(2.5);rr(P,y0,W-2*P,y-y0,px(12));x.stroke();x.lineWidth=px(1);rr(P+px(5),y0+px(5),W-2*P-px(10),y-y0-px(10),px(9));x.stroke();y+=px(8)}
   else{T(shop,fs(th==="compact"?24:30),"c",800,FB);if(tag)T(tag,fs(15),"c")}
-  if(th!=="premium"){if(sh.addr&&cfg.addr)T(cfg.addr,fs(th==="compact"?13:16),"c");if(sh.phone&&o.phone)T("📞 ऑर्डर: "+o.phone,fs(th==="compact"?13:16),"c");if(sh.gst&&cfg.gst)T("GSTIN: "+cfg.gst,fs(13),"c",700)}
+  if(th!=="premium"){if(sh.addr&&cfg.addr)T(SE.nm177(cfg.addr)||"Barmer",fs(th==="compact"?13:16),"c");if(sh.phone&&o.phone)T("📞 ऑर्डर: "+o.phone,fs(th==="compact"?13:16),"c");if(sh.gst&&cfg.gst)T("GSTIN: "+cfg.gst,fs(13),"c",700)}
   if(th==="classic"||th==="bigtotal")LINE();else if(th==="compact")DASH();
   /* ---------- ग्राहक टैग ---------- */
   if(sh.custTag&&o.custTag){const h=fs(34);x.fillStyle="#000";if(o.vip){x.fillRect(P,y,W-2*P,h);x.fillStyle="#fff"}else{x.lineWidth=Math.max(2,px(2));x.strokeRect(P,y,W-2*P,h)}
@@ -177,7 +177,7 @@ SE.receiptCanvasOld=OLD;
 /* ================= नमूना बिल (झलक के लिए) ================= */
 SRc.sample=function(){const lines=[{name:"Shahi Kaju Katli",qty:.5,unit:"kg",rate:840,amt:420},{name:"Mogar Kachori",qty:4,unit:"pc",rate:15,amt:60},{name:"Fortune Mustard Oil 1L",qty:1,unit:"pc",rate:189,amt:189},{name:"Parle-G 70g",qty:3,unit:"pc",rate:10,amt:30}];
   const b={no:"MH-0611-27",date:today(),ts:Date.now(),lines,sub:699,total:699,mode:"cash",pay:{upi:699},byName:"मुकेश भाई",partyName:"",custPhone:""};
-  const o={shop:"177 MH कैंटीन",phone:(window.SF&&SF.fmtPh&&SF.orderPh)?SF.fmtPh(SF.orderPh()):"98xxxxxx10",date:fdate(today())+"  "+(typeof ftime==="function"?ftime(Date.now()):""),fq:typeof fq==="function"?fq:(q,u)=>q+" "+u,
+  const o={shop:"177 वेट कैंटीन",phone:(window.SF&&SF.fmtPh&&SF.orderPh)?SF.fmtPh(SF.orderPh()):"98xxxxxx10",date:fdate(today())+"  "+(typeof ftime==="function"?ftime(Date.now()):""),fq:typeof fq==="function"?fq:(q,u)=>q+" "+u,
     custTag:"⭐ VIP ग्राहक",vip:true,saved:46,points:{left:37},paid:true,upi:"",qr:null,stampL:{l1:"✅ PAID",l2:"by UPI"},stampR:{l1:"🧑‍🌾 बिलिंग",l2:"मुकेश भाई",l3:"05:30 PM"},balance:null};
   try{if(window.SF&&SF.qrCanvas)o.qr=SF.qrCanvas(699,b.no);o.upi=typeof upiId==="function"?upiId():""}catch(e){}
   return {b,o}};

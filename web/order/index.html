@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>177 MH Canteen · Order Online</title>
-<meta name="description" content="177 MH (Military Hospital) Canteen, Akashvani Road, Barmer — order sweets, snacks, groceries and daily needs online. Shop prices, quick home delivery, pay cash or UPI.">
-<meta property="og:type" content="website"><meta property="og:site_name" content="177 MH Canteen">
-<meta property="og:title" content="177 MH Canteen — Order Online 🛵">
-<meta property="og:description" content="Sweets, snacks, groceries & daily needs — shop prices, quick home delivery. Akashvani Road, Barmer.">
+<title>177 Wet Canteen · Order Online</title>
+<meta name="description" content="177 Wet Canteen, Barmer — order sweets, snacks, groceries and daily needs online. Shop prices, quick home delivery, pay cash or UPI.">
+<meta property="og:type" content="website"><meta property="og:site_name" content="177 Wet Canteen">
+<meta property="og:title" content="177 Wet Canteen — Order Online 🛵">
+<meta property="og:description" content="Sweets, snacks, groceries & daily needs — shop prices, quick home delivery. Barmer.">
 <meta property="og:image" content="https://177mhwcanteen-cyber.github.io/177-MH-/icon.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512">
 <meta name="theme-color" content="#0c6b2a"><link rel="icon" href="../icon.png"><link rel="apple-touch-icon" href="../icon.png">
 <link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="../fonts/fonts.css">
@@ -111,14 +111,14 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 .wq{display:flex;gap:3px;margin-top:4px}.wq button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:3px 0;font-size:11px;font-weight:800}.wq button.on{background:var(--g);color:#fff;border-color:var(--g)}
 .csh{display:flex;justify-content:space-between;align-items:baseline}.csh span{font-size:15px}
 </style></head><body>
-<div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1 id="ttl">177 MH Canteen</h1><small id="sub">Military Hospital · Akashvani Rd, Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
+<div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1 id="ttl">177 Wet Canteen</h1><small id="sub">Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
 <label class="srch"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search — milk, Parle, samosa…" autocomplete="off" aria-label="Search items"></label></div>
 <nav class="stores" id="stores" aria-label="Shops"></nav>
 <div id="livebar"></div><div class="trust" id="trust"></div><div id="closed"></div>
 <div class="vegbar" id="vegbar" hidden></div>
 <nav class="cats" id="cats" aria-label="Categories"></nav>
 <main id="m"><div class="g"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></main>
-<footer>177 MH (Military Hospital) Canteen · Akashvani Road, Barmer<br>Prices come live from the shop · <button class="lnk" id="myo" type="button">📦 My orders</button></footer>
+<footer>177 Wet Canteen · Barmer<br>Prices come live from the shop · <button class="lnk" id="myo" type="button">📦 My orders</button></footer>
 <button class="cbar" id="cbar" hidden type="button"><span class="ic">🛒</span><span class="tx"><b id="cbN"></b><small id="cbS"></small></span><span class="go">View cart ›</span></button>
 <a class="mnu" id="mnu" href="marwar-rasoi-menu.pdf" download="Marwar-Rasoi-Menu.pdf" target="_blank" rel="noopener" aria-label="Download Marwar Rasoi menu (PDF)"><span>📖</span>MENU</a>
 <a class="waf" id="waf" target="_blank" rel="noopener" aria-label="Chat on WhatsApp" hidden><svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.600-1.700A13 13 0 1 0 16 3z"/><text x="16" y="21.5" text-anchor="middle" font-size="15" fill="#25d366" font-weight="700">✆</text></svg></a>
@@ -138,7 +138,7 @@ const EM={mithai:"🍬",fast:"🥟",kirana:"🛒",daily:"🧴",sabzi:"🥬",stat
 let R=null,CF={},L=[],LM=[],LX=[],LR=[],RJ=null,cat="all",qs="",Q=LS.get("mh_cart",{}),me=LS.get("mh_me",{});
 /* 🛍️ तीन दुकानें, एक पेज (11-11-2026): हर दुकान का अलग ऑर्डर/बिल — एक ही बार में ऑर्डर */
 const SC=((window.SE_CONFIG||{}).stores||{}).sabji||{};
-const STS={mh:{n:"177 MH Canteen",ic:"🛒",t:"Grocery",d:"Grocery · Dry fruits · Cold drinks · Ice cream · Sweets",bg:"linear-gradient(135deg,#fde68a,#f59e0b)"},
+const STS={mh:{n:"177 Wet Canteen",ic:"🛒",t:"Grocery",d:"Grocery · Dry fruits · Cold drinks · Ice cream · Sweets",bg:"linear-gradient(135deg,#fde68a,#f59e0b)"},
   sabji:{n:"Sabji Express",ic:"🥬",t:"Vegetables",d:"Fresh vegetables & fruits · daily mandi rates",bg:"linear-gradient(135deg,#bbf7d0,#16a34a)"},
   rasoi:{n:"Marwar Rasoi",ic:"🍛",t:"Restaurant",d:"Veg & Non-veg · Tandoor · Biryani",bg:"linear-gradient(135deg,#fecaca,#dc2626)"}};
 let SEG=LS.get("mh_seg",""),VEG=LS.get("mh_veg","");
@@ -232,7 +232,7 @@ function heads(){waBtn();const sw=$("#stores");if(sw)sw.innerHTML=SEG?Object.ent
   $("#cats").hidden=!SEG;$("#cats").innerHTML=C2.filter(c=>c[0]==="all"||have.has(c[0])).map(c=>`<button type="button" data-c="${c[0]}" aria-pressed="${cat===c[0]}">${c[2]} ${c[1]}</button>`).join("");
   /* 📐 दुकान का नाम ऊपर की पीली पट्टी में ही (अलग बैनर नहीं — जगह बचे) */
   {const k=SEG||"mh",sh=(RJ&&RJ.shop)||{},tt=$("#ttl"),sb=$("#sub");if(tt)tt.textContent=k==="rasoi"?(sh.name||STS.rasoi.n):STS[k].n;
-   if(sb)sb.textContent=k==="rasoi"?((sh.tag||STS.rasoi.d)+(sh.freeDelivery?" · 🛵 Free delivery":"")):k==="sabji"?STS.sabji.d:"Military Hospital · Akashvani Rd, Barmer"}
+   if(sb)sb.textContent=k==="rasoi"?((sh.tag||STS.rasoi.d)+(sh.freeDelivery?" · 🛵 Free delivery":"")):k==="sabji"?STS.sabji.d:"Barmer"}
   const q=$("#q");if(q)q.placeholder=SEG==="sabji"?"Search — tomato, palak, apple…":SEG==="rasoi"?"Search — paneer, biryani, naan…":"Search — milk, Parle, ice cream…"}
 function card(i){const q=Q[i.id]||0,off=i.m>i.s?Math.round((i.m-i.s)/i.m*100):0,out=i.k===0,pk=stOf(i)==="mh"&&i.c!=="mithai"&&i.c!=="fast";
   return `<div class="t${out?" out":""}${pk?" pk":""}"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||(cinfo(ocat(i))[0][2])||EM[i.c]||"🛍️")}</div><button type="button" class="fav${FAV().includes(i.id)?" on":""}" data-fav="${esc(i.id)}" aria-label="Favourite">❤️</button>
@@ -268,7 +268,7 @@ function draw(){if(!R&&!LX.length&&!LR.length)return;if(!SEG){$("#m").innerHTML=
     /* 🥤 खाने के साथ (12-11-2026, विक्रम जी): रसोई के पेज पर 177 MH की कोल्ड ड्रिंक, छाछ-लस्सी-दही, आइसक्रीम, मिठाई — असली भाव (MRP), बिल 177 MH का अलग */
     if(SEG==="rasoi"&&stOn("mh")){const rk=i=>{const o=ocat(i);return o==="cold"?0:o==="dairy"&&has(i,/CHHACH|CHACH|LASSI|DAHI|CURD|BUTTERMILK/)?1:o==="ice"?2:o==="mithai"?3:9},n={};
       const A=L.filter(i=>stOf(i)==="mh"&&i.k!==0&&rk(i)<9).sort((x,y)=>rk(x)-rk(y)||(y.t||0)-(x.t||0)).filter(i=>(n[rk(i)]=(n[rk(i)]||0)+1)<=5);
-      if(A.length>=2)html+=`<div class="sec" id="c-addon">🥤 Add with your meal <small>from 177 MH Canteen</small></div><div class="hs">${A.map(card).join("")}</div>`}
+      if(A.length>=2)html+=`<div class="sec" id="c-addon">🥤 Add with your meal <small>from 177 Wet Canteen</small></div><div class="hs">${A.map(card).join("")}</div>`}
     secs(SEG).forEach(S=>S.c.forEach(c=>{const G=F.filter(i=>ocat(i)===c[0]);if(G.length)html+=`<div class="sec" id="c-${c[0]}">${c[2]} ${esc(c[1])} <small>${S.nv?"Non-Veg · ":""}${G.length} items</small></div><div class="g">${G.slice(0,6).map(card).join("")}${G.length>6?`<button type="button" class="more" data-c="${c[0]}">See all ${G.length} in ${esc(c[1])} ›</button>`:""}</div>`}));
     const rest=F.filter(i=>ocat(i)==="more");if(rest.length)html+=`<div class="sec">🛍️ More <small>${rest.length} items</small></div><div class="g">${rest.map(card).join("")}</div>`}
   else if(!s){const [c,S]=cinfo(cat);html=`<div class="sec">${c[2]} ${esc(c[1])} <small>${S.nv?"Non-Veg · ":""}${F.length} items</small></div><div class="g">${F.slice(0,300).map(card).join("")}</div>`}
@@ -398,7 +398,7 @@ async function report(nm,ph,old){const S=v=>({stringValue:String(v)});
   catch(e){LS.set("mh_pend",{nm,ph,old});return false}}
 function lock(on){document.body.classList.toggle("locked",!!on)}
 function welcome(change){const A=ACC();lock(!A.ph);
-  $("#ov").innerHTML=`<div class="scrim wel"${A.ph?" data-x":""}><div class="sheet" role="dialog" aria-label="Welcome"><div class="sh"><h2>${change?"✏️ Update your details":"👋 Welcome to 177 MH Canteen"}</h2>${A.ph?'<button class="x" type="button" data-x aria-label="Close">✕</button>':""}</div>
+  $("#ov").innerHTML=`<div class="scrim wel"${A.ph?" data-x":""}><div class="sheet" role="dialog" aria-label="Welcome"><div class="sh"><h2>${change?"✏️ Update your details":"👋 Welcome to 177 Wet Canteen"}</h2>${A.ph?'<button class="x" type="button" data-x aria-label="Close">✕</button>':""}</div>
     <div class="box"><p style="margin:0 0 8px">${change?"Change your name or number below.":"Order sweets, snacks and groceries from home. Tell us who you are so we can deliver to you."}</p>
     <input class="f" id="wnm" placeholder="Your name" maxlength="40" autocomplete="name" value="${esc(A.nm||"")}">
     <input class="f" id="wph" placeholder="Mobile number (10 digits)" inputmode="tel" maxlength="14" autocomplete="tel" value="${esc(A.ph||"")}">

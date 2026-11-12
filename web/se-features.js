@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — खरीद, सप्लायर, बिल-फोटो (Drive), रात का स्टॉक, दिन का पूरा हिसाब, बारकोड लेबल
+/* 177 वेट कैंटीन — खरीद, सप्लायर, बिल-फोटो (Drive), रात का स्टॉक, दिन का पूरा हिसाब, बारकोड लेबल
    मुख्य ऐप (index.html) के S, $, esc, rs, r2, fq, item, toast… इस्तेमाल करता है। */
 (function(){
 "use strict";
@@ -9,7 +9,7 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const dayAdd=(d,n)=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return today(x)};
 const num=v=>{const n=parseFloat(String(v??"").replace(",","."));return isFinite(n)?n:0};
 const PAY={vikram:"विक्रम जी ने दिया",galla:"गल्ले से नकद",upi:"मेरे UPI से",udhar:"बाकी (उधार)",mh:"177 MH खाते में (ट्रांसफर)"};
-const MH="177 MH कैंटीन";
+const MH="177 वेट कैंटीन";
 
 /* =============== डेटा =============== */
 S.purch=[];S.purchHist=[];S.suppliers=[];S.supPay=[];S.prevStock={};
@@ -131,7 +131,7 @@ SF.renderKharid=function(force){
   ${window.SR&&SR.quickStripHTML?SR.quickStripHTML():""}
   ${SF.morningHTML()}
   ${S.isOwner&&window.SP?SP.cardHTML():""}
-  ${mh?`<div class="card2 mhnote"><b>🏥 177 MH कैंटीन से माल</b><span class="note">सेव करते ही इसकी पर्ची बनेगी — WhatsApp पर विक्रम जी को जाएगी, ताकि 177 MH रजिस्टर में भी चढ़ जाए।</span></div>`:`<div class="shoprow"><label class="fld">🏪 दुकान का नाम<input class="inp" id="pShop" value="${esc(P.shop)}" placeholder="कुछ भी — जैसे गणेश ट्रेडर्स" autocomplete="off"></label>
+  ${mh?`<div class="card2 mhnote"><b>🏥 177 वेट कैंटीन से माल</b><span class="note">सेव करते ही इसकी पर्ची बनेगी — WhatsApp पर विक्रम जी को जाएगी, ताकि 177 MH रजिस्टर में भी चढ़ जाए।</span></div>`:`<div class="shoprow"><label class="fld">🏪 दुकान का नाम<input class="inp" id="pShop" value="${esc(P.shop)}" placeholder="कुछ भी — जैसे गणेश ट्रेडर्स" autocomplete="off"></label>
     <label class="fld">📞 मोबाइल<input class="inp" id="pPh" inputmode="tel" value="${esc(P.phone)}" placeholder="ज़रूरी नहीं" autocomplete="off"></label></div>
   <div class="shopsug" id="shopSug" hidden></div>`}
   <datalist id="shopList">${names.map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
@@ -232,7 +232,7 @@ function pBillSheet(){
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="खरीद बिल"><div class="grab"></div>
   <div class="sh-head"><div><h3>🧾 खरीद बिल</h3><span class="note">पंक्ति पर दबाकर मात्रा/भाव बदलें</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
   <div class="pp-slot"><div class="pp-printer"></div><div class="paper pp-anim">
-    <div class="pp-head"><div class="pp-logo">🛒</div><b>${P.src==="mh"?"177 MH से माल":"खरीद बिल"}</b><small>177 MH कैंटीन · आकाशवाणी रोड, बाड़मेर</small></div>
+    <div class="pp-head"><div class="pp-logo">🛒</div><b>${P.src==="mh"?"177 MH से माल":"खरीद बिल"}</b><small>177 वेट कैंटीन · बाड़मेर</small></div>
     <div class="pp-rule"></div>
     <div class="pp-tag ud" style="border-color:#7c3aed;color:#6d28d9">🏪 ${esc(P.shop||"दुकान का नाम नहीं लिखा")}${P.phone?" · "+esc(P.phone):""}</div>
     <div class="pp-meta"><span>खरीद नं <b>${no}</b></span><span>${fdate(P.day==="yday"?dayAdd(today(),-1):today())} · ${ftime(Date.now())}</span></div>
@@ -323,7 +323,7 @@ async function savePurchase(){
 }
 /* 🏥 177 MH पर्ची — WhatsApp पर विक्रम जी को, ताकि 177 MH रजिस्टर में भी चढ़े */
 function mhText(p,n){
-  return `🏥➡️🛒 *177 MH से 177 MH कैंटीन माल*\nतारीख: ${fdate(p.date)} · ${ftime(p.ts)}\nपर्ची: ${n}\n────────\n`+
+  return `🏥➡️🛒 *177 MH से 177 वेट कैंटीन माल*\nतारीख: ${fdate(p.date)} · ${ftime(p.ts)}\nपर्ची: ${n}\n────────\n`+
     (p.lines||[]).map((l,i)=>`${i+1}. ${l.name} — ${fq(l.qty,l.unit)} × ₹${l.rate} = ₹${num(l.billAmt)||l.amt}${l.exp?" (एक्स. "+fdate(l.exp)+")":""}`).join("\n")+
     `\n────────\n*कुल: ₹${p.total}*${num(p.disc)>0?" (छूट ₹"+p.disc+")":""}\nलिया: ${p.byName||""}${p.note?"\nनोट: "+p.note:""}\n\n_177 MH रजिस्टर में चढ़ाएँ_`;
 }
@@ -701,8 +701,8 @@ SF.auditPack=async function(){
   const rows=dayRows().filter(r=>r.active),M=dayMoney(rows),C=typeof cashCalc==="function"?cashCalc(d):null;
   const sum=(a,f)=>r2(a.reduce((x,y)=>x+num(f(y)),0));
   const U=it=>UNITS[it.unit]||it.unit;
-  let t=`# 🔍 177 MH कैंटीन — AI ऑडिट पैक · ${fdate(d)}
-(आकाशवाणी रोड, बाड़मेर · 177 MH वेट कैंटीन · बनाया: ${new Date().toLocaleString("hi-IN")} · ऐप ${(window.SE&&SE.version)||""})
+  let t=`# 🔍 177 वेट कैंटीन — AI ऑडिट पैक · ${fdate(d)}
+(बाड़मेर · 177 वेट कैंटीन · बनाया: ${new Date().toLocaleString("hi-IN")} · ऐप ${(window.SE&&SE.version)||""})
 
 ## 🧑‍⚖️ AI के लिए हिदायत — पहले पूरा पढ़ें
 आप विक्रम जी (मालिक) के ईमानदार मुनीम और फॉरेंसिक ऑडिटर हैं। विक्रम जी को अकाउंटिंग नहीं आती — इसलिए **सरल हिंदी**, छोटे वाक्य, हर रकम का जोड़ दिखाकर लिखें।
@@ -886,7 +886,7 @@ SF.labelCanvas=function(sp,sizeKey){
   const ctr=(t,y,sz,w)=>{const s=font(t,sz,W-2*P,w);const tw=x.measureText(t).width;x.fillText(t,(W-tw)/2,y);return s};
   let y=TOP;
   if(sp.kir){
-    y+=ctr("177 MH कैंटीन · बाड़मेर"+(sp.icode?"   #"+sp.icode:""),y,Math.round(H*.075),600)+1;x.fillRect(P,y,W-2*P,2);y+=4;
+    y+=ctr("177 वेट कैंटीन · बाड़मेर"+(sp.icode?"   #"+sp.icode:""),y,Math.round(H*.075),600)+1;x.fillRect(P,y,W-2*P,2);y+=4;
     y+=ctr(sp.name,y,Math.round(H*.13),800)+1;
     const pr="₹"+sp.price,mr=sp.mrp>sp.price?"MRP ₹"+sp.mrp:"";
     const s=font([sp.pack,mr,pr].filter(Boolean).join("   "),Math.round(H*.12),W-2*P,800);
@@ -1121,7 +1121,7 @@ SF.reserveBillNo=async function(){
 /* =============== 🧾 कागज़ जैसी रसीद + सेटल + शेयर =============== */
 SF.qrCanvas=function(amount,no){
   if(!window.QRCode||!upiId())return null;const box=document.createElement("div");
-  const upi=`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}${amount>0?"&am="+(+amount).toFixed(2):""}&cu=INR&tn=${encodeURIComponent("177 MH Canteen | Bill No "+no)}`;
+  const upi=`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}${amount>0?"&am="+(+amount).toFixed(2):""}&cu=INR&tn=${encodeURIComponent("177 Wet Canteen | Bill No "+no)}`;
   try{new QRCode(box,{text:upi,width:240,height:240,correctLevel:QRCode.CorrectLevel.M})}catch(e){return null}
   return box.querySelector("canvas");
 };
@@ -1152,7 +1152,7 @@ SF.stampHTML=stampHTML;
 SF.rcptOpts=function(b,withQr){
   const due=b.pay?(b.pay.udhar||0):b.total;
   const inst=b.mode==="inst";
-  return {shop:"177 MH कैंटीन",tag:inst?"माल चालान — "+(b.partyName||""):"किराना · मिठाई · फास्ट फूड",addr:"आकाशवाणी रोड, बाड़मेर",phone:inst?"":SF.fmtPh(SF.orderPh()),nutri:false,custTag:SF.custTag(b),vip:b.mode!=="inst"&&b.mode!=="udhar",
+  return {shop:"177 वेट कैंटीन",tag:inst?"माल चालान — "+(b.partyName||""):"किराना · मिठाई · फास्ट फूड",addr:"बाड़मेर",phone:inst?"":SF.fmtPh(SF.orderPh()),nutri:false,custTag:SF.custTag(b),vip:b.mode!=="inst"&&b.mode!=="udhar",
     date:fdate(b.date||today())+"  "+ftime(b.ts||Date.now()),fq,qr:(q=>q?SF.qrCanvas(q.amt,b.no):null)(SF.qrFor(b)),qrLabel:(SF.qrFor(b)||{}).label||"",upi:upiId(),payee:"",stampL:b.mode==="inst"?null:SF.stampPay(b),stampR:b.mode==="inst"?null:SF.stampBy(b),
     balance:b.partyId?r2(bal(b.partyId)+(b.pay?0:0)):null,paid:!!b.pay,saved:savedOf(b)};
 };
@@ -1172,7 +1172,7 @@ SF.compactPaperHTML=function(b,o){
   const tag=b.mode==="inst"?'<span class="ppc-tag inst">🏢 संस्था</span>':b.mode==="udhar"?'<span class="ppc-tag ud">📒 उधार</span>':'<span class="ppc-tag vip">⭐ VIP</span>';
   const qr=o.qr&&b.mode!=="inst"&&upiId();
   return `<div class="paper pp-c${o.anim?" pp-anim":""}">
-  <div class="ppc-head"><span class="ppc-logo">🛒</span><b>177 MH कैंटीन</b>${tag}</div>
+  <div class="ppc-head"><span class="ppc-logo">🛒</span><b>177 वेट कैंटीन</b>${tag}</div>
   <div class="ppc-meta"><span><b>${esc(b.no||"…")}</b> · ${fdate(b.date||today()).slice(0,5)} · ${ftime(b.ts||Date.now())}</span><span class="ppc-cust">${esc(cust)}</span></div>
   ${o.tap?'<div class="ppc-meta ppc-by"><span class="note">👆 सामान पर टैप = मात्रा बदलें</span></div>':""}
   <table class="pp-t ppc-t"><thead><tr><th>#</th><th>सामान</th><th class="r">मात्रा</th><th class="r">भाव</th><th class="r">रकम</th>${ed?"<th></th>":""}</tr></thead><tbody>
@@ -1189,7 +1189,7 @@ SF.paperHTML=function(b,o){
   o=o||{};const ed=!!o.editable;const sub=r2((b.lines||[]).reduce((a,l)=>a+(l.amt||0),0));
   const pay=b.pay;const stamp=b.settled===false?"⏳ भुगतान बाकी":pay?[pay.cash?"नकद "+rs(pay.cash):"",pay.upi?"UPI "+rs(pay.upi):"",pay.udhar?"उधार "+rs(pay.udhar):"",b.mode==="inst"?"संस्था · खरीद भाव":""].filter(Boolean).join(" · "):"";
   return `<div class="paper${o.anim?" pp-anim":""}">
-  <div class="pp-head"><div class="pp-logo">🛒</div><b>177 MH कैंटीन</b><small>किराना · मिठाई · फास्ट फूड · आकाशवाणी रोड, बाड़मेर${SF.orderPh()?" · 📞 "+SF.fmtPh(SF.orderPh()):""}</small></div>
+  <div class="pp-head"><div class="pp-logo">🛒</div><b>177 वेट कैंटीन</b><small>किराना · मिठाई · फास्ट फूड · बाड़मेर${SF.orderPh()?" · 📞 "+SF.fmtPh(SF.orderPh()):""}</small></div>
   <div class="pp-rule"></div>
   <div class="pp-tag ${b.mode==="inst"?"inst":b.mode==="udhar"?"ud":"vip"}">${SF.custTag(b)}</div>
   <div class="pp-meta"><span>बिल नं <b>${esc(b.no||"…")}</b></span><span>${fdate(b.date||today())} · ${ftime(b.ts||Date.now())}</span></div>
@@ -1214,7 +1214,7 @@ SF.paperHTML=function(b,o){
   </div>`;
 };
 function drawQR(id,amt,no,size){const el=document.getElementById(id);if(!el||!window.QRCode||!upiId())return;el.innerHTML="";
-  try{new QRCode(el,{text:`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}${+amt>0?"&am="+(+amt).toFixed(2):""}&cu=INR&tn=${encodeURIComponent("177 MH Canteen | Bill No "+no)}`,width:size||190,height:size||190,correctLevel:QRCode.CorrectLevel.M})}catch(e){}}
+  try{new QRCode(el,{text:`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}${+amt>0?"&am="+(+amt).toFixed(2):""}&cu=INR&tn=${encodeURIComponent("177 Wet Canteen | Bill No "+no)}`,width:size||190,height:size||190,correctLevel:QRCode.CorrectLevel.M})}catch(e){}}
 SF.drawQR=drawQR;
 SF.drawPaperQR=function(b,id,size){const q=SF.qrFor(b);if(q)drawQR(id||"ppqr",q.amt,b.no,size||150)};
 function draftBill(){
@@ -1275,7 +1275,7 @@ SF.sendCancelReq=async function(b){
   const req={no:b.no,date:b.date,total:b.total,partyName:b.partyName||"",byName:biller(),by:S.uid||"",reason:why,ts:Date.now(),status:"pending",billBy:b.byName||"",settled:b.settled!==false,done};if(window.SR&&SR.locNow&&SR.locNow())req.loc=SR.locNow();
   try{await S.db.collection("cancelReq").doc(b.no).set(req)}catch(e){if(!done){toast("रद्द नहीं हुआ: "+(e.code||""));return}}
   S.cancelReqs.push({id:b.no,...req});
-  const txt=`🚫 *बिल ${done?"रद्द किया गया":"रद्द करने की अर्ज़ी"}*\n177 MH कैंटीन\n━━━━━━━━━━━━\n🧾 बिल नं: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n👤 ग्राहक: ${b.partyName||""}\n💰 रकम: ₹${b.total}\n🛒 ${(b.lines||[]).map(l=>l.name+" "+fq(l.qty,l.unit)).join(", ")}\n📝 वजह: ${why}\n🧑‍🌾 रद्द किया: ${biller()} · ${ftime(Date.now())}\n━━━━━━━━━━━━\n${done?"माल स्टॉक में वापस जुड़ गया। ठीक न लगे तो ऐप की \"रिपोर्ट\" से बिल वापस चालू कर सकते हैं।":"विक्रम जी, ऐप की \"रिपोर्ट\" में मंज़ूर करें।"}`;
+  const txt=`🚫 *बिल ${done?"रद्द किया गया":"रद्द करने की अर्ज़ी"}*\n177 वेट कैंटीन\n━━━━━━━━━━━━\n🧾 बिल नं: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n👤 ग्राहक: ${b.partyName||""}\n💰 रकम: ₹${b.total}\n🛒 ${(b.lines||[]).map(l=>l.name+" "+fq(l.qty,l.unit)).join(", ")}\n📝 वजह: ${why}\n🧑‍🌾 रद्द किया: ${biller()} · ${ftime(Date.now())}\n━━━━━━━━━━━━\n${done?"माल स्टॉक में वापस जुड़ गया। ठीक न लगे तो ऐप की \"रिपोर्ट\" से बिल वापस चालू कर सकते हैं।":"विक्रम जी, ऐप की \"रिपोर्ट\" में मंज़ूर करें।"}`;
   closeSheet();try{renderPane()}catch(x){}
   toast(done?"🚫 बिल "+b.no+" रद्द — माल स्टॉक में वापस · विक्रम जी को सूचना गई":"📩 अर्ज़ी विक्रम जी को गई");
   const ph=String(S.settings.ownerPh||"").replace(/\D/g,"").slice(-10);
@@ -1331,10 +1331,10 @@ SF.profitKpiHTML=function(L){const P=L.map(SF.billProfit).filter(Boolean);const 
   return `<div class="pfk"><span>💹 इन बिलों पर कुल फायदा <small>(सिर्फ़ आपको दिखता है)</small></span><b>${rs(Math.round(p))}</b><small>बिक्री ${rs(t)} · औसत ${t>0?Math.round(p/t*100):0}%${lowN?` · ${lowN} बिल में 20% से कम`:""}${miss?" · * कुछ सामान का खरीद भाव नहीं मिला":""}</small></div>`};
 
 /* =============== 🤖 कर्मचारी की कॉपी → AI → ऐप (सिर्फ़ मालिक) =============== */
-SF.PROMPT_DAY=`तुम 177 MH कैंटीन (कैंटीन, आकाशवाणी रोड, बाड़मेर) के हिसाब-किताब के मुंशी हो।
+SF.PROMPT_DAY=`तुम 177 वेट कैंटीन (कैंटीन, बाड़मेर) के हिसाब-किताब के मुंशी हो।
 मैं कर्मचारी (दिनेश जी) की हाथ से लिखी कॉपी के पन्नों की फोटो दे रहा हूँ। इनमें ये हो सकता है:
 (1) माल की खरीद — सामान, किलो/नग × भाव = रकम, और कई लाइनों के ब्रैकेट वाले जोड़
-(2) होटल/संस्था को दिया माल (मारवाड़ रसोई, 177 MH कैंटीन, डोसा पॉइंट, 177 MH कैंटीन) — सामान, मात्रा, रकम
+(2) होटल/संस्था को दिया माल (मारवाड़ रसोई, 177 वेट कैंटीन, डोसा पॉइंट, 177 वेट कैंटीन) — सामान, मात्रा, रकम
 (3) "अवेलेबल माल" = रात को दुकान में बचा माल, और "बेकार/खराब" वाला माल
 (4) बिक्री — ऑनलाइन, कैश, और किस-किस के नाम "बाकी" (उधार)
 (5) खर्च — टैक्सी किराया, भाड़ा, हम्माली वगैरह
@@ -1357,7 +1357,7 @@ SF.PROMPT_DAY=`तुम 177 MH कैंटीन (कैंटीन, आक�
  "sale":{"online":0,"cash":0,"udhar":[{"name":"अफसर मेस","amount":500,"items":""}],"totalWritten":0,"bachatWritten":0},
  "kharch":[{"what":"टैक्सी किराया","amount":250}],
  "unclear":["जो पढ़ा न गया या जोड़ न मिला — साफ़ लिखो"]}`;
-SF.PROMPT_NIGHT=`तुम 177 MH कैंटीन के स्टॉक मुंशी हो। फोटो में कर्मचारी की कॉपी का "अवेलेबल माल" (रात को दुकान में बचा माल) वाला पन्ना है, और साथ में "बेकार/खराब" वाला हिस्सा भी हो सकता है।
+SF.PROMPT_NIGHT=`तुम 177 वेट कैंटीन के स्टॉक मुंशी हो। फोटो में कर्मचारी की कॉपी का "अवेलेबल माल" (रात को दुकान में बचा माल) वाला पन्ना है, और साथ में "बेकार/खराब" वाला हिस्सा भी हो सकता है।
 नियम:
 • हर सामान जैसा लिखा है वैसे ही, उसकी मात्रा के साथ — अपनी तरफ़ से कुछ मत जोड़ो।
 • ग्राम को किलो में: 500 gm = 0.5, 300 gm = 0.3, 700 gm = 0.7; "1½" = 1.5। नग/पीस/Pac/Nos = unit "pc"। जहाँ सिर्फ़ गिनती है (नारियल, कीवी, मक्का) वहाँ "pc"।

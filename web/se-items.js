@@ -54,7 +54,7 @@ SQ.html=function(){if(!S.isOwner)return "";const R=SQ.res&&SQ.res.days===SQ.days
     ${SQ.open?`<div class="bf-r" style="margin:6px 0">${[7,30,90].map(d=>`<button class="chip" data-sqd="${d}" aria-pressed="${SQ.days===d}">${d} दिन</button>`).join("")}</div>${body}`:'<p class="note" style="margin:4px 0 0">किससे सबसे ज़्यादा कमाई · क्या तेज़ बिकता · क्या 30 दिन से नहीं बिका</p>'}</div>`;
 };
 SQ.text=function(){const R=SQ.res;if(!R)return "";const top=R.rows.filter(r=>r.pct!=null).sort((a,b)=>b.pf-a.pf).slice(0,5),fast=R.rows.slice().sort((a,b)=>b.perDay-a.perDay).slice(0,5);
-  return `🏆 *177 MH कैंटीन — ${R.days} दिन, सामान-वार*\n${fdate(R.from)} से ${fdate(R.to)}\n────────\nबिक्री ${rs(R.tot.sale)} · मुनाफ़ा ${rs(R.tot.pf)}\n\n💰 सबसे ज़्यादा कमाई:\n`+top.map((r,i)=>`${i+1}. ${r.name} — ${rs(r.pf)} (${r.pct}%)`).join("\n")+
+  return `🏆 *177 वेट कैंटीन — ${R.days} दिन, सामान-वार*\n${fdate(R.from)} से ${fdate(R.to)}\n────────\nबिक्री ${rs(R.tot.sale)} · मुनाफ़ा ${rs(R.tot.pf)}\n\n💰 सबसे ज़्यादा कमाई:\n`+top.map((r,i)=>`${i+1}. ${r.name} — ${rs(r.pf)} (${r.pct}%)`).join("\n")+
   `\n\n🚀 सबसे तेज़:\n`+fast.map((r,i)=>`${i+1}. ${r.name} — रोज़ ${fq(r.perDay,r.unit)}`).join("\n")+
   (R.dead.length?`\n\n🐢 30 दिन से नहीं बिका (${R.dead.length}):\n`+R.dead.slice(0,8).map(x=>`• ${x.it.name} — ${fq(x.qty,x.it.unit)}${x.val?" ("+rs(x.val)+")":""}`).join("\n"):"")};
 document.addEventListener("click",e=>{

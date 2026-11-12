@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 🛍️ बाज़ार खरीद (v2: बिलिंग जैसा)
+/* 177 वेट कैंटीन — 🛍️ बाज़ार खरीद (v2: बिलिंग जैसा)
    ऊपर कैमरा हमेशा चालू · स्कैन करते ही सामान जुड़ जाए (MRP + पिछला खरीद भाव अपने-आप) · दोबारा स्कैन = +1
    🤖 पक्का बिल हो तो: प्रॉम्प्ट कॉपी → ChatGPT/Gemini में बिल की फोटो → जवाब चिपकाओ → GST/छूट/भाड़ा जोड़कर
       "घर पहुँचा भाव" हर सामान का अपने-आप; फिर बारकोड स्कैन करके मिलाओ और गिनो। एक बिल दो बार कभी नहीं चढ़ता।
@@ -122,7 +122,7 @@ function payLink(b){const u=parseUpi(b.upi||"");if(!u)return "";const amt=+(b.pa
   return `upi://pay?pa=${encodeURIComponent(u.pa)}&pn=${encodeURIComponent(u.pn||b.shop||"Shop")}&am=${amt.toFixed(2)}&cu=INR&tn=${encodeURIComponent("177 MH "+b.no)}`}
 
 /* ---------- 🤖 AI से पक्का बिल ---------- */
-SM.aiPrompt=function(ref){return `You are reading a PURCHASE BILL / INVOICE photo for "177 MH Wet Canteen", Barmer (we are under GST Composition Scheme — we CANNOT claim GST input credit, so GST is part of our cost).
+SM.aiPrompt=function(ref){return `You are reading a PURCHASE BILL / INVOICE photo for "177 Wet Canteen", Barmer (we are under GST Composition Scheme — we CANNOT claim GST input credit, so GST is part of our cost).
 Read EVERY line item exactly from the bill image(s) I attach. Do not guess items that are not on the bill.
 Reply with ONLY this JSON (no other words, no markdown):
 {"app":"mh177-bill","ref":"${ref}","supplier":{"name":"","gstin":"","phone":"","billNo":"","date":"YYYY-MM-DD"},
@@ -291,7 +291,7 @@ function detailHTML(b){const own=b.by===S.uid,canRecv=b.status==="sent"&&(S.isOw
     ${link?`<div class="qrbox"><div class="qr" id="mkPayQr"></div><b>${rs(b.pay.amt||b.total)}</b><span class="note">${esc((parseUpi(b.upi)||{}).pn||"")} · ${esc((parseUpi(b.upi)||{}).pa||"")}</span></div><a class="big" href="${esc(link)}">📱 UPI ऐप में खोलें</a>`:b.qr?`<img src="${b.qr}" alt="दुकान का QR" style="width:100%;max-width:300px;display:block;margin:0 auto;border-radius:12px"><p class="note" style="text-align:center">दूसरे फोन से स्कैन करें · रकम ${rs(b.total)} डालें</p>`:`<p class="note">दुकान का QR नहीं आया — ${b.phone?"दुकान के नंबर "+esc(b.phone)+" पर UPI करें":"खरीदार से पूछें"}</p>`}
     <div class="mk-two"><label class="mk-in w"><span>UTR</span><input id="mkUtr" inputmode="numeric" placeholder="12 अंक (ज़रूरी नहीं)"></label><button class="big ghost" type="button" data-proof>${OPEN&&SM._proof?"✓ रसीद":"📸 रसीद"}</button></div>
     <button class="big mk-send" data-paid>✅ भुगतान हो गया</button></div>`:""}
-  ${b.pay&&b.pay.status==="paid"&&b.pay.paidTs?`<div class="mk-meta"><span class="ok">✅ ${fdate(today(new Date(b.pay.paidTs)))} ${ftime(b.pay.paidTs)} · ${esc(b.pay.paidBy||"")}${b.pay.utr?" · UTR "+esc(b.pay.utr):""}</span>${b.phone?`<a target="_blank" rel="noopener" href="https://wa.me/91${esc(b.phone)}?text=${encodeURIComponent("नमस्ते, 177 MH वेट कैंटीन की ओर से "+rs(b.pay.amt||b.total)+" का भुगतान कर दिया है"+(b.pay.utr?" (UTR "+b.pay.utr+")":"")+"। धन्यवाद — विक्रम")}">💬 दुकान को बताएँ</a>`:""}</div>${b.pay.proof?`<img src="${b.pay.proof}" alt="रसीद" class="mk-proof">`:""}`:""}
+  ${b.pay&&b.pay.status==="paid"&&b.pay.paidTs?`<div class="mk-meta"><span class="ok">✅ ${fdate(today(new Date(b.pay.paidTs)))} ${ftime(b.pay.paidTs)} · ${esc(b.pay.paidBy||"")}${b.pay.utr?" · UTR "+esc(b.pay.utr):""}</span>${b.phone?`<a target="_blank" rel="noopener" href="https://wa.me/91${esc(b.phone)}?text=${encodeURIComponent("नमस्ते, 177 वेट कैंटीन की ओर से "+rs(b.pay.amt||b.total)+" का भुगतान कर दिया है"+(b.pay.utr?" (UTR "+b.pay.utr+")":"")+"। धन्यवाद — विक्रम")}">💬 दुकान को बताएँ</a>`:""}</div>${b.pay.proof?`<img src="${b.pay.proof}" alt="रसीद" class="mk-proof">`:""}`:""}
   ${b.recv?`<div class="mk-meta"><span class="ok">📦 पक्का: ${esc(b.recv.byName||"")} · ${ftime(b.recv.ts)}</span>${b.recv.diff&&b.recv.diff.length?`<span class="bad">⚠ ${b.recv.diff.map(esc).join(" · ")}</span>`:"<span class=ok>सब बराबर</span>"}</div>`:""}
   ${canRecv?`<div class="mk-rcvh">📦 <b>गिनकर पक्का करें</b><span>ऊपर कैमरे से हर सामान स्कैन करें या गिनती लिखें</span></div>`:own&&b.status==="sent"?`<p class="note">📦 दूसरे साथी (बिलर) गिनकर पक्का करेंगे — खुद की खरीद खुद पक्की नहीं होती</p>`:""}
   <div class="mk-lines">${(b.lines||[]).map(l=>{const g=gain(l.rate,l.mrp),got=R?R.got[l.lid]:null;return `<div class="mk-ln ro ${g&&g.low?"low":""} ${R&&FLASH===l.lid?"fl":""}"><span class="mk-th">${l.f?`<img src="${l.f}" alt="">`:"📦"}${l.m?`<em class="on">🏷️</em>`:""}</span>

@@ -4,7 +4,7 @@
 .pkb b{font-size:16px}.pkb small{font-size:12px;opacity:.75}.pkb i{font-style:normal;font-size:20px;font-weight:800;color:var(--leaf,#15803d)}.pkb em{font-style:normal;font-size:11px;background:#fef3c7;color:#92400e;border-radius:8px;padding:1px 6px}
 .pkb:active{transform:scale(.97)}.pkb.off i{color:var(--chili,#b91c1c);font-size:14px}
 </style></head><body>
-<title>177 MH कैंटीन</title>
+<title>177 वेट कैंटीन</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="fonts/fonts.css">
 <meta name="theme-color" data-x="" content="#0d1a33">
@@ -922,7 +922,7 @@ html .ob-g>div{background:var(--surface2)}
 <header class="px">
   <div class="brand">
     <i class="lg" id="lgBtn" role="button" tabindex="0" aria-label="बिलिंग और स्कैनर खोलें" title="छूते ही बिलिंग + स्कैनर">🛒</i>
-    <nav class="tabs" role="tablist" id="tabs" aria-label="177 MH कैंटीन"></nav>
+    <nav class="tabs" role="tablist" id="tabs" aria-label="177 वेट कैंटीन"></nav>
     <button class="who" id="who" type="button">👤</button>
   </div>
   <div id="sbar"><input id="q" class="search" type="search" placeholder="🔍 नाम / 4 अंक कोड / बारकोड" autocomplete="off" enterkeyhint="done" aria-label="सामान खोजें — नाम, कोड या बारकोड"><button class="scanbtn" id="scanBtn" type="button" aria-label="कैमरे से बारकोड स्कैन करें">📷</button></div>
@@ -1069,7 +1069,7 @@ function greetHTML(){
   const h=new Date().getHours(),g=h<5?["🌙","शुभ रात्रि"]:h<12?["🌅","सुप्रभात"]:h<17?["☀️","नमस्ते"]:h<21?["🌇","शुभ संध्या"]:["🌙","शुभ रात्रि"];
   const me=biller(),bl=(S.dayBills||[]).filter(b=>!b.cancelled&&b.date===today()&&b.mode!=="inst"&&(S.isOwner||b.byName===me));
   const tot=r2(bl.reduce((a,b)=>a+(+b.total||0),0));
-  return `<span class="gi">${g[0]}</span><div class="gt"><b>${g[1]}${me?" "+esc(me):""}</b><span>${S.isOwner?"आज कैंटीन में":"आज आपने"} ${bl.length} बिल · ${rs(tot)}</span></div><span class="gb">🛒 177 MH कैंटीन</span>`;
+  return `<span class="gi">${g[0]}</span><div class="gt"><b>${g[1]}${me?" "+esc(me):""}</b><span>${S.isOwner?"आज कैंटीन में":"आज आपने"} ${bl.length} बिल · ${rs(tot)}</span></div><span class="gb">🛒 177 वेट कैंटीन</span>`;
 }
 /* सामान जुड़ते ही कार्ड उछले, बिल-बटन चमके */
 function popItem(id){requestAnimationFrame(()=>{const c=document.querySelector('#grid [data-item="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');
@@ -1090,7 +1090,7 @@ function fdate(s){const [y,m,d]=s.split("-");return d+"-"+m+"-"+y}
 function lsGet(k){try{return localStorage.getItem(k)||""}catch(e){return ""}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function toast(m){if(document.documentElement.classList.contains("camon")){const c=$("#camlast");if(c)c.textContent=m;if(/^[✓📦]/.test(m))return}const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
-function insts(){return (S.settings.insts&&S.settings.insts.length)?S.settings.insts:["177 MH कैंटीन","मारवाड़ रसोई (होटल)","रामविनायक डोसा पॉइंट","सब्ज़ी एक्सप्रेस"]}
+function insts(){return (S.settings.insts&&S.settings.insts.length)?S.settings.insts:["177 वेट कैंटीन","मारवाड़ रसोई (होटल)","रामविनायक डोसा पॉइंट","सब्ज़ी एक्सप्रेस"]}
 function item(id){return S.items.find(i=>i.id===id)}
 function priceOf(it){return +it.sale||0} /* संस्था: चुनते समय बिक्री भाव, सेव होते ही खरीद भाव (SB.instReprice) */
 /* 🎨 हर सामान की अपने-आप सुंदर टाइल — नया सामान जुड़ते ही बिना फोटो के भी रंग, चिह्न और ब्रांड नाम (art() नाम से तय, हर अपडेट में अपने-आप) */
@@ -1468,7 +1468,7 @@ function drawCheckout(){if(window.SF&&SF.drawCheckout)return SF.drawCheckout();
     <button class="big ghost" data-hold style="margin-bottom:8px">+ दूसरा ग्राहक (यह बिल ऊपर टैब में खुला रहेगा)</button>
     <button class="big ${c.pay==="upi"?"haldi":""}" data-save ${c.udPick||S.saving||(c.pay==="upi"&&!upiId())||tot<=0&&S.mode!=="inst"?"disabled":""}>${S.saving?"सेव हो रहा है…":c.pay==="upi"?"✓ पैसा आ गया · बिल सेव करें":"✓ बिल सेव करें"}</button>
   </div></div>`;
-  if(c.pay==="upi"&&upiId()&&window.QRCode){const upi=`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}&am=${tot.toFixed(2)}&cu=INR&tn=${encodeURIComponent("177 MH Canteen | Bill No "+c.no)}`;try{new QRCode($("#qr"),{text:upi,width:208,height:208,correctLevel:QRCode.CorrectLevel.M})}catch(e){}}
+  if(c.pay==="upi"&&upiId()&&window.QRCode){const upi=`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}&am=${tot.toFixed(2)}&cu=INR&tn=${encodeURIComponent("177 Wet Canteen | Bill No "+c.no)}`;try{new QRCode($("#qr"),{text:upi,width:208,height:208,correctLevel:QRCode.CorrectLevel.M})}catch(e){}}
   const sh=$("#sheet");
   sh.oninput=e=>{if(e.target.id==="udQ"){c.udQ=e.target.value;const l=$("#udList");if(l)l.innerHTML=udListHTML(c.udQ)}};
   sh.onclick=async e=>{
@@ -1557,7 +1557,7 @@ function receiptText(b){
   if(b.mode==="inst"&&window.SB)return SB.instText(b,null);
   b={...b,pay:b.pay||{}};
   const L="━━━━━━━━━━━━━━━";
-  let t=`🛒 *177 MH कैंटीन*\n_किराना · मिठाई · फास्ट फूड_\nआकाशवाणी रोड, बाड़मेर\n${L}\n*${SF.custTag(b)}*\n🧾 बिल नं: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n👤 ${b.partyName}${b.custPhone?" ("+b.custPhone+")":""}\n${L}\n`;
+  let t=`🛒 *177 वेट कैंटीन*\n_किराना · मिठाई · फास्ट फूड_\nबाड़मेर\n${L}\n*${SF.custTag(b)}*\n🧾 बिल नं: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n👤 ${b.partyName}${b.custPhone?" ("+b.custPhone+")":""}\n${L}\n`;
   b.lines.forEach((l,i)=>t+=l.free?`${i+1}. ${SN.withEn(l.name)} ${fq(l.qty,l.unit)} — 🎁 मुफ्त\n`:`${i+1}. ${SN.withEn(l.name)}\n    ${fq(l.qty,l.unit)} × ₹${l.rate} = *₹${l.amt}*\n`);
   t+=`${L}\n`;if(b.disc)t+=`🏷️ छूट: −₹${b.disc}\n`;{const ro=window.SF&&SF.roff?SF.roff(b):0;if(ro)t+=`_जोड़ ₹${r2(b.sub!=null?b.sub:b.lines.reduce((a,l)=>a+(+l.amt||0),0))} · ${SF.roffTxt(ro)}_\n`}t+=`💰 *कुल रकम: ₹${b.total}*\n`;
   if(b.pay.cash)t+=`✅ नकद मिला: ₹${b.pay.cash}\n`;if(b.pay.upi)t+=`✅ UPI मिला: ₹${b.pay.upi}\n`;if(b.pay.udhar)t+=`📒 उधार में: ₹${b.pay.udhar}\n`;
@@ -1570,7 +1570,7 @@ function receiptText(b){
   return t+`🧑‍🌾 बिलर: ${b.byName}`;
 }
 function receiptHTML(b){if(window.SF)return SF.paperHTML(b,{});
-  return `<div class="receipt"><h4>177 MH कैंटीन</h4><div class="meta"><span>${esc(b.no)}</span><span>${fdate(b.date)} · ${ftime(b.ts)}</span></div>
+  return `<div class="receipt"><h4>177 वेट कैंटीन</h4><div class="meta"><span>${esc(b.no)}</span><span>${fdate(b.date)} · ${ftime(b.ts)}</span></div>
   <div class="meta"><span>ग्राहक: <b style="color:var(--ink)">${esc(b.partyName)}</b></span><span>बिलर: ${esc(b.byName)}</span></div>
   <table>${b.lines.map(l=>`<tr><td>${esc(appNm(l))} <span class="note">${fq(l.qty,l.unit)} × ${l.free?"मुफ्त":rs(l.rate)}</span>${l.changed?' <span class="pill red">रेट बदला</span>':""}${l.free?' <span class="pill red">मुफ्त</span>':""}</td><td class="r">${rs(l.amt)}</td></tr>`).join("")}
   ${b.disc?`<tr><td>छूट <span class="pill red">छूट दी</span></td><td class="r">−${rs(b.disc)}</td></tr>`:""}
@@ -1690,7 +1690,7 @@ function openParty(pid){
     <div class="paym" style="margin:18px 0 0;grid-template-columns:1fr 1fr"><button data-jm="cash" aria-pressed="${st.mode==="cash"}">नकद</button><button data-jm="upi" aria-pressed="${st.mode==="upi"}">UPI</button></div></div>
     <div id="jqr"></div>
     <button class="big" data-jama>जमा दर्ज करें</button>
-    ${p.hide?"<!--":""}<a class="big ghost" style="margin-top:8px" target="_blank" rel="noopener" href="${waLink(window.SR?SR.remindText(p,b):`नमस्ते ${p.name} जी, 177 MH कैंटीन का आपका बाकी हिसाब ₹${b} है। UPI: ${upiId()} 🙏`,p.phone)}" data-remone="1">🟢 WhatsApp पर बकाया याद दिलाएँ</a>${p.hide?"-->":""}${!p.hide&&window.SX?`<button class="big ghost" data-sxhl="${esc(p.id)}" style="margin-top:8px">🔗 पूरा हिसाब-लिंक WhatsApp पर</button><button class="big ghost" data-sxhp="${esc(p.id)}" style="margin-top:8px">📄 हिसाब PDF (UPI QR के साथ)</button>`:""}
+    ${p.hide?"<!--":""}<a class="big ghost" style="margin-top:8px" target="_blank" rel="noopener" href="${waLink(window.SR?SR.remindText(p,b):`नमस्ते ${p.name} जी, 177 वेट कैंटीन का आपका बाकी हिसाब ₹${b} है। UPI: ${upiId()} 🙏`,p.phone)}" data-remone="1">🟢 WhatsApp पर बकाया याद दिलाएँ</a>${p.hide?"-->":""}${!p.hide&&window.SX?`<button class="big ghost" data-sxhl="${esc(p.id)}" style="margin-top:8px">🔗 पूरा हिसाब-लिंक WhatsApp पर</button><button class="big ghost" data-sxhp="${esc(p.id)}" style="margin-top:8px">📄 हिसाब PDF (UPI QR के साथ)</button>`:""}
     ${window.SR?SR.openingHTML(p):""}
     ${S.isOwner&&!S.demo?`<label class="fld" style="margin-top:12px">उधार सीमा ₹ (इससे ज़्यादा होने पर बिलर को चेतावनी)<input class="inp" id="pLimit" inputmode="decimal" value="${+p.limit||""}" placeholder="जैसे 5000"></label><button class="big ghost" data-phide="${esc(p.id)}" style="margin-top:8px">${p.hide?"👁 रकम फिर दिखाएँ (वसूली वाला खाता)":"🔒 रकम छिपाएँ — वसूली नहीं, सिर्फ़ नोट"}</button><label class="fld" style="margin-top:12px">✏️ खाते का नाम (सिर्फ़ मालिक बदल सकते हैं)<input class="inp" id="pName" data-pid="${esc(p.id)}" value="${esc(p.name)}"></label><button class="big ghost" data-pdel="${esc(p.id)}" style="margin-top:8px;color:var(--chili);border-color:var(--chili)">🗑️ यह खाता हटाएँ</button>`:""}
     <h4 style="margin:16px 0 6px">पूरा हिसाब</h4>
@@ -2116,7 +2116,7 @@ function liveData(){const bl=(S.dayBills||[]).filter(b=>!b.cancelled&&!b.pending
   const noCost=[...new Set(bl.flatMap(b=>(b.lines||[]).filter(l=>!(+l.cost>0)).map(l=>(S.items.find(x=>x.id===l.id)||{}).name||l.name)))];
   let gp=null;try{gp=parseFloat(localStorage.getItem("mh_gpay_"+S.billsDate))}catch(e){}
   return {noCost,gp:isFinite(gp)?gp:null,n:bl.length,tot:r2(tot),cash:r2(cash),upi:r2(upi),ud:r2(ud),profit:Math.round(profit),cat:Object.entries(cat).sort((a,b)=>b[1]-a[1]),top:Object.entries(top).sort((a,b)=>b[1].a-a[1].a).slice(0,10),warns}}
-function liveText(){const L=liveData();return `177 MH कैंटीन · ${fdate(S.billsDate)} · ${ftime(Date.now())} तक\nबिक्री ${rs(L.tot)} (${L.n} बिल) · नकद ${rs(L.cash)} · UPI ${rs(L.upi)} · उधार ${rs(L.ud)} · मुनाफ़ा लगभग ${rs(L.profit)}${L.gp!=null?` · Google Pay में आया ${rs(L.gp)} (फर्क ${rs(r2(L.gp-L.upi))})`:""}${L.noCost.length?` · लागत बाकी: ${L.noCost.length} सामान`:""}\nश्रेणी: ${L.cat.map(([k,v])=>`${LIVE_CAT[k]||k} ${rs(r2(v))}`).join(" · ")}\nटॉप: ${L.top.map(([n,t])=>`${n} ${fq(t.q,t.u)} ${rs(r2(t.a))}`).join(" · ")}\nचेतावनियाँ (${L.warns.length}): ${L.warns.join(" | ")||"कोई नहीं"}`}
+function liveText(){const L=liveData();return `177 वेट कैंटीन · ${fdate(S.billsDate)} · ${ftime(Date.now())} तक\nबिक्री ${rs(L.tot)} (${L.n} बिल) · नकद ${rs(L.cash)} · UPI ${rs(L.upi)} · उधार ${rs(L.ud)} · मुनाफ़ा लगभग ${rs(L.profit)}${L.gp!=null?` · Google Pay में आया ${rs(L.gp)} (फर्क ${rs(r2(L.gp-L.upi))})`:""}${L.noCost.length?` · लागत बाकी: ${L.noCost.length} सामान`:""}\nश्रेणी: ${L.cat.map(([k,v])=>`${LIVE_CAT[k]||k} ${rs(r2(v))}`).join(" · ")}\nटॉप: ${L.top.map(([n,t])=>`${n} ${fq(t.q,t.u)} ${rs(r2(t.a))}`).join(" · ")}\nचेतावनियाँ (${L.warns.length}): ${L.warns.join(" | ")||"कोई नहीं"}`}
 function ownerLiveHTML(){const L=liveData(),mx=Math.max(1,...L.cat.map(c=>c[1]));
   return `<div class="card2"><h3>📊 आज की बिक्री — श्रेणी-वार</h3>
   <div class="stkmeta"><span>कुल ${L.n} बिल · मुनाफ़ा लगभग</span><b>${rs(L.tot)} · ${rs(L.profit)}</b></div>
@@ -2213,7 +2213,7 @@ function renderReport(){
   const cc=cashCalc(date),srows=stockRows().filter(r=>r.flag),shortTot=r2(srows.reduce((a,r)=>a+r.shortVal,0));
   const net=r2(profit-cc.khAll);
   const topC=[...S.customers].sort((a,b)=>(b.spent||0)-(a.spent||0)).slice(0,5);
-  const waText=`*177 MH कैंटीन · ${fdate(date)}*\nबिक्री: ${rs(salesTot)} (${sale.length} बिल)\nनकद ${rs(cash)} · UPI ${rs(upi)} · उधार ${rs(ud)}\nवसूली: ${rs(jc+ju)}\nखर्चा: ${rs(cc.khAll)}\nमुनाफ़ा (खर्चे के बाद): ${rs(net)}\nगल्ला: ${cc.diff==null?"गिना नहीं":Math.abs(cc.diff)<=5?"पूरा मिला":rs(cc.diff)}\nमाल में कमी: ${rs(shortTot)}\nरेट बदले/छूट: ${flags.length} बिल`;
+  const waText=`*177 वेट कैंटीन · ${fdate(date)}*\nबिक्री: ${rs(salesTot)} (${sale.length} बिल)\nनकद ${rs(cash)} · UPI ${rs(upi)} · उधार ${rs(ud)}\nवसूली: ${rs(jc+ju)}\nखर्चा: ${rs(cc.khAll)}\nमुनाफ़ा (खर्चे के बाद): ${rs(net)}\nगल्ला: ${cc.diff==null?"गिना नहीं":Math.abs(cc.diff)<=5?"पूरा मिला":rs(cc.diff)}\nमाल में कमी: ${rs(shortTot)}\nरेट बदले/छूट: ${flags.length} बिल`;
   const rows=Object.values(items).sort((a,b)=>b.amt-a.amt);
   /* 📊 रिपोर्ट-क्षेत्र (06-11-2026, Vyapar जैसा): ऊपर ज़रूरी चेतावनी + आज की झलक, नीचे समूह-वार सूची, ⭐ पसंदीदा सबसे ऊपर।
      रिपोर्ट टैप करने पर ही उसका HTML बनता है (कम भार, ऐप अटके नहीं)। */
@@ -2256,7 +2256,7 @@ function renderReport(){
     R("ledger","party","🧾","पार्टी / उधार खाता (स्टेटमेंट)","",null),
     R("topc","party","⭐","सबसे अच्छे ग्राहक",topC.length+"",()=>`${topC.length?`<h3 style="margin:0 0 6px">सबसे ज़्यादा खरीदने वाले ग्राहक</h3><div class="list">${topC.map(c=>`<div class="li"><div class="mid"><b>${esc(c.name||c.phone)}</b><span>${esc(c.phone)} · ${c.visits||0} बार · आखिरी बार ${daysAgo(c.lastTs||Date.now())} दिन पहले</span></div><div class="rt">${rs(c.spent||0)}</div></div>`).join("")}</div>`:""}${topC.length?"":`<div class="empty">अभी कोई ग्राहक नहीं</div>`}`),
     R("sleep","party","😴","सोए ग्राहक (30 दिन से नहीं आए)",S.customers.filter(c=>c.lastTs&&Date.now()-c.lastTs>30*864e5&&(c.visits||0)>=2).length+"",()=>{const L=S.customers.filter(c=>c.lastTs&&Date.now()-c.lastTs>30*864e5&&(c.visits||0)>=2).sort((a,b)=>(b.spent||0)-(a.spent||0)).slice(0,40);
-      return L.length?`<p class="note" style="margin:0 0 8px">पहले आते थे (2+ बार), अब 30 दिन से नहीं — एक WhatsApp से वापस बुलाएँ। सबसे ज़्यादा खरीदने वाले पहले।</p><div class="list">${L.map(c=>`<div class="li"><div class="mid"><b>${esc(c.name||c.id)}</b><span>${esc(c.id)} · ${Math.floor((Date.now()-c.lastTs)/864e5)} दिन से नहीं · कुल ${rs(c.spent||0)}</span></div><a class="lnk" href="tel:+91${esc(c.id)}" aria-label="कॉल">📞</a> <a class="lnk" target="_blank" rel="noopener" aria-label="WhatsApp" href="${waLink("🙏 नमस्ते "+(c.name||"")+" जी, 177 MH कैंटीन में आपकी याद आई! ताज़ी मिठाई-नाश्ता तैयार है — घर बैठे भी मँगा सकते हैं।",c.id)}">💬</a></div>`).join("")}</div>`:`<div class="empty">कोई सोया ग्राहक नहीं 👍</div>`}),
+      return L.length?`<p class="note" style="margin:0 0 8px">पहले आते थे (2+ बार), अब 30 दिन से नहीं — एक WhatsApp से वापस बुलाएँ। सबसे ज़्यादा खरीदने वाले पहले।</p><div class="list">${L.map(c=>`<div class="li"><div class="mid"><b>${esc(c.name||c.id)}</b><span>${esc(c.id)} · ${Math.floor((Date.now()-c.lastTs)/864e5)} दिन से नहीं · कुल ${rs(c.spent||0)}</span></div><a class="lnk" href="tel:+91${esc(c.id)}" aria-label="कॉल">📞</a> <a class="lnk" target="_blank" rel="noopener" aria-label="WhatsApp" href="${waLink("🙏 नमस्ते "+(c.name||"")+" जी, 177 वेट कैंटीन में आपकी याद आई! ताज़ी मिठाई-नाश्ता तैयार है — घर बैठे भी मँगा सकते हैं।",c.id)}">💬</a></div>`).join("")}</div>`:`<div class="empty">कोई सोया ग्राहक नहीं 👍</div>`}),
     R("area","party","📍","इलाका-वार बिक्री (बिल की जगह से)","",()=>{const M={};let no=0;sale.forEach(b=>{if(!b.loc){no++;return}const pl=window.SR&&SR.placeAt?SR.placeAt(b.loc):null;const k=pl?pl.name||"जगह":"नाम नहीं रखा (नई जगह)";const o=M[k]||(M[k]={n:0,v:0});o.n++;o.v+=(+b.total||0)});
       const L=Object.entries(M).sort((a,b)=>b[1].v-a[1].v);return `${L.length?`<div class="list">${L.map(([k,o])=>`<div class="li"><div class="mid"><b>📍 ${esc(k)}</b><span>${o.n} बिल</span></div><div class="rt">${rs(o.v)}</div></div>`).join("")}</div>`:`<div class="empty">आज के बिलों में जगह दर्ज नहीं</div>`}${no?`<p class="note">${no} बिल में जगह नहीं (फोन की लोकेशन बंद थी)</p>`:""}<p class="note">जगहों के नाम 📍 लोकेशन टैब में रखें — हर बिल अपने-आप उस इलाके में गिना जाएगा।</p>`}),
     R("inst","party","🏢","संस्थाओं को गया माल",rs(sum(inst,b=>b.total)),()=>`<h3 style="margin:0 0 6px">संस्थाओं को गया माल</h3>`),
@@ -2461,7 +2461,7 @@ function shrink(file){return new Promise((res,rej)=>{const img=new Image();const
 /* ---------- प्रिंट ---------- */
 async function printBill(b){
   try{
-    const o=window.SF?SF.rcptOpts(b,!b.pay||(b.pay.udhar>0)):{shop:"177 MH कैंटीन",date:fdate(b.date)+" "+ftime(b.ts),fq};
+    const o=window.SF?SF.rcptOpts(b,!b.pay||(b.pay.udhar>0)):{shop:"177 वेट कैंटीन",date:fdate(b.date)+" "+ftime(b.ts),fq};
     const how=await SE.printReceipt(b,o);
     toast(how==="bt"?"🖨️ रसीद छप रही है":"प्रिंट खुल गया");
   }catch(err){toast(err.msg||("प्रिंट नहीं हुआ: "+(err.message||err.code||"")))}
@@ -2543,7 +2543,7 @@ function loadDemo(){
   S.items=DEMO_ITEMS.map(([id,name,emoji,cat,unit,sale,cost,hue,barcode,sub,code,mrp,oldSale],i)=>({id,name,emoji,cat,unit,sale,cost,hue,sub,code,mrp,oldSale:oldSale||0,alias:ALIAS[id]||"",barcode:barcode||"",track:!!barcode,min:5,order:i,active:true,photo:SE.bundled.has(id)?"b":""}));
   S.pstock={};
   S.parties=[{id:"jco",name:"JCO मेस",phone:""},{id:"officers",name:"अफसर मेस",phone:""}];
-  S.settings={upi:"",payee:"177 MH Canteen",insts:["15 भैरव कैंटीन","मारवाड़ रसोई (होटल)","अमूल स्टोर"]};
+  S.settings={upi:"",payee:"177 Wet Canteen",insts:["15 भैरव कैंटीन","मारवाड़ रसोई (होटल)","अमूल स्टोर"]};
 }
 async function boot(){
   S.staff=lsGet("se_staff");S.view=lsGet("se_view")||"grid";S.sortTop=lsGet("se_sort")!=="0";try{S.top7=JSON.parse(lsGet("se_top7")||"{}")}catch(e){S.top7={}}try{S.bt=JSON.parse(lsGet("se_tabs")||"[]")}catch(e){S.bt=[]}

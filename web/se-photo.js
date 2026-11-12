@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 📸 असली फोटो (se-photo.js, window.SPH) · नियम: docs/खाता-और-फोटो-प्रॉम्प्ट.txt
+/* 177 वेट कैंटीन — 📸 असली फोटो (se-photo.js, window.SPH) · नियम: docs/खाता-और-फोटो-प्रॉम्प्ट.txt
    • हर फोटो अपने-आप: खाली किनारा काटो → चौकोर, सफ़ेद पृष्ठभूमि → 320px → JPEG ≤ 20 KB (HD भी) — ऐप कभी भारी नहीं
    • ⚙️ "📸 असली फोटो": कितनी बाकी · 10/15/20 सामान का तैयार प्रॉम्प्ट एक टैप में कॉपी (ChatGPT/Gemini) · ZIP या कई फोटो एक साथ डालें
    • फाइल का नाम → सामान: id → 4 अंक कोड → बारकोड → नाम */
@@ -64,7 +64,7 @@ SPH.makePrompt=function(i){const n=SE.capNm(i.name),hi=i.hi?` (${i.hi})`:"";
   return `Freshly made Indian ${n}${hi} as served in a canteen: on a white plate or steel thali, 45° view, hot and tasty with natural garnish, pure white background, soft light, realistic food photo, square 800x800, no text, no hands.`};
 /* हर सामान की पंक्ति: उसका अपना प्रॉम्प्ट (AI का लिखा) या अपने-आप वाला */
 SPH.itemPrompt=i=>i.aiPrompt||(isFood(i)||i.cat==="sabzi"?SPH.makePrompt(i):(window.SI&&SI.geminiPrompt?SI.geminiPrompt(i):""));
-SPH.foodPrompt=function(L){return `I own "177 MH Canteen" (Military Hospital canteen, Barmer, India). We COOK these dishes ourselves in our shop kitchen — they have NO brand and NO pack, so there is no "original" photo to find.
+SPH.foodPrompt=function(L){return `I own "177 Wet Canteen" (wet canteen, Barmer, India). We COOK these dishes ourselves in our shop kitchen — they have NO brand and NO pack, so there is no "original" photo to find.
 I, the owner, ASK you to CREATE (generate) one photo for each dish. A generated photo is exactly what I want here — it is not fake, it is a menu picture for my own dishes.
 
 Style for every photo: realistic, fresh and tasty-looking Indian style, served on a plain white plate or steel thali, top/45° view, plain white or light background, natural light, NO text, NO logo, NO hands. Square.
@@ -76,7 +76,7 @@ HOW TO GIVE THEM (very important):
 
 Dishes (${L.length}):
 ${L.map((i,k)=>`${k+1}. file: ${i.id}.jpg | dish: ${SE.capNm(i.name)}${i.hi?` | Hindi: ${i.hi}`:""}${i.photo&&SPH.isBad(i)?" | NOTE: our current photo is blurry/bad — make a better one":""}`).join("\n")}`};
-SPH.prompt=function(L){if(L.length&&L.every(isFood))return SPH.foodPrompt(L);const shop="177 MH Canteen, Barmer (India)";
+SPH.prompt=function(L){if(L.length&&L.every(isFood))return SPH.foodPrompt(L);const shop="177 Wet Canteen, Barmer (India)";
   const rows=L.map((i,k)=>{const br=i.brand?` | brand: ${i.brand}`:"";const bc=String(i.barcode||"").split(",")[0].trim();
     const why=i.photo?(SPH.isBad(i)?" | NOTE: our current photo is blurry/bad — replace it":" | NOTE: our current photo is a shop snapshot — need the original pack photo"):"";
     return `${k+1}. file: ${i.id}.jpg${why} | product: ${SE.capNm(i.name)}${br}${i.size?` | size: ${i.size}`:""}${bc?` | barcode (EAN): ${bc}`:""}${+i.mrp?` | MRP ₹${i.mrp}`:""}${i.hi?` | Hindi: ${i.hi}`:""} | type: ${["mithai","fast"].includes(i.cat)?"loose food (sweet/snack) made in our shop":"packaged product"}`}).join("\n");

@@ -334,7 +334,7 @@ async def main():
         await pg.click('[data-lg="owner-go"]'); await pg.wait_for_selector("#lock", state="hidden"); await pg.wait_for_timeout(800)
         await pg.click('[data-tab="report"]'); await pg.wait_for_timeout(600)
         txt = await pg.evaluate("SK.ownerText()")
-        assert "बिक्री" in txt and "मुनाफ़ा" in txt and "177 MH" in txt, txt
+        assert "बिक्री" in txt and "मुनाफ़ा" in txt and "177" in txt, txt
         await pg.screenshot(path=f"{SHOTS}/8-owner-report.png")
         await pg.click('[data-tab="stock"]'); await pg.wait_for_timeout(500)
         assert await pg.locator("[data-skview]").count() >= 1, "owner should see count report"

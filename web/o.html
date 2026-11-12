@@ -1,5 +1,5 @@
 <!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="refresh" content="0;url=order/"><script>location.replace("order/"+location.search)</script><title>177 MH कैंटीन · घर बैठे ऑर्डर</title><meta name="theme-color" content="#0d1a33"><link rel="icon" href="icon.png"><link rel="stylesheet" href="fonts/fonts.css">
+<meta http-equiv="refresh" content="0;url=order/"><script>location.replace("order/"+location.search)</script><title>177 वेट कैंटीन · घर बैठे ऑर्डर</title><meta name="theme-color" content="#0d1a33"><link rel="icon" href="icon.png"><link rel="stylesheet" href="fonts/fonts.css">
 <style>:root{--bg:#f2f2f7;--card:#fff;--ink:#1c1c1e;--mut:#6e6e73;--line:#e3e3e8;--acc:#e04a00;--accbg:#fff1e6}
 @media (prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--ink:#f5f5f7;--mut:#9a9aa1;--line:#38383a;--acc:#ff8a3d;--accbg:#3a2112}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 "Mukta","Noto Sans Devanagari",system-ui,sans-serif;padding-bottom:110px}
@@ -12,7 +12,7 @@ main{max-width:640px;margin:0 auto;padding:10px 12px}input.s,input.f,textarea{wi
 .t.on{outline:2.5px solid var(--acc)}.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 70%,transparent)}
 .go{width:100%;max-width:640px;margin:0 auto;display:block;border:0;border-radius:18px;padding:15px;font:800 18px inherit;color:#fff;background:linear-gradient(135deg,#ff9a4d,#f2640f 55%,#e04a00);box-shadow:0 10px 26px rgba(224,74,0,.4)}
 .go:disabled{opacity:.5}.c{background:var(--card);border-radius:20px;padding:14px;margin:10px 0;box-shadow:0 6px 18px rgba(16,24,40,.07)}.mut{color:var(--mut);font-size:13px}h3{margin:0 0 8px}</style></head><body>
-<header><img src="icon.png" alt=""><div><h1>177 MH कैंटीन</h1><small>घर बैठे ऑर्डर — सामान तैयार मिलेगा 🛒</small></div></header>
+<header><img src="icon.png" alt=""><div><h1>177 वेट कैंटीन</h1><small>घर बैठे ऑर्डर — सामान तैयार मिलेगा 🛒</small></div></header>
 <main id="m"><div class="c">⏳ आज के भाव आ रहे हैं…</div></main>
 <div class="bar"><button class="go" id="go" disabled>सामान चुनें</button></div>
 <script src="config.js"></script>
@@ -39,8 +39,8 @@ go.onclick=async()=>{if(step==="pick"){step="form";draw();window.scrollTo(0,0);r
  const S=v=>({stringValue:String(v)});const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S(ad.slice(0,80)),note:S(nt.slice(0,200)),ts:{integerValue:String(Date.now())},status:S("new"),src:S("web"),
   items:{arrayValue:{values:I.map(i=>({mapValue:{fields:{id:S(i.id),n:S(i.n),q:{doubleValue:Q[i.id]},u:S(i.u),s:{doubleValue:i.s}}}}))}}}};
  try{const r=await fetch(B+"orders?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw 0;
-  const wa=R.phone&&String(R.phone).length===10?"https://wa.me/91"+R.phone+"?text="+encodeURIComponent("🙏 मैंने 177 MH कैंटीन में ऑर्डर भेजा है — "+nm+" · "+ph):"";
-  m.innerHTML=`<div class="c" style="text-align:center"><div style="font-size:54px">✅</div><h3>ऑर्डर मिल गया, ${esc(nm)} जी!</h3><p>177 MH कैंटीन से आपका सामान जल्द तैयार होएगी 🚐<br>तौलकर बिल देंगे — UPI या नकद।</p>${wa?`<a href="${wa}" style="color:var(--acc);font-weight:800">WhatsApp पर बताएँ</a>`:""}</div>`;
+  const wa=R.phone&&String(R.phone).length===10?"https://wa.me/91"+R.phone+"?text="+encodeURIComponent("🙏 मैंने 177 वेट कैंटीन में ऑर्डर भेजा है — "+nm+" · "+ph):"";
+  m.innerHTML=`<div class="c" style="text-align:center"><div style="font-size:54px">✅</div><h3>ऑर्डर मिल गया, ${esc(nm)} जी!</h3><p>177 वेट कैंटीन से आपका सामान जल्द तैयार होएगी 🚐<br>तौलकर बिल देंगे — UPI या नकद।</p>${wa?`<a href="${wa}" style="color:var(--acc);font-weight:800">WhatsApp पर बताएँ</a>`:""}</div>`;
   document.querySelector(".bar").remove()}catch(e){go.disabled=false;go.textContent="✓ ऑर्डर भेजें";alert("ऑर्डर नहीं गया — इंटरनेट देखें और दोबारा भेजें")}};
 draw()})();
 </script></body></html>

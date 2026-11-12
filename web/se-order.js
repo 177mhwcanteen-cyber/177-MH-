@@ -6,7 +6,7 @@ const SOD=window.SOD={};
 const num=v=>{const n=parseFloat(String(v==null?"":v).replace(",","."));return isFinite(n)?n:0};
 const qOf=it=>+(S.pstock[it.id]&&S.pstock[it.id].qty)||0;
 const need=it=>Math.max(lowOf(it),Math.ceil(lowOf(it)*2-qOf(it)));
-const MHN="177 MH कैंटीन";
+const MHN="177 वेट कैंटीन";
 const LSo={get(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const clean=v=>{let d=String(v||"").replace(/\D/g,"");if(d.length>10)d=d.slice(-10);return d.length===10?d:""};
 function lastBuy(id){const P=(S.purchHist||[]).concat(S.purch||[]).filter(p=>!p.cancelled&&(p.lines||[]).some(l=>l.id===id)).sort((a,b)=>b.ts-a.ts);return P[0]||null}
@@ -27,7 +27,7 @@ SOD.list=function(){
   return Object.values(G).sort((a,b)=>(a.key?0:1)-(b.key?0:1)||b.rows.length-a.rows.length);
 };
 SOD.text=function(g){const sent=biller()||"";const ph=window.SF&&SF.orderPh?SF.orderPh():"";const R=g.rows.filter(x=>x.q>0);
-  return `🛒 *177 MH कैंटीन — माल का ऑर्डर*\n${fdate(today())}\n────────\n${g.key&&g.key!=="_"?g.name+" जी, नमस्ते 🙏\nयह माल भेज दीजिए:\n":""}`+
+  return `🛒 *177 वेट कैंटीन — माल का ऑर्डर*\n${fdate(today())}\n────────\n${g.key&&g.key!=="_"?g.name+" जी, नमस्ते 🙏\nयह माल भेज दीजिए:\n":""}`+
     R.map((x,i)=>`${i+1}. ${x.it.name}${x.it.size&&!String(x.it.name).includes(x.it.size)?" "+x.it.size:""} — *${x.q} ${UNITS[x.it.unit]||x.it.unit}*`).join("\n")+
     `\n────────\nकुल ${R.length} सामान${sent?"\nभेजा: "+sent:""}${ph?" · मो. "+(SF.fmtPh?SF.fmtPh(ph):ph):""}\nधन्यवाद 🙏`};
 SOD.sheet=function(){

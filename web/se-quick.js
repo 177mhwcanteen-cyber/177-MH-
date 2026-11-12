@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — A से Z सुधार (se-quick.js) · नियम: docs/सुधार-योजना-प्रॉम्प्ट.txt
+/* 177 वेट कैंटीन — A से Z सुधार (se-quick.js) · नियम: docs/सुधार-योजना-प्रॉम्प्ट.txt
    ⭐ फ़ेवरेट · 📊 मालिक का डैशबोर्ड · 🔢 बिल के बारकोड से वापसी · 🎁 ग्राहक पॉइंट · 📲 उधार की याद · 🔐 AI चाबी मालिक के खाने में · 📦 बैकअप का हाल
    डेटा की जगह वही: Firebase के पुराने खाने (customers, parties, ownerCfg, days/…/bills) — कोई नई जगह नहीं। */
 (function(){
@@ -93,7 +93,7 @@ SA.remindHTML=function(){const L=(S.parties||[]).filter(p=>!p.hide).map(p=>({p,b
   <div class="rml">${L.slice(0,60).map(x=>{const n=ph(x),dd=days(x.p.remindTs);return `<div class="rmr"><div><b>${esc(x.p.name)}</b><span>${rs(x.b)}${dd!=null?` · याद: ${dd?dd+" दिन पहले":"आज"}`:" · कभी याद नहीं"}</span></div>
     ${n.length===10?`<button type="button" data-rmd="${esc(x.p.id)}" class="${dd===0?"done":""}">📲 WhatsApp</button>`:`<span class="note">नंबर नहीं</span>`}</div>`}).join("")}</div></details>`};
 SA.remind=async function(pid){const p=(S.parties||[]).find(x=>x.id===pid);if(!p)return;const b=typeof bal==="function"?bal(pid):0,n=String(p.phone||"").replace(/\D/g,"").slice(-10);if(n.length!==10)return;
-  const upi=typeof upiId==="function"?upiId():"";const shop=(S.settings&&S.settings.rcpt&&S.settings.rcpt.shop)||"177 MH कैंटीन";
+  const upi=typeof upiId==="function"?upiId():"";const shop=(S.settings&&S.settings.rcpt&&S.settings.rcpt.shop)||"177 वेट कैंटीन";
   const t=`🙏 नमस्ते ${p.name} जी,\n${shop} में आपका उधार *₹${b}* बाकी है।\nसुविधा अनुसार चुका दें${upi?`\n📱 UPI: ${upi}`:""}\nधन्यवाद 🙏`;
   window.open("https://wa.me/91"+n+"?text="+encodeURIComponent(t),"_blank");
   p.remindTs=Date.now();try{if(!S.demo&&S.db)await S.db.collection("parties").doc(pid).update({remindTs:p.remindTs})}catch(e){}
@@ -119,7 +119,7 @@ SA.setShare=async function(on){S.settings={...(S.settings||{}),aiShare:!!on};if(
 SA.bkHTML=function(){if(!S.isOwner)return "";const y=dayAdd(today(),-1),last=localStorage.getItem("sx_bk")||"",lf=+(localStorage.getItem("sx_bkf")||0);
   return `<div class="card2 bkst"><h3>📦 बैकअप का हाल</h3>
   <div class="bkr"><span>${last===y||last===today()?"✅":"⏳"}</span><div><b>रोज़ का अपने-आप बैकअप (Firebase में)</b><small>${last?"आख़िरी: "+fdate(last)+" का दिन":"आज पहली बार — ऐप खुलने के ~30 सेकंड बाद"}</small></div></div>
-  <div class="bkr"><span>☁️</span><div><b>Google Drive "177 MH कैंटीन बैकअप" + Sheet</b><small>Apps Script दिन में 2 बार (सुबह 7, रात 10) + हर घंटे Sheet — वही पुरानी जगह</small></div></div>
+  <div class="bkr"><span>☁️</span><div><b>Google Drive "177 वेट कैंटीन बैकअप" + Sheet</b><small>Apps Script दिन में 2 बार (सुबह 7, रात 10) + हर घंटे Sheet — वही पुरानी जगह</small></div></div>
   <div class="bkr"><span>${lf?"✅":"•"}</span><div><b>फ़ाइल बैकअप (30 दिन, हाथ से)</b><small>${lf?"आख़िरी: "+new Date(lf).toLocaleDateString("hi-IN"):"अभी तक नहीं बना"} · <button type="button" class="lnk" data-sxbk>अभी बनाएँ</button></small></div></div></div>`};
 
 /* ================= 🔠 सामान का नाम: टाइप करते ही CAPITAL (विक्रम जी का पक्का नियम) =================

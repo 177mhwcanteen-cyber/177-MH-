@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 🔐 मालिक का UPI भुगतान मिलान (सिर्फ़ विक्रम जी को दिखता है)
+/* 177 वेट कैंटीन — 🔐 मालिक का UPI भुगतान मिलान (सिर्फ़ विक्रम जी को दिखता है)
    खरीद ↔ UPI स्क्रीनशॉट: AI फाइल (HTML) बनाओ → Claude से पढ़वाओ → जवाब चिपकाओ → हर बिल पर पक्का नाम, UTR, खाता।
    डेटा: pay/{id}, payees/{id}, ownerCfg/accounts — Firestore नियमों में सिर्फ़ मालिक पढ़/लिख सकते हैं। */
 (function(){
@@ -62,11 +62,11 @@ SP.aiHTML=function(){
   const N=need();const rows=N.map((x,i)=>({n:i+1,ref:x.ref,bill:x.p?billNo(x.p):"बाकी",date:x.date,time:ftime(x.ts),kind:x.kind,shop_typed:x.shop,phone_typed:x.phone,items:x.items,amount:x.amt,paid_by:PAYN[x.mode]||x.mode,entered_by:x.by}));
   const data={app:"mh-wet-canteen",made:new Date().toISOString(),purchases:rows,known_payees:ST.payees.map(p=>({name:p.name,upi:p.upiIds||[],phones:p.phones||[],shops:p.shops||[]})),owner_accounts:ST.accts};
   const e=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  return `<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>177 MH कैंटीन — UPI भुगतान मिलान</title>
+  return `<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>177 वेट कैंटीन — UPI भुगतान मिलान</title>
 <style>body{font-family:"Noto Sans Devanagari",system-ui,sans-serif;margin:16px;color:#111;line-height:1.5}h1{font-size:22px;margin:0}h2{font-size:18px;margin:18px 0 6px}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{border:1px solid #bbb;padding:5px 6px;text-align:left;vertical-align:top}th{background:#f1ecff}.r{text-align:right}
 .box{background:#fff8e1;border:1px solid #f0c36d;border-radius:10px;padding:10px 12px}pre{background:#f5f5f5;padding:10px;border-radius:8px;white-space:pre-wrap;font-size:12px}</style></head><body>
-<h1>🔐 177 MH कैंटीन — UPI भुगतान मिलान</h1><p>बनाया: ${e(new Date().toLocaleString("hi-IN"))} · ${rows.length} भुगतान · कुल ₹${r2(N.reduce((a,x)=>a+x.amt,0))}</p>
+<h1>🔐 177 वेट कैंटीन — UPI भुगतान मिलान</h1><p>बनाया: ${e(new Date().toLocaleString("hi-IN"))} · ${rows.length} भुगतान · कुल ₹${r2(N.reduce((a,x)=>a+x.amt,0))}</p>
 
 <h2>🤖 AI के लिए हिदायत (INSTRUCTIONS FOR THE AI)</h2>
 <div class="box">

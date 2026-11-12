@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 🏷️ बारकोड छपाई (se-label.js)
+/* 177 वेट कैंटीन — 🏷️ बारकोड छपाई (se-label.js)
    • छापने की लिस्ट: नाम/कोड लिखो या पुराना लेबल/पैकेट स्कैन करो → हर सामान के आगे संख्या → एक बटन से सब छपें
    • बिलिंग में "✏️ भाव बदलें" के पास "🏷️ बारकोड छापें": सामान दबाओ → कितने → "अभी छापें" या "लिस्ट में जोड़ें"
    • सामान की सेटिंग और बाज़ार खरीद में भी 🏷️ बटन
@@ -21,7 +21,7 @@ const sd=s=>{if(!s)return "";const p=String(s).split("-");return p.length===3?p[
 /* ================= सेटिंग (settings/main.lbl — सब फोन पर एक जैसी) ================= */
 const STYLES=[["classic","क्लासिक"],["band","काली पट्टी"],["tag","प्राइस टैग"],["frame","फ्रेम"],["bigprice","बड़ा भाव"],["minimal","सादा"]];
 const SHOW=[["shop","🏪 दुकान का नाम"],["name","📝 सामान का नाम"],["price","₹ भाव"],["rack","📍 रैक-खाना"],["mrp","MRP (कटा हुआ)"],["size","⚖️ मात्रा / ml"],["code","# सामान कोड"],["brand","🏭 कंपनी का नाम"],["mfg","📅 पैकिंग तारीख"],["exp","⏳ एक्सपायरी"],["digits","🔢 बारकोड के अंक"],["qr","📱 QR कोड भी"],["extra","💬 नीचे की लाइन"],["caps","🔠 नाम CAPITAL में"]];
-const DEF={shop:"177 MH वेट कैंटीन · बाड़मेर",style:"classic",extra:"धन्यवाद · फिर पधारें",
+const DEF={shop:"177 वेट कैंटीन · बाड़मेर",style:"classic",extra:"धन्यवाद · फिर पधारें",
   show:{shop:1,name:1,price:1,rack:1,mrp:0,size:0,code:0,brand:0,mfg:0,exp:0,digits:1,qr:0,extra:0,caps:0}};
 SL.STYLES=STYLES;SL.SHOW=SHOW;
 SL.cfg=function(){const s=(S.settings&&S.settings.lbl)||{};return {...DEF,...s,show:{...DEF.show,...(s.show||{})}}};
@@ -77,7 +77,7 @@ SL.draw=function(d,cfg,sk){
   const PX=frame?28:24,PT=frame?26:16,PB=frame?22:13;/* 3 mm बाएँ-दाएँ, 2 mm ऊपर — कुछ भी किनारे से न कटे */
   const cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");
   x.fillStyle="#fff";x.fillRect(0,0,W,H);x.fillStyle="#000";x.textBaseline="middle";
-  const shop=sh.shop&&cfg.shop?String(cfg.shop).trim():"",brand=sh.brand&&d.brand?d.brand:"",extra=sh.extra&&cfg.extra?String(cfg.extra).trim():"";
+  const shop=sh.shop&&cfg.shop?SE.nm177(cfg.shop).trim():"",brand=sh.brand&&d.brand?d.brand:"",extra=sh.extra&&cfg.extra?String(cfg.extra).trim():"";
   const name=sh.name&&d.name?(sh.caps?d.name.toLocaleUpperCase("en-IN"):d.name):"";
   const meta=[sh.rack&&d.rack&&"रैक "+d.rack,sh.size&&d.size,sh.code&&d.code&&"#"+d.code].filter(Boolean).join("  ·  ");
   const price=sh.price&&d.price>0?"₹"+fmtP(d.price):"",mrp=d.offer&&d.pmrp>0?d.offer+" · पैक MRP ₹"+fmtP(d.pmrp)+" (2 पीस)":(sh.mrp||d.mrpOn)&&d.mrp>d.price?"MRP ₹"+fmtP(d.mrp):"";/* 🎁 Buy 1 Get 1: सिंगल पीस का भाव, पैक MRP दो पीस का */
@@ -392,7 +392,7 @@ SL.settingsHTML=function(){const c=SL.cfg(),sk=sizeKey(),smp=SL.sample();setTime
   let thumbs="";try{thumbs=STYLES.map(([k,v])=>{const u=SL.canvasFor(smp,{},{...c,style:k},sk).toDataURL("image/png");return `<button type="button" data-slstyle="${k}" aria-pressed="${c.style===k}"><img src="${u}" alt=""><span>${v}</span></button>`}).join("")}catch(e){}
   return `<div class="card2 sl-set" id="slDesign"><h3>🎨 बारकोड लेबल का डिज़ाइन</h3>
   <p class="note" style="margin:0">यहाँ जो चुनेंगे, वही हर फोन से छपेगा। बारकोड हमेशा छपता है — बाकी हर चीज़ आपकी मर्ज़ी।</p>
-  <label class="fld">🏪 दुकान का नाम (सबसे ऊपर)<input class="inp" id="slShop" value="${esc(c.shop)}" maxlength="48" placeholder="जैसे 177 MH वेट कैंटीन · बाड़मेर"></label>
+  <label class="fld">🏪 दुकान का नाम (सबसे ऊपर)<input class="inp" id="slShop" value="${esc(c.shop)}" maxlength="48" placeholder="जैसे 177 वेट कैंटीन · बाड़मेर"></label>
   <b class="sl-t">1️⃣ डिज़ाइन चुनें</b>
   <div class="sl-thumbs">${thumbs}</div>
   <b class="sl-t">2️⃣ लेबल पर क्या-क्या छपे</b>

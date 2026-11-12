@@ -145,11 +145,11 @@ async def main():
         await pg.evaluate("S.tab='set';showTab()")
         await pg.wait_for_selector("#slDesign [data-slstyle]")
         assert await pg.locator("#slDesign [data-slstyle]").count() == 6
-        await pg.fill("#slShop", "177 MH वेट कैंटीन"); await pg.dispatch_event("#slShop", "change")
+        await pg.fill("#slShop", "177 वेट कैंटीन"); await pg.dispatch_event("#slShop", "change")
         await pg.click('#slDesign [data-slstyle="band"]')
         await pg.check('[data-slshow="mrp"]'); await pg.check('[data-slshow="exp"]')
         assert await pg.evaluate("SL.cfg().style") == "band" and await pg.evaluate("SL.cfg().show.mrp") == 1
-        assert await pg.evaluate("SL.cfg().shop") == "177 MH वेट कैंटीन"
+        assert await pg.evaluate("SL.cfg().shop") == "177 वेट कैंटीन"
         el = await pg.query_selector("#slDesign"); await el.screenshot(path=f"{SHOTS}/l4-settings.png")
         print("settings ok")
 

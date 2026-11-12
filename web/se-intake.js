@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — 📸 फोटो से माल (AI)
+/* 177 वेट कैंटीन — 📸 फोटो से माल (AI)
    हर सामान की 3 फोटो (आगे / MRP-एक्सपायरी / बारकोड) + मात्रा + भाव → AI के लिए PDF →
    Claude/Gemini का जवाब (JSON) चिपकाएँ → नया सामान बने / स्टॉक बढ़े / खेप-एक्सपायरी / खरीद का रिकॉर्ड।
    बड़ी फोटो सिर्फ़ इसी फोन (IndexedDB) में; ऐप में सिर्फ़ ~6-10 KB की छोटी फोटो जाती है। */
@@ -42,7 +42,7 @@ function close(){B.open=false;save();if(window.SF)SF.renderKharid(1)}
 /* ---------- AI निर्देश ---------- */
 function prompt(){
   const src=B.src==="mh"?"177 MH transfer":B.src==="shop"?"Bought from: "+(B.shop||"-"):"Opening stock";
-  return `177 MH CANTEEN (Barmer, India) - PRODUCT ENTRY · batch ${B.id} · ${src}
+  return `177 WET CANTEEN (Barmer, India) - PRODUCT ENTRY · batch ${B.id} · ${src}
 Each product #N has up to 3 photos: FRONT, MRP (price/expiry label), BARCODE. ZIP: NN-front.jpg / NN-mrp.jpg / NN-barcode.jpg + items.csv (n, qty, cost, sale, barcode). PDF: one page per product.
 
 WORK FAST: go through ALL products without stopping. Read only what is printed. No web search now. Unsure = null. Give the JSON at once so billing can start.
@@ -250,7 +250,7 @@ async function apply(){
   let pdoc=null;
   if(B.src!=="opening"&&lines.length){
     const tot=r2(lines.reduce((a,l)=>a+l.amt,0)),mh=B.src==="mh",pid="p"+uid();
-    pdoc={date,ts,by:S.uid||"",byName:biller(),supId:"",supName:mh?"177 MH कैंटीन":B.shop||"दुकान",supPhone:"",lines,gross:tot,disc:0,total:tot,
+    pdoc={date,ts,by:S.uid||"",byName:biller(),supId:"",supName:mh?"177 वेट कैंटीन":B.shop||"दुकान",supPhone:"",lines,gross:tot,disc:0,total:tot,
       pay:mh?"mh":(B.pay||"vikram"),paid:mh||B.pay==="udhar"?0:tot,due:!mh&&B.pay==="udhar"?tot:0,src:mh?"mh":"shop",note:"📸 फोटो से (AI) · "+B.id,photos:[],photoPending:0,cancelled:false};
     try{if(!S.demo)await S.db.collection("purchases").doc(pid).set(pdoc);S.purch=S.purch||[];if(S.demo||!S.purch.find(p=>p.id===pid))S.purch.push({id:pid,...pdoc});S.purchHist&&S.purchHist.push({id:pid,...pdoc});pdoc={id:pid,...pdoc}}catch(e){toast("खरीद का रिकॉर्ड नहीं बना: "+(e.code||""))}
   }

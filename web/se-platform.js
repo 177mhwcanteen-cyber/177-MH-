@@ -1,4 +1,4 @@
-/* 177 MH कैंटीन — प्लेटफ़ॉर्म परत
+/* 177 वेट कैंटीन — प्लेटफ़ॉर्म परत
    Firebase लॉगिन, अपने-आप अपडेट, कैमरा स्कैनर, ब्लूटूथ प्रिंटर, A4 प्रिंट, फोटो।
    ऐप का बाकी कोड (index.html) पहले जैसा ही S.db.collection(...) API इस्तेमाल करता है। */
 (function(){
@@ -9,7 +9,7 @@ const SE=window.SE={version:window.SE_BUILD||"dev",isNative:!!N.isNative,cfg:CFG
 /* 🏢 संस्था-पहरा: हर डेटा (migrate.json, GitHub खेप, खरीद-बही का कोड) पर "org" — दूसरी संस्था का डेटा इस ऐप में कभी नहीं चढ़ता।
    177 MH = "mh177" · भैरव = "bhairav" (हर रिपो की config.js में; scripts/org-guard.mjs build से पहले जाँचता है)। org न लिखा हो तो उसे "mh177" का माना जाता है। */
 SE.org=CFG.org||"mh177";
-SE.ORGNAME={mh177:"177 MH कैंटीन",bhairav:"भैरव कैंटीन"};
+SE.ORGNAME={mh177:"177 वेट कैंटीन",bhairav:"भैरव कैंटीन"};
 SE.orgOk=function(o){o=o||"mh177";return o===SE.org};
 SE.orgErr=o=>"⛔ यह "+(SE.ORGNAME[o||"mh177"]||o)+" का डेटा है — "+(SE.ORGNAME[SE.org]||SE.org)+" के ऐप में नहीं चढ़ेगा";
 const $=s=>document.querySelector(s);
@@ -54,7 +54,7 @@ function lockEl(){return $("#lock")}
 function drawLogin(st){
   const L=lockEl();L.hidden=false;
   if(st.mode==="owner"){
-    L.innerHTML=`<div style="font-size:44px">🛒</div><h2>177 MH कैंटीन</h2>
+    L.innerHTML=`<div style="font-size:44px">🛒</div><h2>177 वेट कैंटीन</h2>
     <p class="note" style="margin:-8px 0 0">${st.create?"मालिक का नया खाता बनाएँ":"मालिक लॉगिन"}</p>
     <div class="lgform">
       <input class="inp" id="lgEmail" type="email" autocomplete="username" placeholder="ईमेल" value="${esc(st.email||"")}">
@@ -71,7 +71,7 @@ function drawLogin(st){
     ${st.err?`<p class="lgerr">${esc(st.err)}</p>`:""}
     <div class="lgform"><button class="big" data-lg="verify-done">हो गया</button><button class="lnk" data-lg="verify-resend">लिंक दोबारा भेजें</button><button class="lnk" data-lg="logout">दूसरा खाता</button></div>`;
     return}
-  L.innerHTML=`<div style="font-size:44px">🛒</div><h2>177 MH कैंटीन</h2>
+  L.innerHTML=`<div style="font-size:44px">🛒</div><h2>177 वेट कैंटीन</h2>
     ${st.step==="pin"?`<p class="note" style="margin:-8px 0 0">📱 ${esc(st.phone)} — अपना 4 अंक का PIN डालें</p>
       <div class="dots ${st.err?"bad":""}" aria-label="PIN">${[0,1,2,3].map(i=>`<i class="${i<st.pin.length?"f":""}"></i>`).join("")}</div>`
     :`<p class="note" style="margin:-8px 0 0">अपना मोबाइल नंबर डालें</p><div class="lgphone" aria-live="polite">${esc(st.phone||"")||'<span class="note">10 अंक</span>'}</div>`}
@@ -289,7 +289,7 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
   async start(cb,video,roi){
     if(this.on)return true;this._seen={};
     if(SE.isNative){const B=N.BarcodeScanner,F=N.BarcodeFormat;
-      const pm=await B.checkPermissions().catch(()=>({}));if(pm.camera!=="granted"){const r=await B.requestPermissions().catch(()=>({}));if(r.camera!=="granted")throw {msg:"कैमरे की अनुमति नहीं मिली — फोन की सेटिंग में 177 MH कैंटीन को कैमरा दें"}}
+      const pm=await B.checkPermissions().catch(()=>({}));if(pm.camera!=="granted"){const r=await B.requestPermissions().catch(()=>({}));if(r.camera!=="granted")throw {msg:"कैमरे की अनुमति नहीं मिली — फोन की सेटिंग में 177 वेट कैंटीन को कैमरा दें"}}
       this._h.push(await B.addListener("barcodesScanned",ev=>{const L=((ev&&ev.barcodes)||[]).filter(b=>b&&b.rawValue);if(!L.length)return;const b=L.length>1?SE.pickCenter(L,window.innerWidth/2,(window.innerHeight)*.3):L[0];this._emit(String(b.rawValue),cb,b.format)}));
       document.documentElement.classList.add("camnative");
       await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.Codabar,F.QrCode,F.DataMatrix].filter(Boolean)});
@@ -360,7 +360,7 @@ SE.receiptCanvas=function(b,o,widthPx){
   const LR=(l,r,sz,bold)=>{x.font=`${bold?"800 ":"500 "}${sz}px ${F}`;const rw=x.measureText(r).width;x.fillText(l,P,y);x.fillText(r,W-P-rw,y);y+=Math.round(sz*1.35)};
   const DASH=()=>{y+=fs(3);for(let i=P;i<W-P;i+=fs(10))x.fillRect(i,y,fs(6),Math.max(1,fs(1.6)));y+=fs(7)};
   const LINE=()=>{y+=fs(3);x.fillRect(P,y,W-2*P,Math.max(2,fs(2)));y+=fs(7)};
-  T("🛒 "+(o.shop||"177 MH कैंटीन"),fs(30),"c",true,FB);
+  T("🛒 "+(o.shop||"177 वेट कैंटीन"),fs(30),"c",true,FB);
   if(o.tag)T(o.tag,fs(15),"c");
   if(o.addr)T(o.addr,fs(16),"c");
   if(o.phone)T("📞 ऑर्डर: "+o.phone,fs(16),"c");
@@ -517,7 +517,7 @@ SE.printA4=async function(title,bodyHTML){
   h1{font-size:24px;margin:0 0 2px}h2,h3{font-size:18px;margin:14px 0 6px}.sub{color:#555;margin:0 0 12px}
   table{width:100%;border-collapse:collapse;margin:6px 0 12px}th,td{border:1px solid #bbb;padding:5px 7px;text-align:left;vertical-align:top}th{background:#eef5ee}
   td.r,th.r{text-align:right}.tot td{font-weight:700;background:#f6f6f6}button,input,select,.noprint{display:none!important}
-  </style></head><body><h1>🛒 177 MH कैंटीन</h1><p class="sub">${esc(title)} · छपा: ${new Date().toLocaleString("hi-IN")}</p>${bodyHTML}</body></html>`;
+  </style></head><body><h1>🛒 177 वेट कैंटीन</h1><p class="sub">${esc(title)} · छपा: ${new Date().toLocaleString("hi-IN")}</p>${bodyHTML}</body></html>`;
   if(SE.isNative){await N.BtPrinter.printHtml({html,name:title});return}
   printHTMLWeb(html);
 };
@@ -679,3 +679,6 @@ SE.applyUpdateNow=async()=>{if(SE._pendingBundle)try{_markTry(SE._pendingBundle.
 /* वेब (Chrome) के लिए ऑफ़लाइन कैश */
 if(!SE.isNative&&"serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
 })();
+
+/* 🏷️ दुकान का नाम (विक्रम जी, 12-11-2026): हर जगह "177 वेट कैंटीन / 177 WET CANTEEN", पता सिर्फ़ "बाड़मेर" — पुरानी सेटिंग में सेव नाम भी दिखाते समय ऐसे ही (डेटा दोबारा नहीं लिखते) */
+SE.nm177=function(t){return String(t==null?"":t).replace(/177 MH( वेट)? कैंटीन/g,"177 वेट कैंटीन").replace(/177 MH( WET)? CANTEEN/g,"177 WET CANTEEN").replace(/177 MH( Wet)? Canteen/gi,"177 Wet Canteen").replace(/\(?Military Hospital\)?[ ·,]*/gi,"").replace(/Akashvani (Road|Rd)[ ,·]*/gi,"").replace(/आकाशवाणी रोड[ ,·]*/g,"")};
