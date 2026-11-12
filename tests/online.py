@@ -126,7 +126,7 @@ async def main():
         assert "Free delivery" in await c.text_content("#trust")
         await c.screenshot(path=f"{SHOTS}/o3-page.png")
         # खोज + ADD + स्टेपर
-        await c.fill("#q", "parle"); await c.wait_for_timeout(100)
+        await c.fill("#q", "parle"); await c.wait_for_timeout(350)
         assert await c.locator(".t").count() == 1
         await c.click(".t .add"); await c.click(".t [data-p]")
         assert "2" in await c.text_content(".t .stp span")
