@@ -72,6 +72,7 @@ async def main():
         # 📊 रिपोर्ट-क्षेत्र: समूह, ⭐ पसंदीदा, टैप = वही रिपोर्ट, ‹ वापस
         assert await pg.locator("#p-report .rp-g").count() == 4 and await pg.locator("#p-report .rp-fav button").count() == 3
         await pg.screenshot(path=f"{SHOTS}/q3b-report-hub.png", full_page=True)
+        await pg.evaluate("document.querySelectorAll('#p-report .rp-g.shut [data-rgrp]').forEach(x=>x.click())")  # चरण 3: मुड़े समूह खोलो (याद रहता है)
         await pg.click('#p-report .rp-go[data-rsel="items"]'); await pg.wait_for_timeout(200)
         assert "सामान-वार बिक्री" in await pg.text_content("#p-report") and not await pg.locator("#p-report .rp-g").count()
         await pg.click("#p-report .rp-back"); await pg.wait_for_timeout(200)
