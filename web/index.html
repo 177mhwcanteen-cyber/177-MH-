@@ -1437,7 +1437,7 @@ function openCheckout(){
   if(!biller()){openBiller(openCheckout);return}
   const _t=S.bt[S.ai];const _keep=_t&&_t.no&&_t.noDate===today()?_t.no:"";
   if(S.saving)return;
-  S.chk={no:_keep||(window.SF?"…":newBillNo()),disc:0,pay:S.mode==="inst"?"inst":"pending",given:"",cashPart:"",upiOk:false};
+  S.chk={no:_keep||(window.SF?"…":newBillNo()),disc:(S.sxOrder&&S.mode!=="inst"&&Date.now()-(+S.sxOrder.ts||0)<3*3600e3&&S.cust&&S.cust.phone&&S.cust.phone===S.sxOrder.phone&&+S.sxOrder.cpnOff)||0,pay:S.mode==="inst"?"inst":"pending",given:"",cashPart:"",upiOk:false};
   if(window.SB&&SB.autoSave){SB.autoSave();return}
   drawCheckout();
 }
