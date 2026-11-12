@@ -120,6 +120,9 @@ async def main():
         assert "wa.me/919829011111" in h and "data-sxobill" not in h, "सब्ज़ी का ऑर्डर उसी के नंबर पर, MH बिल नहीं"
         assert "TOMATO" in await a.evaluate("o=>SON.storeText(o)", o)
         await a.evaluate("SON._mt='rasoi';SON.menuSheet()"); await a.wait_for_timeout(1200)
+        # 🎛️ मालिक का कंट्रोल: 👁 छिपाएँ, भाव का खाना, नई डिश, ⭐ राय
+        assert await a.locator("#sheet [data-somhide]").count() > 5 and await a.locator("#sheet [data-somrp]").count() > 5 and await a.locator("#sheet #somN").count() == 1
+        assert await a.locator("#sheet [data-somt='rev']").count() == 1
         t = await a.inner_text("#sheet")
         assert "ऑनलाइन मेन्यू" in t and "KADAI CHICKEN" in t and "60 आइटम" in t, t[:300]
         await a.evaluate("SON._mt='sabji';SON.menus.ts=0;SON.menuSheet()"); await a.wait_for_timeout(1200)

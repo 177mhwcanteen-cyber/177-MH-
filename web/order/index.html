@@ -101,6 +101,9 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 .t.pk .ph,.ct .cl.pk i{background-size:contain;background-repeat:no-repeat;background-color:#fff}.t .ph{margin:5px 5px 0;border-radius:11px}
 .t .pr{margin-top:0;padding-top:3px}.pp b{font-size:15.5px}.pp s{margin-left:3px}.offt{font:800 11px/1.1 "Mukta",sans-serif;color:#2563eb}.t .nm{min-height:0;margin-top:1px}
 .rsh.mh{background:linear-gradient(135deg,#a16207,#f59e0b)}.rsh.sabji{background:linear-gradient(135deg,#14532d,#16a34a)}
+.ofr{display:flex;gap:9px;align-items:center;margin:10px 12px 0;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#fff1b8,#ffd666);color:#3a2a00;font-size:14px;line-height:1.25}.ofr span{font-size:22px}.ofr.old{background:#eef2ff;color:#1e3a8a;font-size:12.5px}
+.waf{position:fixed;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:5;width:54px;height:54px;border-radius:50%;background:#25d366;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.28);text-decoration:none}.waf svg{width:30px;height:30px;fill:#fff}
+.rv{display:flex;gap:6px;justify-content:center;margin:8px 0}.rv button{border:0;background:none;font-size:34px;line-height:1;padding:2px;filter:grayscale(1);opacity:.45}.rv button.on{filter:none;opacity:1}
 .csh{display:flex;justify-content:space-between;align-items:baseline}.csh span{font-size:15px}
 </style></head><body>
 <div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1>177 MH Canteen</h1><small id="sub">Military Hospital · Akashvani Rd, Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
@@ -112,6 +115,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 <main id="m"><div class="g"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></main>
 <footer>177 MH (Military Hospital) Canteen · Akashvani Road, Barmer<br>Prices come live from the shop · <button class="lnk" id="myo" type="button">📦 My orders</button></footer>
 <button class="cbar" id="cbar" hidden type="button"><span class="ic">🛒</span><span class="tx"><b id="cbN"></b><small id="cbS"></small></span><span class="go">View cart ›</span></button>
+<a class="waf" id="waf" target="_blank" rel="noopener" aria-label="Chat on WhatsApp" hidden><svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.600-1.700A13 13 0 1 0 16 3z"/><text x="16" y="21.5" text-anchor="middle" font-size="15" fill="#25d366" font-weight="700">✆</text></svg></a>
 <div id="ov"></div>
 <script src="../config.js"></script>
 <script>
@@ -175,14 +179,20 @@ const stOn=k=>{const o=(CF.stores||{})[k];return k==="mh"?CF.on!==false:!(o&&o.o
 const stOf=i=>i.st||"mh";
 const vegDot=i=>stOf(i)==="rasoi"?`<i class="vd ${i.veg?"v":"nv"}" title="${i.veg?"Veg":"Non-veg"}"></i>`:"";
 const rasoiOpen=()=>{const H=(RJ&&RJ.shop&&RJ.shop.hours)||[];if(!H.length)return true;const n=new Date(),m=n.getHours()*60+n.getMinutes(),p=s=>{const[a,b]=String(s).split(":");return(+a)*60+(+b||0)};return H.some(h=>m>=p(h[0])&&m<p(h[1]))};
+/* सब्ज़ी एक्सप्रेस के आज के भाव न मिलें (उसका ऐप अभी तक खुला नहीं) → उसकी सामान-सूची से, "भाव पक्का होगा" नोट के साथ */
+let SXOLD=0;async function sabjiFallback(){if(LX.length||!SC.base)return;try{const r=await fetch(SC.base+"migrate.json",{cache:"no-store"});if(!r.ok)return;const M=(await r.json()).items||{};
+    LX=Object.entries(M).filter(([k,v])=>v&&v.active!==false&&+v.sale>0&&!v.virtual).sort((a,b)=>(+a[1].order||0)-(+b[1].order||0)).map(([k,v])=>({id:"sx-"+k,n:k.toUpperCase(),hi:v.name||"",u:v.unit||"kg",s:+v.sale,c:["sabzi","patta","fal","packed"].includes(v.cat)?v.cat:"sabzi",p:v.photo==="b"?SC.base+"img/"+k+".jpg":"",h:v.hue,em:v.emoji||"🥬",st:"sabji"}));SXOLD=LX.length?1:0;build()}catch(e){}}
 async function loadSabji(){if(!SC.pid)return;const c=LS.get("mh_sx",null);if(c&&!LX.length){LX=c;build()}
   try{const r=await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/pub/rates?key="+SC.key,{cache:"no-store"});if(!r.ok)throw 0;
     const X=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
     LX=(X.items||[]).filter(i=>i&&i.id&&+i.s>0).map(i=>({id:"sx-"+i.id,n:String(i.e||i.n||"").toUpperCase(),hi:i.e?i.n:"",u:i.u||"kg",s:+i.s,c:["sabzi","patta","fal","packed"].includes(i.c)?i.c:"sabzi",p:i.p?(/^https?:/.test(i.p)?i.p:SC.base+String(i.p).replace(/^\.?\//,"")):"",h:i.h,em:"🥬",st:"sabji"}));
-    LS.set("mh_sx",LX);build()}catch(e){}}
+    SXOLD=0;LS.set("mh_sx",LX);build();if(!LX.length)sabjiFallback()}catch(e){sabjiFallback()}}
 async function loadRasoi(){try{const r=await fetch("rasoi.json",{cache:"no-store"});if(!r.ok)throw 0;RJ=await r.json();
-    LR=(RJ.items||[]).map(i=>({...i,st:"rasoi",p:i.p||""}));build()}catch(e){}}
-function build(){L=[...LM,...LX,...LR];Object.keys(Q).forEach(id=>{const i=L.find(x=>x.id===id);if(!i&&(LM.length&&LX.length&&LR.length))delete Q[id]});heads();draw()}
+    mkLR();build()}catch(e){}}
+/* 🎛️ मालिक का कंट्रोल (pub/rates.cfg): rp={id:भाव} · rx=[नई डिश] · hide={i:[id],c:[श्रेणी]} · offer="पट्टी" */
+function mkLR(){if(!RJ)return;const rp=CF.rp||{};LR=[...(RJ.items||[]),...((CF.rx||[]).filter(x=>x&&x.id&&x.n&&+x.s>0).map(x=>({id:x.id,n:String(x.n).toUpperCase().slice(0,40),s:+x.s,u:"pc",veg:!!x.veg,c:x.c||(x.veg?"veg":"nonveg")})))].map(i=>({...i,s:+rp[i.id]>0?+rp[i.id]:i.s,st:"rasoi",p:i.p||""}))}
+const vis=i=>{const H=CF.hide||{};return !((H.i||[]).includes(i.id)||(H.c||[]).includes(ocat(i)))};
+function build(){mkLR();L=[...LM,...LX,...LR].filter(vis);Object.keys(Q).forEach(id=>{const i=L.find(x=>x.id===id);if(!i&&(LM.length&&LX.length&&LR.length))delete Q[id]});heads();draw()}
 const toast=t=>{const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)};
 const photo=i=>PH&&PH[i.id]?PH[i.id]:i.p?(/^(https?:|data:)/.test(i.p)?i.p:"../"+i.p):"";
 const bg=i=>photo(i)?`background-image:url('${esc(photo(i))}')`:`background:linear-gradient(135deg,hsl(${(+i.h||((i.id||"").length*47))%360} 70% 92%),hsl(${(+i.h||((i.id||"").length*47))%360} 60% 80%))`;
@@ -194,7 +204,7 @@ let MODE=LS.get("mh_mode","d");const mode=()=>CF.del===false?"p":CF.pick===false
 async function load(){const cached=LS.get("mh_rates",null);if(cached&&!R){R=cached;prep();draw()}
   try{const r=await fetch(B+"pub/rates?key="+C.apiKey,{cache:"no-store"});if(!r.ok)throw 0;R=V({mapValue:{fields:(await r.json()).fields||{}}});LS.set("mh_rates",R);prep();draw()}
   catch(e){if(!R)$("#m").innerHTML='<div class="empty">📶 Could not load prices — check internet and <button class="lnk" onclick="location.reload()">try again</button></div>'}}
-function prep(){CF=R.cfg||{};LM=(R.items||[]).filter(i=>i&&i.id&&+i.s>0&&!(CF.stockOnly&&i.k===0));L=[...LM,...LX,...LR];
+function prep(){CF=R.cfg||{};LM=(R.items||[]).filter(i=>i&&i.id&&+i.s>0&&!(CF.stockOnly&&i.k===0));mkLR();L=[...LM,...LX,...LR].filter(vis);
   Object.keys(Q).forEach(id=>{if(/^(sx|rs)-/.test(id))return;const i=LM.find(x=>x.id===id);if(!i||i.k===0)delete Q[id]});
   const ph=String(CF.phone||R.phone||"");
   $("#eta").innerHTML=CF.on===false?"":`<b>⚡ ${+CF.eta||30} min</b><span>${mode()==="d"?"delivery":"pickup"}</span>`;
@@ -203,7 +213,9 @@ function prep(){CF=R.cfg||{};LM=(R.items||[]).filter(i=>i&&i.id&&+i.s>0&&!(CF.st
   heads()}
 /* ऊपर की पट्टी: दुकान बदलें + उस दुकान की श्रेणियाँ + (रेस्टोरेंट में) वेज/नॉन-वेज */
 function catsOf(st){return [["all","All",st==="sabji"?"🥬":st==="rasoi"?"🍽️":"🛍️"],...secs(st).flatMap(S=>S.c.map(c=>[c[0],c[1],c[2]])),["more","More","🛍️"]]}
-function heads(){const sw=$("#stores");if(sw)sw.innerHTML=SEG?Object.entries(STS).filter(([k])=>stOn(k)).map(([k,v])=>{const n=L.filter(i=>stOf(i)===k&&Q[i.id]>0).length;return `<button type="button" data-st="${k}" aria-pressed="${SEG===k}">${v.ic} ${v.t}${n?`<i>${n}</i>`:""}</button>`}).join(""):"";
+function waPh(){const k=SEG||"mh",o=(CF.stores||{})[k]||{};return String((k!=="mh"&&o.ph)||(k==="rasoi"&&RJ&&RJ.shop&&(RJ.shop.phones||[])[0])||CF.phone||(R&&R.phone)||"").replace(/\D/g,"").slice(-10)}
+function waBtn(){const w=$("#waf"),ph=waPh();if(!w)return;w.hidden=!ph;if(ph)w.href="https://wa.me/91"+ph+"?text="+encodeURIComponent("Hello "+((STS[SEG||"mh"]||{}).n||"")+", I want to order / ask about ")}
+function heads(){waBtn();const sw=$("#stores");if(sw)sw.innerHTML=SEG?Object.entries(STS).filter(([k])=>stOn(k)).map(([k,v])=>{const n=L.filter(i=>stOf(i)===k&&Q[i.id]>0).length;return `<button type="button" data-st="${k}" aria-pressed="${SEG===k}">${v.ic} ${v.t}${n?`<i>${n}</i>`:""}</button>`}).join(""):"";
   const vg=$("#vegbar");if(vg){vg.hidden=SEG!=="rasoi";vg.innerHTML=SEG==="rasoi"?`<button type="button" data-veg="veg" aria-pressed="${VEG==="veg"}"><i class="vd v"></i> Veg only</button><button type="button" data-veg="nonveg" aria-pressed="${VEG!=="veg"}"><i class="vd nv"></i> Non-veg + Veg</button>${rasoiOpen()?"":`<span class="vgc">🌙 Kitchen opens ${esc(((RJ&&RJ.shop&&RJ.shop.hours)||[]).map(h=>h[0]+"–"+h[1]).join(" & "))}</span>`}`:""}
   const C2=catsOf(SEG||"mh"),have=new Set(L.filter(i=>stOf(i)===(SEG||"mh")&&(SEG!=="rasoi"||VEG!=="veg"||i.veg)).map(ocat));if(!C2.some(c=>c[0]===cat))cat="all";
   $("#cats").hidden=!SEG;$("#cats").innerHTML=C2.filter(c=>c[0]==="all"||have.has(c[0])).map(c=>`<button type="button" data-c="${c[0]}" aria-pressed="${cat===c[0]}">${c[2]} ${c[1]}</button>`).join("");
@@ -224,6 +236,8 @@ function draw(){if(!R&&!LX.length&&!LR.length)return;if(!SEG){$("#m").innerHTML=
   if(!F.length&&!s&&!L.some(i=>stOf(i)===SEG)){$("#m").innerHTML=`<div class="empty">⏳ Loading ${esc(STS[SEG].n)} menu…</div>`;bar();return}
   let html="";if(!F.length)html=`<div class="empty">😕 No match for "${esc(qs)}" — try another name or call the shop.</div>`;
   else if(cat==="all"&&!s){
+    if(CF.offer)html+=`<div class="ofr"><span>🎉</span><b>${esc(String(CF.offer).slice(0,120))}</b></div>`;
+    if(SEG==="sabji"&&SXOLD)html+=`<div class="ofr old"><span>ℹ️</span><b>Today's rates may differ a little — final rate is confirmed on call before delivery</b></div>`;
     if(SEG==="rasoi")html+=`<div class="rsh"><b>🍛 ${esc((RJ&&RJ.shop&&RJ.shop.name)||"Marwar Rasoi")}</b><span>${esc((RJ&&RJ.shop&&RJ.shop.tag)||"")}${RJ&&RJ.shop&&RJ.shop.freeDelivery?" · 🛵 Free delivery":""}</span></div>`;
     else html+=`<div class="rsh ${SEG}"><b>${STS[SEG].ic} ${esc(STS[SEG].n)}</b><span>${esc(STS[SEG].d)} · 🛵 Free home delivery</span></div>`;
     html+=tiles(F);
@@ -314,8 +328,15 @@ async function track(id,fresh){clearTimeout(trkT);const o=LS.get("mh_orders",[])
      ${eta&&ix<4?`<p style="margin:0 0 10px;font-size:16px">⏱️ ${o.mode==="p"?"Ready by":"Arriving by"} about <b>${eta}</b></p>`:""}
      <div class="trk">${STEPS.filter(s=>o.mode!=="p"||s[0]!=="out").map((s,k,A)=>{const i2=STEPS.indexOf(s);return `<div class="st ${i2<ix||st==="done"?"done":i2===ix?"now":""}"><i>${i2<ix||st==="done"?"✓":k+1}</i><div><b>${s[1]}</b><small>${i2===ix&&t.msg?esc(t.msg):s[2]}${i2===1&&t.by&&ix>=1?" · "+esc(t.by):""}</small></div></div>`}).join("")}</div>`}</div>
    <div class="box"><div class="row"><span>Order</span><b>#${esc(String(id).slice(-6).toUpperCase())}</b></div><div class="row"><span>Total (approx.)</span><b>${rs(o.total||0)}</b></div>${t.billNo?`<div class="row"><span>Bill</span><b>${esc(t.billNo)}</b></div>`:""}
+   ${st==="done"?rvHTML(id):""}
    ${ph?`<a class="big" href="tel:+91${esc(ph)}">📞 Call the shop</a><a class="big" href="https://wa.me/91${esc(ph)}?text=${encodeURIComponent("Hello, about my order #"+String(id).slice(-6).toUpperCase())}" target="_blank" rel="noopener">💬 WhatsApp</a>`:""}</div>`);
   if(st!=="done"&&st!=="cancel"&&$("#ov .sheet"))trkT=setTimeout(()=>{if($("#ov .sheet"))track(id,false)},15000)}
+/* ⭐ ग्राहक की राय (reviews/* — नियम न हों तो WhatsApp से) */
+function rvHTML(id){const D=LS.get("mh_rev",{})[id];return D?`<div class="box" style="text-align:center"><b>${"⭐".repeat(D.s)}</b><p class="hint">Thank you for your rating 🙏</p></div>`:`<div class="box" id="rvb" data-id="${esc(id)}" style="text-align:center"><b>How was your order?</b><div class="rv">${[1,2,3,4,5].map(n=>`<button type="button" data-rv="${n}" aria-label="${n} star">⭐</button>`).join("")}</div><input class="f" id="rvt" maxlength="200" placeholder="Anything to tell us? (optional)"><button type="button" class="big" id="rvs" disabled>Send rating</button></div>`}
+async function rvSend(){const b=$("#rvb");if(!b)return;const id=b.dataset.id,n=b.querySelectorAll(".rv .on").length,tx=($("#rvt").value||"").trim().slice(0,200),A=ACC(),o=LS.get("mh_orders",[]).find(x=>x.id===id)||{};if(!n)return;
+  const S=v=>({stringValue:String(v)}),D=LS.get("mh_rev",{});D[id]={s:n,ts:Date.now()};LS.set("mh_rev",D);let ok=false;
+  try{const r=await fetch(B+"reviews?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:{oid:S(id),name:S(String(A.nm||"").slice(0,40)),phone:S(A.ph||""),stars:{integerValue:String(n)},text:S(tx),store:S(o.st||"mh"),ts:{integerValue:String(Date.now())}}})});ok=r.ok}catch(e){}
+  b.outerHTML=rvHTML(id);const ph=waPh();if(!ok&&ph)window.open("https://wa.me/91"+ph+"?text="+encodeURIComponent("My rating for order #"+String(id).slice(-6).toUpperCase()+": "+"⭐".repeat(n)+(tx?"\n"+tx:"")),"_blank")}
 function ptsHTML(){const P=LS.get("mh_pts",null);return P&&P.n>0?`<div class="ptsb"><span style="font-size:30px">🎁</span><div><b>${P.n}</b> <span>points collected!</span><br><span>1 point on every ₹${P.per||100} you shop · ask the shop for your reward</span></div></div>`:`<div class="ptsb"><span style="font-size:30px">🎁</span><div><span><b style="font-size:15px">Collect points</b><br>Get 1 point on every ₹100 you shop — rewards from the shop!</span></div></div>`}
 function myOrders(){const M=LS.get("mh_orders",[]),A=ACC();sheet("📦 My orders",`${A.ph?`<div class="box acc"><div><b>👤 ${esc(A.nm)}</b><span>📱 ${esc(A.ph)}</span></div><button type="button" class="lnk" data-chacc2>Edit ›</button></div>`:""}${ptsHTML()}<div class="box">${M.length?M.map(o=>`<div class="mo"><div><b>#${esc(String(o.id).slice(-6).toUpperCase())}</b> ${o.st==="done"?'<span class="st2">✓ Delivered</span>':o.st==="cancel"?'<span class="st2 c">Cancelled</span>':""} · ${o.n} items · ${rs(o.total)}<br><small class="hint">${new Date(o.ts).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</small></div>
   <div style="display:flex;gap:6px"><button type="button" data-trk="${esc(o.id)}">Status</button><button type="button" data-again="${esc(o.id)}">↻ Reorder</button></div></div>`).join(""):'<p class="hint">No orders yet.</p>'}</div>`);
@@ -361,6 +382,7 @@ function welcome(change){const A=ACC();lock(!A.ph);
   setTimeout(()=>{const x=$("#wnm");if(x&&!A.nm)x.focus()},200)}
 function accChip(){meBtn()}/* नाम अब ऊपर 👤 बटन में */
 document.addEventListener("click",e=>{if(e.target.closest("[data-chacc2]"))welcome(true)});
+document.addEventListener("click",e=>{const r=e.target.closest("[data-rv]");if(r){const n=+r.dataset.rv;document.querySelectorAll("#rvb [data-rv]").forEach(b=>b.classList.toggle("on",+b.dataset.rv<=n));$("#rvs").disabled=false;return}if(e.target.closest("#rvs"))rvSend()});
 (function(){const P=LS.get("mh_pend",null);if(P)report(P.nm,P.ph,P.old)})();/* बिना नेट बना खाता — अब भेजो */
 /* ---------- 📸 असली फोटो: pub/ph_<n> (112px, ~4 KB) पीछे से आती रहें ---------- */
 const PH=LS.get("mh_ph",{});let phT=0;

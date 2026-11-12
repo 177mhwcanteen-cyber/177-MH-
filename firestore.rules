@@ -93,6 +93,18 @@ service cloud.firestore {
       allow delete: if isOwner();
     }
     match /pub/{id} { allow read: if true; allow write: if active(); }
+    // ⭐ ग्राहक की राय (ऑर्डर-पेज से, बिना लॉगिन): सिर्फ़ नई राय बन सकती है; पढ़ना साथी, बदलना/हटाना मालिक (12-11-2026)
+    match /reviews/{id} {
+      allow read: if active();
+      allow create: if request.resource.data.keys().hasOnly(['oid', 'name', 'phone', 'stars', 'text', 'store', 'ts'])
+        && request.resource.data.stars is int && request.resource.data.stars >= 1 && request.resource.data.stars <= 5
+        && request.resource.data.text is string && request.resource.data.text.size() <= 200
+        && request.resource.data.name is string && request.resource.data.name.size() <= 40
+        && request.resource.data.phone is string && request.resource.data.phone.size() <= 10
+        && request.resource.data.oid is string && request.resource.data.oid.size() <= 40
+        && request.resource.data.ts is int;
+      allow update, delete: if isOwner();
+    }
     match /returns/{id}   { allow read: if active(); allow create: if active() && request.resource.data.by == request.auth.uid; allow update, delete: if isOwner(); }
     match /mbuys/{id} {
       allow read: if isOwner() || (active() && (resource.data.by == request.auth.uid || resource.data.status == 'sent'));
