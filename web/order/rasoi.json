@@ -53,7 +53,7 @@
   },
   {
    "k": "fish",
-   "n": "Fish (Masala / Curry / Fry)",
+   "n": "Fish (Masala / Curry)",
    "em": "🐟"
   },
   {
@@ -664,7 +664,8 @@
    "u": "pc",
    "c": "extra",
    "veg": true,
-   "em": "🥗"
+   "em": "🥗",
+   "p": "order/rasoi/rs-green-salad.jpg"
   },
   {
    "id": "rs-dahi",
