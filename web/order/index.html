@@ -263,6 +263,10 @@ function draw(){if(!R&&!LX.length&&!LR.length)return;if(!SEG){$("#m").innerHTML=
     if(CF.offer)html+=`<div class="ofr"><span>🎉</span><b>${esc(String(CF.offer).slice(0,120))}</b></div>`;
     if(SEG==="sabji"&&SXOLD)html+=`<div class="ofr old"><span>ℹ️</span><b>Today's rates may differ a little — final rate is confirmed on call before delivery</b></div>`;
     html+=tiles(F)+strips(F);
+    /* 🥤 खाने के साथ (12-11-2026, विक्रम जी): रसोई के पेज पर 177 MH की कोल्ड ड्रिंक, छाछ-लस्सी-दही, आइसक्रीम, मिठाई — असली भाव (MRP), बिल 177 MH का अलग */
+    if(SEG==="rasoi"&&stOn("mh")){const rk=i=>{const o=ocat(i);return o==="cold"?0:o==="dairy"&&has(i,/CHHACH|CHACH|LASSI|DAHI|CURD|BUTTERMILK/)?1:o==="ice"?2:o==="mithai"?3:9},n={};
+      const A=L.filter(i=>stOf(i)==="mh"&&i.k!==0&&rk(i)<9).sort((x,y)=>rk(x)-rk(y)||(y.t||0)-(x.t||0)).filter(i=>(n[rk(i)]=(n[rk(i)]||0)+1)<=5);
+      if(A.length>=2)html+=`<div class="sec" id="c-addon">🥤 Add with your meal <small>from 177 MH Canteen</small></div><div class="hs">${A.map(card).join("")}</div>`}
     secs(SEG).forEach(S=>S.c.forEach(c=>{const G=F.filter(i=>ocat(i)===c[0]);if(G.length)html+=`<div class="sec" id="c-${c[0]}">${c[2]} ${esc(c[1])} <small>${S.nv?"Non-Veg · ":""}${G.length} items</small></div><div class="g">${G.slice(0,6).map(card).join("")}${G.length>6?`<button type="button" class="more" data-c="${c[0]}">See all ${G.length} in ${esc(c[1])} ›</button>`:""}</div>`}));
     const rest=F.filter(i=>ocat(i)==="more");if(rest.length)html+=`<div class="sec">🛍️ More <small>${rest.length} items</small></div><div class="g">${rest.map(card).join("")}</div>`}
   else if(!s){const [c,S]=cinfo(cat);html=`<div class="sec">${c[2]} ${esc(c[1])} <small>${S.nv?"Non-Veg · ":""}${F.length} items</small></div><div class="g">${F.slice(0,300).map(card).join("")}</div>`}
