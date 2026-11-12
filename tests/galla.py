@@ -85,6 +85,7 @@ async def main():
         ln = [l for b in B for l in b.get("lines", []) if l.get("id") == await pg.evaluate("window.__it")]
         assert ln and ln[0].get("ns") == 1, ln
         await pg.evaluate("S.dayBills=Object.values(window.__MOCK__['days/'+today()+'/bills']);S.repDate=today();S.tab='report';showTab()"); await pg.wait_for_timeout(400)
+        await pg.evaluate("document.querySelectorAll('#p-report .rp-g.shut [data-rgrp]').forEach(x=>x.click())")  # चरण 3: मुड़े समूह खोलो
         assert "बिना स्टॉक बिके" in await pg.inner_text("#p-report")
 
         # 🧮 बिल पर "कुल सामान · कुल नग" (पुरानी बंद सेटिंग भी एक बार चालू)

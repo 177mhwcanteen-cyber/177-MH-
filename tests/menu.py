@@ -100,9 +100,25 @@ async def main():
         await pg.evaluate("document.getElementById('sheet').innerHTML='<div class=\"sheet\">x</div>'")
         assert await pg.evaluate("SMN.back()") == "sheet" and await pg.evaluate("document.getElementById('sheet').innerHTML") == ""
         # दूसरे टैब से लौटने पर सेटिंग मेन्यू से शुरू
-        await pg.evaluate("SMN.openSet('rc')"); await pg.click('#tabs [data-tab="report"]'); await pg.wait_for_timeout(200)
-        await pg.click('#tabs [data-tab="set"]'); await pg.wait_for_timeout(400)
+        await pg.evaluate("SMN.openSet('rc')"); await pg.evaluate("S.tab='report';showTab()"); await pg.wait_for_timeout(200)
+        await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_timeout(400)
         assert (await pg.evaluate("SMN.setState().cur")) == "" and await pg.is_visible("#p-set .smn")
+        # ---------- चरण 5: नीचे 4 बड़े बटन ----------
+        await pg.evaluate("S.tab='bill';showTab()"); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("[...document.querySelectorAll('#bnav [data-bn]')].map(x=>x.dataset.bn).join()") == "bill,maal,hisab,sab"
+        assert await pg.evaluate("[...document.querySelectorAll('#tabs [data-tab]')].map(x=>x.dataset.tab).join()") == "bill,bills"
+        await pg.click('#bnav [data-bn="maal"]'); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("S.tab") in ("kharid","mkt","stock","label","route") and await pg.get_attribute('#bnav [data-bn="maal"]', "aria-current") == "page"
+        await pg.click('#tabs [data-tab="stock"]'); await pg.click('#bnav [data-bn="hisab"]'); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("S.tab") in ("day","udhar","report")
+        await pg.click('#bnav [data-bn="maal"]'); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("S.tab") == "stock", "समूह का पिछला टैब याद रहे"
+        assert await pg.evaluate("document.documentElement.scrollWidth<=innerWidth"), "दाएँ-बाएँ खिसकन"
+        own = await pg.evaluate("S.isOwner"); await pg.evaluate("S.isOwner=false;S.tab='day';showTab()")
+        assert await pg.evaluate("[...document.querySelectorAll('#tabs [data-tab]')].map(x=>x.dataset.tab).join()") == "udhar,day", "साथी को रिपोर्ट नहीं"
+        await pg.evaluate("S.isOwner=%s;S.tab='bill';showTab()" % ("true" if own else "false"))
+        await pg.click('#bnav [data-bn="sab"]'); await pg.wait_for_timeout(200)
+        assert await pg.evaluate("SMN.isHome()"); await pg.evaluate("SMN.closeHome()")
 
         # ---- साथी: मालिक वाले काम नहीं ----
         await pg.evaluate("S.isOwner=false;S.demo=false;S.tab='bill';showTab()"); await pg.wait_for_timeout(200)

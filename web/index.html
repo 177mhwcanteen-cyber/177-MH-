@@ -79,6 +79,13 @@ main{padding-block:12px 140px}
 .badge{position:absolute;top:6px;right:6px;background:var(--haldi);color:var(--haldi-ink);font-weight:800;font-size:12px;border-radius:99px;padding:2px 8px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .empty{text-align:center;padding:40px 12px;color:var(--muted)}
 .empty b{display:block;font-family:var(--f-display);font-size:20px;color:var(--ink);margin-bottom:4px}
+#bnav{position:fixed;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 12px rgba(16,24,40,.09)}
+#bnav[hidden]{display:none}#bnav button{border:0;background:none;height:54px;display:grid;justify-items:center;align-content:center;gap:1px;color:var(--muted);font-weight:800;font-size:12px;border-top:3px solid transparent;font-family:inherit}
+#bnav button i{font-style:normal;font-size:21px;line-height:1.1;position:relative}#bnav button i u{position:absolute;top:-1px;right:-7px;width:9px;height:9px;border-radius:50%;background:#e11d48;box-shadow:0 0 0 2px var(--surface)}
+#bnav button[aria-current]{color:var(--ink);border-top-color:var(--haldi)}#bnav button:active{background:var(--bg)}
+body.bn .cartbar{bottom:calc(54px + env(safe-area-inset-bottom,0px));padding-bottom:8px}body.bn main{padding-bottom:200px}body.bn .toast{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+body.bn:has(input:focus,textarea:focus) #bnav{display:none}body.bn:has(input:focus,textarea:focus) .cartbar{bottom:0}
+@media print{#bnav{display:none!important}}
 .cartbar{position:fixed;left:0;right:0;bottom:0;z-index:6;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-top:10px;background:linear-gradient(to top,var(--bg) 70%,transparent)}
 .cartbtn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;border-radius:18px;background:var(--haldi);color:var(--haldi-ink);padding:12px 18px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
 .cartbtn .t{font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1}
@@ -603,6 +610,7 @@ html.camon header{top:0}
   body.hasside #side{display:flex;flex-direction:column;position:fixed;right:0;top:0;bottom:0;width:360px;z-index:6;background:var(--surface,#fff);border-left:1px solid var(--line,#e2e8f0);box-shadow:-6px 0 24px rgba(15,23,42,.06)}
   body.hasside header,body.hasside main{margin-right:360px}
   body.hasside #cartbar{display:none!important}
+  body.hasside #bnav{right:360px}
   html.camon body.hasside #side{top:var(--camh)}
   html.camon #camwin{right:360px}
 }
@@ -1156,8 +1164,18 @@ $("#btabs").onclick=e=>{
 
 /* ---------- tabs ---------- */
 function tabsList(){const _mp=window.SM?SM.badge():0;const t=[["bill","बिलिंग"],["mkt","बाज़ार खरीद"+(_mp?" 🔴"+_mp:"")],["kharid","माल आया"],["stock","स्टॉक"+(window.SK&&SK.counting()?" 🔢":"")],["udhar","उधार खाता"],["bills","आज के बिल"],["day","दिन का हिसाब"]];t.push(["label","लेबल"]);const _cr=(S.cancelReqs||[]).length;if(S.isOwner)t.push(["route","लोकेशन"],["report","रिपोर्ट"+(guardOpen()+_cr?" 🔴"+(guardOpen()+_cr):"")],["set","रेट व सेटिंग"]);return t}
+/* चरण 5: नीचे 4 बड़े बटन (docs/ऐप-ढाँचा-प्रॉम्प्ट.txt §4क) — नया टैब BN के किसी समूह में, 5वाँ बटन नहीं */
+const BN=[["bill","🧾","बिलिंग",["bill","bills"]],["maal","📦","माल",["kharid","mkt","stock","label","route"]],["hisab","📒","हिसाब",["day","udhar","report"]]];
+function bnGrp(t){const g=BN.find(g=>g[3].includes(t));return g?g[0]:"sab"}
+function bnDraw(all,flat,cur){let n=$("#bnav");if(flat){if(n)n.hidden=true;document.body.classList.remove("bn");return}
+  if(!n){n=document.createElement("nav");n.id="bnav";n.setAttribute("aria-label","मुख्य जगहें");document.body.appendChild(n);
+    n.onclick=e=>{const b=e.target.closest("[data-bn]");if(!b)return;const g=b.dataset.bn;if(g==="sab"){if(window.SMN&&SMN.home)SMN.home();else{S.tab="set";showTab()}return}
+      const ok=tabsList().map(x=>x[0]),G=BN.find(x=>x[0]===g),last=(S._bn||{})[g],t=ok.includes(last)?last:G[3].find(k=>ok.includes(k));if(!t)return;if(window.SMN&&SMN.closeHome)SMN.closeHome();S.tab=t;showTab()}}
+  n.hidden=false;document.body.classList.add("bn");
+  n.innerHTML=BN.map(([g,i,t,ks])=>{const dot=all.some(([k,v])=>ks.includes(k)&&/🔴|🔢/.test(v));return `<button type="button" data-bn="${g}" ${cur===g?'aria-current="page"':""}><i>${i}${dot?"<u></u>":""}</i><span>${t}</span></button>`}).join("")+`<button type="button" data-bn="sab" ${cur==="sab"?'aria-current="page"':""}><i>☰</i><span>सब</span></button>`}
 function renderTabs(){
-  const TI={mkt:"🛍️",stock:"📦",bill:"🧾",kharid:"🚚",udhar:"📒",bills:"📋",day:"🌙",label:"🏷️",route:"📍",report:"📈",set:"⚙️"};$("#tabs").innerHTML=tabsList().map(([k,v])=>`<button role="tab" aria-selected="${S.tab===k}" data-tab="${k}"><span class="ti">${TI[k]||""}</span> ${v}</button>`).join("");if(renderTabs._t!==S.tab){renderTabs._t=S.tab;const a=$("#tabs [aria-selected=\"true\"]");if(a&&a.scrollIntoView)try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}
+  const TI={mkt:"🛍️",stock:"📦",bill:"🧾",kharid:"🚚",udhar:"📒",bills:"📋",day:"🌙",label:"🏷️",route:"📍",report:"📈",set:"⚙️"};const _all=tabsList(),_flat=!!window.__SET_FLAT__,_g=bnGrp(S.tab),_G=BN.find(x=>x[0]===_g);if(_G)(S._bn=S._bn||{})[_g]=S.tab;bnDraw(_all,_flat,_g);
+  $("#tabs").innerHTML=(_flat?_all:_all.filter(([k])=>_G?_G[3].includes(k):k===S.tab)).map(([k,v])=>`<button role="tab" aria-selected="${S.tab===k}" data-tab="${k}"><span class="ti">${TI[k]||""}</span> ${v}</button>`).join("");if(renderTabs._t!==S.tab){renderTabs._t=S.tab;const a=$("#tabs [aria-selected=\"true\"]");if(a&&a.scrollIntoView)try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}
   $("#who").textContent="👤 "+(biller()||"नाम डालें");
 }
 {const L=document.getElementById("lgBtn");if(L){const go=()=>{if(S.tab!=="bill"){S.tab="bill";showTab()}window.scrollTo(0,0);try{if(typeof camOn==="function")camOn()}catch(e){}};L.onclick=go;L.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}}}
