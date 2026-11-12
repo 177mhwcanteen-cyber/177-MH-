@@ -11,6 +11,15 @@ R = json.load(open(os.path.join(ROOT, "web", "order", "rasoi.json"), encoding="u
 SHOP = R["shop"]
 ITEMS = {i["id"]: i for i in R["items"]}
 ORDER_URL = "https://177mhwcanteen-cyber.github.io/177-MH-/order/"
+MENU_URL = ORDER_URL + "?s=rasoi"  # मेन्यू का QR → सीधा मारवाड़ रसोई (12-11-2026)
+MENU_WEB = os.path.join(ROOT, "web", "order", "marwar-rasoi-menu.pdf")  # ग्राहक-पेज का 📖 Menu बटन यही खोलता है
+
+
+def pic(iid):
+    """मेन्यू के फोटो-खाने: web/order/rasoi/<id>.jpg (वही फोटो जो ऑर्डर-पेज पर है)"""
+    import base64
+    f = os.path.join(ROOT, "web", "order", "rasoi", iid + ".jpg")
+    return f'style="background:url(data:image/jpeg;base64,{base64.b64encode(open(f, "rb").read()).decode()}) center/cover"' if os.path.exists(f) else ""
 QRJS = open(os.path.join(ROOT, "www", "lib", "qrcode.min.js"), encoding="utf-8").read() if os.path.exists(os.path.join(ROOT, "www", "lib", "qrcode.min.js")) else open(os.path.join(ROOT, "web", "lib", "qrcode.min.js"), encoding="utf-8").read()
 
 E = html.escape
@@ -124,13 +133,16 @@ def menu_html():
 .ch.v{background:linear-gradient(#2c7a3e,#1d5a2c)}.ch.nv{background:linear-gradient(#9a2a22,#741913)}.ch.b{background:linear-gradient(#8a5a1a,#6a420f)}
 .sg{margin-top:5px}
 .sh{font:italic 600 14px Lora;color:#8a5a1a;margin-bottom:2px}.sh .hi{font-style:normal;font-size:13.5px;font-weight:600}.sh em{font-style:normal}
-.r{display:flex;align-items:center;height:20.6px;font-size:15.5px}
+.r{display:flex;align-items:center;height:20.1px;font-size:15.5px}
 .r .mk{flex:none;margin-right:7px}
 .r .n{font-weight:600;color:#24160a;white-space:nowrap}
 .r i{flex:1;margin:0 6px;border-bottom:2px dotted #c4a46a;transform:translateY(4px);min-width:10px}
 .r b{font-weight:700;color:#7a1c1c;font-variant-numeric:tabular-nums}
 .bot{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:8px}
 .bw{display:flex;gap:12px;align-items:center}.bw .sg{flex:1}.bw .slot{flex:none;width:112px;height:118px;margin-top:5px}
+.bw .mq{flex:none;width:112px;margin-top:5px;background:#fff;border-radius:4px;padding:4px 4px 2px;text-align:center;box-shadow:inset 0 0 0 1.5px #b8893a,0 1px 3px rgba(0,0,0,.25)}
+.mq #q{width:100px;height:100px;margin:0 auto}.mq #q img,.mq #q canvas{width:100px!important;height:100px!important;display:block}
+.mq small{display:block;font:700 8.5px Lora;letter-spacing:.6px;color:#7a1c1c;margin-top:1px;white-space:nowrap;line-height:1.2}
 .bot .r{font-size:15px}
 .note{font:italic 600 13.5px Lora;color:#7a5a2a;margin-top:3px;padding-left:21px}.note .hi{font-style:normal}
 .ft{margin:auto -22px 0;background:linear-gradient(#7a1c1c,#5a120e);color:#fbe6b0;padding:8px 20px 9px;
@@ -141,18 +153,19 @@ def menu_html():
 """
     left = "".join(group(*g) for g in LEFT)
     right = "".join(group(*g) for g in RIGHT)
-    bot = "".join(f'<div><div class="ch b"><span class="hi">{E(hi)}</span><span>· {E(en.upper())}</span></div><div class="bw"><div class="sg">{rows(ids)}</div><div class="slot" id="m-{k}"></div></div></div>' for (hi, en, ids), k in zip(BOTTOM, ("bread", "rice")))
+    bot = "".join(f'<div><div class="ch b"><span class="hi">{E(hi)}</span><span>· {E(en.upper())}</span></div><div class="bw"><div class="sg">{rows(ids)}</div>{'<div class="slot" id="m-bread" ' + pic("rs-butter-naan") + '></div>' if k == "bread" else '<div class="mq" id="m-qr"><div id="q"></div><small>SCAN &amp; ORDER</small></div>'}</div></div>' for (hi, en, ids), k in zip(BOTTOM, ("bread", "rice")))
     return f"""<!doctype html><html><head><meta charset="utf-8"><title>Marwar Rasoi Menu</title><style>{css}</style></head><body>
 <div class="frame"><div class="paper">{CORNERS}
-<div class="hd"><div class="slot l" id="m-veg"></div><div class="slot r" id="m-nonveg"></div>{ARCH}<div class="hi big">{E(SHOP['hi'])}</div><div class="en">{E(SHOP['name'])}</div>
-<div class="sub"><span>Barmer · Rajasthan</span><span class="key">{mark(True)}<span class="hi">शाकाहारी</span> Veg</span><span class="key">{mark(False)}<span class="hi">मांसाहारी</span> Non-Veg</span></div></div>
+<div class="hd"><div class="slot l" id="m-veg" {pic("rs-shahi-paneer")}></div><div class="slot r" id="m-nonveg" {pic("rs-tandoori-chicken-full")}></div>{ARCH}<div class="hi big">{E(SHOP['hi'])}</div><div class="en">{E(SHOP['name'])}</div>
+<div class="sub" style="flex-wrap:wrap;row-gap:1px;margin-top:3px"><span style="flex:0 0 100%">Amenity Centre, Jalipa · Barmer</span><span class="key">{mark(True)}<span class="hi">शाकाहारी</span> Veg</span><span class="key">{mark(False)}<span class="hi">मांसाहारी</span> Non-Veg</span></div></div>
 <div class="cols"><div><div class="ch v"><span class="hi">शाकाहारी</span><span>· VEG MAIN COURSE</span></div>{left}</div>
 <div><div class="ch nv"><span class="hi">मांसाहारी</span><span>· NON-VEG</span></div>{right}</div></div>
 <div class="bot">{bot}</div>
 <div class="ft"><div class="hr">{hours}</div>
 <div class="fd"><div class="hi">फ्री होम डिलीवरी</div><div>FREE HOME DELIVERY</div></div>
 <div class="ph">{phones}</div></div>
-</div></div></body></html>"""
+</div></div>
+<script>{QRJS}</script><script>new QRCode(document.getElementById("q"),{{text:{json.dumps(MENU_URL)},width:456,height:456,correctLevel:QRCode.CorrectLevel.M}});</script></body></html>"""
 
 
 def flyer_html():
@@ -263,6 +276,11 @@ def check_menu():
     pages = subprocess.run(["pdfinfo", os.path.join(OUT, "menu.pdf")], capture_output=True, text=True).stdout
     if not re.search(r"Pages:\s+1\n", pages):
         err.append("एक पेज नहीं")
+    import cv2
+    img = cv2.imread(os.path.join(OUT, "menu.png")); H, W = img.shape[:2]
+    data, _, _ = cv2.QRCodeDetector().detectAndDecode(img[int(H * .72):, int(W * .6):])  # QR नीचे-दाएँ (चावल के पास)
+    if data != MENU_URL:
+        err.append("मेन्यू QR पढ़ा: " + repr(data))
     return err
 
 
@@ -288,4 +306,6 @@ if __name__ == "__main__":
     if bad:
         print("❌", *bad, sep="\n  ")
         sys.exit(1)
+    if OUT == os.path.join(ROOT, "docs", "print"):
+        import shutil; shutil.copy(os.path.join(OUT, "menu.pdf"), MENU_WEB)  # ऑर्डर-पेज का 📖 Menu बटन
     print(f"✅ सब भाव सही ({len(ITEMS)} डिश), QR सही, एक-एक पेज — {OUT}")
