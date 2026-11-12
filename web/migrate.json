@@ -3616,6 +3616,18 @@
      "from": 10,
      "to": 300
     }
+   },
+   "g-amul-cheese-cubes-40-retail-pack-1-pc-pc": {
+    "sale": {
+     "from": 0.5,
+     "to": 20
+    }
+   },
+   "b8901262020268": {
+    "sale": {
+     "from": 20,
+     "to": 610
+    }
    }
   },
   "pstock": {
@@ -3630,6 +3642,12 @@
      "from": 3,
      "to": 13
     }
+   },
+   "g-amul-cheese-cubes-40-retail-pack-1-pc-pc": {
+    "qty": {
+     "from": 2000,
+     "to": 50
+    }
    }
   },
   "openings": {
@@ -3643,6 +3661,12 @@
     "qty": {
      "from": 3,
      "to": 13
+    }
+   },
+   "cnt_g-amul-cheese-cubes-40-retail-pack-1-pc-pc": {
+    "qty": {
+     "from": 2000,
+     "to": 50
     }
    }
   },

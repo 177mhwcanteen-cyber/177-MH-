@@ -1,0 +1,63 @@
+{
+ "added": 1794489600000,
+ "app": "new",
+ "appNote": "नई खरीद 10-11-2026 — ऐप में सामान + गिनती खेप S-20261112-01 से (रैक 21-1, cost बिल के रेट); ऐप की purchases में अभी नहीं (भुगतान पूछना बाकी)",
+ "ask": [
+  "भुगतान: नकद दिया या उधार? किसने दिया?",
+  "ATTA BREAD 400G का MRP पैक पर देखें"
+ ],
+ "buyer": "",
+ "byName": "स्वरूप जी (ZIP S-20261112-01)",
+ "date": "2026-11-10",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 300,
+   "iid": "g-protein-sandwich-bread-400-g",
+   "mrp": 55,
+   "n": "400 Gms",
+   "nm": "PROTEIN SANDWICH BREAD 400 G",
+   "qty": 10,
+   "rate": 30,
+   "u": "pcs"
+  },
+  {
+   "amt": 105,
+   "iid": "g-protein-white-bread-200-g",
+   "mrp": 25,
+   "n": "200 Gms",
+   "nm": "PROTEIN WHITE BREAD 200 G",
+   "qty": 7,
+   "rate": 15,
+   "u": "pcs"
+  },
+  {
+   "amt": 320,
+   "iid": "b8906119620424",
+   "mrp": 0,
+   "n": "Brown 400 Gms",
+   "nm": "PROTEIN ATTA BREAD 400 G",
+   "qty": 8,
+   "rate": 40,
+   "u": "pcs"
+  },
+  {
+   "amt": 175,
+   "iid": "b8906119620165",
+   "mrp": 45,
+   "n": "D/P",
+   "nm": "PROTEIN DABELI PAV 350 G",
+   "qty": 5,
+   "rate": 35,
+   "u": "pcs"
+  }
+ ],
+ "no": "",
+ "note": "ESTIMATE पर्ची (बिल नंबर नहीं), Name: M.H · 4 लाइन, 30 पीस · जोड़ python से ₹900 = पर्ची का कुल ₹900 · फोटो foto-sangrah: kit-baaki/S-20261112-01/r21-0012-bill.jpg · दुकान का मोबाइल 9408562701 · ⚠ यह नकल सिर्फ़ GitHub में है — बही आर्टिफैक्ट और Google Sheet रजिस्टर में चढ़ाना बाकी (इस खाते से दोनों नहीं खुले)",
+ "paid": 0,
+ "pay": "पता नहीं — विक्रम जी से पूछना",
+ "src": "chat",
+ "sup": "SANDEEP FOODS (PROTEIN)",
+ "total": 900
+}
