@@ -43,7 +43,7 @@ if(window.SX)SX.pubRates=SON.publish;
 /* ================= 📥 ऑर्डर ================= */
 const ACTIVE=["new","billing","acc","pack","out"];
 SON.parse=function(o){const n=String(o.note||"");if(!n.includes("¦"))return {note:n};const [meta,rest]=n.split("¦");const p=meta.split("|");const r={note:rest||""};
-  p.forEach(x=>{if(x==="🛵")r.mode="d";else if(x==="🏪")r.mode="p";else if(x==="💵")r.pay="नकद";else if(x==="📱")r.pay="UPI";else if(x.startsWith("⏰"))r.when=x.slice(1).trim();else if(x.startsWith("📍"))r.ll=x.slice(2);else if(x.startsWith("☎️"))r.alt=x.slice(2).replace(/\D/g,"");else if(x.startsWith("₹"))r.total=num(x.slice(1));else if(x.startsWith("🏬"))r.store=x.slice(2).trim();else if(x.startsWith("🧺"))r.grp=x.slice(2).trim()});return r};
+  p.forEach(x=>{if(x==="🛵")r.mode="d";else if(x==="🏪")r.mode="p";else if(x==="💵")r.pay="नकद";else if(x==="📱")r.pay="UPI";else if(x.startsWith("⏰"))r.when=x.slice(1).trim();else if(x.startsWith("📍"))r.ll=x.slice(2);else if(x.startsWith("☎️"))r.alt=x.slice(2).replace(/\D/g,"");else if(x.startsWith("₹"))r.total=num(x.slice(1));else if(x.startsWith("🎟")){const m=x.slice(2).split("-₹");r.cpn=m[0];r.cpnOff=num(m[1])}else if(x.startsWith("🏬"))r.store=x.slice(2).trim();else if(x.startsWith("🧺"))r.grp=x.slice(2).trim()});return r};
 /* 🛍️ तीन दुकानें एक पेज पर (11-11-2026): 🛒 177 MH (यही) · 🥬 सब्ज़ी एक्सप्रेस · 🍛 मारवाड़ रसोई — हर दुकान का अलग ऑर्डर/बिल */
 SON.STORES={mh:{i:"🛒",n:"177 MH कैंटीन"},sabji:{i:"🥬",n:"सब्ज़ी एक्सप्रेस",ph:""},rasoi:{i:"🍛",n:"मारवाड़ रसोई",ph:"8696283600"}};
 SON.storeOf=o=>{const s=String(o.src||"");return s.startsWith("web2:")?s.slice(5):(SON.parse(o).store||"mh")};
@@ -93,7 +93,7 @@ SON.sheet=function(){if(window.SRG)SRG.silence();const L=SX.orders||[];const lin
     const est=p.total||(o.items||[]).reduce((a,x)=>a+num(x.q)*num(x.s),0);const eta=o.etaTs?new Date(o.etaTs).toLocaleTimeString("hi-IN",{hour:"numeric",minute:"2-digit"}):"";
     const sk=SON.storeOf(o),so=SON.STORES[sk]||{i:"🏬",n:sk},sph=sk!=="mh"?SON.storePh(sk):"",gp=p.grp?String(p.grp).split("/"):null;
     return `<div class="card2 son-o ${st}${old?" late":""} son-s-${esc(sk)}"><div class="son-sb"><span>${so.i} ${esc(so.n)}</span>${gp?`<i>🧺 एक ही ग्राहक के ${esc(gp[1]||"")} ऑर्डर</i>`:""}</div><div class="son-h"><span class="son-st">${ic} ${tx}</span><b>${esc(o.name||"ग्राहक")}</b><small>${ago(o.ts)}${eta?" · ⏱️ "+eta:""}</small></div>
-    <div class="son-m">${p.mode==="p"?"🏪 दुकान से लेंगे":"🛵 घर पहुँचाना"} · ${p.pay?(p.pay==="UPI"?"📱 UPI":"💵 नकद"):""} · ⏰ ${esc(p.when||"अभी")} · <b>≈ ${rs(Math.round(est))}</b></div>
+    <div class="son-m">${p.mode==="p"?"🏪 दुकान से लेंगे":"🛵 घर पहुँचाना"} · ${p.pay?(p.pay==="UPI"?"📱 UPI":"💵 नकद"):""} · ⏰ ${esc(p.when||"अभी")} · <b>≈ ${rs(Math.round(est))}</b>${p.cpn?` · <b style="color:var(--chili)">🎟️ कूपन ${esc(p.cpn)} −${rs(p.cpnOff)} (बिल में छूट दें)</b>`:""}</div>
     ${o.addr&&p.mode!=="p"?`<div class="son-a">📍 ${esc(o.addr)}${p.ll?` · <a href="https://www.google.com/maps/search/?api=1&query=${esc(p.ll)}" target="_blank" rel="noopener">नक्शा ↗</a>`:""}</div>`:""}
     <div class="son-i">${items}</div>${p.note?`<div class="son-a">📝 ${esc(p.note)}</div>`:""}${p.alt?`<div class="son-a">☎️ कॉल के लिए: <a href="tel:+91${esc(p.alt)}">${esc(p.alt)}</a></div>`:""}${o.rider?`<div class="son-a">🛵 ${esc(o.rider)}</div>`:""}
     <div class="son-b">${st==="new"?`<span class="son-l">स्वीकार:</span>${[15,30,45].map(m=>`<button data-sona="${esc(o.id)}" data-mins="${m}">✓ ${m} मि</button>`).join("")}`
@@ -116,6 +116,7 @@ document.addEventListener("click",async e=>{const t=e.target;let b;
   if((b=t.closest("[data-sonx]"))){const r=prompt("रद्द क्यों? (ग्राहक को अंग्रेज़ी में दिखेगा)","Item out of stock");if(r===null)return;await SON.step(b.dataset.sonx,"cancel",{reason:r.slice(0,60),msg:r.slice(0,60)});return}
   if((b=t.closest("[data-sonstore]"))){const k=b.dataset.sonstore,st={...(SON.cfg().stores||{})};st[k]={...(st[k]||{}),on:(st[k]||{}).on===false};SON.save({stores:st});try{renderSettings()}catch(x){}return}
   if(t.closest("[data-sonmenu]")){SON.menuSheet();return}
+  if((b=t.closest("[data-soncpf]"))){const cp={...(SON.cfg().cpn||{})};cp.first=!cp.first;await SON.save({cpn:cp});try{renderSettings()}catch(x){}return}
   if((b=t.closest("[data-somhide]"))){const id=b.dataset.somhide,h=SON.cfg().hide||{},I=new Set(h.i||[]);I.has(id)?I.delete(id):I.add(id);await SON.save({hide:{...h,i:[...I]}});toast(I.has(id)?"🚫 ग्राहक को नहीं दिखेगा":"👁 ग्राहक को दिखेगा");SON.menuSheet();return}
   if((b=t.closest("[data-somadd]"))){const n=String($("#somN").value||"").trim().toUpperCase().slice(0,40),sv=num($("#somS").value),veg=$("#somV").value==="1";if(n.length<3||!(sv>0)){toast("नाम और भाव दोनों लिखें");return}
     const rx=[...(SON.cfg().rx||[])];rx.push({id:"rs-x"+Date.now().toString(36),n,s:sv,veg});await SON.save({rx:rx.slice(-60)});toast("✓ "+n+" ₹"+sv+" जुड़ गया");SON.menuSheet();return}
@@ -208,6 +209,8 @@ SON.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const c=SON.cfg(),L
   <div class="son-f">${[["min","कम से कम ऑर्डर ₹"],["fee","डिलीवरी शुल्क ₹"],["freeAbove","इतने से ऊपर मुफ़्त ₹"],["eta","पहुँचने का समय (मि)"]].map(([k,t])=>`<label class="fld">${t}<input class="inp" inputmode="numeric" data-sonf="${k}" value="${num(c[k])||""}" placeholder="0"></label>`).join("")}
     <label class="fld">दुकान खुलती<input class="inp" type="time" data-sonf="open" value="${esc(c.open)}"></label><label class="fld">बंद होती<input class="inp" type="time" data-sonf="close" value="${esc(c.close)}"></label></div>
   <label class="fld" style="margin:0 0 8px">🎉 ऑफ़र की पट्टी (ग्राहक-पेज पर सबसे ऊपर — खाली = बंद)<input class="inp" data-sonoffer maxlength="120" value="${esc(c.offer||"")}" placeholder="जैसे: आज मिठाई पर 10% छूट · Free delivery"></label>
+  <div class="son-f">${(k=>[["code","🎟️ कूपन कोड (खाली = बंद)","text"],["pct","छूट %","numeric"],["flat","या सीधी छूट ₹","numeric"],["min","कम से कम ऑर्डर ₹","numeric"]].map(([f,t,m])=>`<label class="fld">${t}<input class="inp" inputmode="${m}" data-soncp="${f}" maxlength="12" value="${esc(String((c.cpn||{})[f]||""))}" placeholder="${f==="code"?"जैसे WELCOME10":"0"}"></label>`).join(""))()}
+    <button type="button" class="chip" data-soncpf aria-pressed="${!!(c.cpn||{}).first}">${(c.cpn||{}).first?"✅":"⬜"} सिर्फ़ पहले ऑर्डर पर</button></div>
   <div class="son-ln"><code>${esc(SON.link())}</code></div>
   <div class="row2" style="margin:0"><a class="big ghost" href="${esc(SON.link())}" target="_blank" rel="noopener">👀 ग्राहक-पेज देखें</a><button class="big ghost" data-sxolink>💬 WhatsApp पर भेजें</button></div>
   <div class="son-shops"><b>🛍️ एक पेज पर तीन दुकानें</b>${["sabji","rasoi"].map(k=>{const v=(c.stores||{})[k]||{},m=SON.STORES[k];return `<div class="son-shop"><button type="button" class="chip" data-sonstore="${k}" aria-pressed="${v.on!==false}">${v.on!==false?"✅":"⬜"} ${m.i} ${m.n}</button><input class="inp" inputmode="tel" maxlength="10" placeholder="ऑर्डर भेजने का WhatsApp नंबर" data-sonsph="${k}" value="${esc(String(v.ph||m.ph||""))}"></div>`}).join("")}
@@ -219,6 +222,7 @@ SON.settingsHTML=function(){if(!S.isOwner&&!S.demo)return "";const c=SON.cfg(),L
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset&&t.dataset.somrp){const id=t.dataset.somrp,v=num(t.value),s0=num(t.dataset.s0);if(!(v>0)){t.value=s0||"";return}
     if(!s0){SON.save({rx:(SON.cfg().rx||[]).map(x=>x.id===id?{...x,s:v}:x)})}else{const rp={...(SON.cfg().rp||{})};if(v===s0)delete rp[id];else rp[id]=v;SON.save({rp})}toast("✓ भाव ₹"+v+" — ग्राहक-पेज पर तुरंत");return}
+  if(t.dataset&&t.dataset.soncp){const f=t.dataset.soncp,cp={...(SON.cfg().cpn||{})};cp[f]=f==="code"?String(t.value||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12):num(t.value);SON.save({cpn:cp});toast(cp.code?"🎟️ कूपन "+cp.code+" चालू":"कूपन बंद");return}
   if(t.dataset&&t.dataset.sonoffer!=null){SON.save({offer:String(t.value||"").trim().slice(0,120)});toast(t.value.trim()?"🎉 ऑफ़र की पट्टी चालू":"ऑफ़र की पट्टी हटाई");return}if(t.dataset&&t.dataset.sonsph){const k=t.dataset.sonsph,st={...(SON.cfg().stores||{})};st[k]={...(st[k]||{}),ph:String(t.value).replace(/\D/g,"").slice(-10)};SON.save({stores:st});toast("✓ नंबर याद");return}
   if(!t.dataset||!t.dataset.sonf)return;const k=t.dataset.sonf;SON.save({[k]:k==="open"||k==="close"?t.value:num(t.value)})});
 

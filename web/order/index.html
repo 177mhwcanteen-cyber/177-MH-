@@ -205,6 +205,10 @@ const photo=i=>PH&&PH[i.id]?PH[i.id]:i.p?(/^(https?:|data:)/.test(i.p)?i.p:"../"
 const bg=i=>photo(i)?`--b:url('${esc(photo(i))}')`:`background:linear-gradient(135deg,hsl(${(+i.h||((i.id||"").length*47))%360} 70% 92%),hsl(${(+i.h||((i.id||"").length*47))%360} 60% 80%))`;
 const openNow=()=>{if(!CF.open||!CF.close)return true;const n=new Date(),m=n.getHours()*60+n.getMinutes(),p=s=>{const[a,b]=String(s).split(":");return(+a)*60+(+b||0)};return m>=p(CF.open)&&m<p(CF.close)};
 const tot=()=>L.reduce((a,i)=>a+(Q[i.id]||0)*i.s,0),cnt=()=>L.filter(i=>Q[i.id]>0).length;
+/* 🎟️ कूपन (मालिक ⚙️ ऑनलाइन दुकान में रखता है: cfg.cpn {code,pct,flat,min,first}) — छूट ऑर्डर के नोट में 🎟CODE-₹X जाती है */
+function disc(sub){const c=CF.cpn;if(!c||!c.code||String(me.cp||"").trim().toUpperCase()!==String(c.code).toUpperCase())return 0;if(sub<(+c.min||0))return 0;if(c.first&&LS.get("mh_orders",[]).length)return 0;
+  return Math.min(sub,Math.round(+c.flat>0?+c.flat:sub*(+c.pct||0)/100))}
+const cpnWhy=sub=>{const c=CF.cpn||{};return !me.cp?"":String(me.cp).toUpperCase()!==String(c.code||"").toUpperCase()?"Coupon not valid":sub<(+c.min||0)?"Add items worth "+rs((+c.min)-sub)+" more to use this coupon":c.first&&LS.get("mh_orders",[]).length?"This coupon is for the first order only":""};
 const fee=sub=>!CF.del||mode()!=="d"?0:(CF.freeAbove&&sub>=CF.freeAbove?0:(+CF.fee||0));
 let MODE=LS.get("mh_mode","d");const mode=()=>CF.del===false?"p":CF.pick===false?"d":MODE;
 
@@ -252,6 +256,7 @@ function draw(){if(!R&&!LX.length&&!LR.length)return;if(!SEG){$("#m").innerHTML=
   if(!F.length&&!s&&!L.some(i=>stOf(i)===SEG)){$("#m").innerHTML=`<div class="empty">⏳ Loading ${esc(STS[SEG].n)} menu…</div>`;bar();return}
   let html="";if(!F.length)html=`<div class="empty">😕 No match for "${esc(qs)}" — try another name or call the shop.</div>`;
   else if(cat==="all"&&!s){
+    if(CF.cpn&&CF.cpn.code&&!(CF.cpn.first&&LS.get("mh_orders",[]).length))html+=`<div class="ofr"><span>🎟️</span><b>Use code ${esc(String(CF.cpn.code).toUpperCase())} — ${+CF.cpn.flat>0?rs(+CF.cpn.flat):(+CF.cpn.pct||0)+"%"} OFF${CF.cpn.first?" on your first order":""}${+CF.cpn.min?" above "+rs(+CF.cpn.min):""}</b></div>`;
     if(CF.offer)html+=`<div class="ofr"><span>🎉</span><b>${esc(String(CF.offer).slice(0,120))}</b></div>`;
     if(SEG==="sabji"&&SXOLD)html+=`<div class="ofr old"><span>ℹ️</span><b>Today's rates may differ a little — final rate is confirmed on call before delivery</b></div>`;
     if(SEG==="rasoi")html+=`<div class="rsh"><b>🍛 ${esc((RJ&&RJ.shop&&RJ.shop.name)||"Marwar Rasoi")}</b><span>${esc((RJ&&RJ.shop&&RJ.shop.tag)||"")}${RJ&&RJ.shop&&RJ.shop.freeDelivery?" · 🛵 Free delivery":""}</span></div>`;
@@ -281,13 +286,15 @@ const sheet=(title,body,btn)=>{$("#ov").innerHTML=`<div class="scrim" data-x><di
 
 /* ---------- 🛒 कार्ट + चेकआउट ---------- */
 function vegAsk(){sheet("🍽️ What do you eat?",`<div class="box va"><button type="button" data-veg="veg"><i class="vd v big"></i><b>Pure Veg</b><small>Show only vegetarian food</small></button><button type="button" data-veg="nonveg"><i class="vd nv big"></i><b>Non-veg</b><small>Chicken, fish & biryani first — plus all veg</small></button></div><p class="hint" style="text-align:center">You can switch anytime from the bar on top.</p>`)}
-function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();return}const sub=tot(),fe=fee(sub),total=sub+fe,min=+CF.min||0;
+function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();return}const sub=tot(),fe=fee(sub),dc=disc(sub),total=sub+fe-dc,min=+CF.min||0;
   const minOk=sub>=min,GS=Object.keys(STS).filter(k=>I.some(i=>stOf(i)===k));
   sheet("🛒 Your cart",`${GS.length>1?`<p class="hint" style="margin:0 2px 8px">🧾 ${GS.length} shops — each sends its own items with a separate bill, in one delivery trip where possible.</p>`:""}${GS.map(k=>{const G=I.filter(i=>stOf(i)===k);return `<div class="box"><h3 class="csh">${STS[k].ic} ${esc(STS[k].n)}<span>${rs(G.reduce((a,i)=>a+Q[i.id]*i.s,0))}</span></h3>${G.map(i=>`<div class="ci"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||EM[i.c]||"🛍️")}</div><div><div class="nm">${esc(i.n)}</div><div class="un">${rs(i.s)} / ${U[i.u]||i.u}</div></div>
     <div class="stp"><button type="button" data-m="${esc(i.id)}">−</button><span>${fq(Q[i.id],i.u)}</span><button type="button" data-p="${esc(i.id)}">+</button></div><div class="amt">${rs(Q[i.id]*i.s)}</div></div>`).join("")}</div>`}).join("")}
   <div class="box"><h3>🧾 Bill details</h3><div class="row"><span>Items total</span><span>${rs(sub)}</span></div>
     ${mode()==="d"?`<div class="row"><span>Delivery fee</span>${fe?`<span>${rs(fe)}</span>`:`<span class="fr">FREE</span>`}</div>`:""}
+    ${dc?`<div class="row"><span>🎟️ Coupon ${esc(String(me.cp).toUpperCase())}</span><span class="fr">− ${rs(dc)}</span></div>`:""}
     <div class="row tot"><span>To pay (approx.)</span><span>${rs(total)}</span></div>
+    ${CF.cpn&&CF.cpn.code?`<div class="two" style="margin-top:8px"><input class="f" id="cpi" maxlength="16" placeholder="🎟️ Coupon code" value="${esc(me.cp||"")}" style="text-transform:uppercase"><button type="button" class="big" id="cpa" style="margin:0">${dc?"✓ Applied":"Apply"}</button></div>${cpnWhy(sub)?`<p class="hint" style="color:var(--r)">${esc(cpnWhy(sub))}</p>`:""}`:""}
     <p class="hint">Items sold by weight (sweets, veg) are billed after weighing. ${CF.freeAbove&&mode()==="d"&&sub<CF.freeAbove?`Add <b>₹${Math.ceil(CF.freeAbove-sub)}</b> more for free delivery.`:""}</p></div>
   <div class="box"><h3>🛵 Delivery or pickup?</h3><div class="seg">${CF.del!==false?`<button type="button" data-mode="d" aria-pressed="${mode()==="d"}">🛵 Home delivery</button>`:""}${CF.pick!==false?`<button type="button" data-mode="p" aria-pressed="${mode()==="p"}">🏪 Pickup</button>`:""}</div></div>
   <div class="box"><h3>👤 Order for</h3>
@@ -317,12 +324,12 @@ async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.
   if(mode()==="d"&&!qt&&!me.ll){toast("Add Quarter No. or 📍 location");if($("#qt"))$("#qt").focus();return}
   if(alt&&alt.length!==10){toast("Call number must be 10 digits");$("#alt").focus();return}
   /* 🧾 हर दुकान का अलग ऑर्डर (अलग बिल) — एक ही ग्राहक के ऑर्डर "🧺" से जुड़े; डिलीवरी शुल्क एक बार (पहले ऑर्डर पर) */
-  const all=L.filter(i=>Q[i.id]>0),GS=Object.keys(STS).filter(k=>all.some(i=>stOf(i)===k)),sub=tot(),fe=fee(sub),grp=GS.length>1?"G"+Date.now().toString(36).slice(-6):"";
+  const all=L.filter(i=>Q[i.id]>0),GS=Object.keys(STS).filter(k=>all.some(i=>stOf(i)===k)),sub=tot(),fe=fee(sub),dc=disc(sub),grp=GS.length>1?"G"+Date.now().toString(36).slice(-6):"";
   if(GS.includes("rasoi")&&!rasoiOpen()&&!confirm("Marwar Rasoi kitchen is closed now — your food will be prepared when it opens. Continue?"))return;
   const btn=$("#place");btn.disabled=true;btn.textContent="⏳ Placing order…";
   const S=v=>({stringValue:String(v)});const ts=Date.now(),ids=[];
-  try{for(const k of GS){const I=all.filter(i=>stOf(i)===k).slice(0,40),st=Math.round(I.reduce((a,i)=>a+Q[i.id]*i.s,0)*100)/100,total=Math.round((st+(k===GS[0]?fe:0))*100)/100;
-      const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"c")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"","₹"+total,k!=="mh"?"🏬"+k:"",grp?"🧺"+grp+"/"+GS.length:""].filter(Boolean).join("|");
+  try{for(const k of GS){const I=all.filter(i=>stOf(i)===k).slice(0,40),st=Math.round(I.reduce((a,i)=>a+Q[i.id]*i.s,0)*100)/100,total=Math.round((st+(k===GS[0]?fe-Math.min(dc,st):0))*100)/100;
+      const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"c")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"","₹"+total,k===GS[0]&&dc?"🎟"+String(me.cp).toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12)+"-₹"+Math.min(dc,st):"",k!=="mh"?"🏬"+k:"",grp?"🧺"+grp+"/"+GS.length:""].filter(Boolean).join("|");
       const note=(meta+"¦"+nt).slice(0,200);
       const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S((mode()==="d"?ad:"Pickup from shop").slice(0,80)),note:S(note),ts:{integerValue:String(ts)},status:S("new"),src:S(k==="mh"?"web2":"web2:"+k),
         items:{arrayValue:{values:I.map(i=>({mapValue:{fields:{id:S(i.id),n:S(i.n),q:{doubleValue:Q[i.id]},u:S(i.u),s:{doubleValue:+i.s}}}}))}}}};
@@ -399,7 +406,7 @@ function welcome(change){const A=ACC();lock(!A.ph);
   setTimeout(()=>{const x=$("#wnm");if(x&&!A.nm)x.focus()},200)}
 function accChip(){meBtn()}/* नाम अब ऊपर 👤 बटन में */
 document.addEventListener("click",e=>{if(e.target.closest("[data-chacc2]"))welcome(true)});
-document.addEventListener("click",e=>{const f=e.target.closest("[data-fav]");if(f){let A=FAV();const id=f.dataset.fav;A=A.includes(id)?A.filter(x=>x!==id):[id,...A].slice(0,60);LS.set("mh_fav",A);document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>b.classList.toggle("on",A.includes(id)));return}const r=e.target.closest("[data-rv]");if(r){const n=+r.dataset.rv;document.querySelectorAll("#rvb [data-rv]").forEach(b=>b.classList.toggle("on",+b.dataset.rv<=n));$("#rvs").disabled=false;return}if(e.target.closest("#rvs"))rvSend()});
+document.addEventListener("click",e=>{if(e.target.closest("#cpa")){me.cp=($("#cpi").value||"").trim().toUpperCase();LS.set("mh_me",me);cart();return}const f=e.target.closest("[data-fav]");if(f){let A=FAV();const id=f.dataset.fav;A=A.includes(id)?A.filter(x=>x!==id):[id,...A].slice(0,60);LS.set("mh_fav",A);document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>b.classList.toggle("on",A.includes(id)));return}const r=e.target.closest("[data-rv]");if(r){const n=+r.dataset.rv;document.querySelectorAll("#rvb [data-rv]").forEach(b=>b.classList.toggle("on",+b.dataset.rv<=n));$("#rvs").disabled=false;return}if(e.target.closest("#rvs"))rvSend()});
 (function(){const P=LS.get("mh_pend",null);if(P)report(P.nm,P.ph,P.old)})();/* बिना नेट बना खाता — अब भेजो */
 /* ---------- 📸 असली फोटो: pub/ph_<n> (112px, ~4 KB) पीछे से आती रहें ---------- */
 const PH=LS.get("mh_ph",{});let phT=0;
