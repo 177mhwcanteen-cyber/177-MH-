@@ -66,7 +66,7 @@ main{padding-block:12px 140px}
 .searchrow{display:flex;gap:8px;margin-bottom:10px}
 .search{flex:1;min-width:0;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 14px;font-size:16px}
 .cats{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}.gmore{text-align:center;padding:14px;color:#6b7280;font-weight:700}
 .card{position:relative;display:flex;flex-direction:column;border:0;padding:0;background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);text-align:left;overflow:hidden;transition:transform .12s}
 .card:active{transform:scale(.96)}
 .tile{aspect-ratio:1/1;max-width:100%;display:grid;place-items:center;background:radial-gradient(circle at 50% 36%,hsl(var(--h) var(--ts) var(--tl1)),hsl(var(--h) var(--ts) var(--tl2)));overflow:hidden}
@@ -1270,8 +1270,17 @@ function renderBill(){
   if(!list.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1"><b>"${esc(q)}" नहीं मिली</b>दूसरा नाम लिखकर देखें।</div>`+(window.SR?SR.addCardHTML(q):"");return}
   const LL=window.SF&&SF.liveLeftMap?SF.liveLeftMap():null;const melaV=S.cat==="mela"&&!S.flt&&!searching;$("#grid").classList.toggle("mela",melaV);
   if(melaV&&S.sub==="all"){$("#grid").innerHTML=MELA_G.map(([k,v])=>{const g=list.filter(i=>melaSub(i)===k);return g.length?`<div class="mgh">${v}</div>`+g.map(it=>cardHTML(it,LL)).join(""):""}).join("")+(window.SR?SR.addCardHTML():"");return}
-  $("#grid").innerHTML=list.map(it=>cardHTML(it,LL)).join("")+(window.SR?SR.addCardHTML():"");
+  /* ⚡ सस्ते फोन पर भी झटपट (12-11-2026): पहले सिर्फ़ 60 कार्ड, बाकी नीचे सरकाने पर 60-60 — 5000 सामान हों तब भी हर बार पूरी सूची नहीं बनती */
+  const gk=[S.cat,S.sub,S.flt||"",q||"",S.view,S.mode].join("|");if(S._gk!==gk){S._gk=gk;S._gn=GCH}
+  const n=Math.max(GCH,S._gn||GCH);S._gl=list;
+  $("#grid").innerHTML=list.slice(0,n).map(it=>cardHTML(it,LL)).join("")+(list.length>n?`<div id="gmore" class="gmore" style="grid-column:1/-1">⬇ और ${list.length-n} सामान…</div>`:"")+(window.SR?SR.addCardHTML():"");
+  gridMore();
 }
+const GCH=60;let _gio=null;
+function gridGrow(){const m=$("#gmore"),L=S._gl||[];if(!m)return;const a=S._gn||GCH,b=Math.min(L.length,a+GCH),LL=window.SF&&SF.liveLeftMap?SF.liveLeftMap():null;
+  m.insertAdjacentHTML("beforebegin",L.slice(a,b).map(it=>cardHTML(it,LL)).join(""));S._gn=b;if(b>=L.length)m.remove();else m.textContent="⬇ और "+(L.length-b)+" सामान…";try{if(window.SL&&SL.marks)SL.marks()}catch(e){}}
+function gridMore(){const m=$("#gmore");if(_gio){_gio.disconnect();_gio=null}if(!m)return;if(!("IntersectionObserver"in window)){m.onclick=gridGrow;return}
+  _gio=new IntersectionObserver(E=>{if(E.some(e=>e.isIntersecting)){gridGrow();gridMore()}},{rootMargin:"600px"});_gio.observe(m);m.onclick=gridGrow}
 function cardHTML(it,LL){{
     const p=priceOf(it);const inCart=S.cart.filter(l=>l.id===it.id).reduce((a,l)=>a+l.qty,0),pcIn=isPc(it.unit)&&inCart>0;
     let left=stockLeft(it.id);if(left==null&&LL&&LL[it.id]!=null)left=LL[it.id];
