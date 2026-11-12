@@ -54,7 +54,8 @@ async def main():
         await pg.evaluate("renderBill()")
 
         # ---------- 1) बिलिंग: 🏷️ चिप, भाव बदलें के पास ----------
-        chips = await pg.evaluate("[...document.querySelectorAll('#cats .chip')].slice(0,2).map(x=>x.textContent.trim())")
+        await pg.click("#cats [data-tools]"); await pg.wait_for_timeout(150)  # चरण 4: औज़ार पहले खोलो
+        chips = await pg.evaluate("[...document.querySelectorAll('#cats .chip')].slice(1,3).map(x=>x.textContent.trim())")
         assert "भाव" in chips[0] and "बारकोड" in chips[1], chips
         await pg.click("[data-lblmode]")
         assert await pg.is_visible("#lblbar"), "lblbar"

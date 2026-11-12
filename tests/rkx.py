@@ -34,6 +34,7 @@ async def main():
         A, B, C, D, E, F = ids
         # बिलिंग में चिप — लिखा हुआ दिखे (पहले सफ़ेद पर सफ़ेद था)
         await pg.evaluate("S.tab='bill';showTab()"); await pg.wait_for_timeout(200)
+        if not await pg.locator("#cats [data-rkxopen]").count(): await pg.click("#cats [data-tools]"); await pg.wait_for_timeout(150)  # चरण 4
         chip = pg.locator("#cats [data-rkxopen]")
         assert await chip.count() == 1 and "रैक बदलें" in await chip.inner_text()
         col = await chip.evaluate("e=>{const c=getComputedStyle(e);return [c.color,c.backgroundColor]}")
