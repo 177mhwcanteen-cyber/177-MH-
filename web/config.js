@@ -20,5 +20,7 @@ window.SE_CONFIG = {
   photoUrl: "",
   updateUrl: "https://177mhwcanteen-cyber.github.io/177-MH-/",
   // 🛍️ एक ऑर्डर-पेज पर तीन दुकानें (11-11-2026): 🛒 177 MH (यही) · 🥬 सब्ज़ी एक्सप्रेस (उसका सार्वजनिक भाव pub/rates) · 🍛 मारवाड़ रसोई (order/rasoi.json)
+  // 💬 ग्राहक-पेज का WhatsApp बटन सिर्फ़ इसी नंबर पर खुले (विक्रम जी खुद सब सँभालते हैं, 12-11-2026)
+  wa: "6367183480",
   stores: { sabji: { pid: "sabji-express-9a8f0", key: "AIzaSyBBaZF1E58Ybxemy5HPj8T3L0gnyg9eOPI", base: "https://177mhwcanteen-cyber.github.io/sabji-express-app/" } }
 };

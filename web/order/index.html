@@ -104,6 +104,12 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 .ofr{display:flex;gap:9px;align-items:center;margin:10px 12px 0;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#fff1b8,#ffd666);color:#3a2a00;font-size:14px;line-height:1.25}.ofr span{font-size:22px}.ofr.old{background:#eef2ff;color:#1e3a8a;font-size:12.5px}
 .waf{position:fixed;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:5;width:54px;height:54px;border-radius:50%;background:#25d366;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.28);text-decoration:none}.waf svg{width:30px;height:30px;fill:#fff}
 .rv{display:flex;gap:6px;justify-content:center;margin:8px 0}.rv button{border:0;background:none;font-size:34px;line-height:1;padding:2px;filter:grayscale(1);opacity:.45}.rv button.on{filter:none;opacity:1}
+[style*="--b:"]{background-color:#f1f3f5}[style*="--b:"].in{background-image:var(--b)}
+.hs{display:flex;gap:10px;overflow-x:auto;padding:4px 12px 8px;scroll-snap-type:x proximity;scrollbar-width:none}.hs::-webkit-scrollbar{display:none}.hs .t{flex:0 0 31%;max-width:150px;scroll-snap-align:start}
+.more{grid-column:1/-1;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px;font-weight:800;color:var(--g)}
+.fav{position:absolute;top:8px;right:8px;border:0;background:#fffc;border-radius:50%;width:30px;height:30px;font-size:15px;line-height:1;display:grid;place-items:center;filter:grayscale(1);opacity:.75}.fav.on{filter:none;opacity:1}.t{position:relative}
+.sec,.g{content-visibility:auto;contain-intrinsic-size:auto 300px}
+.wq{display:flex;gap:3px;margin-top:4px}.wq button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:3px 0;font-size:11px;font-weight:800}.wq button.on{background:var(--g);color:#fff;border-color:var(--g)}
 .csh{display:flex;justify-content:space-between;align-items:baseline}.csh span{font-size:15px}
 </style></head><body>
 <div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1>177 MH Canteen</h1><small id="sub">Military Hospital · Akashvani Rd, Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
@@ -136,6 +142,7 @@ const STS={mh:{n:"177 MH Canteen",ic:"🛒",t:"Grocery",d:"Grocery · Dry fruits
   sabji:{n:"Sabji Express",ic:"🥬",t:"Vegetables",d:"Fresh vegetables & fruits · daily mandi rates",bg:"linear-gradient(135deg,#bbf7d0,#16a34a)"},
   rasoi:{n:"Marwar Rasoi",ic:"🍛",t:"Restaurant",d:"Veg & Non-veg · Tandoor · Biryani",bg:"linear-gradient(135deg,#fecaca,#dc2626)"}};
 let SEG=LS.get("mh_seg",""),VEG=LS.get("mh_veg","");
+/* सीधा लिंक: …/order/?s=sabji या ?s=rasoi → वही दुकान खुले (QR/पर्चे के लिए) */try{const qs0=new URLSearchParams(location.search).get("s");if(["mh","sabji","rasoi"].includes(qs0)){SEG=qs0;LS.set("mh_seg",qs0)}}catch(e){}
 const XCATS=[["all","All","🥬"],["sabzi","Vegetables","🥕"],["patta","Leafy greens","🌿"],["fal","Fruits","🍎"],["packed","Packed","📦"]];
 /* 🗂️ ऑनलाइन श्रेणियाँ (Blinkit/Zepto जैसी) — docs/ऑनलाइन-दुकान-डिज़ाइन-प्रॉम्प्ट.txt; पहला मेल जीतता है */
 const NM=i=>(String(i.n||"")+" "+String(i.e||"")).toUpperCase(),has=(i,re)=>re.test(NM(i)),ID=l=>{const S2=new Set(l.split(" "));return i=>S2.has(String(i.id).replace(/^(sx|rs)-/,""))};
@@ -195,7 +202,7 @@ const vis=i=>{const H=CF.hide||{};return !((H.i||[]).includes(i.id)||(H.c||[]).i
 function build(){mkLR();L=[...LM,...LX,...LR].filter(vis);Object.keys(Q).forEach(id=>{const i=L.find(x=>x.id===id);if(!i&&(LM.length&&LX.length&&LR.length))delete Q[id]});heads();draw()}
 const toast=t=>{const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)};
 const photo=i=>PH&&PH[i.id]?PH[i.id]:i.p?(/^(https?:|data:)/.test(i.p)?i.p:"../"+i.p):"";
-const bg=i=>photo(i)?`background-image:url('${esc(photo(i))}')`:`background:linear-gradient(135deg,hsl(${(+i.h||((i.id||"").length*47))%360} 70% 92%),hsl(${(+i.h||((i.id||"").length*47))%360} 60% 80%))`;
+const bg=i=>photo(i)?`--b:url('${esc(photo(i))}')`:`background:linear-gradient(135deg,hsl(${(+i.h||((i.id||"").length*47))%360} 70% 92%),hsl(${(+i.h||((i.id||"").length*47))%360} 60% 80%))`;
 const openNow=()=>{if(!CF.open||!CF.close)return true;const n=new Date(),m=n.getHours()*60+n.getMinutes(),p=s=>{const[a,b]=String(s).split(":");return(+a)*60+(+b||0)};return m>=p(CF.open)&&m<p(CF.close)};
 const tot=()=>L.reduce((a,i)=>a+(Q[i.id]||0)*i.s,0),cnt=()=>L.filter(i=>Q[i.id]>0).length;
 const fee=sub=>!CF.del||mode()!=="d"?0:(CF.freeAbove&&sub>=CF.freeAbove?0:(+CF.fee||0));
@@ -213,7 +220,7 @@ function prep(){CF=R.cfg||{};LM=(R.items||[]).filter(i=>i&&i.id&&+i.s>0&&!(CF.st
   heads()}
 /* ऊपर की पट्टी: दुकान बदलें + उस दुकान की श्रेणियाँ + (रेस्टोरेंट में) वेज/नॉन-वेज */
 function catsOf(st){return [["all","All",st==="sabji"?"🥬":st==="rasoi"?"🍽️":"🛍️"],...secs(st).flatMap(S=>S.c.map(c=>[c[0],c[1],c[2]])),["more","More","🛍️"]]}
-function waPh(){const k=SEG||"mh",o=(CF.stores||{})[k]||{};return String((k!=="mh"&&o.ph)||(k==="rasoi"&&RJ&&RJ.shop&&(RJ.shop.phones||[])[0])||CF.phone||(R&&R.phone)||"").replace(/\D/g,"").slice(-10)}
+function waPh(){return String((window.SE_CONFIG||{}).wa||CF.phone||(R&&R.phone)||"").replace(/\D/g,"").slice(-10)}
 function waBtn(){const w=$("#waf"),ph=waPh();if(!w)return;w.hidden=!ph;if(ph)w.href="https://wa.me/91"+ph+"?text="+encodeURIComponent("Hello "+((STS[SEG||"mh"]||{}).n||"")+", I want to order / ask about ")}
 function heads(){waBtn();const sw=$("#stores");if(sw)sw.innerHTML=SEG?Object.entries(STS).filter(([k])=>stOn(k)).map(([k,v])=>{const n=L.filter(i=>stOf(i)===k&&Q[i.id]>0).length;return `<button type="button" data-st="${k}" aria-pressed="${SEG===k}">${v.ic} ${v.t}${n?`<i>${n}</i>`:""}</button>`}).join(""):"";
   const vg=$("#vegbar");if(vg){vg.hidden=SEG!=="rasoi";vg.innerHTML=SEG==="rasoi"?`<button type="button" data-veg="veg" aria-pressed="${VEG==="veg"}"><i class="vd v"></i> Veg only</button><button type="button" data-veg="nonveg" aria-pressed="${VEG!=="veg"}"><i class="vd nv"></i> Non-veg + Veg</button>${rasoiOpen()?"":`<span class="vgc">🌙 Kitchen opens ${esc(((RJ&&RJ.shop&&RJ.shop.hours)||[]).map(h=>h[0]+"–"+h[1]).join(" & "))}</span>`}`:""}
@@ -221,15 +228,24 @@ function heads(){waBtn();const sw=$("#stores");if(sw)sw.innerHTML=SEG?Object.ent
   $("#cats").hidden=!SEG;$("#cats").innerHTML=C2.filter(c=>c[0]==="all"||have.has(c[0])).map(c=>`<button type="button" data-c="${c[0]}" aria-pressed="${cat===c[0]}">${c[2]} ${c[1]}</button>`).join("");
   const q=$("#q");if(q)q.placeholder=SEG==="sabji"?"Search — tomato, palak, apple…":SEG==="rasoi"?"Search — paneer, biryani, naan…":"Search — milk, Parle, ice cream…"}
 function card(i){const q=Q[i.id]||0,off=i.m>i.s?Math.round((i.m-i.s)/i.m*100):0,out=i.k===0,pk=stOf(i)==="mh"&&i.c!=="mithai"&&i.c!=="fast";
-  return `<div class="t${out?" out":""}${pk?" pk":""}"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||(cinfo(ocat(i))[0][2])||EM[i.c]||"🛍️")}</div>
+  return `<div class="t${out?" out":""}${pk?" pk":""}"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||(cinfo(ocat(i))[0][2])||EM[i.c]||"🛍️")}</div><button type="button" class="fav${FAV().includes(i.id)?" on":""}" data-fav="${esc(i.id)}" aria-label="Favourite">❤️</button>
   <div class="b"><div class="pr"><div class="pp"><b>${rs(i.s)}</b>${off?`<s>${rs(i.m)}</s>`:""}</div>${out?`<span class="nostock">Sold out</span>`:q?`<div class="stp"><button type="button" data-m="${esc(i.id)}" aria-label="Less">−</button><span>${fq(q,i.u)}</span><button type="button" data-p="${esc(i.id)}" aria-label="More">+</button></div>`:`<button type="button" class="add" data-p="${esc(i.id)}" ${CF.on===false?"disabled":""}>ADD</button>`}</div>
-  ${off>=3?`<div class="offt">${off}% OFF on MRP</div>`:""}<div class="nm">${vegDot(i)}${esc(i.n)}</div>${i.hi?`<div class="hi">${esc(i.hi)}</div>`:""}<div class="un">${i.u==="kg"?"per kg":esc(i.sz||"1 "+(U[i.u]||i.u))}</div></div></div>`}
+  ${off>=3?`<div class="offt">${off}% OFF on MRP</div>`:""}<div class="nm">${vegDot(i)}${esc(i.n)}</div>${i.hi?`<div class="hi">${esc(i.hi)}</div>`:""}<div class="un">${i.u==="kg"?"per kg":esc(i.sz||"1 "+(U[i.u]||i.u))}</div>${i.u==="kg"&&!out&&stOf(i)==="sabji"?`<div class="wq">${[[.25,"250g"],[.5,"500g"],[1,"1kg"]].map(([w,l])=>`<button type="button" data-w="${w}" data-wi="${esc(i.id)}" class="${q===w?"on":""}">${l}</button>`).join("")}</div>`:""}</div></div>`}
 /* 🧩 श्रेणी-टाइलें: हर हिस्से में 2×2 फोटो + "+N more" (Blinkit जैसा) */
 function tiles(F){return secs(SEG).map(S=>{const cs=S.c.map(c=>[c,F.filter(i=>ocat(i)===c[0])]).filter(x=>x[1].length);if(!cs.length)return "";
   return `<div class="tsh">${esc(S.s)} <small>${esc(S.h)}</small></div><div class="tg">${cs.map(([c,G])=>{const P=[...G].sort((a,b)=>(photo(b)?1:0)-(photo(a)?1:0)||(b.t||0)-(a.t||0)).slice(0,4);
     return `<button type="button" class="ct" data-c="${c[0]}"><span class="cl${P.length<4?" one":""}">${(P.length<4?P.slice(0,1):P).map(i=>`<i style="${bg(i)}">${photo(i)?"":(i.em||c[2])}</i>`).join("")}${G.length>4?`<em>+${G.length-4} more</em>`:""}</span><b>${esc(c[1])}</b></button>`}).join("")}</div>`}).join("")}
 function chooser(){const A=Object.entries(STS).filter(([k])=>stOn(k));
   return `<div class="ch"><h2>What would you like to order?</h2><p class="hint">One order — each shop sends its own items & bill</p>${A.map(([k,v])=>{const n=L.filter(i=>stOf(i)===k).length;return `<button type="button" class="chc" data-st="${k}" style="background:${v.bg}"><span class="chi">${v.ic}</span><span class="cht"><b>${v.t}</b><small>${esc(v.n)}</small><em>${esc(v.d)}</em></span><span class="chn">${n?n+" items ›":"›"}</span></button>`}).join("")}</div>`}
+/* 🖼️ फोटो तभी आए जब स्क्रीन पर आने वाली हो (सस्ते फोन/धीमे नेट पर तेज़) */
+const LZ="IntersectionObserver"in window?new IntersectionObserver(E=>E.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");LZ.unobserve(e.target)}}),{rootMargin:"300px"}):null;
+function lz(root){(root||document).querySelectorAll('[style*="--b:"]:not(.in)').forEach(e=>LZ?LZ.observe(e):e.classList.add("in"))}
+new MutationObserver(()=>{clearTimeout(lz.t);lz.t=setTimeout(lz,30)}).observe(document.body,{childList:true,subtree:true});
+const FAV=()=>LS.get("mh_fav",[]);
+function strips(F){const ids=new Set(F.map(i=>i.id)),by=id=>F.find(i=>i.id===id),row=(t,G)=>G.length>=2?`<div class="sec">${t}</div><div class="hs">${G.slice(0,12).map(card).join("")}</div>`:"";
+  const again=[...new Set(LS.get("mh_orders",[]).flatMap(o=>(o.items||[]).map(x=>x[0])))].filter(id=>ids.has(id)).map(by).filter(i=>i.k!==0);
+  const fav=FAV().filter(id=>ids.has(id)).map(by);const best=F.filter(i=>i.t>0&&i.k!==0).sort((a,b)=>b.t-a.t).slice(0,12);
+  return row("❤️ Your favourites",fav)+row("🔁 Buy again",again)+row("⭐ Bestsellers",best)}
 function draw(){if(!R&&!LX.length&&!LR.length)return;if(!SEG){$("#m").innerHTML=chooser();bar();return}const s=qs.toLowerCase();
   let F=L.filter(i=>stOf(i)===SEG&&(cat==="all"||ocat(i)===cat)&&(SEG!=="rasoi"||VEG!=="veg"||i.veg)&&(!s||(i.n+" "+(i.hi||"")+" "+(i.e||"")+" "+(i.sb||"")).toLowerCase().includes(s)));
   F.sort((a,b)=>(a.k===0)-(b.k===0)||(SEG==="rasoi"&&VEG!=="veg"?(a.veg?1:0)-(b.veg?1:0):0)||(b.t||0)-(a.t||0));
@@ -240,8 +256,8 @@ function draw(){if(!R&&!LX.length&&!LR.length)return;if(!SEG){$("#m").innerHTML=
     if(SEG==="sabji"&&SXOLD)html+=`<div class="ofr old"><span>ℹ️</span><b>Today's rates may differ a little — final rate is confirmed on call before delivery</b></div>`;
     if(SEG==="rasoi")html+=`<div class="rsh"><b>🍛 ${esc((RJ&&RJ.shop&&RJ.shop.name)||"Marwar Rasoi")}</b><span>${esc((RJ&&RJ.shop&&RJ.shop.tag)||"")}${RJ&&RJ.shop&&RJ.shop.freeDelivery?" · 🛵 Free delivery":""}</span></div>`;
     else html+=`<div class="rsh ${SEG}"><b>${STS[SEG].ic} ${esc(STS[SEG].n)}</b><span>${esc(STS[SEG].d)} · 🛵 Free home delivery</span></div>`;
-    html+=tiles(F);
-    secs(SEG).forEach(S=>S.c.forEach(c=>{const G=F.filter(i=>ocat(i)===c[0]);if(G.length)html+=`<div class="sec" id="c-${c[0]}">${c[2]} ${esc(c[1])} <small>${S.nv?"Non-Veg · ":""}${G.length} items</small></div><div class="g">${G.slice(0,80).map(card).join("")}</div>`}));
+    html+=tiles(F)+strips(F);
+    secs(SEG).forEach(S=>S.c.forEach(c=>{const G=F.filter(i=>ocat(i)===c[0]);if(G.length)html+=`<div class="sec" id="c-${c[0]}">${c[2]} ${esc(c[1])} <small>${S.nv?"Non-Veg · ":""}${G.length} items</small></div><div class="g">${G.slice(0,6).map(card).join("")}${G.length>6?`<button type="button" class="more" data-c="${c[0]}">See all ${G.length} in ${esc(c[1])} ›</button>`:""}</div>`}));
     const rest=F.filter(i=>ocat(i)==="more");if(rest.length)html+=`<div class="sec">🛍️ More <small>${rest.length} items</small></div><div class="g">${rest.map(card).join("")}</div>`}
   else if(!s){const [c,S]=cinfo(cat);html=`<div class="sec">${c[2]} ${esc(c[1])} <small>${S.nv?"Non-Veg · ":""}${F.length} items</small></div><div class="g">${F.slice(0,300).map(card).join("")}</div>`}
   else html=`<div class="g">${F.slice(0,300).map(card).join("")}</div>`;
@@ -254,9 +270,10 @@ document.addEventListener("click",e=>{const sb=e.target.closest("[data-st]"),vb=
   if(sb&&!e.target.closest("#ov")){SEG=sb.dataset.st;LS.set("mh_seg",SEG);cat="all";qs="";const q=$("#q");if(q)q.value="";heads();draw();scrollTo({top:0,behavior:"smooth"});if(SEG==="rasoi"&&!VEG)vegAsk();return}
   if(vb){VEG=vb.dataset.veg;LS.set("mh_veg",VEG);close();heads();draw();return}
   const p=e.target.closest("[data-p]"),m=e.target.closest("[data-m]");
+  const w=e.target.closest("[data-w]");if(w&&CF.on!==false){Q[w.dataset.wi]=+w.dataset.w;LS.set("mh_cart",Q);draw();return}
   if(p||m){bump((p||m).dataset[p?"p":"m"],p?1:-1);if(e.target.closest("#ov"))cart();else draw();return}
   const c=e.target.closest("[data-c]");if(c){cat=c.dataset.c;document.querySelectorAll("#cats button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.c===cat)));draw();window.scrollTo({top:0,behavior:"smooth"});const on=document.querySelector(`#cats [data-c="${cat}"]`);if(on)try{on.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"})}catch(x){}return}});
-$("#q").addEventListener("input",e=>{qs=e.target.value.trim();draw()});
+let qT=0;$("#q").addEventListener("input",e=>{qs=e.target.value.trim();clearTimeout(qT);qT=setTimeout(draw,160)});
 $("#cbar").onclick=()=>cart();$("#myo").onclick=()=>myOrders();
 const close=()=>{$("#ov").innerHTML="";document.body.style.overflow="";if(!ACC().ph)setTimeout(()=>{if(!ACC().ph&&!$("#ov .sheet"))welcome(false)},50)};
 const sheet=(title,body,btn)=>{$("#ov").innerHTML=`<div class="scrim" data-x><div class="sheet" role="dialog" aria-label="${esc(title)}"><div class="sh"><h2>${title}</h2><button class="x" type="button" data-x aria-label="Close">✕</button></div>${body}</div>${btn||""}</div>`;document.body.style.overflow="hidden";
@@ -329,7 +346,7 @@ async function track(id,fresh){clearTimeout(trkT);const o=LS.get("mh_orders",[])
      <div class="trk">${STEPS.filter(s=>o.mode!=="p"||s[0]!=="out").map((s,k,A)=>{const i2=STEPS.indexOf(s);return `<div class="st ${i2<ix||st==="done"?"done":i2===ix?"now":""}"><i>${i2<ix||st==="done"?"✓":k+1}</i><div><b>${s[1]}</b><small>${i2===ix&&t.msg?esc(t.msg):s[2]}${i2===1&&t.by&&ix>=1?" · "+esc(t.by):""}</small></div></div>`}).join("")}</div>`}</div>
    <div class="box"><div class="row"><span>Order</span><b>#${esc(String(id).slice(-6).toUpperCase())}</b></div><div class="row"><span>Total (approx.)</span><b>${rs(o.total||0)}</b></div>${t.billNo?`<div class="row"><span>Bill</span><b>${esc(t.billNo)}</b></div>`:""}
    ${st==="done"?rvHTML(id):""}
-   ${ph?`<a class="big" href="tel:+91${esc(ph)}">📞 Call the shop</a><a class="big" href="https://wa.me/91${esc(ph)}?text=${encodeURIComponent("Hello, about my order #"+String(id).slice(-6).toUpperCase())}" target="_blank" rel="noopener">💬 WhatsApp</a>`:""}</div>`);
+   ${ph?`<a class="big" href="tel:+91${esc(ph)}">📞 Call the shop</a><a class="big" href="https://wa.me/91${esc(waPh()||ph)}?text=${encodeURIComponent("Hello, about my order #"+String(id).slice(-6).toUpperCase())}" target="_blank" rel="noopener">💬 WhatsApp</a>`:""}</div>`);
   if(st!=="done"&&st!=="cancel"&&$("#ov .sheet"))trkT=setTimeout(()=>{if($("#ov .sheet"))track(id,false)},15000)}
 /* ⭐ ग्राहक की राय (reviews/* — नियम न हों तो WhatsApp से) */
 function rvHTML(id){const D=LS.get("mh_rev",{})[id];return D?`<div class="box" style="text-align:center"><b>${"⭐".repeat(D.s)}</b><p class="hint">Thank you for your rating 🙏</p></div>`:`<div class="box" id="rvb" data-id="${esc(id)}" style="text-align:center"><b>How was your order?</b><div class="rv">${[1,2,3,4,5].map(n=>`<button type="button" data-rv="${n}" aria-label="${n} star">⭐</button>`).join("")}</div><input class="f" id="rvt" maxlength="200" placeholder="Anything to tell us? (optional)"><button type="button" class="big" id="rvs" disabled>Send rating</button></div>`}
@@ -382,7 +399,7 @@ function welcome(change){const A=ACC();lock(!A.ph);
   setTimeout(()=>{const x=$("#wnm");if(x&&!A.nm)x.focus()},200)}
 function accChip(){meBtn()}/* नाम अब ऊपर 👤 बटन में */
 document.addEventListener("click",e=>{if(e.target.closest("[data-chacc2]"))welcome(true)});
-document.addEventListener("click",e=>{const r=e.target.closest("[data-rv]");if(r){const n=+r.dataset.rv;document.querySelectorAll("#rvb [data-rv]").forEach(b=>b.classList.toggle("on",+b.dataset.rv<=n));$("#rvs").disabled=false;return}if(e.target.closest("#rvs"))rvSend()});
+document.addEventListener("click",e=>{const f=e.target.closest("[data-fav]");if(f){let A=FAV();const id=f.dataset.fav;A=A.includes(id)?A.filter(x=>x!==id):[id,...A].slice(0,60);LS.set("mh_fav",A);document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>b.classList.toggle("on",A.includes(id)));return}const r=e.target.closest("[data-rv]");if(r){const n=+r.dataset.rv;document.querySelectorAll("#rvb [data-rv]").forEach(b=>b.classList.toggle("on",+b.dataset.rv<=n));$("#rvs").disabled=false;return}if(e.target.closest("#rvs"))rvSend()});
 (function(){const P=LS.get("mh_pend",null);if(P)report(P.nm,P.ph,P.old)})();/* बिना नेट बना खाता — अब भेजो */
 /* ---------- 📸 असली फोटो: pub/ph_<n> (112px, ~4 KB) पीछे से आती रहें ---------- */
 const PH=LS.get("mh_ph",{});let phT=0;
