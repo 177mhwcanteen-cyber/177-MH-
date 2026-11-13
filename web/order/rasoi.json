@@ -72,7 +72,7 @@
    "c": "veg",
    "veg": true,
    "em": "🍲",
-   "p": "order/rasoi/rs-dal-tadka.jpg"
+   "p": "order/rasoi/rs-dal-tadka.jpg?v=1113"
   },
   {
    "id": "rs-dal-fry",
@@ -83,7 +83,7 @@
    "c": "veg",
    "veg": true,
    "em": "🍲",
-   "p": "order/rasoi/rs-dal-fry.jpg"
+   "p": "order/rasoi/rs-dal-fry.jpg?v=1113"
   },
   {
    "id": "rs-mushroom-masala",
@@ -93,7 +93,7 @@
    "c": "veg",
    "veg": true,
    "em": "🍄",
-   "p": "order/rasoi/rs-mushroom-masala.jpg"
+   "p": "order/rasoi/rs-mushroom-masala.jpg?v=1113"
   },
   {
    "id": "rs-mushroom-paneer",
@@ -103,7 +103,7 @@
    "c": "veg",
    "veg": true,
    "em": "🍄",
-   "p": "order/rasoi/rs-mushroom-paneer.jpg"
+   "p": "order/rasoi/rs-mushroom-paneer.jpg?v=1113"
   },
   {
    "id": "rs-mushroom-matar",
@@ -113,7 +113,7 @@
    "c": "veg",
    "veg": true,
    "em": "🍄",
-   "p": "order/rasoi/rs-mushroom-matar.jpg"
+   "p": "order/rasoi/rs-mushroom-matar.jpg?v=1113"
   },
   {
    "id": "rs-mushroom-kaju-masala",
@@ -123,7 +123,7 @@
    "c": "veg",
    "veg": true,
    "em": "🍄",
-   "p": "order/rasoi/rs-mushroom-kaju-masala.jpg"
+   "p": "order/rasoi/rs-mushroom-kaju-masala.jpg?v=1113"
   },
   {
    "id": "rs-kaju-masala",
