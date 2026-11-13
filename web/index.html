@@ -1519,6 +1519,14 @@ function udBoxHTML(){const c=S.chk,ph=S.cust.phone,nm=S.cust.name;
   <input class="inp" id="udOpen" inputmode="decimal" placeholder="पिछला बाकी ₹ (हो तो)">
   <button class="big" data-udnew style="background:var(--chili);color:var(--surface)">खाता बनाकर ${c.udPick==="split"?"बाकी रकम":"पूरा बिल"} उधार में डालें</button></div>`}
 function pickUdhar(pid){const c=S.chk;S.mode="udhar";S.partyId=pid;c.pay=c.udPick||"udhar";c.udPick=null;syncTab();renderBill();renderCart();drawCheckout();toast("उधार खाता लग गया — अब बिल सेव करें")}
+/* 🍛 "मारवाड़ रसोई" को दिया माल (पार्टी/संस्था के नाम में रसोई/Rasoi) → रसोई के ऐप का "🚚 आने वाला माल" (marwar-rasoi-app का inbox) —
+   वहाँ मैनेजर गिनकर "मिल गया" दबाए तो उसके स्टॉक में जुड़े, "कम मिला" लिखे तो मालिक को दिखे (दोनों तरफ़ का मिलान)। बिल कभी नहीं रुकता; तम्बाकू नहीं जाता। (13-11-2026) */
+function rasoiPush(bill){try{const RS=((window.SE_CONFIG||{}).stores||{}).rasoi;if(!RS||!RS.pid||S.demo||bill.cancelled||!/रसोई|rasoi/i.test(bill.partyName||""))return;
+  const sv=v=>({stringValue:String(v)}),nv=v=>Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v};
+  const L=(bill.lines||[]).filter(l=>{const it=S.items.find(x=>x.id===l.id)||l;return l.qty>0&&!it.secret&&it.sub!=="tob"&&!(typeof isTob==="function"&&isTob(it))}).slice(0,80);if(!L.length)return;
+  const f={src:sv("mh177"),status:sv("new"),bill:sv(bill.no),ts:{integerValue:String(Date.now())},by:sv(bill.byName||""),total:nv(Math.round(L.reduce((a,l)=>a+(+l.amt||0),0))),
+    items:{arrayValue:{values:L.map(l=>({mapValue:{fields:{id:sv(l.id),n:sv(l.name),u:sv(l.unit||"pc"),q:nv(+l.qty),r:nv(+l.rate||0)}}}))}}};
+  fetch("https://firestore.googleapis.com/v1/projects/"+RS.pid+"/databases/(default)/documents/inbox?key="+RS.key,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:f}),keepalive:true}).catch(()=>{})}catch(e){}}
 async function saveBill(){
   if(S.saving)return;
   const c=S.chk,tot=chkTotal(),party=S.parties.find(p=>p.id===S.partyId);
@@ -1562,6 +1570,7 @@ async function saveBill(){
     if(pay.udhar>0)S.ledger.push({id:c.no,ts:now,date,partyId:bill.partyId,partyName:bill.partyName,type:"udhar",amt:pay.udhar,billNo:c.no,byName:biller()});
     if(!S.dayBills.find(x=>x.no===bill.no))S.dayBills=[bill,...S.dayBills];
   }
+  rasoiPush(bill);
   if(window.SR&&bill.custPhone)SR.custHist(bill,bill.custPhone);S.saving=false;closeCurTab();refreshAfterCart();if(bill.settled===false&&window.SB)SB.settleSheet(bill,offline);else quickDone(bill,offline);netbar();beat();
 }
 /* ⚡ एक टैप वाला बिल: सेव+सेटल के बाद सीधे बिलिंग स्क्रीन (रसीद स्क्रीन नहीं) */
