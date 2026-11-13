@@ -31,7 +31,7 @@ SX = {"items": [{"id": "tamatar", "n": "टमाटर", "e": "Tomato", "u": "k
 
 
 async def main():
-    posted = []
+    posted = []; posted_urls = []
     async with async_playwright() as p:
         b = await p.chromium.launch()
         ctx = await b.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
@@ -41,7 +41,7 @@ async def main():
             if "/projects/sabji-express-9a8f0/" in u and "/pub/rates" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in SX.items()}})
             if "/projects/mh177-canteen/" in u and "/pub/rates" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in MH.items()}})
             if u.split("?")[0].endswith("/documents/orders") and route.request.method == "POST":
-                body = json.loads(route.request.post_data); posted.append(body["fields"])
+                body = json.loads(route.request.post_data); posted.append(body["fields"]); posted_urls.append(u)
                 return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/O" + str(len(posted)), "fields": body["fields"]})
             return await route.fulfill(status=404, json={})
         c = await ctx.new_page()
@@ -49,8 +49,8 @@ async def main():
         c.on("dialog", lambda d: asyncio.ensure_future(d.accept()))  # रात में "रसोई बंद है — फिर भी?" पूछे तो हाँ
         await c.route("https://firestore.googleapis.com/**", fs)
         await c.route("https://177mhwcanteen-cyber.github.io/**", lambda r: r.fulfill(status=404, body=""))
-        await c.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={firebase:{projectId:'mh177-canteen',apiKey:'k'},stores:{sabji:{pid:'sabji-express-9a8f0',key:'s',base:'https://177mhwcanteen-cyber.github.io/sabji-express-app/'}}};", content_type="application/javascript"))
-        await c.add_init_script("if(!localStorage.getItem('mh_acc'))localStorage.setItem('mh_acc',JSON.stringify({nm:'Ramesh',ph:'9876543210'}));localStorage.setItem('mh_me',JSON.stringify({nm:'Ramesh',ph:'9876543210',ll:'25.7461,71.3926'}))")
+        await c.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={firebase:{projectId:'mh177-canteen',apiKey:'k'},stores:{rasoi:{pid:'marwar-rasoi-24d56',key:'r'},sabji:{pid:'sabji-express-9a8f0',key:'s',base:'https://177mhwcanteen-cyber.github.io/sabji-express-app/'}}};", content_type="application/javascript"))
+        await c.add_init_script("window.__rsClock='17:30';if(!localStorage.getItem('mh_acc'))localStorage.setItem('mh_acc',JSON.stringify({nm:'Ramesh',ph:'9876543210'}));localStorage.setItem('mh_me',JSON.stringify({nm:'Ramesh',ph:'9876543210',ll:'25.7461,71.3926'}))")
         await c.goto("http://127.0.0.1:8793/order/"); await c.wait_for_timeout(1500)
 
         # 1) पहले "क्या मँगाना है?" — तीन दुकानें
@@ -91,14 +91,19 @@ async def main():
         if await c.locator("#qt").count(): await c.fill("#qt", "12/B")
         await c.click("#place"); await c.wait_for_timeout(1500)
         assert len(posted) == 3, posted
-        src = sorted(x["src"]["stringValue"] for x in posted)
-        assert src == ["web2", "web2:rasoi", "web2:sabji"], src
-        for x in posted:
+        rsp = [x for x in posted if "src" not in x]; posted177 = [x for x in posted if "src" in x]
+        src = sorted(x["src"]["stringValue"] for x in posted177)
+        assert src == ["web2", "web2:sabji"], src  # 🍛 रसोई का ऑर्डर अब 177 के Firestore में नहीं — सीधा मारवाड़ रसोई के ऐप में
+        for x in posted177:
             assert set(x) <= {"name", "phone", "addr", "note", "items", "ts", "status", "src"}, "Firestore नियम वाले खाने ही"
             n = x["note"]["stringValue"]; assert "🧺" in n and "/3" in n, n
-        rs = [x for x in posted if x["src"]["stringValue"] == "web2:rasoi"][0]
-        assert "🏬rasoi" in rs["note"]["stringValue"] and "₹300" in rs["note"]["stringValue"], rs["note"]  # 210 + 2×45, शुल्क नहीं (पहले वाले पर)
-        mh = [x for x in posted if x["src"]["stringValue"] == "web2"][0]
+        assert len(rsp) == 1, rsp; rs = rsp[0]
+        assert set(rs) <= {"kind", "call", "type", "table", "items", "total", "note", "by", "name", "phone", "addr", "ts", "status", "log"}, "रसोई के नियम वाले खाने ही: " + str(set(rs))
+        assert rs["kind"]["stringValue"] == "order" and rs["by"]["stringValue"] == "customer" and rs["status"]["stringValue"] == "new" and rs["type"]["stringValue"] == "delivery", rs
+        assert rs["total"].get("integerValue") == "300" and rs["phone"]["stringValue"] == "9876543210" and "12/B" in rs["addr"]["stringValue"], rs  # 210 + 2×45, शुल्क नहीं (पहले वाले पर)
+        ri = rs["items"]["arrayValue"]["values"]; assert len(ri) == 2 and all(set(v["mapValue"]["fields"]) == {"id", "n", "q", "s", "veg"} for v in ri), ri
+        assert any("/projects/marwar-rasoi-24d56/" in u for u in posted_urls), posted_urls
+        mh = [x for x in posted177 if x["src"]["stringValue"] == "web2"][0]
         assert "₹50" in mh["note"]["stringValue"], mh["note"]  # 30 + 20 डिलीवरी शुल्क एक बार
         assert len(json.loads(await c.evaluate("localStorage.getItem('mh_orders')"))) == 3
         # 6) दुकान का ऐप: ऑर्डर-कार्ड पर दुकान का ठप्पा, 🧺 समूह, "सब्ज़ी को भेजें" WhatsApp, बिल; 🌐 ऑनलाइन मेन्यू
@@ -110,7 +115,7 @@ async def main():
         await a.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={stores:{sabji:{pid:'sabji-express-9a8f0',key:'s',base:'https://x/'}}};", content_type="application/javascript"))
         await a.goto("http://127.0.0.1:8793/index.html"); await a.wait_for_timeout(1500)
         await a.evaluate("S.isOwner=true;S.demo=false;S.settings={...S.settings,online:{stores:{sabji:{ph:'9829011111'}}}};0")
-        sx = [x for x in posted if x["src"]["stringValue"] == "web2:sabji"][0]
+        sx = [x for x in posted177 if x["src"]["stringValue"] == "web2:sabji"][0]
         o = {"id": "s1", "name": "Ramesh", "phone": "9876543210", "addr": "12/B", "src": "web2:sabji", "status": "new", "ts": 1, "note": sx["note"]["stringValue"],
              "items": [{"id": "sx-tamatar", "n": "TOMATO", "q": 0.25, "u": "kg", "s": 30}]}
         await a.evaluate("o=>{SX.orders=[o];SON.sheet()}", o); await a.wait_for_timeout(200)

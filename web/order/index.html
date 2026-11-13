@@ -186,6 +186,21 @@ const cinfo=k=>{for(const st in TX)for(const S of TX[st])for(const c of S.c)if(c
 const stOn=k=>{const o=(CF.stores||{})[k];return k==="mh"?CF.on!==false:!(o&&o.on===false)};
 const stOf=i=>i.st||"mh";
 const vegDot=i=>stOf(i)==="rasoi"?`<i class="vd ${i.veg?"v":"nv"}" title="${i.veg?"Veg":"Non-veg"}"></i>`:"";
+/* 🍛 मारवाड़ रसोई का अपना ऐप (13-11-2026): रसोई के ऑर्डर सीधे उसके Firebase में — मैनेजर के फोन पर घंटी, 3 मिनट में न उठे तो मालिक को। हालत भी वहीं से।
+   ⏰ समय (विक्रम जी): रात 10:30–सुबह 8:00 ऑर्डर बंद; 9 PM के बाद "जल्दी करें"; रसोई चालू न हो तो "रसोई __ पर शुरू — सबसे पहले आपका ऑर्डर"। */
+const RS=((window.SE_CONFIG||{}).stores||{}).rasoi||null,RB=RS&&RS.pid?"https://firestore.googleapis.com/v1/projects/"+RS.pid+"/databases/(default)/documents/":"";
+const FV=v=>v==null?{nullValue:null}:typeof v==="boolean"?{booleanValue:v}:typeof v==="number"?(Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v}):typeof v==="string"?{stringValue:v}:Array.isArray(v)?{arrayValue:{values:v.map(FV)}}:{mapValue:{fields:Object.fromEntries(Object.keys(v).map(k=>[k,FV(v[k])]))}};
+function rsState(){const d=new Date(),c=window.__rsClock,n=c?(+c.split(":")[0])*60+(+c.split(":")[1]):d.getHours()*60+d.getMinutes();
+  if(n<480||n>=1350)return{ok:false,ic:"🌙",en:"Marwar Rasoi is closed for the night — ordering opens at 8:00 AM",hi:"रात 10:30 के बाद ऑर्डर बंद — सुबह 8 बजे से फिर चालू"};
+  if(n>=1260)return{ok:true,ic:"⏳",en:"We close at 10:30 PM — please order quickly so we can prepare it in time!",hi:"जल्दी ऑर्डर करें ताकि आपका ऑर्डर बन सके"};
+  if(n<690)return{ok:true,ic:"🥇",en:"Kitchen starts at 11:30 AM — order now and yours will be prepared first!",hi:"रसोई 11:30 पर शुरू होगी — सबसे पहले आपका ऑर्डर बनेगा"};
+  if(n>870&&n<1155)return{ok:true,ic:"🥇",en:"Kitchen starts at 7:15 PM — order now and yours will be packed first!",hi:"रसोई 7:15 पर शुरू होगी — सबसे पहले आपका ऑर्डर पैक होगा"};
+  return{ok:true,ic:"",en:"",hi:""}}
+/* ऑर्डर की हालत: रसोई का ऑर्डर उसके अपने Firebase से (new→acc→cook→out→done | rej), बाकी pub/ot_<id> से */
+async function orderT(o){
+  if(o&&o.shop==="rasoi"&&RB){const r=await fetch(RB+"orders/"+o.id+"?key="+RS.key,{cache:"no-store"});if(!r.ok)return null;const d=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
+    const a=(d.log||[]).find(l=>l.s==="acc");return{st:({new:"new",acc:"acc",cook:"pack",out:"out",done:"done",rej:"cancel"})[d.status]||"new",eta:a&&d.eta?a.ts+d.eta*60000:0,msg:d.status==="rej"?(d.why||""):"",by:a?a.by:"",billNo:d.tm||""}}
+  const r=await fetch(B+"pub/ot_"+o.id+"?key="+C.apiKey,{cache:"no-store"});if(!r.ok)return null;return V({mapValue:{fields:(await r.json()).fields||{}}})||{}}
 const rasoiOpen=()=>{const H=(RJ&&RJ.shop&&RJ.shop.hours)||[];if(!H.length)return true;const n=new Date(),m=n.getHours()*60+n.getMinutes(),p=s=>{const[a,b]=String(s).split(":");return(+a)*60+(+b||0)};return H.some(h=>m>=p(h[0])&&m<p(h[1]))};
 /* सब्ज़ी एक्सप्रेस के आज के भाव न मिलें (उसका ऐप अभी तक खुला नहीं) → उसकी सामान-सूची से, "भाव पक्का होगा" नोट के साथ */
 let SXOLD=0;async function sabjiFallback(){if(LX.length||!SC.base)return;try{const r=await fetch(SC.base+"migrate.json",{cache:"no-store"});if(!r.ok)return;const M=(await r.json()).items||{};
@@ -267,6 +282,7 @@ function draw(){if(!R&&!LX.length&&!LR.length)return;if(!SEG){$("#m").innerHTML=
     if(CF.cpn&&CF.cpn.code&&!(CF.cpn.first&&LS.get("mh_orders",[]).length))html+=`<div class="ofr"><span>🎟️</span><b>Use code ${esc(String(CF.cpn.code).toUpperCase())} — ${+CF.cpn.flat>0?rs(+CF.cpn.flat):(+CF.cpn.pct||0)+"%"} OFF${CF.cpn.first?" on your first order":""}${+CF.cpn.min?" above "+rs(+CF.cpn.min):""}</b></div>`;
     if(CF.offer)html+=`<div class="ofr"><span>🎉</span><b>${esc(String(CF.offer).slice(0,120))}</b></div>`;
     if(SEG==="sabji"&&SXOLD)html+=`<div class="ofr old"><span>ℹ️</span><b>Today's rates may differ a little — final rate is confirmed on call before delivery</b></div>`;
+    if(SEG==="rasoi"){const s=rsState();if(s.en)html+=`<div class="ofr" id="rsmsg"><span>${s.ic}</span><b>${s.en}<small style="display:block;font-weight:600;opacity:.8">${s.hi}</small></b></div>`}
     html+=tiles(F)+strips(F);
     /* 🥤 खाने के साथ (12-11-2026, विक्रम जी): रसोई के पेज पर 177 MH की कोल्ड ड्रिंक, छाछ-लस्सी-दही, आइसक्रीम, मिठाई — असली भाव (MRP), बिल 177 MH का अलग */
     if(SEG==="rasoi"&&stOn("mh")){const rk=i=>{const o=ocat(i);return o==="cold"?0:o==="dairy"&&has(i,/CHHACH|CHACH|LASSI|DAHI|CURD|BUTTERMILK/)?1:o==="ice"?2:o==="mithai"?3:9},n={};
@@ -335,7 +351,7 @@ async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.
   if(alt&&alt.length!==10){toast("Call number must be 10 digits");$("#alt").focus();return}
   /* 🧾 हर दुकान का अलग ऑर्डर (अलग बिल) — एक ही ग्राहक के ऑर्डर "🧺" से जुड़े; डिलीवरी शुल्क एक बार (पहले ऑर्डर पर) */
   const all=L.filter(i=>Q[i.id]>0),GS=Object.keys(STS).filter(k=>all.some(i=>stOf(i)===k)),sub=tot(),fe=fee(sub),dc=disc(sub),grp=GS.length>1?"G"+Date.now().toString(36).slice(-6):"";
-  if(GS.includes("rasoi")&&!rasoiOpen()&&!confirm("Marwar Rasoi kitchen is closed now — your food will be prepared when it opens. Continue?"))return;
+  if(GS.includes("rasoi")&&!rsState().ok){toast("🌙 Marwar Rasoi takes orders 8:00 AM – 10:30 PM — please remove the restaurant items for now");return}
   const btn=$("#place");btn.disabled=true;btn.textContent="⏳ Placing order…";
   const S=v=>({stringValue:String(v)});const ts=Date.now(),ids=[];
   try{for(const k of GS){const I=all.filter(i=>stOf(i)===k).slice(0,40),st=Math.round(I.reduce((a,i)=>a+Q[i.id]*i.s,0)*100)/100,total=Math.round((st+(k===GS[0]?fe-Math.min(dc,st):0))*100)/100;
@@ -343,9 +359,13 @@ async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.
       const note=(meta+"¦"+nt).slice(0,200);
       const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S((mode()==="d"?ad:"Pickup from shop").slice(0,80)),note:S(note),ts:{integerValue:String(ts)},status:S("new"),src:S(k==="mh"?"web2":"web2:"+k),
         items:{arrayValue:{values:I.map(i=>({mapValue:{fields:{id:S(i.id),n:S(i.n),q:{doubleValue:Q[i.id]},u:S(i.u),s:{doubleValue:+i.s}}}}))}}}};
-      const r=await fetch(B+"orders?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw new Error(r.status);
+      const toRs=k==="rasoi"&&RB; /* 🍛 रसोई का ऑर्डर उसके अपने ऐप के ढाँचे में (marwar-rasoi-app: firestore.rules के खाने ही) */
+      const rb=toRs?{fields:FV({kind:"order",type:mode()==="d"?"delivery":"parcel",table:0,by:"customer",status:"new",ts,name:nm.slice(0,40),phone:ph,addr:(mode()==="d"?ad:"").slice(0,90),total,
+        items:I.map(i=>({id:i.id,n:i.n,q:Math.round(Q[i.id]),s:+i.s,veg:!!i.veg})),log:[{s:"new",ts,by:"customer"}],
+        note:[(me.pay||"c")==="u"?"📱 UPI":"💵 Cash",me.when&&me.when!=="Now"?"⏰ "+me.when:"",me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"",grp?"🧺 +"+(GS.length-1)+" more shop order":"",nt].filter(Boolean).join(" · ").slice(0,200)}).mapValue.fields}:null;
+      const r=await fetch(toRs?RB+"orders?key="+RS.key:B+"orders?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(toRs?rb:body)});if(!r.ok)throw new Error(r.status);
       const j=await r.json();const id=String(j.name||"").split("/").pop();ids.push(id);
-      const mine=LS.get("mh_orders",[]);mine.unshift({id,ts,total,n:I.length,items:I.map(i=>[i.id,Q[i.id]]),mode:mode(),st:k});LS.set("mh_orders",mine.slice(0,30));
+      const mine=LS.get("mh_orders",[]);mine.unshift({id,ts,total,n:I.length,items:I.map(i=>[i.id,Q[i.id]]),mode:mode(),st:k,shop:k});LS.set("mh_orders",mine.slice(0,30));
       I.forEach(i=>delete Q[i.id]);LS.set("mh_cart",Q)}
     Q={};LS.set("mh_cart",Q);draw();track(ids[0],true);if(ids.length>1)setTimeout(()=>toast("✅ "+ids.length+" orders placed — one per shop"),600)}
   catch(e){btn.disabled=false;btn.textContent="✓ Place order";bar();toast(ids.length?"Some orders sent ("+ids.length+") — tap Place order again for the rest":"Order not sent — check internet and try again")}}
@@ -354,13 +374,13 @@ async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.
 const STEPS=[["new","Order placed","Received at the shop"],["acc","Accepted","The shop has confirmed your order"],["pack","Packing","Your items are being packed"],["out","On the way","🛵 Coming to you"],["done","Delivered","Thank you! 🙏"]];
 let trkT=0;
 async function track(id,fresh){clearTimeout(trkT);const o=LS.get("mh_orders",[]).find(x=>x.id===id)||{ts:Date.now()};let t={};
-  try{const r=await fetch(B+"pub/ot_"+id+"?key="+C.apiKey,{cache:"no-store"});if(r.ok)t=V({mapValue:{fields:(await r.json()).fields||{}}})||{}}catch(e){}
-  const st=t.st||"new";saveSt(id,st,t);const ix=st==="cancel"?-1:Math.max(0,STEPS.findIndex(s=>s[0]===st)),ph=String(CF.phone||R&&R.phone||"");
+  try{t=(await orderT(Object.assign({id},o)))||{}}catch(e){}
+  const st=t.st||"new",RSO=o.shop==="rasoi";saveSt(id,st,t);const ix=st==="cancel"?-1:Math.max(0,STEPS.findIndex(s=>s[0]===st)),ph=String(CF.phone||R&&R.phone||"");
   const eta=t.eta?new Date(+t.eta).toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"}):"";
   sheet(fresh?"✅ Order placed":"📦 Order status",`${fresh?`<div class="ok">✅</div>`:""}
    <div class="box">${st==="cancel"?`<b style="color:var(--r)">✕ Order cancelled</b>${t.msg?`<p class="hint">${esc(t.msg)}</p>`:""}`:`
      ${eta&&ix<4?`<p style="margin:0 0 10px;font-size:16px">⏱️ ${o.mode==="p"?"Ready by":"Arriving by"} about <b>${eta}</b></p>`:""}
-     <div class="trk">${STEPS.filter(s=>o.mode!=="p"||s[0]!=="out").map((s,k,A)=>{const i2=STEPS.indexOf(s);return `<div class="st ${i2<ix||st==="done"?"done":i2===ix?"now":""}"><i>${i2<ix||st==="done"?"✓":k+1}</i><div><b>${s[1]}</b><small>${i2===ix&&t.msg?esc(t.msg):s[2]}${i2===1&&t.by&&ix>=1?" · "+esc(t.by):""}</small></div></div>`}).join("")}</div>`}</div>
+     <div class="trk">${STEPS.filter(s=>o.mode!=="p"||s[0]!=="out").map((s,k,A)=>{const i2=STEPS.indexOf(s);return `<div class="st ${i2<ix||st==="done"?"done":i2===ix?"now":""}"><i>${i2<ix||st==="done"?"✓":k+1}</i><div><b>${RSO&&s[0]==="pack"?"Cooking":s[1]}</b><small>${i2===ix&&t.msg?esc(t.msg):RSO?({new:"Received at Marwar Rasoi",acc:"The restaurant has confirmed your order",pack:"Your food is being freshly prepared"})[s[0]]||s[2]:s[2]}${i2===1&&t.by&&ix>=1?" · "+esc(t.by):""}</small></div></div>`}).join("")}</div>`}</div>
    <div class="box"><div class="row"><span>Order</span><b>#${esc(String(id).slice(-6).toUpperCase())}</b></div><div class="row"><span>Total (approx.)</span><b>${rs(o.total||0)}</b></div>${t.billNo?`<div class="row"><span>Bill</span><b>${esc(t.billNo)}</b></div>`:""}
    ${st==="done"?rvHTML(id):""}
    ${ph?`<a class="big" href="tel:+91${esc(ph)}">📞 Call the shop</a><a class="big" href="https://wa.me/91${esc(waPh()||ph)}?text=${encodeURIComponent("Hello, about my order #"+String(id).slice(-6).toUpperCase())}" target="_blank" rel="noopener">💬 WhatsApp</a>`:""}</div>`);
@@ -381,10 +401,10 @@ function saveSt(id,st,t){const M=LS.get("mh_orders",[]),o=M.find(x=>x.id===id);i
   if(t&&t.pts!=null&&isFinite(+t.pts)){LS.set("mh_pts",{n:+t.pts,per:+t.ptsPer||100,ts:Date.now()});meBtn()}liveBar()}
 const ACTIVE=o=>o&&o.st!=="done"&&o.st!=="cancel"&&Date.now()-o.ts<12*3600e3;
 function liveBar(){const o=LS.get("mh_orders",[]).find(ACTIVE),el=$("#livebar");if(!el)return;
-  el.innerHTML=o?`<button class="live" type="button" data-trk="${esc(o.id)}">${o.mode==="p"?"🏪":"🛵"} Your order #${esc(String(o.id).slice(-6).toUpperCase())} · ${({acc:"Accepted",pack:"Packing",out:"On the way"})[o.st]||"Placed"}<b>Track ›</b></button>`:""}
+  el.innerHTML=o?`<button class="live" type="button" data-trk="${esc(o.id)}">${o.mode==="p"?"🏪":"🛵"} Your order #${esc(String(o.id).slice(-6).toUpperCase())} · ${({acc:"Accepted",pack:o.shop==="rasoi"?"Cooking":"Packing",out:"On the way"})[o.st]||"Placed"}<b>Track ›</b></button>`:""}
 document.addEventListener("click",e=>{const t=e.target.closest("#livebar [data-trk]");if(t)track(t.dataset.trk,false)});
 async function peek(){const M=LS.get("mh_orders",[]).filter(o=>ACTIVE(o)||o.st==null&&Date.now()-o.ts<7*86400e3).slice(0,3);
-  for(const o of M){try{const r=await fetch(B+"pub/ot_"+o.id+"?key="+C.apiKey,{cache:"no-store"});if(!r.ok)continue;const t=V({mapValue:{fields:(await r.json()).fields||{}}})||{};saveSt(o.id,t.st||"new",t)}catch(e){}}liveBar()}
+  for(const o of M){try{const t=await orderT(o);if(!t)continue;saveSt(o.id,t.st||"new",t)}catch(e){}}liveBar()}
 liveBar();setTimeout(peek,800);setInterval(()=>{if(LS.get("mh_orders",[]).some(ACTIVE))peek()},60000);
 /* ---------- 👤 खाता (बिना OTP): नाम + मोबाइल — दुकान को रिपोर्ट (orders, src:"signup") ---------- */
 function ACC(){return LS.get("mh_acc",{})}
