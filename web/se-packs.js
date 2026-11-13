@@ -68,8 +68,16 @@ async function company(c,pk,R){
   await S.db.collection("suppliers").doc(c.id).set(p,{merge:true});
   if(ex)Object.assign(ex,p);else S.suppliers&&S.suppliers.push({id:c.id,...p});R.co++}
 /* सारी नई खेपें */
+/* 🩹 12-11-2026 की रात टेस्ट की नकली खेप (S-TEST-01/02) ~10 घंटे GitHub पर रह गई थी। अगर मालिक के फोन ने उसे चढ़ा लिया हो तो:
+   नकली सामान बंद (active:false — मिटाना नहीं), EVEREST कंपनी के नकली नंबर खाली, नकली गिनती "हो गई"। सिर्फ़ वही छूता है जिस पर src/pack = S-TEST लिखा है। */
+SPK.cleanTest=async function(){if(!own()||S.demo||!S.db)return 0;try{if(localStorage.getItem("spk_tclean")==="1")return 0}catch(e){}let n=0;
+  try{for(const id of ["g-test-pc","g-test-pk","p0162"]){const ref=S.db.collection("items").doc(id),g=await ref.get();if(g.exists&&/^pack:S-TEST/.test(g.data().src||"")&&g.data().active!==false){await ref.update({active:false,testJunk:true});const it=(S.items||[]).find(i=>i.id===id);if(it)it.active=false;n++}}
+    const cr=S.db.collection("suppliers").doc("c-everest"),cg=await cr.get();if(cg.exists){const d=cg.data(),p={};if(d.phone==="9876543210")p.phone="";if(d.care==="18002091234")p.care="";if(d.email==="care@everest.test")p.email="";
+      if(/^pack:S-TEST/.test(d.src||""))p.active=false;if(Object.keys(p).length){await cr.update(p);n++}}
+    const os=await S.db.collection("openings").where("pack","in",["S-TEST-01","S-TEST-02"]).get();for(const d of os.docs)if(!d.data().done){await d.ref.update({done:true,doneTs:Date.now(),testJunk:true});n++}
+    try{localStorage.setItem("spk_tclean","1")}catch(e){}if(n)say("🩹 टेस्ट की "+n+" नकली चीज़ें बंद कर दीं (असली डेटा नहीं छुआ)")}catch(e){}return n};
 SPK.apply=async function(force){
-  if(!own()||SPK._busy)return null;SPK._busy=1;const out={packs:0,add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0};
+  if(!own()||SPK._busy)return null;SPK._busy=1;try{await SPK.cleanTest()}catch(e){}const out={packs:0,add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0};
   try{
     const r=await fetch(SPK.url("data/items/index.json")+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)return null;
     const idx=await r.json();if(idx&&!SE.orgOk(idx.org)){say(SE.orgErr(idx.org));return null}const list=(idx&&idx.packs)||[];if(!list.length){out.stock=await SPK.autoStock();return out}
