@@ -49,3 +49,6 @@ E) 12-11-2026 — मेन्यू में QR + फोटो + ग्रा�
 - `python3 scripts/print_designs.py` मेन्यू PDF को web/order/marwar-rasoi-menu.pdf में भी रखता है — ग्राहक-पेज पर WhatsApp बटन के ऊपर गोल 📖 MENU बटन (.mnu) यही डाउनलोड कराता है।
   rasoi.json में भाव/डिश बदलें तो यह स्क्रिप्ट ज़रूर दोबारा चलाएँ, वरना PDF पुराना रहेगा। PDF ऐप के OTA ज़िप में नहीं जाता (build.mjs: -x "order/*.pdf")।
 - सब एक A4 पेज में रहे: पंक्ति की ऊँचाई 20.1px है; नई डिश जोड़ने पर स्क्रिप्ट "❌ ft:…" दे तो ऊँचाई/खाने घटाएँ।
+
+
+F. 🪪 विज़िटिंग कार्ड (13-11-2026): `python3 scripts/card.py` → docs/print/card-front.png, card-back.png, card.pdf (90×54 मिमी, मैरून + सुनहरा, असली QR web/order/qr.png से)। नाम/नंबर स्क्रिप्ट के ऊपर NAME/PHONE/ORDERS में। Canva: पर्चा डिज़ाइन DAHazBv_xIw (QR की जगह खाली — Canva के Uploads में "Marwar Rasoi Order QR" रखा है); Canva के AI क्रेडिट 13-11 को खत्म थे।
