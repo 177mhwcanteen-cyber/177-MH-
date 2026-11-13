@@ -321,7 +321,7 @@
    "c": "veg",
    "veg": true,
    "em": "🍢",
-   "p": "order/rasoi/rs-paneer-malai-tikka.jpg"
+   "p": "order/rasoi/rs-paneer-malai-tikka.jpg?v=1113"
   },
   {
    "id": "rs-paneer-hariyali-tikka",
@@ -331,7 +331,7 @@
    "c": "veg",
    "veg": true,
    "em": "🍢",
-   "p": "order/rasoi/rs-paneer-hariyali-tikka.jpg"
+   "p": "order/rasoi/rs-paneer-hariyali-tikka.jpg?v=1113"
   },
   {
    "id": "rs-kadai-chicken",
@@ -342,7 +342,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🍗",
-   "p": "order/rasoi/rs-kadai-chicken.jpg"
+   "p": "order/rasoi/rs-kadai-chicken.jpg?v=1113"
   },
   {
    "id": "rs-chicken-curry",
@@ -353,7 +353,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🍗",
-   "p": "order/rasoi/rs-chicken-curry.jpg"
+   "p": "order/rasoi/rs-chicken-curry.jpg?v=1113"
   },
   {
    "id": "rs-chicken-handi",
@@ -363,7 +363,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🍗",
-   "p": "order/rasoi/rs-chicken-handi.jpg"
+   "p": "order/rasoi/rs-chicken-handi.jpg?v=1113"
   },
   {
    "id": "rs-masala-chicken",
@@ -373,7 +373,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🍗",
-   "p": "order/rasoi/rs-masala-chicken.jpg"
+   "p": "order/rasoi/rs-masala-chicken.jpg?v=1113"
   },
   {
    "id": "rs-garlic-chicken",
@@ -383,7 +383,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🧄",
-   "p": "order/rasoi/rs-garlic-chicken.jpg"
+   "p": "order/rasoi/rs-garlic-chicken.jpg?v=1113"
   },
   {
    "id": "rs-butter-chicken",
@@ -394,7 +394,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🍗",
-   "p": "order/rasoi/rs-butter-chicken.jpg"
+   "p": "order/rasoi/rs-butter-chicken.jpg?v=1113"
   },
   {
    "id": "rs-desi-chicken-half",
@@ -404,7 +404,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🐓",
-   "p": "order/rasoi/rs-desi-chicken-half.jpg"
+   "p": "order/rasoi/rs-desi-chicken-half.jpg?v=1113"
   },
   {
    "id": "rs-desi-chicken-full",
@@ -414,7 +414,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🐓",
-   "p": "order/rasoi/rs-desi-chicken-full.jpg"
+   "p": "order/rasoi/rs-desi-chicken-full.jpg?v=1113"
   },
   {
    "id": "rs-chilli-chicken-dry",
@@ -424,7 +424,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🌶️",
-   "p": "order/rasoi/rs-chilli-chicken-dry.jpg"
+   "p": "order/rasoi/rs-chilli-chicken-dry.jpg?v=1113"
   },
   {
    "id": "rs-chicken-chilli-gravy",
@@ -434,7 +434,7 @@
    "c": "nonveg",
    "veg": false,
    "em": "🌶️",
-   "p": "order/rasoi/rs-chicken-chilli-gravy.jpg"
+   "p": "order/rasoi/rs-chicken-chilli-gravy.jpg?v=1113"
   },
   {
    "id": "rs-tandoori-chicken-plate",
