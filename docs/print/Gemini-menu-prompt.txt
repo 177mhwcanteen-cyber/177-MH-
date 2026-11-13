@@ -1,0 +1,113 @@
+(विक्रम जी: यह पूरा प्रॉम्प्ट Gemini में चिपकाएँ और साथ में QR वाली फोटो "177-order-QR.png" ज़रूर जोड़ें।)
+
+Design a premium, print-ready restaurant MENU CARD for "MARWAR RASOI / मारवाड़ रसोई", Barmer, Rajasthan.
+
+FORMAT
+- A4 portrait (210 × 297 mm), very high resolution (300 DPI, at least 2480 × 3508 px), razor-sharp text. If everything does not fit comfortably on one page, make 2 pages (Page 1: Veg, Page 2: Non-Veg + Breads + Rice + Extras + QR). Never shrink text to fit.
+- Output as a crisp PNG/PDF. No blur, no compression artifacts.
+
+STYLE
+- Royal Rajasthani heritage look: dark carved walnut-wood outer frame, thin gold inner border, gold floral corner motifs, cream parchment paper background, a small jharokha-arch shape only behind the title.
+- Colours: deep maroon, antique gold, cream, dark brown text. Elegant serif font for English, clean bold Devanagari font for Hindi.
+- Text is the hero: large, high-contrast, easy to read from arm's length. Dish name on the left, dotted leader line, price right-aligned in one straight column.
+- 3–4 small, appetising, realistic food photos only (e.g. Shahi Paneer, Tandoori Chicken, Butter Naan, Chicken Biryani) in gold round/arched frames. Photos must not crowd the text.
+- Green square-dot mark before every VEG dish, red triangle mark before every NON-VEG dish, with a small key near the title: "Veg / शाकाहारी" and "Non-Veg / मांसाहारी".
+
+HEADER
+- "मारवाड़ रसोई" (big) + "MARWAR RASOI" + small line "Pure taste of Marwar · Veg & Non-Veg"
+- Address line: "Amenity Centre, Jalipa · Barmer"
+
+MENU — USE EXACTLY THESE NAMES AND PRICES. Do not add, remove, rename, translate differently or change any price. Check every spelling and every number twice.
+## Veg Main Course
+- Dal Tadka (दाल तड़का) — ₹150  [VEG]
+- Dal Fry (दाल फ्राई) — ₹150  [VEG]
+- Mushroom Masala — ₹209  [VEG]
+- Mushroom Paneer — ₹209  [VEG]
+- Mushroom Matar — ₹209  [VEG]
+- Mushroom Kaju Masala — ₹259  [VEG]
+- Kaju Masala — ₹259  [VEG]
+- Kaju Paneer Masala — ₹259  [VEG]
+- Kaju Curry (काजू करी) — ₹259  [VEG]
+- Matar Paneer (मटर पनीर) — ₹190  [VEG]
+- Shahi Paneer (शाही पनीर) — ₹210  [VEG]
+- Paneer Butter Masala (पनीर बटर मसाला) — ₹190  [VEG]
+- Paneer Lababdar — ₹210  [VEG]
+- Paneer Bhurji — ₹230  [VEG]
+- Paneer Handi — ₹190  [VEG]
+- Paneer Masala — ₹190  [VEG]
+- Kadai Paneer (कड़ाही पनीर) — ₹190  [VEG]
+- Mix Veg (मिक्स वेज) — ₹170  [VEG]
+- Sev Tamatar (सेव टमाटर) — ₹170  [VEG]
+- Manchurian Gravy — ₹140  [VEG]
+- Manchurian Dry — ₹120  [VEG]
+- Paneer Tikka (पनीर टिक्का) — ₹260  [VEG]
+- Chilli Paneer Gravy — ₹190  [VEG]
+- Chilli Paneer Dry — ₹190  [VEG]
+- Paneer Malai Tikka — ₹260  [VEG]
+- Paneer Hariyali Tikka — ₹240  [VEG]
+
+## Non-Veg Main Course
+- Kadai Chicken (कड़ाही चिकन) — ₹240  [NON-VEG]
+- Chicken Curry (चिकन करी) — ₹240  [NON-VEG]
+- Chicken Handi — ₹240  [NON-VEG]
+- Masala Chicken — ₹240  [NON-VEG]
+- Garlic Chicken — ₹280  [NON-VEG]
+- Butter Chicken (बटर चिकन) — ₹280  [NON-VEG]
+- Desi Chicken (Half) — ₹500  [NON-VEG]
+- Desi Chicken (Full) — ₹1000  [NON-VEG]
+- Chilli Chicken Dry — ₹240  [NON-VEG]
+- Chicken Chilli Gravy — ₹260  [NON-VEG]
+- Tandoori Chicken (Plate) — ₹280  [NON-VEG]
+- Tandoori Chicken (Half) (तंदूरी चिकन (हाफ़)) — ₹450  [NON-VEG]
+- Tandoori Chicken (Full) (तंदूरी चिकन (फुल)) — ₹850  [NON-VEG]
+- Chicken Tikka — ₹260  [NON-VEG]
+- Chicken Hariyali Tikka — ₹280  [NON-VEG]
+
+## Naan & Tandoori Roti
+- Plain Tandoori Roti (तंदूरी रोटी) — ₹15  [VEG]
+- Butter Tandoori Roti (बटर तंदूरी रोटी) — ₹19  [VEG]
+- Plain Naan — ₹40  [VEG]
+- Butter Naan (बटर नान) — ₹45  [VEG]
+- Garlic Naan (गार्लिक नान) — ₹80  [VEG]
+- Lachha Paratha (लच्छा पराठा) — ₹45  [VEG]
+
+## Rice, Pulao & Biryani
+- Jeera Rice (जीरा राइस) — ₹110  [VEG]
+- Fried Rice — ₹150  [VEG]
+- Veg Pulao — ₹160  [VEG]
+- Plain Rice — ₹90  [VEG]
+- Veg Biryani (वेज बिरयानी) — ₹170  [VEG]
+
+## Chicken Biryani
+- Chicken Biryani (चिकन बिरयानी) — ₹219  [NON-VEG]
+- Hyderabadi Chicken Biryani — ₹239  [NON-VEG]
+- Chicken Dum Biryani — ₹239  [NON-VEG]
+
+## Fish (Masala / Curry)
+- Fish Curry (फिश करी) — ₹240  [NON-VEG]
+- Fish Masala — ₹240  [NON-VEG]
+
+## Salad, Dahi & Water
+- Green Salad — ₹40  [VEG]
+- Dahi (दही) — ₹40  [VEG]
+- Water Bottle — ₹20  [VEG]
+
+Small note under Extras: "Cold drinks on MRP · कोल्ड ड्रिंक MRP पर"
+
+FOOTER STRIP
+- Timings: "Lunch 11:30 AM – 2:30 PM · Dinner 6:30 PM – 10:30 PM" / "दोपहर 11:30–2:30 · रात 6:30–10:30"
+- "FREE HOME DELIVERY · फ्री होम डिलीवरी — No delivery charge, no minimum order"
+- Phone / WhatsApp: 8696283600 · 6367183480 · 7665326484
+
+QR CODE BOX (bottom right) — VERY IMPORTANT
+- I have attached a QR image (177-order-QR.png). Place THAT EXACT image, unchanged, on a pure white square with a white margin all around, at least 35 mm wide. Do NOT redraw, restyle, recolour, round, crop, tilt or generate a new QR code — a redrawn QR will not scan. No logo or text on top of the QR.
+- Heading above it: "SCAN & ORDER ONLINE · स्कैन करें, घर बैठे मँगाएँ"
+- Text beside/below it (both languages, clearly readable):
+  "इसी स्कैनर से घर बैठे मँगाइए — रेस्टोरेंट का खाना, किराना (ग्रोसरी), आइसक्रीम, मिठाई, ताज़ी सब्ज़ियाँ और फल।"
+  "Scan the same code to order at home — Restaurant food, Grocery, Ice Cream, Sweets, fresh Vegetables and Fruits."
+- Four tiny icons in a row under it: 🍛 Food · 🛒 Grocery · 🍨 Ice Cream & Sweets · 🥬 Vegetables & Fruits
+
+FINAL CHECK BEFORE YOU GIVE THE IMAGE
+- All 61 dishes present, none repeated, every price exactly as listed, ₹ symbol correct.
+- Hindi spellings correct: मँगाइए, सब्ज़ियाँ, ताज़ी, शाकाहारी, मांसाहारी, डिलीवरी.
+- The QR is the attached image, untouched, on white.
