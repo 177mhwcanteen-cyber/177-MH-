@@ -217,7 +217,8 @@ function mkLR(){if(!RJ)return;const rp=CF.rp||{};LR=[...(RJ.items||[]),...((CF.r
 const vis=i=>{const H=CF.hide||{};return !((H.i||[]).includes(i.id)||(H.c||[]).includes(ocat(i)))};
 function build(){mkLR();L=[...LM,...LX,...LR].filter(vis);Object.keys(Q).forEach(id=>{const i=L.find(x=>x.id===id);if(!i&&(LM.length&&LX.length&&LR.length))delete Q[id]});heads();draw()}
 const toast=t=>{const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)};
-const photo=i=>PH&&PH[i.id]?PH[i.id]:i.p?(/^(https?:|data:)/.test(i.p)?i.p:"../"+i.p):"";
+/* रसोई की फोटो: टाइल छोटी है → 200px वाली हल्की नकल (order/rasoi/s/, scripts/rasoi_thumbs.py) — पेज जल्दी खुले */
+const photo=i=>PH&&PH[i.id]?PH[i.id]:i.p?(/^(https?:|data:)/.test(i.p)?i.p:"../"+i.p.replace(/^order\/rasoi\/(?!s\/)/,"order/rasoi/s/")):"";
 const bg=i=>photo(i)?`--b:url('${esc(photo(i))}')`:`background:linear-gradient(135deg,hsl(${(+i.h||((i.id||"").length*47))%360} 70% 92%),hsl(${(+i.h||((i.id||"").length*47))%360} 60% 80%))`;
 const openNow=()=>{if(!CF.open||!CF.close)return true;const n=new Date(),m=n.getHours()*60+n.getMinutes(),p=s=>{const[a,b]=String(s).split(":");return(+a)*60+(+b||0)};return m>=p(CF.open)&&m<p(CF.close)};
 const tot=()=>L.reduce((a,i)=>a+(Q[i.id]||0)*i.s,0),cnt=()=>L.filter(i=>Q[i.id]>0).length;
