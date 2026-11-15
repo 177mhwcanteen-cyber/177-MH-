@@ -89,11 +89,17 @@ async def main():
         assert await c.locator("#ov .csh").count() == 3 and "3 shops" in await c.inner_text("#ov")
         t = await c.inner_text("#ov"); assert "minimum 30 min" in t and "delivery partner is free" in t and "Marwar Rasoi · Your bill" in t and await c.locator('[data-pay="u"][aria-pressed="true"]').count() == 1, "15-11: दुकान-वार समय + बिल + UPI पहले से चुना"
         await c.screenshot(path=f"{SHOTS}/st5-cart.png", full_page=True)
-        if await c.locator("#qt").count(): await c.fill("#qt", "12/B")
+        assert await c.locator("#loc").count() == 0, "लोकेशन (lat/lng) का बटन नहीं"
+        await c.fill("#qt", "12/B"); await c.click("#place"); await c.wait_for_timeout(300); assert len(posted) == 0, "यूनिट बिना ऑर्डर नहीं"
+        await c.fill("#un", "177 MH")
         await c.click("#place"); await c.wait_for_timeout(1500)
         assert len(posted) == 3, posted
         t = await c.inner_text("#ov"); assert "Pay now" in t and "min. 30 min" in t and await c.locator("#ov a.upi[href^='upi://pay?pa=']").count() == 1, "ऑर्डर के बाद: अभी भुगतान (UPI) + दुकान-वार समय"
+        assert await c.locator("#ov a.wa[href*='wa.me/91']").count() == 1, "पेमेंट का स्क्रीनशॉट WhatsApp पर"
+        me_ = await c.evaluate("JSON.parse(localStorage.getItem('mh_me'))"); assert me_.get("qt") == "12/B" and me_.get("un") == "177 MH" and "ll" not in me_, me_
         await c.wait_for_timeout(600); assert await c.locator("#pqr img, #pqr canvas").count() >= 1, "भुगतान का QR"; await c.screenshot(path=f"{SHOTS}/st5b-pay.png", full_page=True)
+        await c.click("#ov .x"); await c.wait_for_timeout(200); await c.locator("#m [data-p]").first.click(); await c.click("#cbar"); await c.wait_for_timeout(300); assert await c.locator("#ov .adr").count() == 1 and "Quarter 12/B" in await c.inner_text("#ov .adr") and await c.locator("#qt").count() == 0, "सेव पता दिखा, दोबारा नहीं पूछा"
+        await c.screenshot(path=f"{SHOTS}/st5c-saved-addr.png"); await c.click("[data-aded]"); assert await c.input_value("#un") == "177 MH", "बदलें → खाने भरे हुए"; await c.click("#ov .x")
         rsp = [x for x in posted if "src" not in x]; posted177 = [x for x in posted if "src" in x]
         src = sorted(x["src"]["stringValue"] for x in posted177)
         assert src == ["web2", "web2:sabji"], src  # 🍛 रसोई का ऑर्डर अब 177 के Firestore में नहीं — सीधा मारवाड़ रसोई के ऐप में
