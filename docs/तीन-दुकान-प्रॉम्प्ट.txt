@@ -124,3 +124,4 @@
 7. 🔐 15-11-2026 ग्राहक-खाता (विक्रम जी): "My orders" में सबसे ऊपर Marwar Rasoi login (mrBox/mrWire) — Username = मोबाइल, Password = विक्रम जी का WhatsApp से भेजा;
    sha256("mr|मोबाइल|पासवर्ड") → रसोई Firebase `cacc/<hash>` (सिर्फ़ get; डायरेक्टर मारवाड़ रसोई ऐप में JSON चढ़ाते हैं)। दिखे: Jai Hind नाम, रेटिंग (4.8-5.0), टियर (Member/Silver/Gold/Royal VIP),
    Top X%, यूनिट में रैंक, अगले टियर की पट्टी, पसंद (+ जोड़ें), पिछले 12 ऑर्डर "↻ Order again"। लिंक ?s=rasoi&u=<मोबाइल> → सीधे लॉगिन खुले। mr_cacc में याद (6 घंटे में ताज़ा)। जाँच tests/stores.py 5b।
+8. 15-11 दोपहर: खाते में नाम की जगह "Respected Sir ji" + मोबाइल; नीचे "Billing name" (बड़े अक्षर) + ✏️ Edit (ग्राहक खुद ठीक करे → फोन में तुरंत + रसोई Firebase `cname/*` में डायरेक्टर को, नियम v10) + 🚪 Logout (ऊपर और नीचे; mr_cacc, mh_acc, mh_me साफ़)।

@@ -36,6 +36,7 @@ async def main():
         b = await p.chromium.launch()
         ctx = await b.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
 
+        cname = []
         async def fs(route):
             u = route.request.url
             if "/projects/sabji-express-9a8f0/" in u and "/pub/rates" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in SX.items()}})
@@ -43,6 +44,7 @@ async def main():
             if u.split("?")[0].endswith("/documents/orders") and route.request.method == "POST":
                 body = json.loads(route.request.post_data); posted.append(body["fields"]); posted_urls.append(u)
                 return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/O" + str(len(posted)), "fields": body["fields"]})
+            if "/projects/marwar-rasoi-24d56/" in u and "/cname" in u: cname.append(u); return await route.fulfill(json={"name": "x"})
             if "/projects/marwar-rasoi-24d56/" in u and "/cacc/" in u:  # 🔐 ग्राहक-खाता (नकली)
                 import hashlib
                 if u.split("/cacc/")[1].split("?")[0] == hashlib.sha256(b"mr|9876543210|abc234").hexdigest():
@@ -126,9 +128,13 @@ async def main():
         assert await c.input_value("#mru") == "9876543210"; await c.fill("#mrp", "wrong1"); await c.click("#mrgo"); await c.wait_for_function("document.querySelector('#mre').textContent.includes('wrong')")
         await c.fill("#mrp", "ABC234"); await c.click("#mrgo"); await c.wait_for_selector(".mrp")
         t = await c.inner_text(".mrp"); assert "Respected Sir ji" in t and "9876543210" in t and "Ramesh" not in t and "4.9" in t and "Gold" in t and "Top 12%" in t and "Shahi Paneer" in t and "Order again" in t, t
+        assert "RAMESH" in await c.inner_text("#mrbn"); await c.click("#mred"); await c.fill("#mrni", "Hav Ramesh Kumar"); await c.click("#mrsv"); await c.wait_for_timeout(300)
+        assert "HAV RAMESH KUMAR" in await c.inner_text("#mrbn") and any("/cname" in u for u in cname), "बिल का नाम बदला + डायरेक्टर को गया"
         await c.screenshot(path=f"{SHOTS}/st6-account.png", full_page=True)
         await c.click("[data-mra='0']"); await c.wait_for_timeout(300); assert "3 items" in await c.inner_text("#cbar") or "items" in await c.inner_text("#cbar"), await c.inner_text("#cbar")
         assert "⭐ 4.9" in await c.inner_text("#me"), await c.inner_text("#me")
+        await c.click("#myo"); await c.wait_for_selector("#mrout2"); await c.click("#mrout2"); await c.wait_for_selector("#mrgo"); assert await c.evaluate("!localStorage.getItem('mr_cacc')||localStorage.getItem('mr_cacc')==='null'") and "Sign in" in await c.inner_text("#me"), "लॉगआउट"
+        await c.evaluate("localStorage.setItem('mh_acc',JSON.stringify({nm:'Ramesh',ph:'9876543210'}))")
         # 6) दुकान का ऐप: ऑर्डर-कार्ड पर दुकान का ठप्पा, 🧺 समूह, "सब्ज़ी को भेजें" WhatsApp, बिल; 🌐 ऑनलाइन मेन्यू
         MOCK = open(os.path.join(H, "mock-firebase.js"), encoding="utf8").read()
         a = await ctx.new_page(); a.on("pageerror", lambda e: errs.append("app: " + str(e)))
