@@ -87,10 +87,13 @@ async def main():
         # 5) कार्ट: दुकान-वार
         await c.click("#cbar"); await c.wait_for_timeout(300)
         assert await c.locator("#ov .csh").count() == 3 and "3 shops" in await c.inner_text("#ov")
+        t = await c.inner_text("#ov"); assert "minimum 30 min" in t and "delivery partner is free" in t and "Marwar Rasoi · Your bill" in t and await c.locator('[data-pay="u"][aria-pressed="true"]').count() == 1, "15-11: दुकान-वार समय + बिल + UPI पहले से चुना"
         await c.screenshot(path=f"{SHOTS}/st5-cart.png", full_page=True)
         if await c.locator("#qt").count(): await c.fill("#qt", "12/B")
         await c.click("#place"); await c.wait_for_timeout(1500)
         assert len(posted) == 3, posted
+        t = await c.inner_text("#ov"); assert "Pay now" in t and "min. 30 min" in t and await c.locator("#ov a.upi[href^='upi://pay?pa=']").count() == 1, "ऑर्डर के बाद: अभी भुगतान (UPI) + दुकान-वार समय"
+        await c.wait_for_timeout(600); assert await c.locator("#pqr img, #pqr canvas").count() >= 1, "भुगतान का QR"; await c.screenshot(path=f"{SHOTS}/st5b-pay.png", full_page=True)
         rsp = [x for x in posted if "src" not in x]; posted177 = [x for x in posted if "src" in x]
         src = sorted(x["src"]["stringValue"] for x in posted177)
         assert src == ["web2", "web2:sabji"], src  # 🍛 रसोई का ऑर्डर अब 177 के Firestore में नहीं — सीधा मारवाड़ रसोई के ऐप में

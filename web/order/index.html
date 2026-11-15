@@ -111,6 +111,8 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 .bst{position:absolute;top:10px;left:8px;background:#e23744;color:#fff;font:800 10px/1 "Mukta",sans-serif;padding:4px 6px;border-radius:6px}
 .wq{display:flex;gap:3px;margin-top:4px}.wq button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:3px 0;font-size:11px;font-weight:800}.wq button.on{background:var(--g);color:#fff;border-color:var(--g)}
 .csh{display:flex;justify-content:space-between;align-items:baseline}.csh span{font-size:15px}
+.eta2{margin:-4px 0 8px;font-size:12.5px;font-weight:700;color:#9a3412;background:#fff7ed;border-radius:9px;padding:5px 8px}.box.bill h3{color:#7a1c1c}
+.box.pay{border:2px solid #16a34a;text-align:center}.box.pay .upi{display:block;background:#16a34a;color:#fff;border-radius:12px;padding:12px;font-weight:800;text-decoration:none;margin:4px 0 8px}#pqr{display:grid;place-items:center;margin:4px 0}#pqr img,#pqr canvas{border:6px solid #fff;border-radius:8px}
 </style></head><body>
 <div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1 id="ttl">177 Wet Canteen</h1><small id="sub">Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
 <label class="srch"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search — milk, Parle, samosa…" autocomplete="off" aria-label="Search items"></label></div>
@@ -315,9 +317,9 @@ const sheet=(title,body,btn)=>{$("#ov").innerHTML=`<div class="scrim" data-x><di
 function vegAsk(){sheet("🍽️ What do you eat?",`<div class="box va"><button type="button" data-veg="veg"><i class="vd v big"></i><b>Pure Veg</b><small>Show only vegetarian food</small></button><button type="button" data-veg="nonveg"><i class="vd nv big"></i><b>Non-veg</b><small>Chicken, fish & biryani first — plus all veg</small></button></div><p class="hint" style="text-align:center">You can switch anytime from the bar on top.</p>`)}
 function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();return}const sub=tot(),fe=fee(sub),dc=disc(sub),total=sub+fe-dc,min=+CF.min||0;
   const minOk=sub>=min,GS=Object.keys(STS).filter(k=>I.some(i=>stOf(i)===k));
-  sheet("🛒 Your cart",`${GS.length>1?`<p class="hint" style="margin:0 2px 8px">🧾 ${GS.length} shops — each sends its own items with a separate bill, in one delivery trip where possible.</p>`:""}${GS.map(k=>{const G=I.filter(i=>stOf(i)===k);return `<div class="box"><h3 class="csh">${STS[k].ic} ${esc(STS[k].n)}<span>${rs(G.reduce((a,i)=>a+Q[i.id]*i.s,0))}</span></h3>${G.map(i=>`<div class="ci"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||EM[i.c]||"🛍️")}</div><div><div class="nm">${esc(i.n)}</div><div class="un">${rs(i.s)} / ${U[i.u]||i.u}</div></div>
+  sheet("🛒 Your cart",`${GS.length>1?`<p class="hint" style="margin:0 2px 8px">🧾 ${GS.length} shops — each sends its own items with a separate bill, in one delivery trip where possible.</p>`:""}${GS.map(k=>{const G=I.filter(i=>stOf(i)===k);return `<div class="box"><h3 class="csh">${STS[k].ic} ${esc(STS[k].n)}<span>${rs(G.reduce((a,i)=>a+Q[i.id]*i.s,0))}</span></h3><p class="eta2">${ETA2(k)}</p>${G.map(i=>`<div class="ci"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||EM[i.c]||"🛍️")}</div><div><div class="nm">${esc(i.n)}</div><div class="un">${rs(i.s)} / ${U[i.u]||i.u}</div></div>
     <div class="stp"><button type="button" data-m="${esc(i.id)}">−</button><span>${fq(Q[i.id],i.u)}</span><button type="button" data-p="${esc(i.id)}">+</button></div><div class="amt">${rs(Q[i.id]*i.s)}</div></div>`).join("")}</div>`}).join("")}
-  <div class="box"><h3>🧾 Bill details</h3><div class="row"><span>Items total</span><span>${rs(sub)}</span></div>
+  <div class="box bill"><h3>🧾 Marwar Rasoi · Your bill</h3>${GS.map(k=>`<div class="row"><span>${STS[k].ic} ${esc(STS[k].n)}</span><span>${rs(I.filter(i=>stOf(i)===k).reduce((a,i)=>a+Q[i.id]*i.s,0))}</span></div>`).join("")}<div class="row"><span>Items total</span><span>${rs(sub)}</span></div>
     ${mode()==="d"?`<div class="row"><span>Delivery fee</span>${fe?`<span>${rs(fe)}</span>`:`<span class="fr">FREE</span>`}</div>`:""}
     ${dc?`<div class="row"><span>🎟️ Coupon ${esc(String(me.cp).toUpperCase())}</span><span class="fr">− ${rs(dc)}</span></div>`:""}
     <div class="row tot"><span>To pay (approx.)</span><span>${rs(total)}</span></div>
@@ -332,7 +334,7 @@ function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();retu
     <input class="f" id="ad" placeholder="Area / Lines (e.g. JCO Lines, near temple)" maxlength="36" autocomplete="street-address" value="${esc(me.ad||"")}">
     <button type="button" class="loc" id="loc">📍 ${me.ll?"Location added ✓ — update":"Add my location (faster delivery)"}</button>`:""}
     <div class="seg" style="margin-top:8px">${["Now","Evening 6-8"].map((w,k)=>`<button type="button" data-when="${w}" aria-pressed="${(me.when||"Now")===w}">⏰ ${w}</button>`).join("")}</div>
-    <div class="seg" style="margin-top:8px">${[["c","💵 Cash"],["u","📱 UPI"]].map(([k,v])=>`<button type="button" data-pay="${k}" aria-pressed="${(me.pay||"c")===k}">${v}</button>`).join("")}</div>
+    <div class="seg" style="margin-top:8px">${[["u","📱 Pay now · UPI"],["c","💵 Cash on delivery"]].map(([k,v])=>`<button type="button" data-pay="${k}" aria-pressed="${(me.pay||"u")===k}">${v}</button>`).join("")}</div><p class="hint" style="margin:6px 2px 0">⚡ Paid orders are packed first — pay by GPay / PhonePe / Paytm right after placing.</p>
     <textarea class="f" id="nt" rows="2" maxlength="120" placeholder="Any instructions? (optional)"></textarea></div>`,
   `<button class="place" id="place" type="button" ${minOk&&CF.on!==false?"":"disabled"}>${CF.on===false?"Online orders paused":minOk?`✓ Place order · ${rs(total)}`:`Minimum order ${rs(min)}`}</button>`);
   const keep=()=>{const g=id=>{const x=$("#"+id);return x?x.value.trim():undefined};["alt","qt","un","ad"].forEach(k=>{const v=g(k);if(v!==undefined)me[k]=v});LS.set("mh_me",me)};
@@ -356,21 +358,30 @@ async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.
   const btn=$("#place");btn.disabled=true;btn.textContent="⏳ Placing order…";
   const S=v=>({stringValue:String(v)});const ts=Date.now(),ids=[];
   try{for(const k of GS){const I=all.filter(i=>stOf(i)===k).slice(0,40),st=Math.round(I.reduce((a,i)=>a+Q[i.id]*i.s,0)*100)/100,total=Math.round((st+(k===GS[0]?fe-Math.min(dc,st):0))*100)/100;
-      const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"c")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"","₹"+total,k===GS[0]&&dc?"🎟"+String(me.cp).toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12)+"-₹"+Math.min(dc,st):"",k!=="mh"?"🏬"+k:"",grp?"🧺"+grp+"/"+GS.length:""].filter(Boolean).join("|");
+      const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"u")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"","₹"+total,k===GS[0]&&dc?"🎟"+String(me.cp).toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12)+"-₹"+Math.min(dc,st):"",k!=="mh"?"🏬"+k:"",grp?"🧺"+grp+"/"+GS.length:""].filter(Boolean).join("|");
       const note=(meta+"¦"+nt).slice(0,200);
       const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S((mode()==="d"?ad:"Pickup from shop").slice(0,80)),note:S(note),ts:{integerValue:String(ts)},status:S("new"),src:S(k==="mh"?"web2":"web2:"+k),
         items:{arrayValue:{values:I.map(i=>({mapValue:{fields:{id:S(i.id),n:S(i.n),q:{doubleValue:Q[i.id]},u:S(i.u),s:{doubleValue:+i.s}}}}))}}}};
       const toRs=k==="rasoi"&&RB; /* 🍛 रसोई का ऑर्डर उसके अपने ऐप के ढाँचे में (marwar-rasoi-app: firestore.rules के खाने ही) */
       const rb=toRs?{fields:FV({kind:"order",type:mode()==="d"?"delivery":"parcel",table:0,by:"customer",status:"new",ts,name:nm.slice(0,40),phone:ph,addr:(mode()==="d"?ad:"").slice(0,90),total,
         items:I.map(i=>({id:i.id,n:i.n,q:Math.round(Q[i.id]),s:+i.s,veg:!!i.veg})),log:[{s:"new",ts,by:"customer"}],
-        note:[(me.pay||"c")==="u"?"📱 UPI":"💵 Cash",me.when&&me.when!=="Now"?"⏰ "+me.when:"",me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"",grp?"🧺 +"+(GS.length-1)+" more shop order":"",nt].filter(Boolean).join(" · ").slice(0,200)}).mapValue.fields}:null;
+        note:[(me.pay||"u")==="u"?"📱 UPI":"💵 Cash",me.when&&me.when!=="Now"?"⏰ "+me.when:"",me.ll&&mode()==="d"?"📍"+me.ll:"",alt&&alt!==ph?"☎️"+alt:"",grp?"🧺 +"+(GS.length-1)+" more shop order":"",nt].filter(Boolean).join(" · ").slice(0,200)}).mapValue.fields}:null;
       const r=await fetch(toRs?RB+"orders?key="+RS.key:B+"orders?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(toRs?rb:body)});if(!r.ok)throw new Error(r.status);
       const j=await r.json();const id=String(j.name||"").split("/").pop();ids.push(id);
       const mine=LS.get("mh_orders",[]);mine.unshift({id,ts,total,n:I.length,items:I.map(i=>[i.id,Q[i.id]]),mode:mode(),st:k,shop:k});LS.set("mh_orders",mine.slice(0,30));
       I.forEach(i=>delete Q[i.id]);LS.set("mh_cart",Q)}
-    Q={};LS.set("mh_cart",Q);draw();track(ids[0],true);if(ids.length>1)setTimeout(()=>toast("✅ "+ids.length+" orders placed — one per shop"),600)}
+    Q={};LS.set("mh_cart",Q);draw();PAYDUE=(me.pay||"u")==="u"?{amt:Math.round((sub+fe-dc)*100)/100,ref:String(ids[0]).slice(-6).toUpperCase(),gs:GS}:{gs:GS};track(ids[0],true);if(ids.length>1)setTimeout(()=>toast("✅ "+ids.length+" orders placed — one per shop"),600)}
   catch(e){btn.disabled=false;btn.textContent="✓ Place order";bar();toast(ids.length?"Some orders sent ("+ids.length+") — tap Place order again for the rest":"Order not sent — check internet and try again")}}
 
+/* 🛵 हर दुकान का समय (विक्रम जी, 15-11): रसोई — कम से कम 30 मिनट (ताज़ा बनता है); कैंटीन/सब्ज़ी — डिलीवरी पार्टनर फ्री होते ही अलग से */
+const ETA2=k=>k==="rasoi"?"🍳 Cooked fresh after you order · delivery in about 30–40 min (minimum 30 min)":"🛵 Comes separately — sent as soon as our delivery partner is free";
+/* 📱 अभी भुगतान: UPI ऐप सीधा खुले (रकम भरी) + QR (दूसरे फोन से स्कैन) — दुकान का वही UPI जो 177 के बिल पर है */
+let PAYDUE=null;const UPI=()=>CF.upi||"6367183480@okbizaxis";
+const upiUrl=(a,ref)=>`upi://pay?pa=${encodeURIComponent(UPI())}&pn=${encodeURIComponent("Marwar Rasoi")}&am=${(+a).toFixed(2)}&cu=INR&tn=${encodeURIComponent("Order #"+ref)}`;
+function payHTML(P){if(!P)return"";const T=(P.gs||[]).map(k=>`<div class="row"><span>${STS[k].ic} ${esc(STS[k].n)}</span><small>${k==="rasoi"?"🍳 min. 30 min":"🛵 when partner is free"}</small></div>`).join("");
+  return `${T?`<div class="box"><h3>🕒 When will it arrive?</h3>${T}${(P.gs||[]).length>1?`<p class="hint">Each shop sends its own bag — you may get them at different times.</p>`:""}</div>`:""}${P.amt?`<div class="box pay"><h3>📱 Pay now — ${rs(P.amt)}</h3><a class="big upi" href="${upiUrl(P.amt,P.ref)}">Pay ${rs(P.amt)} with UPI app ›</a><div id="pqr"></div><p class="hint">Pay to <b>${esc(UPI())}</b> · Order #${esc(P.ref)}. Paid orders are packed first. Prefer cash? Pay the delivery partner.</p></div>`:""}`}
+function payQR(){const el=$("#pqr");if(!el||!PAYDUE||!PAYDUE.amt)return;const tx=upiUrl(PAYDUE.amt,PAYDUE.ref),go=()=>{try{new QRCode(el,{text:tx,width:150,height:150,correctLevel:QRCode.CorrectLevel.M})}catch(e){}};
+  if(window.QRCode)return go();const sc=document.createElement("script");sc.src="../lib/qrcode.min.js";sc.onload=go;document.head.appendChild(sc)}
 /* ---------- 📦 ट्रैकिंग (pub/ot_<id> — दुकान का ऐप हर कदम पर भरता है) ---------- */
 const STEPS=[["new","Order placed","Received at the shop"],["acc","Accepted","The shop has confirmed your order"],["pack","Packing","Your items are being packed"],["out","On the way","🛵 Coming to you"],["done","Delivered","Thank you! 🙏"]];
 let trkT=0;
@@ -378,13 +389,14 @@ async function track(id,fresh){clearTimeout(trkT);const o=LS.get("mh_orders",[])
   try{t=(await orderT(Object.assign({id},o)))||{}}catch(e){}
   const st=t.st||"new",RSO=o.shop==="rasoi";saveSt(id,st,t);const ix=st==="cancel"?-1:Math.max(0,STEPS.findIndex(s=>s[0]===st)),ph=String(CF.phone||R&&R.phone||"");
   const eta=t.eta?new Date(+t.eta).toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"}):"";
-  sheet(fresh?"✅ Order placed":"📦 Order status",`${fresh?`<div class="ok">✅</div>`:""}
+  sheet(fresh?"✅ Order placed":"📦 Order status",`${fresh?`<div class="ok">✅</div>${payHTML(PAYDUE)}`:""}
    <div class="box">${st==="cancel"?`<b style="color:var(--r)">✕ Order cancelled</b>${t.msg?`<p class="hint">${esc(t.msg)}</p>`:""}`:`
      ${eta&&ix<4?`<p style="margin:0 0 10px;font-size:16px">⏱️ ${o.mode==="p"?"Ready by":"Arriving by"} about <b>${eta}</b></p>`:""}
      <div class="trk">${STEPS.filter(s=>o.mode!=="p"||s[0]!=="out").map((s,k,A)=>{const i2=STEPS.indexOf(s);return `<div class="st ${i2<ix||st==="done"?"done":i2===ix?"now":""}"><i>${i2<ix||st==="done"?"✓":k+1}</i><div><b>${RSO&&s[0]==="pack"?"Cooking":s[1]}</b><small>${i2===ix&&t.msg?esc(t.msg):RSO?({new:"Received at Marwar Rasoi",acc:"The restaurant has confirmed your order",pack:"Your food is being freshly prepared"})[s[0]]||s[2]:s[2]}${i2===1&&t.by&&ix>=1?" · "+esc(t.by):""}</small></div></div>`}).join("")}</div>`}</div>
    <div class="box"><div class="row"><span>Order</span><b>#${esc(String(id).slice(-6).toUpperCase())}</b></div><div class="row"><span>Total (approx.)</span><b>${rs(o.total||0)}</b></div>${t.billNo?`<div class="row"><span>Bill</span><b>${esc(t.billNo)}</b></div>`:""}
    ${st==="done"?rvHTML(id):""}
    ${ph?`<a class="big" href="tel:+91${esc(ph)}">📞 Call the shop</a><a class="big" href="https://wa.me/91${esc(waPh()||ph)}?text=${encodeURIComponent("Hello, about my order #"+String(id).slice(-6).toUpperCase())}" target="_blank" rel="noopener">💬 WhatsApp</a>`:""}</div>`);
+  if(fresh){payQR();PAYDUE=null}
   if(st!=="done"&&st!=="cancel"&&$("#ov .sheet"))trkT=setTimeout(()=>{if($("#ov .sheet"))track(id,false)},15000)}
 /* ⭐ ग्राहक की राय (reviews/* — नियम न हों तो WhatsApp से) */
 function rvHTML(id){const D=LS.get("mh_rev",{})[id];return D?`<div class="box" style="text-align:center"><b>${"⭐".repeat(D.s)}</b><p class="hint">Thank you for your rating 🙏</p></div>`:`<div class="box" id="rvb" data-id="${esc(id)}" style="text-align:center"><b>How was your order?</b><div class="rv">${[1,2,3,4,5].map(n=>`<button type="button" data-rv="${n}" aria-label="${n} star">⭐</button>`).join("")}</div><input class="f" id="rvt" maxlength="200" placeholder="Anything to tell us? (optional)"><button type="button" class="big" id="rvs" disabled>Send rating</button></div>`}

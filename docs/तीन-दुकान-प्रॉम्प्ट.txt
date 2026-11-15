@@ -114,3 +114,8 @@
 ⚡ रसोई की फोटो और रफ़्तार (13-11-2026)
 ऑर्डर-पेज की टाइल ~85px चौड़ी है; इसलिए पेज `order/rasoi/s/<id>.jpg` (200px, ~8 KB) दिखाता है — photo() खुद रास्ता बदलता है। rasoi.json का "p" बड़ी फोटो (340px, ≤20 KB) पर ही रहे — मेन्यू PDF वही लेती है।
 रसोई की कोई फोटो बदलें/जोड़ें तो `python3 scripts/rasoi_thumbs.py` ज़रूर चलाएँ, वरना पेज पर पुरानी/खाली फोटो दिखेगी।
+
+5. 🧾 15-11-2026 (विक्रम जी, मारवाड़ रसोई की महायोजना चरण C): कार्ट में हर दुकान के नीचे समय (ETA2: रसोई "minimum 30 min", कैंटीन/सब्ज़ी "जैसे ही डिलीवरी पार्टनर फ्री"),
+   बिल का डिब्बा "Marwar Rasoi · Your bill" (दुकान-वार जोड़), भुगतान में पहले से "📱 Pay now · UPI" (दूसरा: Cash on delivery);
+   ऑर्डर के बाद payHTML: दुकान-वार समय + "Pay ₹X with UPI app" (upi://pay, रकम भरी) + QR (../lib/qrcode.min.js) — UPI = CF.upi (177 का UPI_FIXED)। जाँच tests/stores.py।
+   sandbox में npm/esbuild न हो तो: `cp -r web /tmp/w177` + lib/qrcode.min.js रखकर `python3 tests/stores.py /tmp/w177 <shots>`।
