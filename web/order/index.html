@@ -341,11 +341,11 @@ function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();retu
   <div class="box"><h3>👤 Order for</h3>
     <div class="acc"><div><b>${esc(ACC().nm)}</b><span>📱 ${esc(ACC().ph)}</span></div><button type="button" class="lnk" data-chacc>✏️ Change</button></div>
     <input class="f" id="alt" placeholder="📞 Number to call for delivery (if different)" inputmode="tel" maxlength="14" value="${esc(me.alt||"")}">
-    ${mode()==="d"?(me.qt&&me.un&&!ADED?`<div class="adr"><span>📍</span><div><small>Delivery to · डिलीवरी</small><b>Quarter ${esc(me.qt)}</b><b>Unit ${esc(me.un)}</b>${me.ad?`<small>${esc(me.ad)}</small>`:""}</div><button type="button" class="lnk" data-aded>✏️ Change</button></div>`
+    ${mode()==="d"?((me.qt||me.un||me.ad)&&!ADED?`<div class="adr"><span>📍</span><div><small>Delivery to · डिलीवरी</small>${me.qt?`<b>Quarter ${esc(me.qt)}</b>`:""}${me.un?`<b>Unit ${esc(me.un)}</b>`:""}${me.ad?(me.qt||me.un?`<small>${esc(me.ad)}</small>`:`<b>${esc(me.ad)}</b>`):""}</div><button type="button" class="lnk" data-aded>✏️ Change</button></div>`
     :`<h3 style="margin:10px 0 4px">📍 Delivery address · डिलीवरी का पता</h3>
-    <div class="two"><input class="f" id="qt" placeholder="Quarter No. * (e.g. 12/B)" maxlength="16" value="${esc(me.qt||"")}"><input class="f" id="un" placeholder="Unit * (e.g. 177 MH)" maxlength="24" value="${esc(me.un||"")}"></div>
-    <input class="f" id="ad" placeholder="Lines / landmark (optional)" maxlength="36" autocomplete="street-address" value="${esc(me.ad||"")}">
-    <p class="hint" style="margin:4px 2px 0">Saved on this phone — you won't be asked again.</p>`):""}
+    <div class="two"><input class="f" id="qt" placeholder="Quarter No. (e.g. 12/B)" maxlength="16" value="${esc(me.qt||"")}"><input class="f" id="un" placeholder="Unit (e.g. 177 MH)" maxlength="24" value="${esc(me.un||"")}"></div>
+    <input class="f" id="ad" placeholder="or Address / Lines / landmark" maxlength="45" autocomplete="street-address" value="${esc(me.ad||"")}">
+    <p class="hint" style="margin:4px 2px 0">Fill <b>any one</b> — Quarter, Unit or Address. कोई भी एक भरें। Saved on this phone.</p>`):""}
     <div class="seg" style="margin-top:8px">${["Now","Evening 6-8"].map((w,k)=>`<button type="button" data-when="${w}" aria-pressed="${(me.when||"Now")===w}">⏰ ${w}</button>`).join("")}</div>
     <div class="seg" style="margin-top:8px">${[["u","📱 Pay now · UPI"],["c","💵 Cash on delivery"]].map(([k,v])=>`<button type="button" data-pay="${k}" aria-pressed="${(me.pay||"u")===k}">${v}</button>`).join("")}</div><p class="hint" style="margin:6px 2px 0">⚡ Paid orders are packed first — pay by GPay / PhonePe / Paytm right after placing.</p>
     <textarea class="f" id="nt" rows="2" maxlength="120" placeholder="Any instructions? (optional)"></textarea></div>`,
@@ -364,8 +364,8 @@ function cart(){const I=L.filter(i=>Q[i.id]>0);if(!I.length){close();draw();retu
 }
 async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.nm,ph=A.ph,g=id=>($("#"+id)?$("#"+id).value.trim():""),nt=g("nt"),alt=g("alt").replace(/\D/g,"").slice(-10);
   const qt=$("#qt")?g("qt"):me.qt||"",un=$("#un")?g("un"):me.un||"",ar=$("#ad")?g("ad"):me.ad||"",ad=[qt?"Qtr "+qt:"",un?"Unit "+un:"",ar].filter(Boolean).join(" · ");
-  if(mode()==="d"&&!qt){toast("Please enter your Quarter No.");if($("#qt"))$("#qt").focus();return}
-  if(mode()==="d"&&!un){toast("Please enter your Unit");if($("#un"))$("#un").focus();return}
+  /* विक्रम जी 15-11: क्वार्टर / यूनिट / पता — कोई भी एक काफ़ी; काम अटके नहीं */
+  if(mode()==="d"&&!qt&&!un&&!ar){toast("Please write your Quarter, Unit or Address — any one");if($("#qt"))$("#qt").focus();return}
   me.qt=qt;me.un=un;me.ad=ar;delete me.ll;LS.set("mh_me",me);ADED=false;
   if(alt&&alt.length!==10){toast("Call number must be 10 digits");$("#alt").focus();return}
   /* 🧾 हर दुकान का अलग ऑर्डर (अलग बिल) — एक ही ग्राहक के ऑर्डर "🧺" से जुड़े; डिलीवरी शुल्क एक बार (पहले ऑर्डर पर) */

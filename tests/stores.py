@@ -102,7 +102,8 @@ async def main():
         t = await c.inner_text("#ov"); assert "minimum 30 min" in t and "delivery partner is free" in t and "Marwar Rasoi · Your bill" in t and await c.locator('[data-pay="u"][aria-pressed="true"]').count() == 1, "15-11: दुकान-वार समय + बिल + UPI पहले से चुना"
         await c.screenshot(path=f"{SHOTS}/st5-cart.png", full_page=True)
         assert await c.locator("#loc").count() == 0, "लोकेशन (lat/lng) का बटन नहीं"
-        await c.fill("#qt", "12/B"); await c.click("#place"); await c.wait_for_timeout(300); assert len(posted) == 0, "यूनिट बिना ऑर्डर नहीं"
+        await c.click("#place"); await c.wait_for_timeout(300); assert len(posted) == 0, "पता बिल्कुल खाली → ऑर्डर नहीं (कोई भी एक भरना काफ़ी)"
+        await c.fill("#qt", "12/B")
         await c.fill("#un", "177 MH")
         await c.click("#place"); await c.wait_for_timeout(1500)
         assert len(posted) == 3, posted
