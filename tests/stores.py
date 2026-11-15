@@ -125,7 +125,7 @@ async def main():
         await c.evaluate("document.querySelector('#ov').innerHTML=''"); await c.click("#myo"); await c.wait_for_selector("#mrgo")
         assert await c.input_value("#mru") == "9876543210"; await c.fill("#mrp", "wrong1"); await c.click("#mrgo"); await c.wait_for_function("document.querySelector('#mre').textContent.includes('wrong')")
         await c.fill("#mrp", "ABC234"); await c.click("#mrgo"); await c.wait_for_selector(".mrp")
-        t = await c.inner_text(".mrp"); assert "4.9" in t and "Gold" in t and "Top 12%" in t and "Shahi Paneer" in t and "Order again" in t, t
+        t = await c.inner_text(".mrp"); assert "Respected Sir ji" in t and "9876543210" in t and "Ramesh" not in t and "4.9" in t and "Gold" in t and "Top 12%" in t and "Shahi Paneer" in t and "Order again" in t, t
         await c.screenshot(path=f"{SHOTS}/st6-account.png", full_page=True)
         await c.click("[data-mra='0']"); await c.wait_for_timeout(300); assert "3 items" in await c.inner_text("#cbar") or "items" in await c.inner_text("#cbar"), await c.inner_text("#cbar")
         assert "⭐ 4.9" in await c.inner_text("#me"), await c.inner_text("#me")

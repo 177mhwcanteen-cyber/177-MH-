@@ -440,7 +440,7 @@ function ACC(){return LS.get("mh_acc",{})}
 (function(){const A=ACC();if(A.ph)return;const m=LS.get("mh_me",{}),ph=String(m.ph||"").replace(/\D/g,"").slice(-10);
   if(ph.length===10&&/^[6-9]/.test(ph))LS.set("mh_acc",{nm:String(m.nm||"Customer").slice(0,40),ph,ts:Date.now(),from:"old"})})();
 function meBtn(){const A=ACC(),P=LS.get("mh_pts",null),b=$("#me");if(!b)return;
-  const M_=LS.get("mr_cacc",null);b.innerHTML=A.ph?`<span>👤 ${esc(String(A.nm).split(" ")[0].slice(0,9))}</span>${M_&&M_.d?`<small>⭐ ${(+M_.d.rt||4.8).toFixed(1)} · ${esc(M_.d.tier||"")}</small>`:P&&P.n>0?`<small>🎁 ${P.n} pts</small>`:""}`:"👤 <small>Sign in</small>"}
+  const M_=LS.get("mr_cacc",null);b.innerHTML=A.ph?`<span>👤 ${M_&&M_.d?"Sir ji":esc(String(A.nm).split(" ")[0].slice(0,9))}</span>${M_&&M_.d?`<small>⭐ ${(+M_.d.rt||4.8).toFixed(1)} · ${esc(M_.d.tier||"")}</small>`:P&&P.n>0?`<small>🎁 ${P.n} pts</small>`:""}`:"👤 <small>Sign in</small>"}
 document.addEventListener("click",e=>{if(e.target.closest("#me")){ACC().ph?myOrders():welcome(false)}});
 async function report(nm,ph,old){const S=v=>({stringValue:String(v)});
   const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S(""),note:S(("👤"+(old&&old!==ph?"|old:"+old:"")+"|ua:"+(navigator.userAgent.match(/\(([^)]+)\)/)||["",""])[1]).slice(0,200)),ts:{integerValue:String(Date.now())},status:S("new"),src:S("signup"),
@@ -483,7 +483,7 @@ function mrBox(){const A=MR();if(!A||!A.d)return `<div class="box mrl"><h3>🔐 
   <input class="f" id="mru" inputmode="numeric" maxlength="10" placeholder="Mobile number" value="${esc(A&&A.m||new URLSearchParams(location.search).get("u")||ACC().ph||"")}"><input class="f" id="mrp" type="password" autocomplete="current-password" placeholder="Password" maxlength="16" style="margin-top:6px">
   <p class="hint" id="mre" style="color:var(--r)"></p><button type="button" class="big" id="mrgo">Login ›</button></div>`;
   const d=A.d,H=d.hist||[],F=(d.fav||[]).filter(f=>f.n),pr=d.o>=10?100:d.o>=4?Math.round((d.o-4)/6*100):d.o>=2?Math.round((d.o-2)/2*100):Math.round(d.o/2*100);
-  return `<div class="box mrp"><div class="mrh"><div><small>Jai Hind</small><b>${esc(d.n&&d.n!=="Sir"?d.n+" ji":"Sir")}</b><span>${d.u?"Unit "+esc(d.u)+" · ":""}member since ${esc(mrDate(d.f||""))}</span></div><div class="mrr"><b>${(+d.rt||4.8).toFixed(1)}</b>${stars()}<small>your rating</small></div></div>
+  return `<div class="box mrp"><div class="mrh"><div><small>Jai Hind</small><b>Respected Sir ji</b><span>📱 ${esc(A.m||"")} · ${d.u?"Unit "+esc(d.u)+" · ":""}member since ${esc(mrDate(d.f||""))}</span></div><div class="mrr"><b>${(+d.rt||4.8).toFixed(1)}</b>${stars()}<small>your rating</small></div></div>
   <div class="mrt"><span class="tier t-${esc(String(d.tier||"Member").split(" ")[0].toLowerCase())}">${d.tier==="Royal VIP"?"👑":d.tier==="Gold"?"🥇":d.tier==="Silver"?"🥈":"⭐"} ${esc(d.tier||"Member")}</span><span>${esc(d.top||"")}</span>${d.urk?`<span>🏅 ${esc(d.urk)}</span>`:""}</div>
   <div class="mrk"><div><b>${d.o||0}</b><small>orders</small></div><div><b>${H.length?esc(mrDate(H[0].d)):"—"}</b><small>last order</small></div><div><b>${d.pf||F.length}</b><small>${d.pf?"friend bills paid":"favourites"}</small></div></div>
   ${d.nx?`<div class="mrn"><div><i style="width:${pr}%"></i></div><small>🎯 Bas ${esc(d.nx)} — thank you for choosing us!</small></div>`:`<p class="hint" style="margin:6px 0 0">👑 You are among our most valued customers. Thank you!</p>`}
@@ -495,7 +495,7 @@ function mrWire(){const sc=$("#ov .scrim");if(!sc)return;
     if(t.closest("#mrgo")){const m=($("#mru").value||"").replace(/\D/g,"").slice(-10),pw=($("#mrp").value||"").trim().toLowerCase(),er=x=>$("#mre").textContent=x;
       if(m.length!==10)return er("Enter your 10-digit mobile number");if(pw.length<4)return er("Enter the password sent on WhatsApp");t.disabled=true;t.textContent="⏳ Checking…";
       try{const h=await sha("mr|"+m+"|"+pw),d=await mrFetch(h);if(!d){t.disabled=false;t.textContent="Login ›";return er("Mobile number or password is wrong — WhatsApp us on 6367183480 for help")}
-        LS.set("mr_cacc",{h,m,d,ts:Date.now()});if(!ACC().ph)LS.set("mh_acc",{nm:String(d.n&&d.n!=="Sir"?d.n:"Customer").slice(0,40),ph:m,ts:Date.now(),from:"mr"});meBtn();toast("✅ Welcome "+(d.n&&d.n!=="Sir"?d.n+" ji":"Sir"));myOrders()}
+        LS.set("mr_cacc",{h,m,d,ts:Date.now()});if(!ACC().ph)LS.set("mh_acc",{nm:String(d.n&&d.n!=="Sir"?d.n:"Customer").slice(0,40),ph:m,ts:Date.now(),from:"mr"});meBtn();toast("✅ Jai Hind, Respected Sir ji");myOrders()}
       catch(x){t.disabled=false;t.textContent="Login ›";er("Could not connect — check internet")}return}
     if(t.closest("#mrout")){LS.set("mr_cacc",null);myOrders();return}
     const a=t.closest("[data-mra]");if(a){const h=(MR().d.hist||[])[+a.dataset.mra];let n=0;(h.it||[]).forEach(x=>{const i=L.find(y=>y.id===x.i);if(i&&i.k!==0){Q[i.id]=(Q[i.id]||0)+x.q;n++}});LS.set("mh_cart",Q);close();if(SEG!=="rasoi"){SEG="rasoi";LS.set("mh_seg",SEG);heads()}draw();toast(n?"🛒 "+n+" dishes added — at today\u2019s prices":"These dishes are not on today\u2019s menu");return}})}
