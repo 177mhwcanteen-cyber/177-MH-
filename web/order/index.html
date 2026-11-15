@@ -116,6 +116,13 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 .box.pay .wa{display:block;background:#25d366;color:#fff;border-radius:12px;padding:11px;font-weight:800;text-decoration:none;margin-top:8px}.ok{font-size:40px;margin:-4px 0}
 .box.pay{border:2px solid #16a34a;text-align:center}.box.pay .upi{display:block;background:#16a34a;color:#fff;border-radius:12px;padding:12px;font-weight:800;text-decoration:none;margin:4px 0 8px}#pqr{display:grid;place-items:center;margin:4px 0}#pqr img,#pqr canvas{border:6px solid #fff;border-radius:8px}
 .ch .hero{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:16px;margin:0 0 10px;box-shadow:0 4px 14px rgba(80,20,10,.25)}
+.mrp{background:linear-gradient(160deg,#fff7ed,#fff 55%);border:1.5px solid #fdba74}.mrh{display:flex;justify-content:space-between;gap:10px}.mrh>div:first-child{display:grid}.mrh small{font-size:12px;color:#9a3412;font-weight:700}.mrh b{font-size:20px}.mrh span{font-size:12px;color:#666}
+.mrr{display:grid;justify-items:center;background:#7a1c1c;color:#fff;border-radius:14px;padding:6px 10px;min-width:74px}.mrr b{font-size:24px;line-height:1}.mrst{color:#fbbf24;font-size:12px;letter-spacing:1px}.mrr small{font-size:10px;opacity:.85}
+.mrt{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 6px}.mrt span{background:#fdf2e3;border-radius:20px;padding:3px 9px;font-size:12px;font-weight:700}.mrt .tier{color:#fff;background:#b45309}.t-royal{background:linear-gradient(135deg,#7a1c1c,#b91c1c)!important}.t-gold{background:linear-gradient(135deg,#b45309,#f59e0b)!important}.t-silver{background:#64748b!important}
+.mrk{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.mrk div{background:#fff;border-radius:10px;padding:6px;text-align:center;border:1px solid var(--line)}.mrk b{display:block;font-size:16px}.mrk small{font-size:11px;color:#666}
+.mrn{margin-top:8px}.mrn>div{height:8px;background:#f1e4d3;border-radius:6px;overflow:hidden}.mrn i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#7a1c1c)}.mrn small{font-size:12px;font-weight:700;color:#7a1c1c}
+.mrf{display:flex;flex-wrap:wrap;gap:6px}.mrf button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:6px 10px;font-weight:700;font-size:12.5px}.mrf b{color:var(--g)}
+.mrho{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:7px 0}.mrho small{display:block;font-size:12px;color:#666}.mrho button{border:0;background:var(--g);color:#fff;border-radius:9px;padding:6px 9px;font-weight:800;font-size:12px;white-space:nowrap}
 </style></head><body>
 <div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1 id="ttl">Marwar Rasoi</h1><small id="sub">Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
 <label class="srch"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search — milk, Parle, samosa…" autocomplete="off" aria-label="Search items"></label></div>
@@ -413,9 +420,9 @@ async function rvSend(){const b=$("#rvb");if(!b)return;const id=b.dataset.id,n=b
   try{const r=await fetch(B+"reviews?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:{oid:S(id),name:S(String(A.nm||"").slice(0,40)),phone:S(A.ph||""),stars:{integerValue:String(n)},text:S(tx),store:S(o.st||"mh"),ts:{integerValue:String(Date.now())}}})});ok=r.ok}catch(e){}
   b.outerHTML=rvHTML(id);const ph=waPh();if(!ok&&ph)window.open("https://wa.me/91"+ph+"?text="+encodeURIComponent("My rating for order #"+String(id).slice(-6).toUpperCase()+": "+"⭐".repeat(n)+(tx?"\n"+tx:"")),"_blank")}
 function ptsHTML(){const P=LS.get("mh_pts",null);return P&&P.n>0?`<div class="ptsb"><span style="font-size:30px">🎁</span><div><b>${P.n}</b> <span>points collected!</span><br><span>1 point on every ₹${P.per||100} you shop · ask the shop for your reward</span></div></div>`:`<div class="ptsb"><span style="font-size:30px">🎁</span><div><span><b style="font-size:15px">Collect points</b><br>Get 1 point on every ₹100 you shop — rewards from the shop!</span></div></div>`}
-function myOrders(){const M=LS.get("mh_orders",[]),A=ACC();sheet("📦 My orders",`${A.ph?`<div class="box acc"><div><b>👤 ${esc(A.nm)}</b><span>📱 ${esc(A.ph)}</span></div><button type="button" class="lnk" data-chacc2>Edit ›</button></div>`:""}${ptsHTML()}<div class="box">${M.length?M.map(o=>`<div class="mo"><div><b>#${esc(String(o.id).slice(-6).toUpperCase())}</b> ${o.st==="done"?'<span class="st2">✓ Delivered</span>':o.st==="cancel"?'<span class="st2 c">Cancelled</span>':""} · ${o.n} items · ${rs(o.total)}<br><small class="hint">${new Date(o.ts).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</small></div>
+function myOrders(){const M=LS.get("mh_orders",[]),A=ACC();sheet("📦 My orders",`${RB?mrBox():""}${A.ph?`<div class="box acc"><div><b>👤 ${esc(A.nm)}</b><span>📱 ${esc(A.ph)}</span></div><button type="button" class="lnk" data-chacc2>Edit ›</button></div>`:""}${ptsHTML()}<div class="box">${M.length?M.map(o=>`<div class="mo"><div><b>#${esc(String(o.id).slice(-6).toUpperCase())}</b> ${o.st==="done"?'<span class="st2">✓ Delivered</span>':o.st==="cancel"?'<span class="st2 c">Cancelled</span>':""} · ${o.n} items · ${rs(o.total)}<br><small class="hint">${new Date(o.ts).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</small></div>
   <div style="display:flex;gap:6px"><button type="button" data-trk="${esc(o.id)}">Status</button><button type="button" data-again="${esc(o.id)}">↻ Reorder</button></div></div>`).join(""):'<p class="hint">No orders yet.</p>'}</div>`);
-  $("#ov .scrim").addEventListener("click",e=>{const t=e.target.closest("[data-trk]"),a=e.target.closest("[data-again]");if(t)track(t.dataset.trk,false);
+  mrWire();$("#ov .scrim").addEventListener("click",e=>{const t=e.target.closest("[data-trk]"),a=e.target.closest("[data-again]");if(t)track(t.dataset.trk,false);
     if(a){const o=M.find(x=>x.id===a.dataset.again);(o.items||[]).forEach(([id,q])=>{const i=L.find(x=>x.id===id);if(i&&i.k!==0)Q[id]=q});close();draw();toast("🛒 Added to cart — at today\u2019s prices")}})}
 /* 🟢 चालू ऑर्डर: अपने-आप पॉप-अप नहीं — ऊपर छोटी पट्टी (पहुँच गया/रद्द हो तो कुछ नहीं) */
 function saveSt(id,st,t){const M=LS.get("mh_orders",[]),o=M.find(x=>x.id===id);if(o){o.st=st;LS.set("mh_orders",M)}
@@ -433,7 +440,7 @@ function ACC(){return LS.get("mh_acc",{})}
 (function(){const A=ACC();if(A.ph)return;const m=LS.get("mh_me",{}),ph=String(m.ph||"").replace(/\D/g,"").slice(-10);
   if(ph.length===10&&/^[6-9]/.test(ph))LS.set("mh_acc",{nm:String(m.nm||"Customer").slice(0,40),ph,ts:Date.now(),from:"old"})})();
 function meBtn(){const A=ACC(),P=LS.get("mh_pts",null),b=$("#me");if(!b)return;
-  b.innerHTML=A.ph?`<span>👤 ${esc(String(A.nm).split(" ")[0].slice(0,9))}</span>${P&&P.n>0?`<small>🎁 ${P.n} pts</small>`:""}`:"👤 <small>Sign in</small>"}
+  const M_=LS.get("mr_cacc",null);b.innerHTML=A.ph?`<span>👤 ${esc(String(A.nm).split(" ")[0].slice(0,9))}</span>${M_&&M_.d?`<small>⭐ ${(+M_.d.rt||4.8).toFixed(1)} · ${esc(M_.d.tier||"")}</small>`:P&&P.n>0?`<small>🎁 ${P.n} pts</small>`:""}`:"👤 <small>Sign in</small>"}
 document.addEventListener("click",e=>{if(e.target.closest("#me")){ACC().ph?myOrders():welcome(false)}});
 async function report(nm,ph,old){const S=v=>({stringValue:String(v)});
   const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S(""),note:S(("👤"+(old&&old!==ph?"|old:"+old:"")+"|ua:"+(navigator.userAgent.match(/\(([^)]+)\)/)||["",""])[1]).slice(0,200)),ts:{integerValue:String(Date.now())},status:S("new"),src:S("signup"),
@@ -465,7 +472,37 @@ async function loadPhotos(){try{const r=await fetch(B+"pub/phx?key="+C.apiKey,{c
   const n=+x.n||0,v=String(x.v||"");if(!n)return;if(LS.get("mh_phv","")===v&&Object.keys(PH).length){return}
   for(let k=0;k<n;k++){try{const q=await fetch(B+"pub/ph_"+k+"?key="+C.apiKey);if(!q.ok)continue;const d=V({mapValue:{fields:(await q.json()).fields||{}}})||{};Object.assign(PH,d.m||{});clearTimeout(phT);phT=setTimeout(()=>{if(!$("#ov .sheet"))draw()},150)}catch(e){}}
   try{LS.set("mh_ph",PH);LS.set("mh_phv",v)}catch(e){}}catch(e){}}
-if(!ACC().ph)welcome(false);else accChip();meBtn();
+/* ---------- 🔐 Marwar Rasoi ग्राहक-खाता (15-11-2026, विक्रम जी): Username = मोबाइल, Password = Vikram ji का भेजा
+   दस्तावेज़ cacc/sha256("mr|मोबाइल|पासवर्ड") (रसोई का Firebase, सिर्फ़ get) — पिछले ऑर्डर, पसंद, रेटिंग 4.8-5, टियर; "फिर से मँगाएँ" एक दबाव ---------- */
+const MR=()=>LS.get("mr_cacc",null);
+async function sha(t){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+async function mrFetch(h){const r=await fetch(RB+"cacc/"+h+"?key="+RS.key);if(r.status===404||r.status===403)return null;if(!r.ok)throw new Error(r.status);const j=await r.json();const o={};Object.entries(j.fields||{}).forEach(([k,x])=>o[k]=V(x));return o}
+const stars=r=>`<span class="mrst">${"★".repeat(5)}</span>`;
+const mrDate=d=>{try{return new Date(d+"T12:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short"})}catch(e){return d}};
+function mrBox(){const A=MR();if(!A||!A.d)return `<div class="box mrl"><h3>🔐 Marwar Rasoi account</h3><p class="hint">Username = your mobile number. Password Vikram ji ne WhatsApp par bheja hai.</p>
+  <input class="f" id="mru" inputmode="numeric" maxlength="10" placeholder="Mobile number" value="${esc(A&&A.m||new URLSearchParams(location.search).get("u")||ACC().ph||"")}"><input class="f" id="mrp" type="password" autocomplete="current-password" placeholder="Password" maxlength="16" style="margin-top:6px">
+  <p class="hint" id="mre" style="color:var(--r)"></p><button type="button" class="big" id="mrgo">Login ›</button></div>`;
+  const d=A.d,H=d.hist||[],F=(d.fav||[]).filter(f=>f.n),pr=d.o>=10?100:d.o>=4?Math.round((d.o-4)/6*100):d.o>=2?Math.round((d.o-2)/2*100):Math.round(d.o/2*100);
+  return `<div class="box mrp"><div class="mrh"><div><small>Jai Hind</small><b>${esc(d.n&&d.n!=="Sir"?d.n+" ji":"Sir")}</b><span>${d.u?"Unit "+esc(d.u)+" · ":""}member since ${esc(mrDate(d.f||""))}</span></div><div class="mrr"><b>${(+d.rt||4.8).toFixed(1)}</b>${stars()}<small>your rating</small></div></div>
+  <div class="mrt"><span class="tier t-${esc(String(d.tier||"Member").split(" ")[0].toLowerCase())}">${d.tier==="Royal VIP"?"👑":d.tier==="Gold"?"🥇":d.tier==="Silver"?"🥈":"⭐"} ${esc(d.tier||"Member")}</span><span>${esc(d.top||"")}</span>${d.urk?`<span>🏅 ${esc(d.urk)}</span>`:""}</div>
+  <div class="mrk"><div><b>${d.o||0}</b><small>orders</small></div><div><b>${H.length?esc(mrDate(H[0].d)):"—"}</b><small>last order</small></div><div><b>${d.pf||F.length}</b><small>${d.pf?"friend bills paid":"favourites"}</small></div></div>
+  ${d.nx?`<div class="mrn"><div><i style="width:${pr}%"></i></div><small>🎯 Bas ${esc(d.nx)} — thank you for choosing us!</small></div>`:`<p class="hint" style="margin:6px 0 0">👑 You are among our most valued customers. Thank you!</p>`}
+  ${F.length?`<h3 style="margin:12px 0 6px">❤️ Your favourites</h3><div class="mrf">${F.map(f=>{const i=L.find(x=>x.id===f.i);return `<button type="button" ${i?`data-p="${esc(i.id)}"`:"disabled"}>${esc(f.n)}${i?` <b>+ ${rs(i.s)}</b>`:""}</button>`}).join("")}</div>`:""}
+  ${H.length?`<h3 style="margin:12px 0 6px">🧾 Your past orders</h3>${H.slice(0,12).map((h,k)=>`<div class="mrho"><div><b>${esc(mrDate(h.d))}</b> · ${rs(h.a)}<small>${esc((h.it||[]).map(x=>x.n+" ×"+x.q).join(", "))}</small></div>${(h.it||[]).some(x=>L.find(y=>y.id===x.i))?`<button type="button" data-mra="${k}">↻ Order again</button>`:""}</div>`).join("")}`:""}
+  <button type="button" class="lnk" id="mrout" style="margin-top:8px">Logout</button></div>`}
+function mrWire(){const sc=$("#ov .scrim");if(!sc)return;
+  sc.addEventListener("click",async e=>{const t=e.target;
+    if(t.closest("#mrgo")){const m=($("#mru").value||"").replace(/\D/g,"").slice(-10),pw=($("#mrp").value||"").trim().toLowerCase(),er=x=>$("#mre").textContent=x;
+      if(m.length!==10)return er("Enter your 10-digit mobile number");if(pw.length<4)return er("Enter the password sent on WhatsApp");t.disabled=true;t.textContent="⏳ Checking…";
+      try{const h=await sha("mr|"+m+"|"+pw),d=await mrFetch(h);if(!d){t.disabled=false;t.textContent="Login ›";return er("Mobile number or password is wrong — WhatsApp us on 6367183480 for help")}
+        LS.set("mr_cacc",{h,m,d,ts:Date.now()});if(!ACC().ph)LS.set("mh_acc",{nm:String(d.n&&d.n!=="Sir"?d.n:"Customer").slice(0,40),ph:m,ts:Date.now(),from:"mr"});meBtn();toast("✅ Welcome "+(d.n&&d.n!=="Sir"?d.n+" ji":"Sir"));myOrders()}
+      catch(x){t.disabled=false;t.textContent="Login ›";er("Could not connect — check internet")}return}
+    if(t.closest("#mrout")){LS.set("mr_cacc",null);myOrders();return}
+    const a=t.closest("[data-mra]");if(a){const h=(MR().d.hist||[])[+a.dataset.mra];let n=0;(h.it||[]).forEach(x=>{const i=L.find(y=>y.id===x.i);if(i&&i.k!==0){Q[i.id]=(Q[i.id]||0)+x.q;n++}});LS.set("mh_cart",Q);close();if(SEG!=="rasoi"){SEG="rasoi";LS.set("mh_seg",SEG);heads()}draw();toast(n?"🛒 "+n+" dishes added — at today\u2019s prices":"These dishes are not on today\u2019s menu");return}})}
+/* खाता ताज़ा (दिन में एक बार) + ?u=<मोबाइल> वाले लिंक से सीधे लॉगिन */
+(async function(){const A=MR();if(A&&A.h&&RB&&Date.now()-(A.ts||0)>6*3600e3){try{const d=await mrFetch(A.h);if(d){A.d=d;A.ts=Date.now();LS.set("mr_cacc",A)}}catch(e){}}
+  try{const u=new URLSearchParams(location.search).get("u");if(u&&/^\d{10}$/.test(u)&&(!A||A.m!==u)&&RB)setTimeout(()=>{if(!$("#ov .sheet"))myOrders()},1200)}catch(e){}})();
+if(!ACC().ph&&!/[?&]u=\d{10}/.test(location.search))welcome(false);else if(ACC().ph)accChip();meBtn();
 load();loadSabji();loadRasoi();loadPhotos();setInterval(()=>{if(!$("#ov .sheet"))load()},5*60000);
 })();
 </script></body></html>

@@ -121,3 +121,6 @@
    sandbox में npm/esbuild न हो तो: `cp -r web /tmp/w177` + lib/qrcode.min.js रखकर `python3 tests/stores.py /tmp/w177 <shots>`।
 6. 📍 15-11-2026 (विक्रम जी): फौज के इलाके में ग्राहक की lat/lng (📍 location बटन) बंद — पता = Quarter No.* + Unit* (+ Lines/landmark वैकल्पिक); एक बार भरा तो mh_me में सेव,
    कार्ट में "📍 Delivery to · Quarter … · Unit …" कार्ड (.adr) + "✏️ Change" (ADED)। ऑर्डर के बाद सबसे ऊपर Pay now, फिर "📸 Paid? Send screenshot on WhatsApp" (waPh = 6367183480), फिर दुकान-वार समय।
+7. 🔐 15-11-2026 ग्राहक-खाता (विक्रम जी): "My orders" में सबसे ऊपर Marwar Rasoi login (mrBox/mrWire) — Username = मोबाइल, Password = विक्रम जी का WhatsApp से भेजा;
+   sha256("mr|मोबाइल|पासवर्ड") → रसोई Firebase `cacc/<hash>` (सिर्फ़ get; डायरेक्टर मारवाड़ रसोई ऐप में JSON चढ़ाते हैं)। दिखे: Jai Hind नाम, रेटिंग (4.8-5.0), टियर (Member/Silver/Gold/Royal VIP),
+   Top X%, यूनिट में रैंक, अगले टियर की पट्टी, पसंद (+ जोड़ें), पिछले 12 ऑर्डर "↻ Order again"। लिंक ?s=rasoi&u=<मोबाइल> → सीधे लॉगिन खुले। mr_cacc में याद (6 घंटे में ताज़ा)। जाँच tests/stores.py 5b।

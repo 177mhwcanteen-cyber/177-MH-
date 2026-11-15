@@ -43,6 +43,12 @@ async def main():
             if u.split("?")[0].endswith("/documents/orders") and route.request.method == "POST":
                 body = json.loads(route.request.post_data); posted.append(body["fields"]); posted_urls.append(u)
                 return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/O" + str(len(posted)), "fields": body["fields"]})
+            if "/projects/marwar-rasoi-24d56/" in u and "/cacc/" in u:  # 🔐 ग्राहक-खाता (नकली)
+                import hashlib
+                if u.split("/cacc/")[1].split("?")[0] == hashlib.sha256(b"mr|9876543210|abc234").hexdigest():
+                    return await route.fulfill(json={"fields": {k: fsv(v) for k, v in {"n": "Ramesh", "u": "60", "o": 7, "rt": 4.9, "tier": "Gold", "top": "Top 12% customer", "urk": "Unit 60 me #2 (kul 30)", "nx": "3 order aur - Royal VIP", "f": "2026-08-03",
+                        "fav": [{"n": "Shahi Paneer", "i": "rs-shahi-paneer"}], "hist": [{"d": "2026-11-10", "a": 300, "it": [{"n": "Shahi Paneer", "q": 1, "i": "rs-shahi-paneer"}, {"n": "Butter Naan", "q": 2, "i": "rs-butter-naan"}]}]}.items()}})
+                return await route.fulfill(status=404, json={"error": {}})
             return await route.fulfill(status=404, json={})
         c = await ctx.new_page()
         c.on("pageerror", lambda e: errs.append("page: " + str(e)))
@@ -115,6 +121,14 @@ async def main():
         mh = [x for x in posted177 if x["src"]["stringValue"] == "web2"][0]
         assert "₹50" in mh["note"]["stringValue"], mh["note"]  # 30 + 20 डिलीवरी शुल्क एक बार
         assert len(json.loads(await c.evaluate("localStorage.getItem('mh_orders')"))) == 3
+        # 5b) 🔐 Marwar Rasoi खाता: ग़लत पासवर्ड → संदेश; सही → रेटिंग/टियर/पिछले ऑर्डर; "Order again" → कार्ट
+        await c.evaluate("document.querySelector('#ov').innerHTML=''"); await c.click("#myo"); await c.wait_for_selector("#mrgo")
+        assert await c.input_value("#mru") == "9876543210"; await c.fill("#mrp", "wrong1"); await c.click("#mrgo"); await c.wait_for_function("document.querySelector('#mre').textContent.includes('wrong')")
+        await c.fill("#mrp", "ABC234"); await c.click("#mrgo"); await c.wait_for_selector(".mrp")
+        t = await c.inner_text(".mrp"); assert "4.9" in t and "Gold" in t and "Top 12%" in t and "Shahi Paneer" in t and "Order again" in t, t
+        await c.screenshot(path=f"{SHOTS}/st6-account.png", full_page=True)
+        await c.click("[data-mra='0']"); await c.wait_for_timeout(300); assert "3 items" in await c.inner_text("#cbar") or "items" in await c.inner_text("#cbar"), await c.inner_text("#cbar")
+        assert "⭐ 4.9" in await c.inner_text("#me"), await c.inner_text("#me")
         # 6) दुकान का ऐप: ऑर्डर-कार्ड पर दुकान का ठप्पा, 🧺 समूह, "सब्ज़ी को भेजें" WhatsApp, बिल; 🌐 ऑनलाइन मेन्यू
         MOCK = open(os.path.join(H, "mock-firebase.js"), encoding="utf8").read()
         a = await ctx.new_page(); a.on("pageerror", lambda e: errs.append("app: " + str(e)))
