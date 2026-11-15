@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>177 Wet Canteen · Order Online</title>
-<meta name="description" content="177 Wet Canteen, Barmer — order sweets, snacks, groceries and daily needs online. Shop prices, quick home delivery, pay cash or UPI.">
-<meta property="og:type" content="website"><meta property="og:site_name" content="177 Wet Canteen">
-<meta property="og:title" content="177 Wet Canteen — Order Online 🛵">
+<title>Marwar Rasoi · Order Online — Food, Grocery, Vegetables</title>
+<meta name="description" content="Marwar Rasoi, Barmer — order fresh restaurant food, groceries, dry fruits and green vegetables online. Free home delivery, pay UPI or cash.">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Marwar Rasoi">
+<meta property="og:title" content="Marwar Rasoi — Food · Grocery · Vegetables 🛵">
 <meta property="og:description" content="Sweets, snacks, groceries & daily needs — shop prices, quick home delivery. Barmer.">
 <meta property="og:image" content="https://177mhwcanteen-cyber.github.io/177-MH-/icon.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512">
 <meta name="theme-color" content="#0c6b2a"><link rel="icon" href="../icon.png"><link rel="apple-touch-icon" href="../icon.png">
@@ -113,15 +113,16 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 .csh{display:flex;justify-content:space-between;align-items:baseline}.csh span{font-size:15px}
 .eta2{margin:-4px 0 8px;font-size:12.5px;font-weight:700;color:#9a3412;background:#fff7ed;border-radius:9px;padding:5px 8px}.box.bill h3{color:#7a1c1c}
 .box.pay{border:2px solid #16a34a;text-align:center}.box.pay .upi{display:block;background:#16a34a;color:#fff;border-radius:12px;padding:12px;font-weight:800;text-decoration:none;margin:4px 0 8px}#pqr{display:grid;place-items:center;margin:4px 0}#pqr img,#pqr canvas{border:6px solid #fff;border-radius:8px}
+.ch .hero{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:16px;margin:0 0 10px;box-shadow:0 4px 14px rgba(80,20,10,.25)}
 </style></head><body>
-<div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1 id="ttl">177 Wet Canteen</h1><small id="sub">Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
+<div class="top"><div class="brand"><img src="../icon.png" alt=""><div><h1 id="ttl">Marwar Rasoi</h1><small id="sub">Barmer</small></div><div class="eta" id="eta"></div><button class="me" id="me" type="button" aria-label="My account">👤</button></div>
 <label class="srch"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search — milk, Parle, samosa…" autocomplete="off" aria-label="Search items"></label></div>
 <nav class="stores" id="stores" aria-label="Shops"></nav>
 <div id="livebar"></div><div class="trust" id="trust"></div><div id="closed"></div>
 <div class="vegbar" id="vegbar" hidden></div>
 <nav class="cats" id="cats" aria-label="Categories"></nav>
 <main id="m"><div class="g"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></main>
-<footer>177 Wet Canteen · Barmer<br>Prices come live from the shop · <button class="lnk" id="myo" type="button">📦 My orders</button></footer>
+<footer>Marwar Rasoi · Barmer — 🍛 Restaurant · 🛒 177 Wet Canteen · 🥬 Sabji Express<br>Prices come live from the shop · <button class="lnk" id="myo" type="button">📦 My orders</button></footer>
 <button class="cbar" id="cbar" hidden type="button"><span class="ic">🛒</span><span class="tx"><b id="cbN"></b><small id="cbS"></small></span><span class="go">View cart ›</span></button>
 <a class="mnu" id="mnu" href="marwar-rasoi-menu.pdf" download="Marwar-Rasoi-Menu.pdf" target="_blank" rel="noopener" aria-label="Download Marwar Rasoi menu (PDF)"><span>📖</span>MENU</a>
 <a class="waf" id="waf" target="_blank" rel="noopener" aria-label="Chat on WhatsApp" hidden><svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.600-1.700A13 13 0 1 0 16 3z"/><text x="16" y="21.5" text-anchor="middle" font-size="15" fill="#25d366" font-weight="700">✆</text></svg></a>
@@ -250,8 +251,8 @@ function heads(){waBtn();const sw=$("#stores");if(sw)sw.innerHTML=SEG?Object.ent
   const C2=catsOf(SEG||"mh"),have=new Set(L.filter(i=>stOf(i)===(SEG||"mh")&&(SEG!=="rasoi"||VEG!=="veg"||i.veg)).map(ocat));if(!C2.some(c=>c[0]===cat))cat="all";
   $("#cats").hidden=!SEG;$("#cats").innerHTML=C2.filter(c=>c[0]==="all"||have.has(c[0])).map(c=>`<button type="button" data-c="${c[0]}" aria-pressed="${cat===c[0]}">${c[2]} ${c[1]}</button>`).join("");
   /* 📐 दुकान का नाम ऊपर की पीली पट्टी में ही (अलग बैनर नहीं — जगह बचे) */
-  {const k=SEG||"mh",sh=(RJ&&RJ.shop)||{},tt=$("#ttl"),sb=$("#sub");if(tt)tt.textContent=k==="rasoi"?(sh.name||STS.rasoi.n):STS[k].n;
-   if(sb)sb.textContent=(k==="rasoi"?((sh.tag||STS.rasoi.d)+(sh.freeDelivery?" · 🛵 Free delivery":"")):k==="sabji"?STS.sabji.d:"Barmer")+ratT()}
+  {const k=SEG||"mh",sh=(RJ&&RJ.shop)||{},tt=$("#ttl"),sb=$("#sub");if(tt)tt.textContent="Marwar Rasoi"; /* विक्रम जी 15-11: पूरे पेज का नाम मारवाड़ रसोई; नीचे की लाइन में अभी की दुकान */
+   if(sb)sb.textContent=(SEG?STS[k].ic+" "+STS[k].n+" · ":"")+(k==="rasoi"?((sh.tag||STS.rasoi.d)+(sh.freeDelivery?" · 🛵 Free delivery":"")):k==="sabji"?STS.sabji.d:"Barmer")+ratT()}
   const q=$("#q");if(q)q.placeholder=SEG==="sabji"?"Search — tomato, palak, apple…":SEG==="rasoi"?"Search — paneer, biryani, naan…":"Search — milk, Parle, ice cream…"}
 function card(i){const q=Q[i.id]||0,off=i.m>i.s?Math.round((i.m-i.s)/i.m*100):0,out=i.k===0,pk=stOf(i)==="mh"&&i.c!=="mithai"&&i.c!=="fast";
   return `<div class="t${out?" out":""}${pk?" pk":""}"><div class="ph" style="${bg(i)}">${photo(i)?"":(i.em||(cinfo(ocat(i))[0][2])||EM[i.c]||"🛍️")}</div>${isTop(i)?`<span class="bst">🔥 Bestseller</span>`:""}<button type="button" class="fav${FAV().includes(i.id)?" on":""}" data-fav="${esc(i.id)}" aria-label="Favourite">❤️</button>
@@ -262,7 +263,7 @@ function tiles(F){return secs(SEG).map(S=>{const cs=S.c.map(c=>[c,F.filter(i=>oc
   return `<div class="tsh">${esc(S.s)} <small>${esc(S.h)}</small></div><div class="tg">${cs.map(([c,G])=>{const P=[...G].sort((a,b)=>(photo(b)?1:0)-(photo(a)?1:0)||(b.t||0)-(a.t||0)).slice(0,4);
     return `<button type="button" class="ct" data-c="${c[0]}"><span class="cl${P.length<4?" one":""}">${(P.length<4?P.slice(0,1):P).map(i=>`<i style="${bg(i)}">${photo(i)?"":(i.em||c[2])}</i>`).join("")}${G.length>4?`<em>+${G.length-4} more</em>`:""}</span><b>${esc(c[1])}</b></button>`}).join("")}</div>`}).join("")}
 function chooser(){const A=Object.entries(STS).filter(([k])=>stOn(k));
-  return `<div class="ch"><h2>What would you like to order?</h2><p class="hint">One order — each shop sends its own items & bill</p>${A.map(([k,v])=>{const n=L.filter(i=>stOf(i)===k).length;return `<button type="button" class="chc" data-st="${k}" style="background:${v.bg}"><span class="chi">${v.ic}</span><span class="cht"><b>${v.t}</b><small>${esc(v.n)}</small><em>${esc(v.d)}</em></span><span class="chn">${n?n+" items ›":"›"}</span></button>`}).join("")}</div>`}
+  return `<div class="ch"><img class="hero" src="hero.jpg" alt="Marwar Rasoi — food, vegetables, grocery and dry fruits" width="560" height="315"><h2>What would you like to order?</h2><p class="hint">One order — each shop sends its own items & bill</p>${A.map(([k,v])=>{const n=L.filter(i=>stOf(i)===k).length;return `<button type="button" class="chc" data-st="${k}" style="background:${v.bg}"><span class="chi">${v.ic}</span><span class="cht"><b>${v.t}</b><small>${esc(v.n)}</small><em>${esc(v.d)}</em></span><span class="chn">${n?n+" items ›":"›"}</span></button>`}).join("")}</div>`}
 /* 🖼️ फोटो तभी आए जब स्क्रीन पर आने वाली हो (सस्ते फोन/धीमे नेट पर तेज़) */
 const LZ="IntersectionObserver"in window?new IntersectionObserver(E=>E.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");LZ.unobserve(e.target)}}),{rootMargin:"300px"}):null;
 function lz(root){(root||document).querySelectorAll('[style*="--b:"]:not(.in)').forEach(e=>LZ?LZ.observe(e):e.classList.add("in"))}
@@ -434,7 +435,7 @@ async function report(nm,ph,old){const S=v=>({stringValue:String(v)});
   catch(e){LS.set("mh_pend",{nm,ph,old});return false}}
 function lock(on){document.body.classList.toggle("locked",!!on)}
 function welcome(change){const A=ACC();lock(!A.ph);
-  $("#ov").innerHTML=`<div class="scrim wel"${A.ph?" data-x":""}><div class="sheet" role="dialog" aria-label="Welcome"><div class="sh"><h2>${change?"✏️ Update your details":"👋 Welcome to 177 Wet Canteen"}</h2>${A.ph?'<button class="x" type="button" data-x aria-label="Close">✕</button>':""}</div>
+  $("#ov").innerHTML=`<div class="scrim wel"${A.ph?" data-x":""}><div class="sheet" role="dialog" aria-label="Welcome"><div class="sh"><h2>${change?"✏️ Update your details":"👋 Welcome to Marwar Rasoi"}</h2>${A.ph?'<button class="x" type="button" data-x aria-label="Close">✕</button>':""}</div>
     <div class="box"><p style="margin:0 0 8px">${change?"Change your name or number below.":"Order sweets, snacks and groceries from home. Tell us who you are so we can deliver to you."}</p>
     <input class="f" id="wnm" placeholder="Your name" maxlength="40" autocomplete="name" value="${esc(A.nm||"")}">
     <input class="f" id="wph" placeholder="Mobile number (10 digits)" inputmode="tel" maxlength="14" autocomplete="tel" value="${esc(A.ph||"")}">
