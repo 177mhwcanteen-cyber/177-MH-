@@ -442,7 +442,7 @@ function ACC(){return LS.get("mh_acc",{})}
 (function(){const A=ACC();if(A.ph)return;const m=LS.get("mh_me",{}),ph=String(m.ph||"").replace(/\D/g,"").slice(-10);
   if(ph.length===10&&/^[6-9]/.test(ph))LS.set("mh_acc",{nm:String(m.nm||"Customer").slice(0,40),ph,ts:Date.now(),from:"old"})})();
 function meBtn(){const A=ACC(),P=LS.get("mh_pts",null),b=$("#me");if(!b)return;
-  const M_=LS.get("mr_cacc",null);b.innerHTML=A.ph?`<span>👤 ${M_&&M_.d?"Sir ji":esc(String(A.nm).split(" ")[0].slice(0,9))}</span>${M_&&M_.d?`<small>⭐ ${(+M_.d.rt||4.8).toFixed(1)} · ${esc(M_.d.tier||"")}</small>`:P&&P.n>0?`<small>🎁 ${P.n} pts</small>`:""}`:"👤 <small>Sign in</small>"}
+  const M_=LS.get("mr_cacc",null);b.innerHTML=A.ph?`<span>👤 ${M_&&M_.d?"Sir ji":esc(String(A.nm).split(" ")[0].slice(0,9))}</span>${M_&&M_.d?`<small>⭐ ${(+M_.d.rt||4.8).toFixed(1)} · ${esc(M_.d.tier||"")}</small>`:RFAV()&&RFAV().rt?`<small>⭐ ${(+RFAV().rt).toFixed(1)} rating</small>`:P&&P.n>0?`<small>🎁 ${P.n} pts</small>`:""}`:"👤 <small>Sign in</small>"}
 document.addEventListener("click",e=>{if(e.target.closest("#me")){ACC().ph?myOrders():welcome(false)}});
 async function report(nm,ph,old){const S=v=>({stringValue:String(v)});
   const body={fields:{name:S(nm.slice(0,40)),phone:S(ph),addr:S(""),note:S(("👤"+(old&&old!==ph?"|old:"+old:"")+"|ua:"+(navigator.userAgent.match(/\(([^)]+)\)/)||["",""])[1]).slice(0,200)),ts:{integerValue:String(Date.now())},status:S("new"),src:S("signup"),
@@ -452,15 +452,25 @@ async function report(nm,ph,old){const S=v=>({stringValue:String(v)});
 function lock(on){document.body.classList.toggle("locked",!!on)}
 function welcome(change){const A=ACC();lock(!A.ph);
   $("#ov").innerHTML=`<div class="scrim wel"${A.ph?" data-x":""}><div class="sheet" role="dialog" aria-label="Welcome"><div class="sh"><h2>${change?"✏️ Update your details":"👋 Welcome to Marwar Rasoi"}</h2>${A.ph?'<button class="x" type="button" data-x aria-label="Close">✕</button>':""}</div>
-    <div class="box"><p style="margin:0 0 8px">${change?"Change your name or number below.":"Order sweets, snacks and groceries from home. Tell us who you are so we can deliver to you."}</p>
+    <div class="box"><p style="margin:0 0 8px">${change?"Change your name or number below.":"Fresh food, groceries and vegetables at your door. Tell us who you are so we can deliver to you."}</p>
     <input class="f" id="wnm" placeholder="Your name" maxlength="40" autocomplete="name" value="${esc(A.nm||"")}">
     <input class="f" id="wph" placeholder="Mobile number (10 digits)" inputmode="tel" maxlength="14" autocomplete="tel" value="${esc(A.ph||"")}">
+    ${change||!RB?"":`<input class="f" id="wpw" type="password" placeholder="Password (optional — if we sent you one)" maxlength="16" autocomplete="current-password"><p class="hint" style="margin:4px 2px 6px">Have a Marwar Rasoi password? Enter it to see your past orders. No password? Just continue — you can still order. <a id="wreq" href="#" style="color:var(--g);font-weight:800">Get my password on WhatsApp ›</a></p>`}
     <div class="safe">📞 <span>Your number helps us <b>confirm your items and reach your door</b>.</span></div><div class="safe go">🛵 <span>Fresh from our shop, <b>straight to your door</b> — quick and hassle-free.</span></div>
     <button class="place in" id="wgo" type="button">${change?"Save":"Continue →"}</button></div></div></div>`;
+  try{const u=new URLSearchParams(location.search).get("u");if(u&&/^\d{10}$/.test(u)&&!A.ph)$("#wph").value=u}catch(e){}
   const sc=$("#ov .scrim");sc.addEventListener("click",async e=>{if(e.target.matches("[data-x]")&&ACC().ph){close();return}
+    if(e.target.closest("#wreq")){e.preventDefault();pwReq(($("#wph").value||"").replace(/\D/g,"").slice(-10));return}
     if(!e.target.closest("#wgo"))return;const nm=$("#wnm").value.trim(),ph=$("#wph").value.replace(/\D/g,"").slice(-10);
     if(nm.length<2){toast("Please enter your name");$("#wnm").focus();return}if(ph.length!==10||!/^[6-9]/.test(ph)){toast("Enter a valid 10-digit mobile number");$("#wph").focus();return}
     const old=A.ph||"";const b=e.target.closest("#wgo");b.disabled=true;b.textContent="⏳ …";
+    /* 🔐 पासवर्ड डाला → पूरा खाता; ग़लत → रुकें। पासवर्ड नहीं → सिर्फ़ रेटिंग + पसंद (cfav), कोई पुराना ऑर्डर/पता/रकम नहीं */
+    const pw=$("#wpw")?($("#wpw").value||"").trim().toLowerCase():"";
+    if(pw){let d=null;try{d=await mrFetch(await sha("mr|"+ph+"|"+pw))}catch(x){}
+      if(!d){b.disabled=false;b.textContent="Continue →";toast("Password does not match this number — leave it empty to continue, or ask us on WhatsApp");$("#wpw").focus();return}
+      LS.set("mr_cacc",{h:await sha("mr|"+ph+"|"+pw),m:ph,d,ts:Date.now()})}
+    else if(old!==ph)LS.set("mr_cacc",null);
+    favFetch(ph);
     if(old!==ph||A.nm!==nm||!A.ts)await report(nm,ph,old);LS.set("mh_acc",{nm,ph,ts:A.ts||Date.now()});me.nm=nm;me.ph=ph;LS.set("mh_me",me);
     close();lock(false);accChip();draw();toast(change?"✓ Details updated":"👋 Welcome, "+nm.split(" ")[0]+"!")});
   setTimeout(()=>{const x=$("#wnm");if(x&&!A.nm)x.focus()},200)}
@@ -481,9 +491,9 @@ async function sha(t){const b=await crypto.subtle.digest("SHA-256",new TextEncod
 async function mrFetch(h){const r=await fetch(RB+"cacc/"+h+"?key="+RS.key);if(r.status===404||r.status===403)return null;if(!r.ok)throw new Error(r.status);const j=await r.json();const o={};Object.entries(j.fields||{}).forEach(([k,x])=>o[k]=V(x));return o}
 const stars=r=>`<span class="mrst">${"★".repeat(5)}</span>`;
 const mrDate=d=>{try{return new Date(d+"T12:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short"})}catch(e){return d}};
-function mrBox(){const A=MR();if(!A||!A.d)return `<div class="box mrl"><h3>🔐 Marwar Rasoi account</h3><p class="hint">Username = your mobile number. Password Vikram ji ne WhatsApp par bheja hai.</p>
+function mrBox(){const A=MR();if(!A||!A.d)return `${favBox()}<div class="box mrl"><h3>🔐 See your past orders</h3><p class="hint">Username = your mobile number. Password we sent you on WhatsApp.</p>
   <input class="f" id="mru" inputmode="numeric" maxlength="10" placeholder="Mobile number" value="${esc(A&&A.m||new URLSearchParams(location.search).get("u")||ACC().ph||"")}"><input class="f" id="mrp" type="password" autocomplete="current-password" placeholder="Password" maxlength="16" style="margin-top:6px">
-  <p class="hint" id="mre" style="color:var(--r)"></p><button type="button" class="big" id="mrgo">Login ›</button></div>`;
+  <p class="hint" id="mre" style="color:var(--r)"></p><button type="button" class="big" id="mrgo">Login ›</button><button type="button" class="big" id="mrreq" style="margin-top:8px;background:#25d366">📲 Get my username & password on WhatsApp</button></div>`;
   const d=A.d,H=d.hist||[],F=(d.fav||[]).filter(f=>f.n),pr=d.o>=10?100:d.o>=4?Math.round((d.o-4)/6*100):d.o>=2?Math.round((d.o-2)/2*100):Math.round(d.o/2*100);
   return `<div class="box mrp"><div class="mrh"><div><small>Jai Hind</small><b>Respected Sir ji</b><span>📱 ${esc(A.m||"")} · ${d.u?"Unit "+esc(d.u)+" · ":""}member since ${esc(mrDate(d.f||""))}</span></div><div class="mrr"><b>${(+d.rt||4.8).toFixed(1)}</b>${stars()}<small>your rating</small></div></div>
   <div class="mrb"><div><small>Billing name · बिल का नाम</small><b id="mrbn">${d.n&&d.n!=="Sir"?esc(String(d.n).toUpperCase()):"— not added yet —"}</b></div><button type="button" id="mred">✏️ ${d.n&&d.n!=="Sir"?"Edit":"Add"}</button><button type="button" id="mrout2">🚪 Logout</button></div>
@@ -495,13 +505,14 @@ function mrBox(){const A=MR();if(!A||!A.d)return `<div class="box mrl"><h3>🔐 
   <button type="button" class="big" id="mrout" style="margin-top:12px;background:#fff;color:var(--r);border:1.5px solid var(--r)">🚪 Logout — use another account</button></div>`}
 function mrWire(){const sc=$("#ov .scrim");if(!sc)return;
   sc.addEventListener("click",async e=>{const t=e.target;
+    if(t.closest("#mrreq")){pwReq(($("#mru").value||"").replace(/\D/g,"").slice(-10));return}
     if(t.closest("#mrgo")){const m=($("#mru").value||"").replace(/\D/g,"").slice(-10),pw=($("#mrp").value||"").trim().toLowerCase(),er=x=>$("#mre").textContent=x;
       if(m.length!==10)return er("Enter your 10-digit mobile number");if(pw.length<4)return er("Enter the password sent on WhatsApp");t.disabled=true;t.textContent="⏳ Checking…";
       try{const h=await sha("mr|"+m+"|"+pw),d=await mrFetch(h);if(!d){t.disabled=false;t.textContent="Login ›";return er("Mobile number or password is wrong — WhatsApp us on 6367183480 for help")}
         LS.set("mr_cacc",{h,m,d,ts:Date.now()});if(!ACC().ph)LS.set("mh_acc",{nm:String(d.n&&d.n!=="Sir"?d.n:"Customer").slice(0,40),ph:m,ts:Date.now(),from:"mr"});meBtn();toast("✅ Jai Hind, Respected Sir ji");myOrders()}
       catch(x){t.disabled=false;t.textContent="Login ›";er("Could not connect — check internet")}return}
     /* 🚪 लॉगआउट: खाता + नाम/नंबर/पता इस फोन से हटे, ताकि दूसरा ग्राहक अपने खाते से आ सके */
-    if(t.closest("#mrout,#mrout2")){if(!confirm("Logout from this account?"))return;LS.set("mr_cacc",null);LS.set("mh_acc",{});LS.set("mh_me",{});try{history.replaceState(null,"",location.pathname+"?s=rasoi")}catch(x){}meBtn();toast("Logged out — Jai Hind");myOrders();return}
+    if(t.closest("#mrout,#mrout2")){if(!confirm("Logout from this account?"))return;LS.set("mr_cacc",null);LS.set("mr_fav",null);LS.set("mh_acc",{});LS.set("mh_me",{});try{history.replaceState(null,"",location.pathname+"?s=rasoi")}catch(x){}meBtn();toast("Logged out — Jai Hind");myOrders();return}
     /* ✏️ बिल का नाम ग्राहक खुद ठीक करे → इस फोन में तुरंत + डायरेक्टर को सूचना (रसोई Firebase cname/*, नियम v10) */
     if(t.closest("#mred")){const A=MR(),old=A.d.n&&A.d.n!=="Sir"?A.d.n:"";const b=$("#mrbn").parentNode;b.innerHTML=`<small>Billing name · बिल का नाम</small><input class="f" id="mrni" maxlength="40" autocomplete="name" placeholder="Rank + full name" value="${esc(old)}">`;t.closest("#mred").outerHTML=`<button type="button" id="mrsv">✅ Save</button>`;$("#mrni").focus();return}
     if(t.closest("#mrsv")){const A=MR(),n=($("#mrni").value||"").trim().replace(/\s+/g," ").slice(0,40),old=A.d.n&&A.d.n!=="Sir"?A.d.n:"";if(n.length<2){toast("Please type your name");return}
@@ -509,10 +520,17 @@ function mrWire(){const sc=$("#ov .scrim");if(!sc)return;
       if(n!==old)fetch(RB+"cname?key="+RS.key,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:{m:{stringValue:A.m},n:{stringValue:n},old:{stringValue:String(old).slice(0,60)},ts:{integerValue:String(Date.now())}}})}).catch(()=>{});
       toast("✅ Name updated — thank you, "+n+" ji");myOrders();return}
     const a=t.closest("[data-mra]");if(a){const h=(MR().d.hist||[])[+a.dataset.mra];let n=0;(h.it||[]).forEach(x=>{const i=L.find(y=>y.id===x.i);if(i&&i.k!==0){Q[i.id]=(Q[i.id]||0)+x.q;n++}});LS.set("mh_cart",Q);close();if(SEG!=="rasoi"){SEG="rasoi";LS.set("mh_seg",SEG);heads()}draw();toast(n?"🛒 "+n+" dishes added — at today\u2019s prices":"These dishes are not on today\u2019s menu");return}})}
+/* ⭐ बिना पासवर्ड (सिर्फ़ मोबाइल): रसोई Firebase cfav/sha256("mrf|मोबाइल") = {rt, fav[]} — सिर्फ़ रेटिंग + पसंदीदा डिश; नाम/पता/पुराने ऑर्डर/रकम कुछ नहीं (विक्रम जी 15-11) */
+const RFAV=()=>{const f=LS.get("mr_fav",null);return f&&f.m===ACC().ph?f:null};
+async function favFetch(ph){if(!RB||!/^\d{10}$/.test(ph||""))return;try{const r=await fetch(RB+"cfav/"+await sha("mrf|"+ph)+"?key="+RS.key);if(!r.ok){LS.set("mr_fav",{m:ph,none:1,ts:Date.now()});return}const j=await r.json(),o={};Object.entries(j.fields||{}).forEach(([k,x])=>o[k]=V(x));LS.set("mr_fav",{m:ph,rt:o.rt,fav:o.fav||[],ts:Date.now()});meBtn()}catch(e){}}
+const pwReq=ph=>{open("https://wa.me/91"+(waPh()||"6367183480")+"?text="+encodeURIComponent("Jai Hind. Please send my Marwar Rasoi username and password.\nMy mobile number: "+(ph||ACC().ph||"")),"_blank")};
+function favBox(){const f=RFAV();if(!f||f.none||!f.rt)return"";const F=(f.fav||[]).filter(x=>x.n);
+  return `<div class="box mrp"><div class="mrh"><div><small>Jai Hind</small><b>Respected Sir ji</b><span>Thank you for being our valued customer</span></div><div class="mrr"><b>${(+f.rt||4.8).toFixed(1)}</b>${stars()}<small>your rating</small></div></div>
+  ${F.length?`<h3 style="margin:12px 0 6px">❤️ Your favourites</h3><div class="mrf">${F.map(x=>{const i=L.find(y=>y.id===x.i);return `<button type="button" ${i?`data-p="${esc(i.id)}"`:"disabled"}>${esc(x.n)}${i?` <b>+ ${rs(i.s)}</b>`:""}</button>`}).join("")}</div>`:""}</div>`}
 /* खाता ताज़ा (दिन में एक बार) + ?u=<मोबाइल> वाले लिंक से सीधे लॉगिन */
 (async function(){const A=MR();if(A&&A.h&&RB&&Date.now()-(A.ts||0)>6*3600e3){try{const d=await mrFetch(A.h);if(d){A.d=d;A.ts=Date.now();LS.set("mr_cacc",A)}}catch(e){}}
-  try{const u=new URLSearchParams(location.search).get("u");if(u&&/^\d{10}$/.test(u)&&(!A||A.m!==u)&&RB)setTimeout(()=>{if(!$("#ov .sheet"))myOrders()},1200)}catch(e){}})();
-if(!ACC().ph&&!/[?&]u=\d{10}/.test(location.search))welcome(false);else if(ACC().ph)accChip();meBtn();
+  try{const u=new URLSearchParams(location.search).get("u");if(u&&/^\d{10}$/.test(u)&&(!A||A.m!==u)&&RB&&ACC().ph)setTimeout(()=>{if(!$("#ov .sheet"))myOrders()},1200)}catch(e){}})();
+if(!ACC().ph)welcome(false);else{accChip();if(!RFAV()&&!MR())favFetch(ACC().ph)}meBtn();
 load();loadSabji();loadRasoi();loadPhotos();setInterval(()=>{if(!$("#ov .sheet"))load()},5*60000);
 })();
 </script></body></html>

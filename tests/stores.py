@@ -45,6 +45,10 @@ async def main():
                 body = json.loads(route.request.post_data); posted.append(body["fields"]); posted_urls.append(u)
                 return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/O" + str(len(posted)), "fields": body["fields"]})
             if "/projects/marwar-rasoi-24d56/" in u and "/cname" in u: cname.append(u); return await route.fulfill(json={"name": "x"})
+            if "/projects/marwar-rasoi-24d56/" in u and "/cfav/" in u:
+                import hashlib
+                if u.split("/cfav/")[1].split("?")[0] == hashlib.sha256(b"mrf|9876543210").hexdigest(): return await route.fulfill(json={"fields": {k: fsv(v) for k, v in {"rt": 4.9, "fav": [{"n": "Shahi Paneer", "i": "rs-shahi-paneer"}]}.items()}})
+                return await route.fulfill(status=404, json={"error": {}})
             if "/projects/marwar-rasoi-24d56/" in u and "/cacc/" in u:  # 🔐 ग्राहक-खाता (नकली)
                 import hashlib
                 if u.split("/cacc/")[1].split("?")[0] == hashlib.sha256(b"mr|9876543210|abc234").hexdigest():
@@ -123,10 +127,13 @@ async def main():
         mh = [x for x in posted177 if x["src"]["stringValue"] == "web2"][0]
         assert "₹50" in mh["note"]["stringValue"], mh["note"]  # 30 + 20 डिलीवरी शुल्क एक बार
         assert len(json.loads(await c.evaluate("localStorage.getItem('mh_orders')"))) == 3
+        # 5a) बिना पासवर्ड: सिर्फ़ रेटिंग + पसंद (कोई पुराना ऑर्डर/पता नहीं) + WhatsApp से पासवर्ड माँगना
+        await c.reload(); await c.wait_for_timeout(1500); await c.click("#myo"); await c.wait_for_selector("#mrreq")
+        t = await c.inner_text("#ov"); assert "Respected Sir ji" in t and "4.9" in t and "Shahi Paneer" in t and "past orders" in t and "10 Nov" not in t and "Unit 60" not in t, t[:400]
+        await c.screenshot(path=f"{SHOTS}/st6a-fav.png")
         # 5b) 🔐 Marwar Rasoi खाता: ग़लत पासवर्ड → संदेश; सही → रेटिंग/टियर/पिछले ऑर्डर; "Order again" → कार्ट
-        await c.evaluate("document.querySelector('#ov').innerHTML=''"); await c.click("#myo"); await c.wait_for_selector("#mrgo")
         assert await c.input_value("#mru") == "9876543210"; await c.fill("#mrp", "wrong1"); await c.click("#mrgo"); await c.wait_for_function("document.querySelector('#mre').textContent.includes('wrong')")
-        await c.fill("#mrp", "ABC234"); await c.click("#mrgo"); await c.wait_for_selector(".mrp")
+        await c.fill("#mrp", "ABC234"); await c.click("#mrgo"); await c.wait_for_selector("#mrout2")
         t = await c.inner_text(".mrp"); assert "Respected Sir ji" in t and "9876543210" in t and "Ramesh" not in t and "4.9" in t and "Gold" in t and "Top 12%" in t and "Shahi Paneer" in t and "Order again" in t, t
         assert "RAMESH" in await c.inner_text("#mrbn"); await c.click("#mred"); await c.fill("#mrni", "Hav Ramesh Kumar"); await c.click("#mrsv"); await c.wait_for_timeout(300)
         assert "HAV RAMESH KUMAR" in await c.inner_text("#mrbn") and any("/cname" in u for u in cname), "बिल का नाम बदला + डायरेक्टर को गया"
@@ -135,6 +142,13 @@ async def main():
         assert "⭐ 4.9" in await c.inner_text("#me"), await c.inner_text("#me")
         await c.click("#myo"); await c.wait_for_selector("#mrout2"); await c.click("#mrout2"); await c.wait_for_selector("#mrgo"); assert await c.evaluate("!localStorage.getItem('mr_cacc')||localStorage.getItem('mr_cacc')==='null'") and "Sign in" in await c.inner_text("#me"), "लॉगआउट"
         await c.evaluate("localStorage.setItem('mh_acc',JSON.stringify({nm:'Ramesh',ph:'9876543210'}))")
+        # 5c) नया ग्राहक: Welcome में पासवर्ड (वैकल्पिक) — ग़लत → रुके; सही → पूरा खाता; खाली → सिर्फ़ ऑर्डर
+        n = await ctx.new_page(); await n.route("https://firestore.googleapis.com/**", fs); await n.route("https://177mhwcanteen-cyber.github.io/**", lambda r: r.fulfill(status=404, body="")); await n.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={firebase:{projectId:'mh177-canteen',apiKey:'k'},stores:{rasoi:{pid:'marwar-rasoi-24d56',key:'r'},sabji:{pid:'sabji-express-9a8f0',key:'s',base:'https://177mhwcanteen-cyber.github.io/sabji-express-app/'}}};", content_type="application/javascript"))
+        await n.add_init_script("window.__rsClock='17:30';if(!sessionStorage.getItem('x')){localStorage.clear();sessionStorage.setItem('x','1')}"); await n.goto(c.url.split("?")[0] + "?s=rasoi&u=9876543210"); await n.wait_for_selector("#wpw"); assert await n.input_value("#wph") == "9876543210" and await n.locator("#wreq").count() == 1
+        await n.fill("#wnm", "Ramesh"); await n.fill("#wpw", "zzzzzz"); await n.click("#wgo"); await n.wait_for_timeout(600); assert await n.locator("#wpw").count() == 1 and not await n.evaluate("localStorage.getItem('mh_acc')"), "ग़लत पासवर्ड पर रुका"
+        await n.screenshot(path=f"{SHOTS}/st6c-welcome.png"); await n.fill("#wpw", "abc234"); await n.click("#wgo"); await n.wait_for_timeout(800)
+        assert await n.evaluate("JSON.parse(localStorage.getItem('mr_cacc')).d.o") == 7 and "Royal" not in await n.inner_text("#me") and "4.9" in await n.inner_text("#me"), await n.inner_text("#me")
+        await n.close()
         # 6) दुकान का ऐप: ऑर्डर-कार्ड पर दुकान का ठप्पा, 🧺 समूह, "सब्ज़ी को भेजें" WhatsApp, बिल; 🌐 ऑनलाइन मेन्यू
         MOCK = open(os.path.join(H, "mock-firebase.js"), encoding="utf8").read()
         a = await ctx.new_page(); a.on("pageerror", lambda e: errs.append("app: " + str(e)))
