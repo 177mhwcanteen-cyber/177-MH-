@@ -1,0 +1,40 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261112-04",
+ "date": "2026-11-12",
+ "by": "स्वरूप जी (ZIP S-20261112-01 दूसरी)",
+ "note": "📍 वही सामान काउंटर फ्रिज 22-1 में भी (खुले पीस) — नया सामान नहीं, xloc: स्टॉक में जुड़ता है + खाने-वार",
+ "items": [
+  {
+   "id": "b8906160933146",
+   "name": "CAKKIES MIXED FRUIT FLAVOUR CAKE 55G",
+   "barcode": "8906160933146",
+   "xloc": {
+    "22-1": 5
+   }
+  },
+  {
+   "id": "g-amul-bindaaz-coated-wafer-12-g-jar-75-lo-pc",
+   "name": "AMUL BINDAAZ COATED WAFER 12 G 1 PC",
+   "xloc": {
+    "22-1": 50
+   }
+  },
+  {
+   "id": "g-snickers-22-g-bar-box-32-loose-1-pc-pc",
+   "name": "SNICKERS 22 G BAR 1 PC",
+   "xloc": {
+    "22-1": 20
+   }
+  },
+  {
+   "id": "g-priyagold-snakker-choco-wafer-20-g-box-3-pc",
+   "name": "PRIYAGOLD SNAKKER CHOCO WAFER 20 G 1 PC",
+   "xloc": {
+    "22-1": 20
+   }
+  }
+ ]
+}

@@ -1,0 +1,557 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261112-03",
+ "date": "2026-11-12",
+ "by": "स्वरूप जी (विक्रम जी के लिए)",
+ "note": "S-20261110-02 के बाद: एवरेस्ट मसाले, फ़ॉर्च्यून तेल (रसोई निकासी), काउंटर फ्रिज 22-1 की चॉकलेट, काउंटर 22-2, खजूर 7-8। issues = मिठाई रसोई को निकाला माल (स्टॉक में qty 0, हिसाब के लिए रिकॉर्ड)। · किट v6",
+ "items": [
+  {
+   "id": "b8901786285006",
+   "name": "EVEREST KASURI METHI 500 G BOX",
+   "short": "EVEREST KASURI METHI",
+   "hi": "एवरेस्ट कसूरी मेथी 500 ग्राम",
+   "brand": "EVEREST",
+   "size": "500g",
+   "alias": "kasuri methi kasoori everest कसूरी मेथी",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786285006",
+   "mrp": 475,
+   "sale": 475,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-1",
+   "ph": "9e38060a",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261117-9a9c17dc.jpg",
+    "r6/20261117-35cbf5f7.jpg",
+    "r6/20261117-ea269f25.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-02",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901786105007",
+   "name": "EVEREST GARAM MASALA 500 G",
+   "short": "EVEREST GARAM MASALA",
+   "hi": "एवरेस्ट गरम मसाला 500 ग्राम",
+   "brand": "EVEREST",
+   "size": "500g",
+   "alias": "garam masala everest गरम मसाला",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786105007",
+   "mrp": 525,
+   "sale": 525,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-1",
+   "ph": "61a87a8d",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261117-c5cf7074.jpg",
+    "r6/20261117-ee7db580.jpg",
+    "r6/20261117-50c3120e.jpg"
+   ],
+   "open": {
+    "qty": 0,
+    "exp": "2027-10",
+    "batchNo": "U26D775107"
+   }
+  },
+  {
+   "id": "b8901786065004",
+   "name": "EVEREST CHAAT MASALA 500 G",
+   "short": "EVEREST CHAAT MASALA",
+   "hi": "एवरेस्ट चाट मसाला 500 ग्राम",
+   "brand": "EVEREST",
+   "size": "500g",
+   "alias": "chaat masala everest चाट मसाला",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8901786065004",
+   "mrp": 445,
+   "sale": 445,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-1",
+   "ph": "471fb945",
+   "mfr": "c-everest",
+   "fotos": [
+    "r6/20261117-99df7c3f.jpg",
+    "r6/20261117-db12b5e2.jpg",
+    "r6/20261117-d6c0acb8.jpg",
+    "r6/20261117-1a0d2144.jpg"
+   ],
+   "open": {
+    "qty": 0,
+    "exp": "2028-03",
+    "batchNo": "U13D793432"
+   }
+  },
+  {
+   "id": "b8906007280105",
+   "name": "FORTUNE SOYA HEALTH REFINED SOYABEAN OIL 15 KG TIN",
+   "short": "FORTUNE SOYA 15KG TIN",
+   "hi": "फ़ॉर्च्यून सोया हेल्थ तेल 15 किलो टिन",
+   "brand": "FORTUNE",
+   "size": "15kg",
+   "alias": "fortune soya oil tel सोया तेल",
+   "cat": "kirana",
+   "sub": "oil",
+   "unit": "pc",
+   "barcode": "8906007280105",
+   "mrp": 3350,
+   "sale": 3350,
+   "cost": 2520,
+   "perPack": 0,
+   "rack": "6-1",
+   "ph": "f5a4e087",
+   "mfr": "c-adani",
+   "fotos": [
+    "r6/20261117-3eaad7ae.jpg",
+    "r6/20261117-e843ec66.jpg",
+    "r6/20261117-a84bf74e.jpg",
+    "r6/20261117-7ef556d4.jpg",
+    "r6/20261117-4d99b533.jpg"
+   ],
+   "open": {
+    "qty": 0,
+    "exp": "2027-09-23",
+    "batchNo": "SB250267"
+   }
+  },
+  {
+   "id": "b8901262070454",
+   "name": "AMUL DARK CHOCOLATE 55% 35 G",
+   "short": "AMUL DARK CHOCO 35G",
+   "hi": "अमूल डार्क चॉकलेट 55%",
+   "brand": "AMUL",
+   "size": "35g",
+   "alias": "amul dark chocolate अमूल डार्क चॉकलेट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901262070454",
+   "mrp": 45,
+   "sale": 45,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-1",
+   "ph": "e43648ca",
+   "mfr": "c-amul",
+   "fotos": [
+    "r22/20261117-18d2eac2.jpg",
+    "r22/20261117-22c8da9a.jpg"
+   ],
+   "open": {
+    "qty": 15,
+    "exp": "2027-09-15",
+    "batchNo": "KIF2S81"
+   }
+  },
+  {
+   "id": "b8906029790262",
+   "name": "PRIYAGOLD CHOCO GOLD MILK CHOCOLATE 10 G",
+   "short": "PRIYAGOLD CHOCO GOLD",
+   "hi": "प्रियागोल्ड चोको गोल्ड 10 ग्राम",
+   "brand": "PRIYAGOLD",
+   "size": "10g",
+   "alias": "priyagold choco gold chocolate चॉकलेट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8906029790262",
+   "mrp": 5,
+   "sale": 5,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-1",
+   "ph": "bbe97607",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r22/20261117-76fd16ac.jpg",
+    "r22/20261117-9915f916.jpg",
+    "r22/20261117-40928d06.jpg"
+   ],
+   "open": {
+    "qty": 25,
+    "exp": "2027-07-06",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901262070010",
+   "name": "AMUL MILK CHOCOLATE 35 G",
+   "short": "AMUL MILK CHOCO 35G",
+   "hi": "अमूल मिल्क चॉकलेट 35 ग्राम",
+   "brand": "AMUL",
+   "size": "35g",
+   "alias": "amul milk chocolate अमूल चॉकलेट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901262070010",
+   "mrp": 45,
+   "sale": 45,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-1",
+   "ph": "fbeed799",
+   "mfr": "c-amul",
+   "fotos": [
+    "r22/20261117-6df741f9.jpg",
+    "r22/20261117-9d5db3cf.jpg"
+   ],
+   "open": {
+    "qty": 50,
+    "exp": "2027-09-02",
+    "batchNo": "KIF24S1"
+   }
+  },
+  {
+   "id": "b8901262072625",
+   "name": "AMUL VELVETT MILK CHOCOLATE 35 G",
+   "short": "AMUL VELVETT 35G",
+   "hi": "अमूल वेल्वेट मिल्क चॉकलेट",
+   "brand": "AMUL",
+   "size": "35g",
+   "alias": "amul velvett velvet chocolate अमूल वेल्वेट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901262072625",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-1",
+   "ph": "d59f3404",
+   "mfr": "c-amul",
+   "fotos": [
+    "r22/20261117-b4e00386.jpg",
+    "r22/20261117-9bbbc63a.jpg"
+   ],
+   "open": {
+    "qty": 30,
+    "exp": "2027-10-04",
+    "batchNo": "KIF2771"
+   }
+  },
+  {
+   "id": "g-priyagold-snakker-choco-wafer-20-g-box-3-pc",
+   "name": "PRIYAGOLD SNAKKER CHOCO WAFER 20 G (BOX 30 / LOOSE) 1 PC",
+   "short": "PRIYAGOLD SNAKKER 2 1 PC",
+   "hi": "प्रियागोल्ड स्नैकर चोको वेफ़र (खुला / डिब्बा 30)",
+   "brand": "PRIYAGOLD",
+   "size": "20g",
+   "alias": "snakker snacker priyagold wafer chocolate स्नैकर",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "mrp": 5,
+   "sale": 5,
+   "cost": 0,
+   "perPack": 30,
+   "rack": "10-3",
+   "ph": "15623e39",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r10/20261117-5e936eef.jpg",
+    "r10/20261117-2c939c7c.jpg",
+    "r10/20261117-9705797e.jpg",
+    "r10/20261117-1178e33d.jpg",
+    "r10/20261117-815e44a2.jpg"
+   ],
+   "open": {
+    "qty": 240,
+    "exp": "2027-07",
+    "batchNo": "J-26311AJ"
+   }
+  },
+  {
+   "id": "b8906029790064",
+   "name": "PRIYAGOLD SNAKKER CHOCO WAFER 20 G (BOX 30 / LOOSE) PACK (30 PC)",
+   "short": "PRIYAGOLD SNAKKER  30PC",
+   "hi": "प्रियागोल्ड स्नैकर चोको वेफ़र (खुला / डिब्बा 30)",
+   "brand": "PRIYAGOLD",
+   "size": "20g",
+   "alias": "snakker snacker priyagold wafer chocolate स्नैकर",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8906029790064",
+   "mrp": 150,
+   "sale": 150,
+   "cost": 0,
+   "perPack": 30,
+   "packOf": "g-priyagold-snakker-choco-wafer-20-g-box-3-pc",
+   "track": false,
+   "rack": "10-3",
+   "ph": "15623e39",
+   "mfr": "c-priyagold",
+   "fotos": [
+    "r10/20261117-5e936eef.jpg",
+    "r10/20261117-2c939c7c.jpg",
+    "r10/20261117-9705797e.jpg",
+    "r10/20261117-1178e33d.jpg",
+    "r10/20261117-815e44a2.jpg"
+   ]
+  },
+  {
+   "id": "b8901262070331",
+   "name": "AMUL MILK CHOCOLATE 20 G",
+   "short": "AMUL MILK CHOCO 20G",
+   "hi": "अमूल मिल्क चॉकलेट 20 ग्राम",
+   "brand": "AMUL",
+   "size": "20g",
+   "alias": "amul milk chocolate अमूल चॉकलेट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901262070331",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-1",
+   "ph": "916dbf3e",
+   "mfr": "c-amul",
+   "fotos": [
+    "r22/20261117-da92b6a6.jpg",
+    "r22/20261117-5219ba0f.jpg",
+    "r22/20261117-9daa65ed.jpg"
+   ],
+   "open": {
+    "qty": 40,
+    "exp": "2027-10-04",
+    "batchNo": "KIF2771"
+   }
+  },
+  {
+   "id": "b8906005503084",
+   "name": "BIKAJI SADABAHAR SOANPAPDI 450 G",
+   "short": "BIKAJI SOANPAPDI 450G",
+   "hi": "बीकाजी सदाबहार सोनपापड़ी 450 ग्राम",
+   "brand": "BIKAJI",
+   "size": "450g",
+   "alias": "soanpapdi son papdi bikaji सोनपापड़ी",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8906005503084",
+   "mrp": 240,
+   "sale": 240,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "6921d7c5",
+   "mfr": "c-bikaji",
+   "fotos": [
+    "r22/20261117-b4cd1385.jpg",
+    "r22/20261117-bc63ca3f.jpg"
+   ],
+   "open": {
+    "qty": 1,
+    "exp": "2027-04-15",
+    "batchNo": "B26J8403"
+   }
+  },
+  {
+   "id": "g-wrigley-s-boomer-jelly-watermelon-toffee",
+   "name": "WRIGLEY'S BOOMER JELLY WATERMELON TOFFEE (JAR / LOOSE)",
+   "short": "BOOMER JELLY",
+   "hi": "बूमर जेली तरबूज़ टॉफ़ी (खुली / जार)",
+   "brand": "BOOMER",
+   "size": "1 toffee",
+   "alias": "toffee tofi टॉफी टाफी boomer jelly बूमर",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "mrp": 1,
+   "sale": 1,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "9cb9ec75",
+   "mfr": "c-wrigley",
+   "fotos": [
+    "r22/20261117-6c1787b6.jpg"
+   ],
+   "open": {
+    "qty": 0,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b0648564085172",
+   "name": "GAJVAR SAMRAT SEEDLESS DATES (KHAJOOR) 500 G",
+   "short": "SEEDLESS DATES 500G",
+   "hi": "गजवर सम्राट बीज-रहित खजूर 500 ग्राम",
+   "brand": "GAJVAR",
+   "size": "500g",
+   "alias": "khajoor khajur dates seedless बिना बीज खजूर बीज रहित",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "0648564085172",
+   "mrp": 115,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-8",
+   "ph": "ede0ad1c",
+   "mfr": "c-jawarilal",
+   "fotos": [
+    "r7/20261117-809688a4.jpg",
+    "r7/20261117-ea7bae50.jpg",
+    "r7/20261117-01f41e96.jpg"
+   ],
+   "open": {
+    "qty": 50,
+    "exp": "2027-10",
+    "batchNo": "261101"
+   }
+  },
+  {
+   "id": "b0648564085219",
+   "name": "GAJVAR KING'S PREMIUM DATES WITH SEED (KHAJOOR) 500 G",
+   "short": "KING'S DATES 500G",
+   "hi": "गजवर किंग्स खजूर (बीज वाली) 500 ग्राम",
+   "brand": "GAJVAR",
+   "size": "500g",
+   "alias": "khajoor khajur dates seed बीज वाली खजूर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "0648564085219",
+   "mrp": 150,
+   "sale": 90,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-8",
+   "ph": "2a1be72c",
+   "mfr": "c-jawarilal",
+   "fotos": [
+    "r7/20261117-f626d304.jpg",
+    "r7/20261117-61bf1955.jpg",
+    "r7/20261117-46a3b295.jpg"
+   ],
+   "open": {
+    "qty": 50,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-amul",
+   "name": "GUJARAT CO-OPERATIVE MILK MARKETING FEDERATION LTD. (AMUL)",
+   "care": "1800 258 3333",
+   "email": "customercare@amul.coop",
+   "web": "www.amul.com",
+   "addr": "Amul Dairy Road",
+   "city": "Anand, Gujarat 388001",
+   "fssai": "10012021000071",
+   "brands": [
+    "AMUL"
+   ],
+   "note": "सप्लायर: कल्याण सिंह (अमूल)"
+  },
+  {
+   "id": "c-bikaji",
+   "name": "BIKAJI FOODS INTERNATIONAL LTD.",
+   "care": "+91-151-2250350",
+   "email": "care@bikaji.com",
+   "web": "www.bikaji.com",
+   "addr": "Karni Industrial Area",
+   "city": "Bikaner 334004",
+   "fssai": "10016013001074",
+   "brands": [
+    "BIKAJI"
+   ]
+  },
+  {
+   "id": "c-mars",
+   "name": "MARS INTERNATIONAL INDIA PVT. LTD.",
+   "care": "1800 889 2121",
+   "email": "mars.india.chocolates@effem.com",
+   "addr": "4658-A No.21 Ansari Road, Darya Ganj",
+   "city": "New Delhi 110002",
+   "fssai": "10012011000434",
+   "brands": [
+    "SNICKERS"
+   ]
+  },
+  {
+   "id": "c-everest",
+   "name": "S. NARENDRAKUMAR & CO. (EVEREST SPICES)",
+   "web": "www.everestspices.com",
+   "city": "Mumbai",
+   "brands": [
+    "EVEREST"
+   ]
+  },
+  {
+   "id": "c-adani",
+   "name": "ADANI WILMAR LTD. (FORTUNE)",
+   "web": "www.fortunefoods.com",
+   "city": "Ahmedabad",
+   "brands": [
+    "FORTUNE"
+   ],
+   "note": "सप्लायर: R.B. PRODUCTS"
+  },
+  {
+   "id": "c-priyagold",
+   "name": "SURYA PROCESSED FOOD PVT. LTD. (PRIYAGOLD)",
+   "phone": "+91-120-2522939",
+   "email": "mail@priyagold.com",
+   "web": "www.priyagold.com",
+   "addr": "Plot 5, Sector-11, IIE, BHEL",
+   "city": "Haridwar 249403",
+   "fssai": "10012012000203",
+   "brands": [
+    "PRIYAGOLD",
+    "SNAKKER"
+   ]
+  },
+  {
+   "id": "c-lavian",
+   "name": "LAVIAN (CAKKIES)",
+   "brands": [
+    "LAVIAN"
+   ],
+   "note": "पता वाली फ़ोटो नहीं"
+  },
+  {
+   "id": "c-wrigley",
+   "name": "WRIGLEY INDIA (MARS)",
+   "brands": [
+    "BOOMER"
+   ]
+  },
+  {
+   "id": "c-jawarilal",
+   "name": "JAWARILAL COMPANY (GAJVAR)",
+   "care": "0291-2574865",
+   "addr": "G-II/9, Mandore Mandi",
+   "city": "Jodhpur 342007",
+   "fssai": "12221032000522",
+   "brands": [
+    "GAJVAR"
+   ]
+  }
+ ]
+}

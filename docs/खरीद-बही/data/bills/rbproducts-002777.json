@@ -1,0 +1,28 @@
+{
+ "added": 1794911986835,
+ "app": "new",
+ "appNote": "ZIP S-20261112-01 (दूसरी) की खरीद — सामान खेप S-20261112-03 में (गिनती 0: पूरा टिन मिठाई रसोई को निकाला)",
+ "ask": [],
+ "buyer": "",
+ "byName": "स्वरूप जी (ZIP)",
+ "date": "2026-11-11",
+ "freight": 0,
+ "gst": 120,
+ "lines": [
+  {
+   "amt": 2520,
+   "iid": "b8906007280105",
+   "nm": "FORTUNE SOYA HEALTH REFINED SOYABEAN OIL 15 KG TIN",
+   "qty": 1,
+   "rate": 2520,
+   "u": "pcs"
+  }
+ ],
+ "no": "26-27/A/002777",
+ "note": "₹2400 + 5% GST ₹120 = ₹2520 · पूरा टिन पीछे मिठाई रसोई को · ⚠ नकल सिर्फ़ GitHub में — बही आर्टिफैक्ट/शीट में चढ़ाना बाकी",
+ "paid": 2520,
+ "pay": "PhonePe, AU खाता xx4382, UTR 890222641872",
+ "src": "zip",
+ "sup": "R.B. PRODUCTS (GSTIN 08AAIPV9257A1ZD)",
+ "total": 2520
+}

@@ -666,7 +666,7 @@
  {
   "id": "c-priyagold",
   "name": "SURYA FOOD & AGRO LTD (PRIYAGOLD)",
-  "phone": "",
+  "phone": "+91-120-2522939",
   "care": "",
   "email": "mail@priyagold.com",
   "web": "www.priyagold.com",
@@ -1670,5 +1670,73 @@
   ],
   "dist": "",
   "note": "स्रोत: r12-0033"
+ },
+ {
+  "id": "c-adani",
+  "name": "ADANI WILMAR LTD. (FORTUNE)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "www.fortunefoods.com",
+  "addr": "",
+  "city": "Ahmedabad",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "FORTUNE"
+  ],
+  "dist": "",
+  "note": "सप्लायर: R.B. PRODUCTS"
+ },
+ {
+  "id": "c-lavian",
+  "name": "LAVIAN (CAKKIES)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "LAVIAN"
+  ],
+  "dist": "",
+  "note": "पता वाली फ़ोटो नहीं"
+ },
+ {
+  "id": "c-wrigley",
+  "name": "WRIGLEY INDIA (MARS)",
+  "phone": "",
+  "care": "",
+  "email": "",
+  "web": "",
+  "addr": "",
+  "city": "",
+  "fssai": "",
+  "gst": "",
+  "brands": [
+   "BOOMER"
+  ],
+  "dist": "",
+  "note": ""
+ },
+ {
+  "id": "c-jawarilal",
+  "name": "JAWARILAL COMPANY (GAJVAR)",
+  "phone": "",
+  "care": "0291-2574865",
+  "email": "",
+  "web": "",
+  "addr": "G-II/9, Mandore Mandi",
+  "city": "Jodhpur 342007",
+  "fssai": "12221032000522",
+  "gst": "",
+  "brands": [
+   "GAJVAR"
+  ],
+  "dist": "",
+  "note": ""
  }
 ]

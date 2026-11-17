@@ -1,0 +1,92 @@
+{
+ "added": 1794911986835,
+ "app": "new",
+ "appNote": "नई खरीद 17-11-2026 — सिर्फ़ भाव/रजिस्टर; ऐप की purchases में अभी नहीं (भुगतान पूछना बाकी); स्टॉक नहीं (noStock)",
+ "ask": [
+  "भुगतान: नकद, UPI या उधार? किसने दिया? (विक्रम जी, क्या ये आपकी जानकारी में है?)",
+  "यह माल 177 कैंटीन का है या मिठाई रसोई / मारवाड़ रसोई का?"
+ ],
+ "buyer": "मनोज जी",
+ "byName": "विक्रम जी (फोटो, चैट 17-11)",
+ "date": "2026-11-17",
+ "freight": 15,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 6380,
+   "fit": {
+    "g-moongfali-dana-raw-peanuts-500-g-loose-p": 0.5
+   },
+   "nm": "SINGDANA (MOONGFALI)",
+   "qty": 44,
+   "rate": 145,
+   "u": "kg"
+  },
+  {
+   "amt": 2730,
+   "nm": "KALA CHANA",
+   "qty": 30,
+   "rate": 91,
+   "u": "kg"
+  },
+  {
+   "amt": 1030,
+   "fit": {
+    "g-sabut-moong-whole-green-gram-500-g-loose": 0.5
+   },
+   "nm": "MOONG SABUT",
+   "qty": 10,
+   "rate": 103,
+   "u": "kg"
+  },
+  {
+   "amt": 1150,
+   "nm": "MOONG MOGAR",
+   "qty": 10,
+   "rate": 115,
+   "u": "kg"
+  },
+  {
+   "amt": 1275,
+   "nm": "TEA",
+   "qty": 5,
+   "rate": 255,
+   "u": "kg"
+  },
+  {
+   "amt": 8700,
+   "nm": "KAJU",
+   "qty": 10,
+   "rate": 870,
+   "u": "kg"
+  },
+  {
+   "amt": 1100,
+   "nm": "TIL",
+   "qty": 5,
+   "rate": 220,
+   "u": "kg"
+  },
+  {
+   "amt": 730,
+   "nm": "IMLI",
+   "qty": 10,
+   "rate": 73,
+   "u": "kg"
+  },
+  {
+   "amt": 878.7,
+   "nm": "GOTA (COCONUT)",
+   "qty": 2.02,
+   "rate": 435,
+   "u": "kg"
+  }
+ ],
+ "no": "GV/3571/26-27",
+ "note": "Invoice-cum-Bill of Supply · 9 लाइन, 126.02 kg · कर-योग्य ₹23,100.87 + CGST ₹436.82 + SGST ₹436.82 + मज़दूरी ₹15 + गोलाई ₹0.49 = ₹23,990 (python से मिलाया) · भाव GST सहित (बिल का 'Rate Incl. of Tax') · GOTA 2.02 kg · ⚠ नकल सिर्फ़ GitHub में — बही आर्टिफैक्ट और Google Sheet रजिस्टर में चढ़ाना बाकी (इस खाते से नहीं खुले)",
+ "paid": 0,
+ "pay": "पता नहीं — विक्रम जी से पूछना",
+ "src": "chat",
+ "sup": "GOPALDAS VISHANDAS (कृषि मंडी, 9001920520)",
+ "total": 23990
+}
