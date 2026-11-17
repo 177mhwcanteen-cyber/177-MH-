@@ -52,6 +52,13 @@ async def main():
         assert r["a0"]["k"] == 1 and r["a1"]["k"] == 0 and r["a0"]["m"] == 60 and r["a0"]["n"] == "PARLE-G BISCUIT 100G", r["a0"]
         rates = await pg.evaluate("({items:SON.list(),cfg:{...SON.cfg(),phone:'9829000000',freeAbove:200,fee:20,min:0},ts:Date.now(),phone:'9829000000'})")
         print("public list ok", r["n"], "items, tobacco & hidden excluded")
+        # 🗂️ भैरव की पहचान-सूची: बारकोड वाला सामान, बिक्री भाव साथ, तम्बाकू/cost कभी नहीं
+        pk = await pg.evaluate("""()=>{const A=S.items.filter(i=>i.active!==false&&!i.virtual);A[0].barcode='8901063010024';A[3].barcode='8901725135812';A[4].barcode='8901725000011';A[0].cost=33;
+          const L=SON.pehList();return {n:L.length,a0:L.find(i=>i.id===A[0].id),tob:L.some(i=>i.id===A[3].id||i.id===A[4].id),cost:L.some(i=>'cost' in i||'cs' in i),nob:L.every(i=>/\\d{6}/.test(i.b))}}""")
+        assert pk["a0"] and pk["a0"]["s"] == 50 and pk["a0"]["m"] == 60 and pk["a0"]["b"] == "8901063010024", pk
+        assert not pk["tob"] and not pk["cost"] and pk["nob"], pk
+        await pg.evaluate("SON.publishPehchan(true)"); await pg.wait_for_timeout(400)
+        print("pehchan list ok", pk["n"])
 
         # ---------- दुकान: ऑर्डर शीट ----------
         await pg.evaluate("""()=>{SX.orders=[{id:'o1',name:'रमेश जी',phone:'9876543210',addr:'12/B JCO लाइन',note:'🛵|📱|⏰ अभी|📍25.74610,71.39260|₹170¦गेट पर फोन करें',status:'new',ts:Date.now()-5*60000,items:[{id:'x',n:'parle-g',q:2,u:'pc',s:50}]},

@@ -37,6 +37,20 @@ SON.publishPhotos=async function(force){if(S.demo||!S.db||!S.isOwner||SON._pp)re
     const ids=Object.keys(out),n=Math.ceil(ids.length/40);
     for(let k=0;k<n;k++){const m={};ids.slice(k*40,k*40+40).forEach(id=>m[id]=out[id]);await S.db.collection("pub").doc("ph_"+k).set({m,ts:Date.now()})}
     await S.db.collection("pub").doc("phx").set({n,v:String(Date.now()),count:ids.length,ts:Date.now()});LSx.set("son_ph",h)}catch(e){}finally{SON._pp=0}};
+/* 🗂️ भैरव के लिए पहचान-सूची (विक्रम जी 17-11-2026): बारकोड वाला हर सामान — नाम, श्रेणी, MRP, बिक्री भाव, फोटो-लिंक।
+   pub/pk_<k> (300-300) + pub/pkx {n,v,count}। खरीद भाव/स्टॉक/रैक/सप्लायर नहीं; 🔒 तम्बाकू कभी नहीं (pub/* सार्वजनिक है)।
+   भैरव की GitHub मशीन (भैरव रिपो का pehchan.yml) यही पढ़कर भैरव के ऐप-अपडेट में डालती है। */
+SON.pehList=function(){const tob=i=>(typeof isTob==="function"&&isTob(i))||!!i.secret||i.sub==="tob";
+  return S.items.filter(i=>i.active!==false&&!i.virtual&&!i.pending&&!tob(i)&&String(i.barcode||"").replace(/\D/g,"").length>=6)
+    .map(i=>{const o={id:i.id,b:String(i.barcode),n:SE.capNm(i.name)};const ps=SE.photoSrc(i);
+      [["short","sh"],["hi","hi"],["brand","br"],["size","sz"],["cat","c"],["sub","sb"],["unit","u"],["emoji","em"]].forEach(([k,j])=>{if(i[k])o[j]=String(i[k]).slice(0,60)});
+      [["mrp","m"],["sale","s"],["perPack","pp"],["packMrp","pm"],["ctn","ct"]].forEach(([k,j])=>{if(num(i[k])>0)o[j]=num(i[k])});
+      if(ps&&/^https?:|^p\//.test(ps))o.p=ps.replace(/^p\//,"https://177mhwcanteen-cyber.github.io/177-MH-/p/");return o})};
+SON.publishPehchan=async function(force){if(S.demo||!S.db||!S.isOwner||SON._pk)return;
+  const L=SON.pehList(),h=L.length+":"+JSON.stringify(L.map(i=>[i.b,i.n,i.s||0,i.m||0,i.p||""])).replace(/[^0-9a-z]/gi,"").slice(-3000);
+  if(!force&&LSx.get("son_pk")===h&&Date.now()-(+LSx.get("son_pkt")||0)<12*3600e3)return;SON._pk=1;
+  try{const n=Math.ceil(L.length/300);for(let k=0;k<n;k++)await S.db.collection("pub").doc("pk_"+k).set({items:L.slice(k*300,k*300+300),ts:Date.now()});
+    await S.db.collection("pub").doc("pkx").set({n,v:String(Date.now()),count:L.length,ts:Date.now(),org:"mh177"});LSx.set("son_pk",h);LSx.set("son_pkt",String(Date.now()))}catch(e){}finally{SON._pk=0}};
 /* पुराना SX.pubRates भी अब यही (तम्बाकू वाली गलती पूरी तरह बंद) */
 if(window.SX)SX.pubRates=SON.publish;
 
@@ -252,5 +266,5 @@ const css=document.createElement("style");css.textContent=`
 .son-sw{display:flex;flex-wrap:wrap;gap:6px;margin:0}.son-f{display:grid;grid-template-columns:1fr 1fr;gap:6px}.son-ln code{display:block;font-size:12px;word-break:break-all;background:var(--bg);padding:8px;border-radius:8px}`;document.head.appendChild(css);
 
 /* बदलाव पर अपने-आप दोबारा भेजो (हर 2 मिनट जाँच — सिर्फ़ बदला हो तब) */
-setInterval(()=>{try{if(typeof S!=="undefined"&&S.db&&!S.demo&&S.items&&S.items.length){SON.publish(false);SON.publishPhotos(false)}}catch(e){}},120000);
+setInterval(()=>{try{if(typeof S!=="undefined"&&S.db&&!S.demo&&S.items&&S.items.length){SON.publish(false);SON.publishPhotos(false);SON.publishPehchan(false)}}catch(e){}},120000);
 })();
