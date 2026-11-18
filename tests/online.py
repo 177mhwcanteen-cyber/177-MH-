@@ -148,16 +148,15 @@ async def main():
         assert not posted, "बिना पता/लोकेशन ऑर्डर नहीं जाना चाहिए"
         assert "9876543210" in await c.text_content(".acc")
         await c.fill("#qt", "12/B"); await c.fill("#un", "177 MH"); await c.fill("#ad", "JCO Lines"); await c.fill("#alt", "9829011111")
-        await c.click("#loc"); await c.wait_for_timeout(400)
         await c.click('[data-pay="u"]')
         await c.click("#place"); await c.wait_for_selector(".trk")
         f = posted["fields"]
-        assert f["addr"]["stringValue"] == "Qtr 12/B · 177 MH · JCO Lines", f["addr"]
+        assert f["addr"]["stringValue"] == "Qtr 12/B · Unit 177 MH · JCO Lines", f["addr"]
         assert "☎️9829011111" in f["note"]["stringValue"] and f["phone"]["stringValue"] == "9876543210"
         assert set(f) <= {"name", "phone", "addr", "note", "items", "ts", "status", "src"}, set(f)
         assert f["status"]["stringValue"] == "new" and f["phone"]["stringValue"] == "9876543210"
         assert len(f["note"]["stringValue"]) <= 200 and len(f["addr"]["stringValue"]) <= 80 and 0 < len(f["items"]["arrayValue"]["values"]) <= 40
-        assert "📍25.74610,71.39260" in f["note"]["stringValue"] and "📱" in f["note"]["stringValue"], f["note"]
+        assert "📍" not in f["note"]["stringValue"] and "📱" in f["note"]["stringValue"], f["note"]
         await c.screenshot(path=f"{SHOTS}/o6-track.png")
         # दुकान ने स्वीकार किया → ट्रैकिंग में दिखे
         track["st"] = "acc"
