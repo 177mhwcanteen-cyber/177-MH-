@@ -143,12 +143,17 @@ async def main():
         assert "⭐ 4.9" in await c.inner_text("#me"), await c.inner_text("#me")
         await c.click("#myo"); await c.wait_for_selector("#mrout2"); await c.click("#mrout2"); await c.wait_for_selector("#mrgo"); assert await c.evaluate("!localStorage.getItem('mr_cacc')||localStorage.getItem('mr_cacc')==='null'") and "Sign in" in await c.inner_text("#me"), "लॉगआउट"
         await c.evaluate("localStorage.setItem('mh_acc',JSON.stringify({nm:'Ramesh',ph:'9876543210'}))")
-        # 5c) नया ग्राहक: Welcome में पासवर्ड (वैकल्पिक) — ग़लत → रुके; सही → पूरा खाता; खाली → सिर्फ़ ऑर्डर
+        # 5c) नया ग्राहक (18-11): Welcome में सिर्फ़ नाम + मोबाइल, पासवर्ड नहीं; रेटिंग/पसंद मोबाइल से; पासवर्ड वाला लॉगिन My orders में सबसे नीचे — ग़लत पर भी ऑर्डर नहीं रुकता
         n = await ctx.new_page(); await n.route("https://firestore.googleapis.com/**", fs); await n.route("https://177mhwcanteen-cyber.github.io/**", lambda r: r.fulfill(status=404, body="")); await n.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={firebase:{projectId:'mh177-canteen',apiKey:'k'},stores:{rasoi:{pid:'marwar-rasoi-24d56',key:'r'},sabji:{pid:'sabji-express-9a8f0',key:'s',base:'https://177mhwcanteen-cyber.github.io/sabji-express-app/'}}};", content_type="application/javascript"))
-        await n.add_init_script("window.__rsClock='17:30';if(!sessionStorage.getItem('x')){localStorage.clear();sessionStorage.setItem('x','1')}"); await n.goto(c.url.split("?")[0] + "?s=rasoi&u=9876543210"); await n.wait_for_selector("#wpw"); assert await n.input_value("#wph") == "9876543210" and await n.locator("#wreq").count() == 1
-        await n.fill("#wnm", "Ramesh"); await n.fill("#wpw", "zzzzzz"); await n.click("#wgo"); await n.wait_for_timeout(600); assert await n.locator("#wpw").count() == 1 and not await n.evaluate("localStorage.getItem('mh_acc')"), "ग़लत पासवर्ड पर रुका"
-        await n.screenshot(path=f"{SHOTS}/st6c-welcome.png"); await n.fill("#wpw", "abc234"); await n.click("#wgo"); await n.wait_for_timeout(800)
-        assert await n.evaluate("JSON.parse(localStorage.getItem('mr_cacc')).d.o") == 7 and "Royal" not in await n.inner_text("#me") and "4.9" in await n.inner_text("#me"), await n.inner_text("#me")
+        await n.add_init_script("window.__rsClock='17:30';if(!sessionStorage.getItem('x')){localStorage.clear();sessionStorage.setItem('x','1')}"); await n.goto(c.url.split("?")[0] + "?s=rasoi&u=9876543210"); await n.wait_for_selector("#wgo")
+        assert await n.input_value("#wph") == "9876543210" and await n.locator("#wpw").count() == 0 and await n.locator("#wreq").count() == 0, "Welcome में पासवर्ड नहीं"
+        await n.screenshot(path=f"{SHOTS}/st6c-welcome.png"); await n.fill("#wnm", "Ramesh"); await n.click("#wgo"); await n.wait_for_timeout(900)
+        assert await n.evaluate("JSON.parse(localStorage.getItem('mh_acc')).ph") == "9876543210", "सिर्फ़ नाम + मोबाइल से अंदर"
+        await n.click("#myo"); await n.wait_for_selector("#mrgo"); t = await n.inner_text("#ov")
+        assert t.index("No orders") < t.index("Have a Marwar Rasoi password") and "Royal" not in t, t[:400]
+        await n.fill("#mrp", "zzzzzz"); await n.click("#mrgo"); await n.wait_for_timeout(600); assert "wrong" in await n.inner_text("#mre")
+        await n.fill("#mrp", "abc234"); await n.click("#mrgo"); await n.wait_for_timeout(800)
+        assert await n.evaluate("JSON.parse(localStorage.getItem('mr_cacc')).d.o") == 7 and "4.9" in await n.inner_text("#me"), await n.inner_text("#me")
         await n.close()
         # 6) दुकान का ऐप: ऑर्डर-कार्ड पर दुकान का ठप्पा, 🧺 समूह, "सब्ज़ी को भेजें" WhatsApp, बिल; 🌐 ऑनलाइन मेन्यू
         MOCK = open(os.path.join(H, "mock-firebase.js"), encoding="utf8").read()

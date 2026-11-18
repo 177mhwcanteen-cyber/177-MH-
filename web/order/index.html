@@ -423,7 +423,7 @@ async function rvSend(){const b=$("#rvb");if(!b)return;const id=b.dataset.id,n=b
   b.outerHTML=rvHTML(id);const ph=waPh();if(!ok&&ph)window.open("https://wa.me/91"+ph+"?text="+encodeURIComponent("My rating for order #"+String(id).slice(-6).toUpperCase()+": "+"⭐".repeat(n)+(tx?"\n"+tx:"")),"_blank")}
 function ptsHTML(){const P=LS.get("mh_pts",null);return P&&P.n>0?`<div class="ptsb"><span style="font-size:30px">🎁</span><div><b>${P.n}</b> <span>points collected!</span><br><span>1 point on every ₹${P.per||100} you shop · ask the shop for your reward</span></div></div>`:`<div class="ptsb"><span style="font-size:30px">🎁</span><div><span><b style="font-size:15px">Collect points</b><br>Get 1 point on every ₹100 you shop — rewards from the shop!</span></div></div>`}
 function myOrders(){const M=LS.get("mh_orders",[]),A=ACC();sheet("📦 My orders",`${RB?mrBox():""}${A.ph?`<div class="box acc"><div><b>👤 ${esc(A.nm)}</b><span>📱 ${esc(A.ph)}</span></div><button type="button" class="lnk" data-chacc2>Edit ›</button></div>`:""}${ptsHTML()}<div class="box">${M.length?M.map(o=>`<div class="mo"><div><b>#${esc(String(o.id).slice(-6).toUpperCase())}</b> ${o.st==="done"?'<span class="st2">✓ Delivered</span>':o.st==="cancel"?'<span class="st2 c">Cancelled</span>':""} · ${o.n} items · ${rs(o.total)}<br><small class="hint">${new Date(o.ts).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</small></div>
-  <div style="display:flex;gap:6px"><button type="button" data-trk="${esc(o.id)}">Status</button><button type="button" data-again="${esc(o.id)}">↻ Reorder</button></div></div>`).join(""):'<p class="hint">No orders yet.</p>'}</div>`);
+  <div style="display:flex;gap:6px"><button type="button" data-trk="${esc(o.id)}">Status</button><button type="button" data-again="${esc(o.id)}">↻ Reorder</button></div></div>`).join(""):'<p class="hint">No orders yet.</p>'}</div>${RB?mrLogin():""}`);
   mrWire();$("#ov .scrim").addEventListener("click",e=>{const t=e.target.closest("[data-trk]"),a=e.target.closest("[data-again]");if(t)track(t.dataset.trk,false);
     if(a){const o=M.find(x=>x.id===a.dataset.again);(o.items||[]).forEach(([id,q])=>{const i=L.find(x=>x.id===id);if(i&&i.k!==0)Q[id]=q});close();draw();toast("🛒 Added to cart — at today\u2019s prices")}})}
 /* 🟢 चालू ऑर्डर: अपने-आप पॉप-अप नहीं — ऊपर छोटी पट्टी (पहुँच गया/रद्द हो तो कुछ नहीं) */
@@ -455,21 +455,15 @@ function welcome(change){const A=ACC();lock(!A.ph);
     <div class="box"><p style="margin:0 0 8px">${change?"Change your name or number below.":"Fresh food, groceries and vegetables at your door. Tell us who you are so we can deliver to you."}</p>
     <input class="f" id="wnm" placeholder="Your name" maxlength="40" autocomplete="name" value="${esc(A.nm||"")}">
     <input class="f" id="wph" placeholder="Mobile number (10 digits)" inputmode="tel" maxlength="14" autocomplete="tel" value="${esc(A.ph||"")}">
-    ${change||!RB?"":`<input class="f" id="wpw" type="password" placeholder="Password (optional — if we sent you one)" maxlength="16" autocomplete="current-password"><p class="hint" style="margin:4px 2px 6px">Have a Marwar Rasoi password? Enter it to see your past orders. No password? Just continue — you can still order. <a id="wreq" href="#" style="color:var(--g);font-weight:800">Get my password on WhatsApp ›</a></p>`}
     <div class="safe">📞 <span>Your number helps us <b>confirm your items and reach your door</b>.</span></div><div class="safe go">🛵 <span>Fresh from our shop, <b>straight to your door</b> — quick and hassle-free.</span></div>
     <button class="place in" id="wgo" type="button">${change?"Save":"Continue →"}</button></div></div></div>`;
   try{const u=new URLSearchParams(location.search).get("u");if(u&&/^\d{10}$/.test(u)&&!A.ph)$("#wph").value=u}catch(e){}
   const sc=$("#ov .scrim");sc.addEventListener("click",async e=>{if(e.target.matches("[data-x]")&&ACC().ph){close();return}
-    if(e.target.closest("#wreq")){e.preventDefault();pwReq(($("#wph").value||"").replace(/\D/g,"").slice(-10));return}
     if(!e.target.closest("#wgo"))return;const nm=$("#wnm").value.trim(),ph=$("#wph").value.replace(/\D/g,"").slice(-10);
     if(nm.length<2){toast("Please enter your name");$("#wnm").focus();return}if(ph.length!==10||!/^[6-9]/.test(ph)){toast("Enter a valid 10-digit mobile number");$("#wph").focus();return}
     const old=A.ph||"";const b=e.target.closest("#wgo");b.disabled=true;b.textContent="⏳ …";
-    /* 🔐 पासवर्ड डाला → पूरा खाता; ग़लत → रुकें। पासवर्ड नहीं → सिर्फ़ रेटिंग + पसंद (cfav), कोई पुराना ऑर्डर/पता/रकम नहीं */
-    const pw=$("#wpw")?($("#wpw").value||"").trim().toLowerCase():"";
-    if(pw){let d=null;try{d=await mrFetch(await sha("mr|"+ph+"|"+pw))}catch(x){}
-      if(!d){b.disabled=false;b.textContent="Continue →";toast("Password does not match this number — leave it empty to continue, or ask us on WhatsApp");$("#wpw").focus();return}
-      LS.set("mr_cacc",{h:await sha("mr|"+ph+"|"+pw),m:ph,d,ts:Date.now()})}
-    else if(old!==ph)LS.set("mr_cacc",null);
+    /* 18-11 विक्रम जी: Welcome में सिर्फ़ नाम + मोबाइल — पासवर्ड यहाँ नहीं (लोग उलझते थे); पासवर्ड वाला लॉगिन "My orders" में सबसे नीचे, वैकल्पिक */
+    if(old!==ph)LS.set("mr_cacc",null);
     favFetch(ph);
     if(old!==ph||A.nm!==nm||!A.ts)await report(nm,ph,old);LS.set("mh_acc",{nm,ph,ts:A.ts||Date.now()});me.nm=nm;me.ph=ph;LS.set("mh_me",me);
     close();lock(false);accChip();draw();toast(change?"✓ Details updated":"👋 Welcome, "+nm.split(" ")[0]+"!")});
@@ -491,9 +485,11 @@ async function sha(t){const b=await crypto.subtle.digest("SHA-256",new TextEncod
 async function mrFetch(h){const r=await fetch(RB+"cacc/"+h+"?key="+RS.key);if(r.status===404||r.status===403)return null;if(!r.ok)throw new Error(r.status);const j=await r.json();const o={};Object.entries(j.fields||{}).forEach(([k,x])=>o[k]=V(x));return o}
 const stars=r=>`<span class="mrst">${"★".repeat(5)}</span>`;
 const mrDate=d=>{try{return new Date(d+"T12:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short"})}catch(e){return d}};
-function mrBox(){const A=MR();if(!A||!A.d)return `${favBox()}<div class="box mrl"><h3>🔐 See your past orders</h3><p class="hint">Username = your mobile number. Password we sent you on WhatsApp.</p>
+function mrBox(){const A=MR();if(!A||!A.d)return favBox();return mrProf(A)}
+function mrLogin(){const A=MR();if(A&&A.d)return"";return `<div class="box mrl"><h3>🔐 Have a Marwar Rasoi password? <small class="hint">(optional)</small></h3><p class="hint">Not needed to order. Username = your mobile number, password we sent you on WhatsApp — it opens all your past orders.</p>
   <input class="f" id="mru" inputmode="numeric" maxlength="10" placeholder="Mobile number" value="${esc(A&&A.m||new URLSearchParams(location.search).get("u")||ACC().ph||"")}"><input class="f" id="mrp" type="password" autocomplete="current-password" placeholder="Password" maxlength="16" style="margin-top:6px">
-  <p class="hint" id="mre" style="color:var(--r)"></p><button type="button" class="big" id="mrgo">Login ›</button><button type="button" class="big" id="mrreq" style="margin-top:8px;background:#25d366">📲 Get my username & password on WhatsApp</button></div>`;
+  <p class="hint" id="mre" style="color:var(--r)"></p><button type="button" class="big" id="mrgo">Login ›</button><button type="button" class="big" id="mrreq" style="margin-top:8px;background:#25d366">📲 Get my username & password on WhatsApp</button></div>`}
+function mrProf(A){
   const d=A.d,H=d.hist||[],F=(d.fav||[]).filter(f=>f.n),pr=d.o>=10?100:d.o>=4?Math.round((d.o-4)/6*100):d.o>=2?Math.round((d.o-2)/2*100):Math.round(d.o/2*100);
   return `<div class="box mrp"><div class="mrh"><div><small>Jai Hind</small><b>Respected Sir ji</b><span>📱 ${esc(A.m||"")} · ${d.u?"Unit "+esc(d.u)+" · ":""}member since ${esc(mrDate(d.f||""))}</span></div><div class="mrr"><b>${(+d.rt||4.8).toFixed(1)}</b>${stars()}<small>your rating</small></div></div>
   <div class="mrb"><div><small>Billing name · बिल का नाम</small><b id="mrbn">${d.n&&d.n!=="Sir"?esc(String(d.n).toUpperCase()):"— not added yet —"}</b></div><button type="button" id="mred">✏️ ${d.n&&d.n!=="Sir"?"Edit":"Add"}</button><button type="button" id="mrout2">🚪 Logout</button></div>
