@@ -1,0 +1,248 @@
+{
+ "added": 1795091365158,
+ "app": "new",
+ "appNote": "नई खरीद 19-11-2026 (रविंद्र जी लाए) — सिर्फ़ रजिस्टर; सामान ऐप में फोटो/बारकोड के बाद",
+ "ask": [
+  "दुकान?",
+  "लाइन 14/15 LUX/LIFEBOY पैक, लाइन 25 पेन ___, लाइन 27, 28, एक्सल सर्फ कितने किलो"
+ ],
+ "buyer": "रविंद्र जी / मनोज जी",
+ "byName": "विक्रम जी (फोटो, चैट 19-11)",
+ "date": "2026-11-19",
+ "freight": 0,
+ "gst": 0,
+ "lines": [
+  {
+   "amt": 720,
+   "nm": "PITAL TALA 40MM",
+   "qty": 36,
+   "rate": 20,
+   "u": "pc"
+  },
+  {
+   "amt": 900,
+   "nm": "TALA 60MM",
+   "qty": 30,
+   "rate": 30,
+   "u": "pc"
+  },
+  {
+   "amt": 600,
+   "nm": "TALA 80MM",
+   "qty": 15,
+   "rate": 40,
+   "u": "pc"
+  },
+  {
+   "amt": 90,
+   "nm": "A. MEHNDI CONE (₹5)",
+   "qty": 2,
+   "rate": 45,
+   "u": "pc"
+  },
+  {
+   "amt": 550,
+   "nm": "TOPAZ BLADE (खुले)",
+   "qty": 500,
+   "rate": 1.1,
+   "u": "pc"
+  },
+  {
+   "amt": 360,
+   "nm": "H. SABUN ₹10",
+   "qty": 60,
+   "rate": 6,
+   "u": "pc"
+  },
+  {
+   "amt": 504,
+   "nm": "NAVRATNA TEL ₹47",
+   "qty": 12,
+   "rate": 42,
+   "u": "pc"
+  },
+  {
+   "amt": 216,
+   "nm": "LUX SABUN ₹10",
+   "qty": 24,
+   "rate": 9,
+   "u": "pc"
+  },
+  {
+   "amt": 216,
+   "nm": "LIFEBUOY SABUN ₹10",
+   "qty": 24,
+   "rate": 9,
+   "u": "pc"
+  },
+  {
+   "amt": 800,
+   "nm": "BOROPLUS ₹45",
+   "qty": 20,
+   "rate": 40,
+   "u": "pc"
+  },
+  {
+   "amt": 180,
+   "nm": "KAPDA BRUSH ₹20",
+   "qty": 12,
+   "rate": 15,
+   "u": "pc"
+  },
+  {
+   "amt": 980,
+   "nm": "PEN ₹10",
+   "qty": 140,
+   "rate": 7,
+   "u": "pc"
+  },
+  {
+   "amt": 400,
+   "nm": "PEN SASTA ₹10",
+   "qty": 100,
+   "rate": 4,
+   "u": "pc"
+  },
+  {
+   "amt": 210,
+   "nm": "LUX ___ ₹120 (पैक?)",
+   "qty": 2,
+   "rate": 105,
+   "u": "pc"
+  },
+  {
+   "amt": 260,
+   "nm": "LIFEBOY ___ ₹150 (पैक?)",
+   "qty": 2,
+   "rate": 130,
+   "u": "pc"
+  },
+  {
+   "amt": 240,
+   "nm": "KENCHI ₹40",
+   "qty": 12,
+   "rate": 20,
+   "u": "pc"
+  },
+  {
+   "amt": 180,
+   "nm": "KENCHI ₹30",
+   "qty": 12,
+   "rate": 15,
+   "u": "pc"
+  },
+  {
+   "amt": 100,
+   "nm": "DOVE SHAMPOO ₹2",
+   "qty": 64,
+   "rate": 1.56,
+   "u": "pc"
+  },
+  {
+   "amt": 100,
+   "nm": "C. SHAMPOO (₹1)",
+   "qty": 128,
+   "rate": 0.78,
+   "u": "pc"
+  },
+  {
+   "amt": 144,
+   "nm": "BRUSH PATTA ₹10",
+   "qty": 2,
+   "rate": 72,
+   "u": "pc"
+  },
+  {
+   "amt": 864,
+   "nm": "LIP GUARD ₹20",
+   "qty": 72,
+   "rate": 12,
+   "u": "pc"
+  },
+  {
+   "amt": 600,
+   "nm": "V. BODY LOTION ₹90",
+   "qty": 8,
+   "rate": 75,
+   "u": "pc"
+  },
+  {
+   "amt": 180,
+   "nm": "? BODY LOTION ₹60",
+   "qty": 6,
+   "rate": 30,
+   "u": "pc"
+  },
+  {
+   "amt": 144,
+   "nm": "GLYCERIN SABUN ₹10",
+   "qty": 24,
+   "rate": 6,
+   "u": "pc"
+  },
+  {
+   "amt": 360,
+   "nm": "PEN ___ ₹5 (?)",
+   "qty": 2,
+   "rate": 180,
+   "u": "pc"
+  },
+  {
+   "amt": 432,
+   "nm": "VIM BAR ₹60",
+   "qty": 8,
+   "rate": 54,
+   "u": "pc"
+  },
+  {
+   "amt": 180.0,
+   "nm": "? (24 × 7.5)",
+   "qty": 24,
+   "rate": 7.5,
+   "u": "pc"
+  },
+  {
+   "amt": 90.0,
+   "nm": "ALOO KATING CHAKU? ",
+   "qty": 12,
+   "rate": 7.5,
+   "u": "pc"
+  },
+  {
+   "amt": 180,
+   "nm": "W. TAPE 1 INCH",
+   "qty": 12,
+   "rate": 15,
+   "u": "pc"
+  },
+  {
+   "amt": 270,
+   "nm": "W. TAPE 2 INCH",
+   "qty": 6,
+   "rate": 45,
+   "u": "pc"
+  },
+  {
+   "amt": 300,
+   "nm": "W. TAPE 3 INCH",
+   "qty": 4,
+   "rate": 75,
+   "u": "pc"
+  },
+  {
+   "amt": 1020,
+   "nm": "EXCEL SURF ? KG",
+   "qty": 1,
+   "rate": 1020,
+   "u": "pc"
+  }
+ ],
+ "no": "",
+ "note": "2 पन्ने: 11,050 (30 लाइन, python से मिलाया) + 1,320 = 12,370 · नाम हाथ-लिखे, कुछ पढ़ने बाकी",
+ "org": "mh177",
+ "paid": 12370,
+ "pay": "विक्रम जी ने भुगतान किया (19-11 चैट; तरीका नकद/UPI पूछना बाकी)",
+ "src": "chat",
+ "sup": "? (ESTIMATE पर्ची, M/s रविन्द्र जालीपा — दुकान पूछना)",
+ "total": 12370
+}
