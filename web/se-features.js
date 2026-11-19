@@ -927,7 +927,7 @@ async function printLabels(){
       await SE.printA4("बारकोड लेबल · "+sp.name,`<style>.lg{display:flex;flex-wrap:wrap;gap:2mm}.lg img{width:${w}mm;height:${h}mm;border:0.2mm dashed #bbb}</style><div class="lg">${Array.from({length:n},()=>`<img src="${url}">`).join("")}</div>`)}
     else if(!SE.isNative){const url=cv.toDataURL("image/png");const [w,h]=SIZES[L.size];
       await SE.printA4("लेबल",`<style>@page{size:${w}mm ${h}mm;margin:0}body{margin:0}h1,.sub{display:none}img{width:${w}mm;height:${h}mm;display:block;page-break-after:always}</style>${Array.from({length:n},()=>`<img src="${url}">`).join("")}`)}
-    else{const pr=SF.labelPrinter;if(!pr.addr)throw {msg:"पहले \"रेट व सेटिंग\" में लेबल प्रिंटर चुनें"};
+    else{const pr=SF.labelPrinter;if(!pr.addr)throw {msg:"इस फोन में लेबल प्रिंटर नहीं चुना — \"लेबल\" टैब में ऊपर 🖨️ प्रिंटर से चुनें"};
       if(pr.type==="escpos"){const one=SE.escpos(cv);let all="";for(let i=0;i<n;i++)all+=atob(one);await SENative.BtPrinter.print({address:pr.addr,data:btoa(all)})}
       else await SENative.BtPrinter.print({address:pr.addr,data:tspl(cv,L.size,n)});
       toast("🏷️ "+n+" लेबल छप रहे हैं")}
@@ -1017,28 +1017,28 @@ SF.batchA4=async function(mode){
   if(!S.demo)S.db.collection("labelLog").doc("l"+uid()).set({batch:mode,copies:n,date:today(),ts:Date.now(),by:S.uid||"",byName:biller()}).catch(()=>{});
 };
 /* सेटिंग में लेबल प्रिंटर */
-SF.labelSettingsHTML=function(){
+SF.labelSettingsHTML=function(noDesign){
   const pr=SF.labelPrinter;
   return `<div class="card2"><h3>🏷️ बारकोड लेबल प्रिंटर</h3>
   <p class="note" style="margin:0">${SE.isNative?(pr.addr?`चुना हुआ: <b>${esc(pr.name)}</b> · ${pr.type==="escpos"?"रसीद वाला (ESC/POS)":"लेबल वाला (TSPL)"}`:"पहले फोन की Bluetooth सेटिंग में लेबल प्रिंटर pair करें।"):"लेबल प्रिंटर Android ऐप में चुना जाता है।"}</p>
-  ${SE.isNative?`<div class="row2" style="margin:0"><button class="big ghost" data-lprn="tspl">लेबल प्रिंटर (TSC/Xprinter)</button><button class="big ghost" data-lprn="escpos">रसीद प्रिंटर पर लेबल</button></div><div id="lprnList"></div>
+  ${SE.isNative?`<div class="row2" style="margin:0"><button class="big ghost" data-lprn="tspl">लेबल प्रिंटर (TSC/Xprinter)</button><button class="big ghost" data-lprn="escpos">रसीद प्रिंटर पर लेबल</button></div><div class="lprnList" id="lprnList"></div>
   <div class="row2" style="margin:0"><label class="fld">लेबल के बीच गैप (mm)<input class="inp" id="lGap" inputmode="decimal" value="${esc(LS.get("se_lgap")||"2")}"></label>
   <label class="note lsw" style="align-self:end"><input type="checkbox" id="lInv" ${LS.get("se_linv")==="1"?"checked":""}> लेबल उल्टा (काला-सफ़ेद) छपे तो</label></div>
   <div class="row2" style="margin:6px 0 0"><label class="fld">↔ खिसकाएँ (mm) <small>+ दाएँ</small><input class="inp" id="lSx" inputmode="decimal" value="${esc(LS.get("se_lsx")||"0")}"></label><label class="fld">↕ खिसकाएँ (mm) <small>+ नीचे</small><input class="inp" id="lSy" inputmode="decimal" value="${esc(LS.get("se_lsy")||"0")}"></label></div>
   <div class="row2" style="margin:6px 0 0"><label class="fld">गहराई (कालापन 1-15)<input class="inp" id="lDen" inputmode="numeric" value="${esc(LS.get("se_lden")||"10")}"></label><span></span></div>
   <div class="row2" style="margin:6px 0 0"><button class="big ghost" data-lcal="gap">📏 लेबल नापें (प्रिंटर खुद)</button><button class="big ghost" data-lcal="test">🧪 जाँच लेबल छापें</button></div>
-  <p class="note" style="margin:4px 0 0">① पहले "📏 लेबल नापें" — प्रिंटर 2-3 खाली लेबल निकालकर गैप सीखेगा ② फिर "🧪 जाँच लेबल" — मोटा फ्रेम पूरा दिखे तो ठीक; बाएँ कटे तो ↔ में +1, दाएँ कटे तो −1; ऊपर कटे तो ↕ में +1, नीचे कटे तो −1।</p>`:""}</div>`+(window.SL?SL.settingsHTML():"");
+  <p class="note" style="margin:4px 0 0">① पहले "📏 लेबल नापें" — प्रिंटर 2-3 खाली लेबल निकालकर गैप सीखेगा ② फिर "🧪 जाँच लेबल" — मोटा फ्रेम पूरा दिखे तो ठीक; बाएँ कटे तो ↔ में +1, दाएँ कटे तो −1; ऊपर कटे तो ↕ में +1, नीचे कटे तो −1।</p>`:""}</div>`+(window.SL&&!noDesign?SL.settingsHTML():"");
 };
 SF.bindLabelSettings=function(){
-  $("#p-set").addEventListener("click",async e=>{
+  document.addEventListener("click",async e=>{
     const lc=e.target.closest("[data-lcal]");if(lc){const pr=SF.labelPrinter;if(!pr.addr){toast("पहले ऊपर से लेबल प्रिंटर चुनें");return}
       const [w,h]=SIZES[L.size]||SIZES["50x25"];lc.disabled=true;try{
         const data=lc.dataset.lcal==="gap"?SE.tsplCalib(w,h):tspl(SF.calibCanvas(L.size),L.size,1);
         await SENative.BtPrinter.print({address:pr.addr,data});toast(lc.dataset.lcal==="gap"?"📏 प्रिंटर लेबल नाप रहा है — 2-3 खाली लेबल निकलेंगे":"🧪 जाँच लेबल छपा — फ्रेम देखें")}
       catch(err){toast("प्रिंटर से जुड़ नहीं पाया: "+((err&&err.message)||err))}finally{lc.disabled=false}return}
-    const b=e.target.closest("[data-lprn]");if(b){try{const list=await SE.printer.list();$("#lprnList").innerHTML=list.map(d=>`<button class="big ghost" data-lprnset="${esc(d.address)}" data-n="${esc(d.name||d.address)}" data-t="${b.dataset.lprn}">🏷️ ${esc(d.name||d.address)}</button>`).join("")||'<p class="note">कोई pair किया प्रिंटर नहीं मिला।</p>'}catch(err){toast(err.msg||err.message||"Bluetooth की अनुमति दें")}return}
-    const s=e.target.closest("[data-lprnset]");if(s){LS.set("se_lbl",s.dataset.lprnset);LS.set("se_lbl_n",s.dataset.n);LS.set("se_lbl_t",s.dataset.t);renderSettings();toast("लेबल प्रिंटर चुना: "+s.dataset.n)}});
-  $("#p-set").addEventListener("change",e=>{if(e.target.id==="lSx")LS.set("se_lsx",String(Math.max(-8,Math.min(8,parseFloat(e.target.value)||0))));if(e.target.id==="lSy")LS.set("se_lsy",String(Math.max(-8,Math.min(8,parseFloat(e.target.value)||0))));if(e.target.id==="lDen")LS.set("se_lden",String(Math.max(1,Math.min(15,parseInt(e.target.value)||10))));if(e.target.id==="lGap")LS.set("se_lgap",e.target.value.trim()||"2");if(e.target.id==="lInv")LS.set("se_linv",e.target.checked?"1":"0")});
+    const b=e.target.closest("[data-lprn]");if(b){try{const list=await SE.printer.list();(b.closest(".card2").querySelector(".lprnList")||{}).innerHTML=list.map(d=>`<button class="big ghost" data-lprnset="${esc(d.address)}" data-n="${esc(d.name||d.address)}" data-t="${b.dataset.lprn}">🏷️ ${esc(d.name||d.address)}</button>`).join("")||'<p class="note">कोई pair किया प्रिंटर नहीं मिला।</p>'}catch(err){toast(err.msg||err.message||"Bluetooth की अनुमति दें")}return}
+    const s=e.target.closest("[data-lprnset]");if(s){LS.set("se_lbl",s.dataset.lprnset);LS.set("se_lbl_n",s.dataset.n);LS.set("se_lbl_t",s.dataset.t);(typeof prnRefresh==="function"?prnRefresh():renderSettings());toast("लेबल प्रिंटर चुना: "+s.dataset.n)}});
+  document.addEventListener("change",e=>{if(e.target.id==="lSx")LS.set("se_lsx",String(Math.max(-8,Math.min(8,parseFloat(e.target.value)||0))));if(e.target.id==="lSy")LS.set("se_lsy",String(Math.max(-8,Math.min(8,parseFloat(e.target.value)||0))));if(e.target.id==="lDen")LS.set("se_lden",String(Math.max(1,Math.min(15,parseInt(e.target.value)||10))));if(e.target.id==="lGap")LS.set("se_lgap",e.target.value.trim()||"2");if(e.target.id==="lInv")LS.set("se_linv",e.target.checked?"1":"0")});
 };
 /* =============== 📈 रिपोर्ट के ग्राफ़ (हल्के SVG, कोई भारी लाइब्रेरी नहीं) =============== */
 const CH={data:null,at:0,busy:false};

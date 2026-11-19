@@ -31,6 +31,7 @@ const ACTS=[
  {k:"rkv",i:"🗄️",t:"रैक देखें",d:"किस खाने में क्या रखा है",g:"maal",run:()=>SRX.open(null,{tab:"rack"}),need:"SRX",kw:"rack khana kahan कहाँ"},
  {k:"rki",i:"🧠",t:"जमावट के सुझाव",d:"क्या कहाँ रखना ठीक रहेगा",g:"maal",run:()=>SRX.open(null,{tab:"idea"}),need:"SRX",kw:"sujhav idea supermarket"},
  {k:"label",i:"🏷️",t:"लेबल छापें",d:"भाव और बारकोड के स्टिकर",g:"chhap",tab:"label",kw:"label barcode sticker print"},
+ {k:"prn",i:"🖨️",t:"प्रिंटर जोड़ें",d:"इस फोन में बिल / लेबल प्रिंटर चुनें",g:"chhap",run:()=>prnGo(),need:"prnGo",kw:"printer printar प्रिंटर bluetooth naya नया label bill"},
  {k:"sbc",i:"🔖",t:"बारकोड पहरा",d:"जिन पर बारकोड नहीं — छापें, लगाएँ",g:"chhap",run:()=>SBC.open("need"),need:"SBC",kw:"barcode pehra"},
  {k:"report",i:"📈",t:"रिपोर्ट",d:"बिक्री · मुनाफ़ा · सामान-वार",g:"malik",tab:"report",kw:"report profit munafa bikri"},
  {k:"route",i:"🧭",t:"लोकेशन",d:"साथी कहाँ हैं · ग्राहक रजिस्टर",g:"malik",tab:"route",kw:"location map grahak customer"},

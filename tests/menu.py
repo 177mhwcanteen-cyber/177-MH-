@@ -118,6 +118,12 @@ async def main():
         assert await pg.evaluate("SMN.openSet('rc')") is False
         await pg.click("#smnBtn"); await pg.fill("#hmQ", "प्रिंटर"); await pg.wait_for_timeout(150)
         assert await pg.locator("#hmMain [data-hmset]").count() == 0
+        # 🖨️ साथी भी अपने फोन में प्रिंटर जोड़ सके (19-11-2026): ☰ → प्रिंटर जोड़ें → लेबल टैब में बिल + लेबल प्रिंटर का कार्ड
+        assert await pg.locator('#hmMain [data-hmgo="prn"]').count() == 1, "साथी को प्रिंटर जोड़ें"
+        await pg.click('#hmMain [data-hmgo="prn"]'); await pg.wait_for_timeout(300)
+        assert await pg.evaluate("S.tab") == "label" and await pg.locator("#p-label details.sl-prn[open]").count() == 1
+        t = await pg.inner_text("#p-label .sl-prn"); assert "बारकोड लेबल प्रिंटर" in t and "ब्लूटूथ प्रिंटर" in t, t[:300]
+        await pg.screenshot(path=f"{SHOTS}/menu-staff-printer.png")
         await br.close()
     assert not errs, errs
     print("✅ मेन्यू टेस्ट पास")

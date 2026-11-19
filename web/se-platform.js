@@ -454,7 +454,7 @@ SE.escpos=canvasToEscPos;
 SE.printReceipt=async function(b,o){
   const cv=SE.receiptCanvas(b,o);
   if(SE.isNative){
-    if(!SE.printer.addr)throw {code:"noprinter",msg:"पहले \"रेट व सेटिंग\" में प्रिंटर चुनें"};
+    if(!SE.printer.addr)throw {code:"noprinter",msg:"इस फोन में बिल प्रिंटर नहीं चुना — 👤 (अपना नाम) → 🖨️ प्रिंटर, या लेबल टैब में ऊपर 🖨️"};
     const data=SE.printer.type==="tspl"?SE.tspl(cv,{gap:0}):canvasToEscPos(cv);
     await N.BtPrinter.print({address:SE.printer.addr,data});return "bt"}
   const url=cv.toDataURL("image/png");

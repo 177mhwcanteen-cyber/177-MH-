@@ -208,7 +208,7 @@ SL.print=async function(rows){
     if(how==="a4"||!SE.isNative){const imgs=[];jobs.forEach(j=>{const u=j.cv.toDataURL("image/png");for(let i=0;i<j.r.n;i++)imgs.push(u)});
       if(how==="a4")await SE.printA4("बारकोड स्टिकर · "+total+" लेबल",`<style>.lg{display:flex;flex-wrap:wrap;gap:2mm}.lg img{width:${w}mm;height:${h}mm;border:0.2mm dashed #bbb}</style><div class="lg">${imgs.map(u=>`<img src="${u}">`).join("")}</div>`);
       else await SE.printA4("लेबल",`<style>@page{size:${w}mm ${h}mm;margin:0}body{margin:0}h1,.sub{display:none}img{width:${w}mm;height:${h}mm;display:block;page-break-after:always}</style>${imgs.map(u=>`<img src="${u}">`).join("")}`)}
-    else{const pr=SF.labelPrinter;if(!pr.addr)throw {msg:"पहले \"रेट व सेटिंग\" में लेबल प्रिंटर चुनें"};let all="";
+    else{const pr=SF.labelPrinter;if(!pr.addr)throw {msg:"इस फोन में लेबल प्रिंटर नहीं चुना — ऊपर 🖨️ प्रिंटर से चुनें"};let all="";
       for(const j of jobs){if(pr.type==="escpos"){const one=atob(SE.escpos(j.cv));for(let i=0;i<j.r.n;i++)all+=one}else all+=atob(SE.tspl(j.cv,{wmm:w,hmm:h,copies:j.r.n}))}
       await SENative.BtPrinter.print({address:pr.addr,data:btoa(all)})}
     toast("🏷️ "+total+" लेबल छप रहे हैं");
@@ -255,6 +255,7 @@ SL.render=function(force){
     ${S.isOwner?`<div class="sl-sty">${STYLES.map(([k,v])=>`<button class="chip" data-slstyle="${k}" aria-pressed="${cfg.style===k}">${v}</button>`).join("")}</div>
     <p class="note" style="margin:0">दुकान का नाम, क्या-क्या छपे (MRP, मात्रा, तारीख, QR…) — <button type="button" class="lnk" data-slgoset>⚙️ लेबल डिज़ाइन खोलें ›</button></p>`:`<p class="note" style="margin:0">डिज़ाइन विक्रम जी सेटिंग में तय करते हैं।</p>`}
   </div>
+  ${SL.prnHTML()}
   <div class="paym" style="margin:0 0 8px"><button data-lout="label" aria-pressed="${out==="label"}">🏷️ लेबल प्रिंटर</button><button data-lout="a4" aria-pressed="${out==="a4"}">📄 A4 स्टिकर शीट</button></div>
   <button class="big sl-go" data-slprint ${n?"":"disabled"}>🖨️ ${n?n+" लेबल छापें":"लिस्ट में सामान जोड़ें"}</button>
   ${V.dup?`<div class="sl-dup" role="alertdialog"><b>⚠ ${V.dup.length} सामान के लेबल पहले छप चुके</b>
@@ -265,6 +266,12 @@ SL.render=function(force){
   ${SF.batchHTML?SF.batchHTML():""}${S.isOwner&&SF.kNewHTML?SF.kNewHTML():""}`;
   V.flash="";SL.drawPrev();
 };
+/* 🖨️ इस फोन के प्रिंटर — हर साथी के लिए (19-11-2026; पहले सिर्फ़ मालिक की "रेट व सेटिंग" में) */
+document.addEventListener("toggle",e=>{if(e.target&&e.target.classList&&e.target.classList.contains("sl-prn"))SL._po=e.target.open},true);
+SL.prnHTML=function(){const pr=SF.labelPrinter,bp=SE.printer||{},fl=localStorage.getItem("se_prnopen")==="1";if(fl){SL._po=true;try{localStorage.removeItem("se_prnopen")}catch(e){}}const op=SL._po!=null?SL._po:(SE.isNative&&!pr.addr);
+  return `<details class="card2 sl-prn"${op?" open":""}><summary><b>🖨️ इस फोन के प्रिंटर</b> <span class="note">${pr.addr?"🏷️ "+esc(pr.name||"लेबल")+" ✓":"🏷️ लेबल प्रिंटर नहीं चुना ⚠"} · ${bp.addr?"🧾 "+esc(bp.name||"बिल")+" ✓":"🧾 बिल प्रिंटर नहीं चुना"}</span></summary>
+  <p class="note" style="margin:6px 0">नया प्रिंटर: ① फोन की Bluetooth सेटिंग में प्रिंटर pair करें ② यहाँ "चुनें" दबाकर उसका नाम दबाएँ ③ जाँच छापें। हर फोन में एक बार।</p>
+  ${SF.labelSettingsHTML?SF.labelSettingsHTML(1):""}${typeof prnCardHTML==="function"?prnCardHTML():""}</details>`};
 SL.drawPrev=function(){const cv=$("#slPrev");if(!cv)return;const it=item(V.prev)||SL.sample();const r=Q.find(x=>x.id===it.id)||{};
   const src=SL.canvasFor(it,r);cv.width=src.width;cv.height=src.height;cv.getContext("2d").drawImage(src,0,0)};
 function sumUp(){const s=$("#slSum");if(s)s.innerHTML=sumHTML();const n=SL.count(),b=$("[data-slprint]");if(b){b.disabled=!n;b.textContent="🖨️ "+(n?n+" लेबल छापें":"लिस्ट में सामान जोड़ें")}}
