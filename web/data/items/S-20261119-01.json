@@ -1,0 +1,68 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261119-01",
+ "date": "2026-11-19",
+ "by": "विक्रम जी (चैट)",
+ "note": "काउंटर 22-2 पर रखी चिक्की (विक्रम जी 19-11-2026, फोटो foto-sangrah r22-2)",
+ "items": [
+  {
+   "id": "g-punjabi-chikki-barmer-premium-pc",
+   "name": "PUNJABI CHIKKI BADI 1 PC",
+   "short": "PUNJABI CHIKKI BADI 1PC",
+   "hi": "पंजाबी चिक्की बड़ी 1 पीस",
+   "size": "1 pc",
+   "alias": "chikki chikky punjabi gajak moongfali chikki चिक्की पंजाबी",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "eef98274",
+   "open": {
+    "qty": 14,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-punjabi-chikki-200-g",
+   "name": "PUNJABI CHIKKI 200 G",
+   "short": "PUNJABI CHIKKI 200G",
+   "hi": "पंजाबी चिक्की 200 ग्राम",
+   "size": "200g",
+   "alias": "chikki chikky punjabi shyam kripa gajak चिक्की",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "mrp": 60,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "de72b3e4",
+   "mfr": "c-saikripa",
+   "open": {
+    "qty": 13,
+    "exp": "2026-12",
+    "batchNo": "MFG 05-11-2026"
+   }
+  }
+ ],
+ "companies": [
+  {
+   "id": "c-saikripa",
+   "name": "SHREE SAI KRIPA ENTERPRISES (श्याम कृपा गजक रेवड़ी भंडार)",
+   "phone": "9636811007",
+   "city": "Barmer",
+   "fssai": "12222014000373",
+   "brands": [
+    "SHYAM KRIPA"
+   ]
+  }
+ ]
+}
