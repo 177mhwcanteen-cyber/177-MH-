@@ -48,7 +48,7 @@ async function one(x,pk,R){
       rack:x.rack||"",secret:x.secret||"",ph:x.ph||"",...(x.mfr?{mfr:x.mfr}:{}),...(+x.ctn>1?{ctn:+x.ctn}:{}),hue:Math.floor(Math.random()*360),active:true,
       order:(S.items||[]).length+1,src:"pack:"+pk,addedTs:ts,addedBy:S.uid||""};
     if(!d.barcode&&typeof ean13==="function")d.barcode=ean13(("200000"+d.code.padStart(5,"0")).slice(0,11)+"0");
-    await S.db.collection("items").doc(x.id).set(d);S.items.push({id:x.id,...d});R.add++;x._id=x.id;if(!x.barcode&&!x.packOf)R.lbl++}
+    await S.db.collection("items").doc(x.id).set(d);/* 19-11: set के बाद onSnapshot पहले ही जोड़ देता है → push से टाइल दो बार दिखती थी */if(!item(x.id))S.items.push({id:x.id,...d});R.add++;x._id=x.id;if(!x.barcode&&!x.packOf)R.lbl++}
   else{
     const p={};for(const k of FILL){const v=x[k];if(v==null||v==="")continue;if(empty(ex[k])&&!empty(v))p[k]=k==="perPack"||PRICE.includes(k)?+v:v}
     if(Object.keys(p).length){await S.db.collection("items").doc(ex.id).set(p,{merge:true});
