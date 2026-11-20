@@ -2605,7 +2605,7 @@ async function boot(){
   if(S.isOwner&&!S.demo&&window.SPK)setTimeout(()=>SPK.apply(),9000);
   const sortItems=a=>a.sort((x,y)=>(x.order??999)-(y.order??999)||x.name.localeCompare(y.name,"hi"));
   db.collection("items").onSnapshot(s=>{S.items=sortItems(s.docs.map(d=>({id:d.id,...d.data()})));if(window.SR)SR.addVirtual();if(S.isOwner&&window.SF&&S.items.some(i=>!i.plu))SF.ensurePLU();S.cart.forEach(l=>{const it=item(l.id);if(it&&!l.changed&&!l.free){l.board=priceOf(it);l.rate=l.board;l.cost=+it.cost||0;l.amt=r2(l.qty*l.rate)}});paneSoon();renderCart()},()=>toast("सामान की लिस्ट लोड नहीं हुई"));
-  db.doc("settings/main").onSnapshot(s=>{S.settings=s.exists?s.data():{};checkLock();if(S.tab!=="set")paneSoon()});
+  db.doc("settings/main").onSnapshot(s=>{S.settings=s.exists?s.data():{};checkLock();if(s.exists&&S.isOwner&&window.SF&&SF.lblPush)SF.lblPush();if(S.tab!=="set")paneSoon()});
   if(S.isOwner)db.collection("presence").onSnapshot(s=>{S.presence=s.docs.map(d=>d.data());if(S.tab==="bills")renderBills()},()=>{});
   setTimeout(()=>{flushOutbox();beat();netbar()},1500);
   if(S.isOwner)setTimeout(()=>guardQ(guardInit),2500);

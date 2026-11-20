@@ -435,18 +435,23 @@ function toB64(parts){let n=0;parts.forEach(p=>n+=p.length);const all=new Uint8A
 /* TSPL (लेबल प्रिंटर, जैसे Xprinter XP-D4601B) — कोई भी तस्वीर छापो */
 /* 🏷️ लेबल खिसकाना (मिलीमीटर): लेबल रोल प्रिंटर में थोड़ा दाएँ/बाएँ या गैप-सेंसर ऊपर/नीचे हो तो पूरी छपाई उतनी खिसकाओ —
    + X = दाएँ, + Y = नीचे (8 डॉट = 1 mm, 203 DPI)। किनारे कभी न कटें, इसलिए लेबल का डिज़ाइन खुद 3 mm किनारा छोड़ता है */
-function lblShift(cv){const sx=parseFloat(ls.get("se_lsx"))||0,sy=parseFloat(ls.get("se_lsy"))||0;if(!sx&&!sy)return cv;
+/* 🏷️ 20-11-2026 (विक्रम जी: "साथी छापे तो लेबल काला आता है, मैं छापूँ तो सही"): लेबल की बारीक सेटिंग (गैप, उल्टा रंग, खिसकाना, गहराई)
+   पहले हर फोन में अलग थी → साथी के फोन में "उल्टा" चालू रह गया था। अब मालिक की सेटिंग settings/main.lblCfg से सब फोन पर एक जैसी
+   (प्रिंटर एक ही है); lblCfg न हो तभी इस फोन वाली। */
+SE.LBLK=["se_lgap","se_linv","se_lsx","se_lsy","se_lden"];
+SE.lcfg=function(k){try{const c=typeof S!=="undefined"&&S.settings&&S.settings.lblCfg;if(c&&c[k]!=null&&c[k]!=="")return String(c[k])}catch(e){}return ls.get(k)};
+function lblShift(cv){const sx=parseFloat(SE.lcfg("se_lsx"))||0,sy=parseFloat(SE.lcfg("se_lsy"))||0;if(!sx&&!sy)return cv;
   const c=document.createElement("canvas");c.width=cv.width;c.height=cv.height;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.imageSmoothingEnabled=false;x.drawImage(cv,Math.round(sx*8),Math.round(sy*8));return c}
-SE.tsplCalib=function(wmm,hmm,gap){const g=gap!=null?gap:(ls.get("se_lgap")||"2");
+SE.tsplCalib=function(wmm,hmm,gap){const g=gap!=null?gap:(SE.lcfg("se_lgap")||"2");
   return toB64([new TextEncoder().encode(`SIZE ${wmm} mm,${hmm} mm\r\nGAP ${g} mm,0 mm\r\nGAPDETECT\r\nHOME\r\n`)])};
 SE.tspl=function(cv,opt){
   opt=opt||{};cv=lblShift(cv);const W=cv.width,H=cv.height,wb=Math.ceil(W/8);const d=cv.getContext("2d").getImageData(0,0,W,H).data;
-  const inv=ls.get("se_linv")==="1";const bmp=new Uint8Array(wb*H);
+  const inv=SE.lcfg("se_linv")==="1";const bmp=new Uint8Array(wb*H);
   for(let y=0;y<H;y++)for(let xb=0;xb<wb;xb++){let v=0;for(let b=0;b<8;b++){const px=xb*8+b;let black=false;if(px<W){const i=(y*W+px)*4;black=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)<150}
       const bit=inv?black:!black;if(bit)v|=0x80>>b}bmp[y*wb+xb]=v} // TSPL में 0 = काला डॉट
   const wmm=opt.wmm||Math.round(W/8),hmm=opt.hmm||Math.ceil(H/8);
   const enc=s=>new TextEncoder().encode(s);
-  const head=enc(`SIZE ${wmm} mm,${hmm} mm\r\nGAP ${opt.gap!=null?opt.gap:(ls.get("se_lgap")||"2")} mm,0 mm\r\nSPEED 3\r\nDENSITY ${ls.get("se_lden")||"10"}\r\nDIRECTION 1,0\r\nREFERENCE 0,0\r\nOFFSET 0 mm\r\nSET TEAR ON\r\nCLS\r\nBITMAP 0,0,${wb},${H},0,`);
+  const head=enc(`SIZE ${wmm} mm,${hmm} mm\r\nGAP ${opt.gap!=null?opt.gap:(SE.lcfg("se_lgap")||"2")} mm,0 mm\r\nSPEED 3\r\nDENSITY ${SE.lcfg("se_lden")||"10"}\r\nDIRECTION 1,0\r\nREFERENCE 0,0\r\nOFFSET 0 mm\r\nSET TEAR ON\r\nCLS\r\nBITMAP 0,0,${wb},${H},0,`);
   const tail=enc(`\r\nPRINT ${opt.copies||1},1\r\nEND\r\n`);
   return toB64([head,bmp,tail]);
 };

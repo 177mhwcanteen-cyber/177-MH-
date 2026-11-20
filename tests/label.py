@@ -209,6 +209,14 @@ async def main():
         h = await pg.eval_on_selector(".sl-ask", "e=>e.getBoundingClientRect().height"); assert h < 200, h
         await pg.screenshot(path=f"{SHOTS}/l5-ask.png"); await pg.click("[data-sladdq]")
         print("settings item 🏷️ ok")
+        # ---------- 6) 20-11: लेबल की बारीक सेटिंग मालिक से सब फोन पर (साथी के फोन का "उल्टा" काला लेबल न छापे) ----------
+        r = await pg.evaluate("""()=>{localStorage.setItem('se_linv','1');const o=S.settings.lblCfg;S.settings.lblCfg={se_linv:'0',se_lgap:'3'};
+          const cv=document.createElement('canvas');cv.width=16;cv.height=8;const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,16,8);
+          const raw=atob(SE.tspl(cv,{wmm:2,hmm:1}));const i=raw.indexOf('BITMAP');const bm=raw.slice(raw.indexOf(',',raw.indexOf('0,',i+20))+1);
+          const out=[SE.lcfg('se_linv'),SE.lcfg('se_lgap'),/GAP 3 mm/.test(raw),raw.split('BITMAP 0,0,2,8,0,')[1].charCodeAt(0)];
+          S.settings.lblCfg=o;localStorage.removeItem('se_linv');return out}""")
+        assert r[0] == "0" and r[1] == "3" and r[2] and r[3] == 255, r   # सफ़ेद = 1 (TSPL), उल्टा नहीं
+        print("shared label cfg ok")
         await b.close()
     assert not errs, errs
     print("✅ लेबल टेस्ट पास")
