@@ -112,6 +112,17 @@ async def main():
         await pg.evaluate("S.purch=[{id:'p1',date:today(),ts:Date.now(),supName:'X',total:2400,byName:'मनोहर जी',lines:[{id:'"+pid+"',name:'Y',qty:120,rate:20,amt:2400,unit:'pc',ctn:{n:5,per:24,rm:'ctn',r:480}}]}]")
         j = json.loads(await pg.evaluate("SKJ.appCode(7)"))
         assert j["app"] == "mh177-appbuys" and j["org"] == await pg.evaluate("SE.org") and j["n"] >= 1 and j["buys"][0]["ln"][0]["c"]["per"] == 24, j
+
+        # ⏰ 20-11: हर घंटे की गिनती — खाने, छूटे घंटे, ग्राफ़ (कल की तारीख़ = सब घंटे बीत चुके)
+        r = await pg.evaluate("""()=>{const y=new Date();y.setDate(y.getDate()-1);const at=h=>{const d=new Date(y);d.setHours(h,10,0,0);return d.getTime()};
+          const keep=[S.galla,S.billsDate];S.billsDate=today(y);
+          S.galla=[{id:'a',kind:'open',total:500,ts:at(7),byName:'दिनेश जी'},{id:'b',kind:'count',total:800,ts:at(8),byName:'दिनेश जी'},{id:'c',kind:'count',total:700,ts:at(10),byName:'दिनेश जी'},{id:'d',kind:'close',total:2000,ts:at(21),byName:'दिनेश जी'}];
+          const sl=SG.slots(),g=SG.graphHTML(true),ln=SG.ownerLine();[S.galla,S.billsDate]=keep;
+          return [sl.length,sl.filter(x=>x.st==='ok').length,sl.filter(x=>x.st==='miss').map(x=>x.h),g.includes('<svg')&&g.includes('+300')&&g.includes('-100'),ln.includes('छूटी')]}""")
+        assert r[0] == 15 and r[1] == 4 and r[2][:2] == [9, 11] and len(r[2]) == 11 and r[3] and r[4], r
+        await pg.evaluate("S.tab='day';showTab()"); await pg.wait_for_timeout(300)
+        await pg.screenshot(path=f"{SHOTS}/5-hourly.png", full_page=True)
+        print("hourly galla ok")
     srv.shutdown()
     assert not errs, errs
     print("✅ गल्ला-प्रबंधन टेस्ट पास")

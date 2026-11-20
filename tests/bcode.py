@@ -49,6 +49,12 @@ async def main():
         box = await (await c.query_selector(".sbc-ph .tile")).bounding_box(); assert box["height"] >= 100 and box["width"] >= 120, box
         t = await c.inner_text(); assert "12" in t and "स्टॉक" in t and "छूट" in t, t
         await pg.screenshot(path=f"{SHOTS}/b1-list.png")
+        # 📄 20-11: A4 सूची — नाम, कोड, रैक, स्टॉक
+        await pg.evaluate("window.__a4=null;SE._pa=SE.printA4;SE.printA4=async(t,h)=>{window.__a4=[t,h]}")
+        await pg.click("[data-sbca4]"); await pg.wait_for_timeout(300)
+        a4 = await pg.evaluate("window.__a4"); await pg.evaluate("SE.printA4=SE._pa")
+        assert a4 and "सामान" in a4[0] and "<table>" in a4[1] and "📍 रैक" in a4[1] and "☐" in a4[1] and "कोड" in a4[1], (a4 or ["",""])[0]
+        open(f"{SHOTS}/b1-a4.html","w").write(a4[1])
         # 🏷️ 12 लेबल (स्टॉक जितने) + MRP चालू
         await pg.click(f'.sbc-c[data-sbcid="{A}"] [data-sbcadd]')
         q = await pg.evaluate(f"SL.list().find(r=>r.id==='{A}')"); assert q and q["n"] == 12 and q.get("mrp"), q

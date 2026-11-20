@@ -2524,6 +2524,13 @@ document.addEventListener("click",async e=>{
   const ps=e.target.closest("[data-prnset]");if(ps){SE.printer.pick(ps.dataset.prnset,ps.dataset.n,ps.dataset.w);prnRefresh();toast("प्रिंटर चुन लिया: "+ps.dataset.n);return}
   if(e.target.closest("[data-prntest]")){printBill({no:"TEST",date:today(),ts:Date.now(),partyName:"टेस्ट",lines:[{name:"आलू",qty:1.5,unit:"kg",rate:20,amt:30}],total:30,pay:{cash:30},byName:biller()});return}
 });
+/* ⏱️ 20-11-2026: ऐप खुलने का समय नापो (सामान की सूची पहली बार आने तक) — आख़िरी 10 बार इसी फोन में, 8 सेकंड से ज़्यादा तो Sentry में।
+   इसी से पता चलेगा कि "देर से न खोलें तो ऐप धीमा" असल में कहाँ अटकता है (नेट / Firebase / फोन)। */
+function bootMark(s){if(bootMark.done)return;bootMark.done=1;try{const t=Math.round(performance.now()),c=!!(s&&s.metadata&&s.metadata.fromCache);
+  const L=JSON.parse(localStorage.getItem("se_boot")||"[]").slice(-9);L.push({t,c,n:S.items.length,d:Date.now(),on:navigator.onLine});localStorage.setItem("se_boot",JSON.stringify(L));
+  if(t>8000&&window.SEW)SEW.report("ऐप धीमा खुला: "+(t/1000).toFixed(1)+" सेकंड",{ms:t,cache:c,items:S.items.length,online:navigator.onLine,mem:navigator.deviceMemory||"",net:(navigator.connection||{}).effectiveType||""})}catch(e){}}
+function bootTxt(){try{const L=JSON.parse(localStorage.getItem("se_boot")||"[]");if(!L.length)return "";const a=L.map(x=>x.t/1000),avg=a.reduce((p,q)=>p+q,0)/a.length;
+  return `⏱️ ऐप खुलने में: अभी ${a[a.length-1].toFixed(1)} से. · औसत ${avg.toFixed(1)} से. (${L.length} बार)`}catch(e){return ""}}
 function updBoxHTML(){return `<div class="updbox"><button class="big upd" data-updnow>🔄 ऐप अपडेट करें</button><div class="updbar" hidden><i></i></div><p class="note updmsg" style="margin:6px 0 0;text-align:center">अभी: ${esc(SE.version)} · नया संस्करण GitHub से आता है, आपका कोई डेटा नहीं मिटता</p></div>`}
 async function runUpdate(){const B=[...document.querySelectorAll("[data-updnow]")];if(B.some(b=>b.disabled))return;
   if(S.saving){toast("बिल सेव हो रहा है — एक पल रुकें");return}
@@ -2563,7 +2570,7 @@ function openBiller(next){
   <button class="big" data-ok>सेव करें</button></div></div>`;
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}if(e.target.closest("[data-ok]")){const v=$("#bName").value.trim();if(!v){toast("नाम लिखें");return}S.staff=v;lsSet("se_staff",v);closeSheet();renderTabs();next&&next()}};
 }
-$("#who").onclick=()=>{if(!S.demo){$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="बिलर"><div class="grab"></div><div class="sh-head"><h3>👤 ${esc(biller())}</h3><button class="x" data-close aria-label="बंद करें">✕</button></div><p class="note">इस फोन पर अभी आपके नाम से बिल बन रहे हैं${S.isOwner?" (मालिक)":""}।</p>${updBoxHTML()}<button class="big ghost" data-prngo>🖨️ इस फोन का प्रिंटर (बिल / लेबल)</button><button class="big ghost" data-logout>लॉग-आउट — दूसरा व्यक्ति</button><p class="verline">ऐप संस्करण ${esc(SE.version)}${SE.isNative?" · Android":" · वेब"}</p></div></div>`;$("#sheet").onclick=e=>{if(e.target.matches("[data-close]")||e.target.closest("[data-close].x")){closeSheet();return}if(e.target.closest("[data-updnow]")){runUpdate();return}if(e.target.closest("[data-logout]")){closeSheet();logoutStaff()}};return}openBiller()};
+$("#who").onclick=()=>{if(!S.demo){$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="बिलर"><div class="grab"></div><div class="sh-head"><h3>👤 ${esc(biller())}</h3><button class="x" data-close aria-label="बंद करें">✕</button></div><p class="note">इस फोन पर अभी आपके नाम से बिल बन रहे हैं${S.isOwner?" (मालिक)":""}।</p>${updBoxHTML()}${bootTxt()?`<p class="note" style="margin:4px 0">${bootTxt()}</p>`:""}<button class="big ghost" data-prngo>🖨️ इस फोन का प्रिंटर (बिल / लेबल)</button><button class="big ghost" data-logout>लॉग-आउट — दूसरा व्यक्ति</button><p class="verline">ऐप संस्करण ${esc(SE.version)}${SE.isNative?" · Android":" · वेब"}</p></div></div>`;$("#sheet").onclick=e=>{if(e.target.matches("[data-close]")||e.target.closest("[data-close].x")){closeSheet();return}if(e.target.closest("[data-updnow]")){runUpdate();return}if(e.target.closest("[data-logout]")){closeSheet();logoutStaff()}};return}openBiller()};
 
 /* ---------- data ---------- */
 function subBills(){
@@ -2604,7 +2611,7 @@ async function boot(){
   if(S.isOwner&&!S.demo)setTimeout(autoNewData,6000);
   if(S.isOwner&&!S.demo&&window.SPK)setTimeout(()=>SPK.apply(),9000);
   const sortItems=a=>a.sort((x,y)=>(x.order??999)-(y.order??999)||x.name.localeCompare(y.name,"hi"));
-  db.collection("items").onSnapshot(s=>{S.items=sortItems(s.docs.map(d=>({id:d.id,...d.data()})));if(window.SR)SR.addVirtual();if(S.isOwner&&window.SF&&S.items.some(i=>!i.plu))SF.ensurePLU();S.cart.forEach(l=>{const it=item(l.id);if(it&&!l.changed&&!l.free){l.board=priceOf(it);l.rate=l.board;l.cost=+it.cost||0;l.amt=r2(l.qty*l.rate)}});paneSoon();renderCart()},()=>toast("सामान की लिस्ट लोड नहीं हुई"));
+  db.collection("items").onSnapshot(s=>{S.items=sortItems(s.docs.map(d=>({id:d.id,...d.data()})));bootMark(s);if(window.SR)SR.addVirtual();if(S.isOwner&&window.SF&&S.items.some(i=>!i.plu))SF.ensurePLU();S.cart.forEach(l=>{const it=item(l.id);if(it&&!l.changed&&!l.free){l.board=priceOf(it);l.rate=l.board;l.cost=+it.cost||0;l.amt=r2(l.qty*l.rate)}});paneSoon();renderCart()},()=>toast("सामान की लिस्ट लोड नहीं हुई"));
   db.doc("settings/main").onSnapshot(s=>{S.settings=s.exists?s.data():{};checkLock();if(s.exists&&S.isOwner&&window.SF&&SF.lblPush)SF.lblPush();if(S.tab!=="set")paneSoon()});
   if(S.isOwner)db.collection("presence").onSnapshot(s=>{S.presence=s.docs.map(d=>d.data());if(S.tab==="bills")renderBills()},()=>{});
   setTimeout(()=>{flushOutbox();beat();netbar()},1500);

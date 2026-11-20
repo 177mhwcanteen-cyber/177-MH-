@@ -431,6 +431,12 @@ public class BtPrinterPlugin extends Plugin {
         e.putBoolean("loud", call.getBoolean("loud", true));
         String tone = call.getString("tone", "");
         if (tone != null && tone.length() > 0) e.putString("tone", tone);
+        // ⏰ हर घंटे गल्ला गिनती की घंटी (20-11-2026)
+        e.putBoolean("gOn", call.getBoolean("gOn", false));
+        e.putInt("gFrom", call.getInt("gFrom", 7));
+        e.putInt("gTo", call.getInt("gTo", 22));
+        e.putInt("gWait", call.getInt("gWait", 2));
+        e.putBoolean("gOwner", call.getBoolean("gOwner", false));
         e.putBoolean("on", true);
         e.apply();
         Fs.set(getContext(), rt, call.getString("key", ""), call.getString("pid", ""), call.getString("name", null));

@@ -24,8 +24,11 @@ SRG.status=async function(consume){if(!SRG.native())return null;try{const r=awai
 SRG.start=async function(ask){if(!SRG.native()||SRG.unsupported)return null;
   try{const u=firebase.auth().currentUser;if(!u)return null;const fc=(window.SE_CONFIG||{}).firebase||{};
     const c=window.SON&&SON.cfg?SON.cfg():{};
-    const r=await BP().ringStart({rt:u.refreshToken||"",key:fc.apiKey||"",pid:fc.projectId||"",every:20,open:mins(c.open),close:mins(c.close),loud:LS.get("srg_soft")!=="1",tone:SRG.tone(),name:who(),ask:ask!==false});
+    const r=await BP().ringStart({rt:u.refreshToken||"",key:fc.apiKey||"",pid:fc.projectId||"",every:20,open:mins(c.open),close:mins(c.close),loud:LS.get("srg_soft")!=="1",tone:SRG.tone(),name:who(),ask:ask!==false,...SRG.gOpts()});
     SRG.st=r;SRG.ok=true;return r}catch(e){if(isUnimpl(e))SRG.unsupported=true;return null}};
+/* ⏰ हर घंटे गल्ला गिनती की घंटी (APK 20-11-2026 से; पुरानी APK इन्हें अनदेखा करती है) — मालिक को 15 मिनट बाद, साथी को 2 मिनट बाद */
+SRG.gOpts=function(){try{const st=(typeof S!=="undefined"&&S.settings)||{},w=window.SG&&SG.win?SG.win():[7,22],on=st.gallaAlarm!==false&&(!window.SG||SG.hrs()===1);
+  return {gOn:!!on,gFrom:w[0],gTo:w[1],gWait:2,gOwner:!!(typeof S!=="undefined"&&S.isOwner)}}catch(e){return {}}};
 SRG.stop=async function(){if(!SRG.native())return;try{SRG.st=await BP().ringStop()}catch(e){}};
 SRG.silence=async function(){if(!SRG.native()||!SRG.ok)return;try{SRG.st=await BP().ringSilence()}catch(e){}};
 SRG.running=()=>!!(SRG.st&&SRG.st.running);

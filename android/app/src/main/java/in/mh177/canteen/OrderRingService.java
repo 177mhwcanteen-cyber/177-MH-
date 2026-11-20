@@ -136,7 +136,9 @@ public class OrderRingService extends Service {
         }
         if (!prefs(this).getBoolean("on", false)) { stopSelf(); return START_NOT_STICKY; }
         String a = intent != null ? intent.getAction() : null;
-        if (A_SILENCE.equals(a)) {
+        if (A_GSIL.equals(a)) {
+            h.post(new Runnable() { public void run() { gSnooze = System.currentTimeMillis() + 600000L; if (pending == 0) stopSound(); gallaOff(); } });
+        } else if (A_SILENCE.equals(a)) {
             h.post(new Runnable() { public void run() { silenceAll(); } });
         } else if (A_TEST.equals(a)) {
             h.post(new Runnable() { public void run() { test(); } });
@@ -155,6 +157,7 @@ public class OrderRingService extends Service {
         public void run() {
             if (!running) return;
             try { poll(); } catch (Exception e) { lastErr = String.valueOf(e.getMessage()); }
+            try { galla(); } catch (Exception ignore) { }
             h.postDelayed(this, every() * 1000L);
         }
     };
@@ -230,6 +233,71 @@ public class OrderRingService extends Service {
         alarmNote(loud);
         if (ringing && t - ringStart > 60000) { stopSound(); ringEnd = t; }
         else if (!ringing && (ringEnd == 0 || t - ringEnd > 45000)) startSound();
+    }
+
+    /* ⏰ हर घंटे गल्ला गिनती (20-11-2026, विक्रम जी): सुबह gFrom से रात gTo तक हर घंटे days/{आज}/meta/gh देखो (1 doc, हर 3 मिनट)।
+       इस घंटे की गिनती न हो — साथी: घंटा शुरू होने के gWait मिनट बाद, मालिक: 15 मिनट बाद — अलार्म (40 सेकंड, फिर हर 5 मिनट जब तक न हो)। */
+    private long gNext = 0, gSnooze = 0, gRang = 0;
+    private int gDoneH = -1;
+    private String gDoneD = "";
+    static final int NID_GALLA = 4417;
+    static final String A_GSIL = "in.mh177.canteen.GSIL";
+
+    private void galla() throws Exception {
+        SharedPreferences p = prefs(this);
+        if (!p.getBoolean("gOn", false)) return;
+        long t = System.currentTimeMillis();
+        if (t < gNext) return;
+        gNext = t + 180000L;
+        Calendar k = Calendar.getInstance();
+        int H = k.get(Calendar.HOUR_OF_DAY), M = k.get(Calendar.MINUTE);
+        String d = String.format(java.util.Locale.US, "%04d-%02d-%02d", k.get(Calendar.YEAR), k.get(Calendar.MONTH) + 1, k.get(Calendar.DAY_OF_MONTH));
+        boolean owner = p.getBoolean("gOwner", false);
+        int wait = owner ? 15 : Math.max(0, p.getInt("gWait", 2));
+        if (H < p.getInt("gFrom", 7) || H >= p.getInt("gTo", 22) || M < wait) { gallaOff(); return; }
+        if (d.equals(gDoneD) && gDoneH >= H) { gallaOff(); return; }
+        JSONObject doc = Fs.getDoc(this, "days/" + d + "/meta/gh");
+        int lh = -1; boolean closed = false; String dd = "", by = "";
+        if (doc != null) {
+            JSONObject f = doc.optJSONObject("fields");
+            if (f != null) {
+                dd = sv(f, "d"); by = sv(f, "by");
+                try { lh = Integer.parseInt(sv(f, "h")); } catch (Exception ignore) { }
+                JSONObject c = f.optJSONObject("closed");
+                closed = c != null && c.optBoolean("booleanValue", false);
+            }
+        }
+        if (d.equals(dd) && (closed || lh >= H)) { gDoneD = d; gDoneH = closed ? 99 : lh; gallaOff(); return; }
+        if (t < gSnooze) return;
+        gallaNote(H, owner, d.equals(dd) && lh >= 0 ? lh : -1, by);
+        if (!ringing && pending == 0 && t - gRang > 270000L) {
+            gRang = t;
+            startSound();
+            h.postDelayed(new Runnable() { public void run() { if (pending == 0) stopSound(); } }, 40000);
+        }
+    }
+
+    private void gallaOff() {
+        try { ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NID_GALLA); } catch (Exception ignore) { }
+    }
+
+    private void gallaNote(int H, boolean owner, int lastH, String by) {
+        int a = H % 12 == 0 ? 12 : H % 12;
+        String hh = a + (H < 12 ? " AM" : " PM");
+        String title = owner ? "⏰ " + hh + " की गल्ला गिनती नहीं हुई" : "💵 गल्ला गिनें — " + hh;
+        String txt = owner ? (lastH >= 0 ? "आख़िरी गिनती " + (lastH % 12 == 0 ? 12 : lastH % 12) + (lastH < 12 ? " AM" : " PM") + (by.length() > 0 ? " (" + by + ")" : "") : "आज अभी कोई गिनती नहीं") + " — ऐप खोलकर देखें"
+                : "इस घंटे के नोट गिनकर ऐप में लिखें (1 मिनट) — ऐप खोलें → 💵 अभी गिनें";
+        Intent si = new Intent(this, OrderRingService.class).setAction(A_GSIL);
+        int fl = PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 23 ? PendingIntent.FLAG_IMMUTABLE : 0);
+        PendingIntent sp = PendingIntent.getService(this, 9, si, fl);
+        Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(this, CH_ALARM) : new Notification.Builder(this);
+        b.setContentTitle(title).setContentText(txt).setStyle(new Notification.BigTextStyle().bigText(txt))
+                .setSmallIcon(R.mipmap.ic_launcher).setCategory(Notification.CATEGORY_REMINDER)
+                .setPriority(Notification.PRIORITY_MAX).setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setOnlyAlertOnce(true).setAutoCancel(true)
+                .setContentIntent(openApp(5, false))
+                .addAction(new Notification.Action.Builder((android.graphics.drawable.Icon) null, "🔕 10 मिनट चुप", sp).build());
+        try { ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NID_GALLA, b.build()); } catch (Exception ignore) { }
     }
 
     private void saveSil() {

@@ -19,7 +19,34 @@ const dayAdd=(d,n)=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);re
 const LSg={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 S.galla=[];
 
-SG.hrs=()=>{const h=+((S.settings||{}).gallaHrs);return h>=1&&h<=8?h:3};
+SG.hrs=()=>{const h=+((S.settings||{}).gallaHrs);return h>=1&&h<=8?h:1};
+/* ⏰ 20-11-2026 (विक्रम जी): हर घंटे गल्ले की गिनती — सुबह 7 से रात 10 तक (settings gallaFrom/gallaTo), हर घंटे का "खाना" (slot)।
+   गिनती होते ही days/{date}/meta/gh = {d,h,ts,by,closed} → APK की घंटी-सेवा (OrderRingService) इसी 1 doc को देखकर
+   साथी के फोन पर अलार्म बजाती है, 15 मिनट बाद भी न हो तो मालिक के फोन पर। */
+SG.win=()=>{const st=S.settings||{},f=+st.gallaFrom,t=+st.gallaTo;return [f>=0&&f<=23?f:7,t>=1&&t<=24&&t>(f>=0?f:7)?t:22]};
+SG.slots=function(){const [f,t]=SG.win(),L=SG.list().filter(g=>g.kind==="open"||g.kind==="count"||g.kind==="close"),out=[];const now=new Date(),isT=S.billsDate===today(),H=now.getHours();
+  const closeTs=(L.find(g=>g.kind==="close")||{}).ts||0;
+  for(let h=f;h<t;h++){const e=L.filter(g=>new Date(g.ts).getHours()===h);const last=e[e.length-1]||null;
+    const past=!isT||h<H,cur=isT&&h===H,afterClose=closeTs&&new Date(closeTs).getHours()<h;
+    out.push({h,e:last,n:e.length,st:last?"ok":afterClose?"off":past?"miss":cur?"now":"later"})}
+  return out};
+SG.ghMark=function(doc){try{if(S.demo||!S.db)return;const h=new Date(doc.ts).getHours();S.db.doc("days/"+today()+"/meta/gh").set({d:today(),h,ts:doc.ts,by:doc.byName||"",closed:doc.kind==="close"},{merge:true}).catch(()=>{})}catch(e){}};
+const hh=h=>{const a=h%12||12;return a+(h<12?" AM":" PM")};
+/* 📈 हर घंटे का ग्राफ़ — बार = उस घंटे गिना पैसा; मालिक को "होना चाहिए" की लाइन भी; छूटे घंटे लाल */
+SG.graphHTML=function(own){const sl=SG.slots();if(!sl.length)return "";const vals=sl.map(x=>x.e?num(x.e.total):0);
+  const ex=own?sl.map(x=>x.e?SG.expAt(x.e.ts).exp:null):[];const mx=Math.max(100,...vals,...ex.filter(v=>v!=null));
+  const W=sl.length*30+30,H=150,bh=v=>Math.round(v/mx*(H-40));
+  let prev=null;const bars=sl.map((x,i)=>{const X=20+i*30,v=vals[i],c=x.st==="ok"?"#16a34a":x.st==="miss"?"#dc2626":x.st==="now"?"#f59e0b":"#d1d5db";
+    const d=x.e&&prev!=null?v-prev:null;if(x.e)prev=v;
+    return `<g><rect x="${X}" y="${H-20-(x.e?bh(v):6)}" width="22" height="${x.e?Math.max(2,bh(v)):6}" rx="4" fill="${c}"><title>${hh(x.h)} · ${x.e?rs(v)+" · "+esc(x.e.byName||""):x.st==="miss"?"गिनती नहीं हुई":""}</title></rect>
+      <text x="${X+11}" y="${H-6}" font-size="9" text-anchor="middle" fill="#6b7280">${x.h%12||12}</text>
+      ${x.e?`<text x="${X+11}" y="${H-24-bh(v)}" font-size="8.5" text-anchor="middle" fill="${d==null?"#374151":d<0?"#dc2626":"#15803d"}">${d==null?Math.round(v/100)/10+"k":(d>=0?"+":"")+Math.round(d)}</text>`:x.st==="miss"?`<text x="${X+11}" y="${H-30}" font-size="11" text-anchor="middle">✗</text>`:""}</g>`}).join("");
+  const exL=own&&ex.some(v=>v!=null)?`<polyline fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3" points="${sl.map((x,i)=>ex[i]==null?null:(31+i*30)+","+(H-20-bh(ex[i]))).filter(Boolean).join(" ")}"/>`:"";
+  const miss=sl.filter(x=>x.st==="miss"),ok=sl.filter(x=>x.st==="ok").length;
+  return `<div class="sg-graph"><div class="sg-gh"><b>⏰ हर घंटे की गिनती</b><span>${ok}/${sl.filter(x=>x.st!=="later"&&x.st!=="off").length} हुई${miss.length?` · <b style="color:#dc2626">${miss.length} छूटी</b>`:""}</span></div>
+    <div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="हर घंटे का गल्ला">${bars}${exL}</svg></div>
+    <div class="sg-leg"><span><i style="background:#16a34a"></i>गिना</span><span><i style="background:#dc2626"></i>छूटा</span><span><i style="background:#f59e0b"></i>अभी</span>${own?`<span><i style="background:#2563eb"></i>होना चाहिए</span>`:""}<span>ऊपर का अंक = पिछली गिनती से बढ़ा/घटा</span></div>
+    ${miss.length?`<div class="warn" style="margin-top:6px">✗ गिनती नहीं हुई: ${miss.map(x=>hh(x.h)).join(", ")}</div>`:""}</div>`};
 SG.list=()=>(S.galla||[]).filter(g=>!g.void).slice().sort((a,b)=>a.ts-b.ts);
 SG.state=function(){const L=SG.list();const open=L.find(g=>g.kind==="open")||null;const closes=L.filter(g=>g.kind==="close");
   const counts=L.filter(g=>g.kind==="open"||g.kind==="count"||g.kind==="close");const last=counts.length?counts[counts.length-1]:null;
@@ -60,7 +87,7 @@ SG.backSheet=function(ref){if(!biller()){openBiller(()=>SG.backSheet(ref));retur
     if(!e.target.closest("[data-sgbsave]"))return;if(!(num(buy)>0)&&!(num(back)>0)){toast("खरीद या वापस — कम से कम एक लिखें");return}
     const doc={kind:"back",total:r2(num(back)),buy:r2(num(buy)),ref:sel.id,refDate:sel.date||today(),person:sel.person||"",given:num(sel.total),fark:r2(num(sel.total)-num(buy)-num(back)),note:String(note).trim().slice(0,120),ts:Date.now(),date:today(),by:S.uid||"",byName:biller()};
     const id="g"+doc.ts.toString(36)+Math.random().toString(36).slice(2,5);
-    try{if(!S.demo)await S.db.collection("days/"+today()+"/galla").doc(id).set(doc);S.galla.push({id,...doc});closeSheet();beep(Math.abs(doc.fark)<=1);
+    try{if(!S.demo)await S.db.collection("days/"+today()+"/galla").doc(id).set(doc);if(kind!=="out")SG.ghMark(doc);S.galla.push({id,...doc});closeSheet();beep(Math.abs(doc.fark)<=1);
       toast(Math.abs(doc.fark)<=1?"✓ हिसाब पूरा — "+esc(doc.person):"⚠ हिसाब में "+rs(doc.fark)+" फ़र्क — विक्रम जी को दिखेगा");if(S.tab==="day"&&typeof renderDay==="function")renderDay();const nb=document.getElementById("sgNag");if(nb)nb.remove()}
     catch(err){toast("सेव नहीं हुआ — नेट देखें")}}};
 /* cashCalc (दिन का हिसाब) के लिए: खोला/बंद/दिया */
@@ -143,8 +170,8 @@ SG.dayHTML=function(){
   const rowsStaff=st.L.filter(g=>KIND[g.kind]).map(g=>`<div class="li"><div class="mid"><b>${KIND[g.kind][0]} ${KIND[g.kind][1]}${g.kind==="out"&&g.to?" · "+esc(g.to):""}${g.person?" · "+esc(g.person):""}${KH(g.kind)?" · "+esc(khTxt(g)):""}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")}</span></div><div class="rt">${KH(g.kind)?"":rs(g.total)}</div></div>`).join("");
   const kh=window.SKH?SKH.cardHTML():"";
   if(!S.isOwner)return `<div class="card2" data-ds="paisa"><h3>💵 गल्ला</h3>
-    <p class="note" style="margin:0 0 8px">सुबह खोलें, हर ${SG.hrs()} घंटे में एक बार नोट गिनें, रात को बंद करें — बस इतना। गल्ले से कोई पैसा ले जाए तो "📤 पैसा दिया" में नाम और काम लिखें। खुले का डिब्बा गिनती में नहीं गिनें।</p>${advH}${btns}${kh}
-    ${rowsStaff?`<div class="list" style="margin:8px 0 0">${rowsStaff}</div>`:""}</div>`;
+    <p class="note" style="margin:0 0 8px">सुबह खोलें, ${SG.hrs()===1?"हर घंटे":"हर "+SG.hrs()+" घंटे में"} एक बार नोट गिनें, रात को बंद करें — बस इतना। गल्ले से कोई पैसा ले जाए तो "📤 पैसा दिया" में नाम और काम लिखें। खुले का डिब्बा गिनती में नहीं गिनें।</p>${advH}${btns}${kh}
+    ${isT&&st.open?SG.graphHTML(false):""}${rowsStaff?`<div class="list" style="margin:8px 0 0">${rowsStaff}</div>`:""}</div>`;
   const rows=st.L.map(g=>{if(g.kind==="back")return `<div class="li"><div class="mid"><b>🔁 ${esc(g.person||"")} · खरीद ${rs(g.buy)} + वापस ${rs(g.total)}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")} · दिए थे ${rs(g.given)}${g.note?" · "+esc(g.note):""}</span></div><div class="rt">${Math.abs(g.fark||0)<=1?'<span class="pill green">✓ पूरा</span>':`<span class="pill red">${rs(g.fark)} फ़र्क</span>`}</div></div>`;
     if(KH(g.kind))return `<div class="li"><div class="mid"><b>${KIND[g.kind][0]} ${KIND[g.kind][1]}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")} · ${esc(khTxt(g))}${g.note?" · "+esc(g.note):""}</span></div><div class="rt">${g.amt?rs(g.amt):""}</div></div>`;
     if(g.kind==="out")return `<div class="li"><div class="mid"><b>📤 ${rs(g.total)} · ${esc(g.to||"दिए")}${g.person?" · "+esc(g.person):""}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")}${g.note?" · "+esc(g.note):""}</span></div><div class="rt">${g.ok?'<span class="pill green">✓ क्लियर</span>':`<button type="button" class="chip" data-sgok="${esc(g.id)}" data-d="${esc(g.date||S.billsDate)}">✓ क्लियर करें</button>`}</div></div>`;
@@ -162,10 +189,11 @@ SG.dayHTML=function(){
     <div class="amtline" style="margin:0"><span>अभी गल्ले में होना चाहिए</span><b>${rs(now.exp)}</b></div>
     ${isT&&st.open&&!st.close&&gap!=null&&gap>=SG.hrs()?`<div class="warn">⏰ आख़िरी गिनती ${gap} घंटे पहले हुई थी</div>`:""}
     ${isT&&!st.open?`<div class="warn">🌅 आज अभी तक गल्ला नहीं खोला गया</div>`:""}
-    ${advH}${(()=>{const u=st.outs.filter(o=>!o.ok);return u.length?`<div class="warn">📤 क्लियर बाकी: ${u.map(o=>esc(o.person||o.to||"")+" "+rs(o.total)).join(" · ")}</div>`:""})()}${rows?`<div class="list" style="margin:8px 0">${rows}</div>`:""}
+    ${SG.graphHTML(true)}${advH}${(()=>{const u=st.outs.filter(o=>!o.ok);return u.length?`<div class="warn">📤 क्लियर बाकी: ${u.map(o=>esc(o.person||o.to||"")+" "+rs(o.total)).join(" · ")}</div>`:""})()}${rows?`<div class="list" style="margin:8px 0">${rows}</div>`:""}
     ${btns}${kh}
     <button type="button" class="lnk" data-sgwho style="margin-top:8px">📤 किसने कितना ले गया (30 दिन) ›</button>
-    <div class="seg" style="margin-top:8px"><span class="note" style="align-self:center">कर्मचारी को गिनती की याद हर</span>${[2,3,4].map(h=>`<button class="chip" data-sghrs="${h}" aria-pressed="${SG.hrs()===h}">${h} घंटे</button>`).join("")}</div>
+    <div class="seg" style="margin-top:8px"><span class="note" style="align-self:center">कर्मचारी को गिनती की याद हर</span>${[1,2,3].map(h=>`<button class="chip" data-sghrs="${h}" aria-pressed="${SG.hrs()===h}">${h} घंटे</button>`).join("")}</div>
+    <div class="seg" style="margin-top:6px"><span class="note" style="align-self:center">⏰ फोन पर घंटी (${hh(SG.win()[0])}–${hh(SG.win()[1])})</span><button class="chip" data-sgal="1" aria-pressed="${(S.settings||{}).gallaAlarm!==false}">चालू</button><button class="chip" data-sgal="0" aria-pressed="${(S.settings||{}).gallaAlarm===false}">बंद</button></div>
   </div>`;
 };
 const notesTxt=g=>{const N=g.notes||{};const k=Object.keys(N).sort((a,b)=>b-a);return k.length?" · "+k.map(v=>v+"×"+N[v]).join(", ")+(g.coins?" + सिक्के "+g.coins:""):""};
@@ -180,6 +208,7 @@ SG.ownerLine=function(){const st=SG.state();if(!st.L.length)return "";const c=st
   if(window.SKH&&SKH.cur()){const L=SKH.low();t+="\n   🪙 खुले का डिब्बा "+rs(SKH.total())+(L.length?" · कम: "+L.map(x=>"₹"+x.v+"×"+x.have).join(", "):"")}
   const oa=SG.openAdv();if(oa.length)t+="\n   🛒 खरीद का हिसाब बाकी: "+oa.map(x=>(x.person||"साथी")+" "+rs(x.total)).join(", ");
   const fk=st.L.filter(g=>g.kind==="back"&&Math.abs(g.fark||0)>1);if(fk.length)t+="\n   🚨 हिसाब में फ़र्क: "+fk.map(g=>(g.person||"")+" "+rs(g.fark)).join(", ");
+  {const m=SG.slots().filter(x=>x.st==="miss");if(m.length)t+="\n   ⏰ घंटे की गिनती छूटी: "+m.map(x=>hh(x.h)).join(", ")}
   const bad=st.L.filter(g=>g.kind==="count").map(g=>r2(num(g.total)-SG.expAt(g.ts).exp)).filter(d=>d<-5);if(bad.length)t+="\n   🚨 "+bad.length+" गिनती में कमी मिली";
   return t+"\n"};
 
@@ -208,9 +237,17 @@ SG.pingText=function(){const n=SG.expAt(Date.now()),st=SG.state(),un=st.outs.fil
   if(window.SKH&&SKH.cur()&&SKH.low().length)t+="\n🪙 खुले कम: "+SKH.low().map(x=>"₹"+x.v+"×"+x.have).join(", ");return t};
 SG.ownerPing=function(force){if(!S.isOwner||S.demo&&!force||S.billsDate!==today()||document.getElementById("sgPing"))return false;
   const st=SG.state();if(!st.open&&!force)return false;const h=new Date().getHours();if(!force&&(h<8||h>=23))return false;
-  const k="sg_ping_"+today();if(!force&&Date.now()-(+LSg.get(k)||0)<SG.hrs()*36e5)return false;LSg.set(k,String(Date.now()));
+  const k="sg_ping_"+today();if(!force&&Date.now()-(+LSg.get(k)||0)<Math.max(3,SG.hrs())*36e5)return false;LSg.set(k,String(Date.now()));
   const t=SG.pingText(),el=document.createElement("div");el.id="sgPing";el.className="sgnag";el.setAttribute("role","status");
   el.innerHTML=`<b style="white-space:pre-line">${esc(t)}</b><div><button class="nag-go" data-sgping="day">देखें</button><a class="nag-go" style="flex:1;text-align:center;border-radius:12px;padding:10px;font-weight:700;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(t)}">📲 WhatsApp</a><button data-sgping="x">ठीक</button></div>`;
+  const m=document.getElementById("main");if(m)m.prepend(el);return true};
+/* ---------- ⏰ मालिक: घंटे की गिनती 15 मिनट तक न हो तो पट्टी + आवाज़ ---------- */
+SG.ownerMiss=function(){if(!S.isOwner||S.demo||S.billsDate!==today()||document.getElementById("sgMiss"))return false;const d=new Date();if(d.getMinutes()<15)return false;
+  const st=SG.state();if(st.close)return false;const c=SG.slots().find(x=>x.st==="now");if(!c||c.e)return false;
+  const k="sg_miss_"+today()+"_"+c.h;if(LSg.get(k))return false;LSg.set(k,"1");
+  const el=document.createElement("div");el.id="sgMiss";el.className="sgnag";el.setAttribute("role","alert");
+  el.innerHTML=`<b>⏰ ${hh(c.h)} की गल्ला गिनती अभी तक नहीं हुई${st.last?" · आख़िरी: "+ftime(st.last.ts)+" ("+esc(st.last.byName||"")+")":""}</b><div><button class="nag-go" data-sgping="day">गल्ला देखें</button><button data-sgping="x" onclick="this.closest('.sgnag').remove()">ठीक</button></div>`;
+  try{if(typeof beep==='function'){beep(true);setTimeout(()=>beep(true),700);setTimeout(()=>beep(true),1400)}}catch(e){}
   const m=document.getElementById("main");if(m)m.prepend(el);return true};
 /* ---------- कर्मचारी को याद (बिलिंग पर छोटी पट्टी) ---------- */
 SG.nag=function(force){
@@ -221,16 +258,19 @@ SG.nag=function(force){
   if(SG.openAdv().some(x=>Date.now()-x.ts>=2*36e5)){const x=SG.openAdv()[0];msg=`🛒 ${x.person||"साथी"} को ${rs(x.total)} खरीद के लिए दिए थे (${x.date!==today()?fdate(x.date)+" ":""}${ftime(x.ts)}) — बिल और बचे पैसे लेकर हिसाब दर्ज करें`;k="back"}
   else if(!st.open){msg="🌅 आज का गल्ला खोलें — सुबह गल्ले में कितने नोट हैं, गिनकर लिखें";k="open"}
   else if(!st.close&&h>=21.5){msg="🔒 दुकान बंद करते समय गल्ला बंद करें — नोट गिनकर लिखें";k="close"}
-  else if(!st.close&&st.last&&Date.now()-st.last.ts>=SG.hrs()*36e5){msg="💵 गल्ला गिनती का समय — नोट गिनकर लिख दें (1 मिनट)";k="count"}
+  else if(!st.close&&SG.hrs()===1&&(()=>{const c=SG.slots().find(x=>x.st==="now");return c&&!c.e})()){msg="⏰ "+hh(new Date().getHours())+" — इस घंटे की गल्ला गिनती बाकी है। नोट गिनकर लिख दें (1 मिनट)";k="count"}
+  else if(!st.close&&SG.hrs()>1&&st.last&&Date.now()-st.last.ts>=SG.hrs()*36e5){msg="💵 गल्ला गिनती का समय — नोट गिनकर लिख दें (1 मिनट)";k="count"}
   if(!k)return false;
-  const sk="sg_snz_"+today()+"_"+k;if(!force&&Date.now()-(+LSg.get(sk)||0)<20*60000)return false;
+  const sk="sg_snz_"+today()+"_"+k;if(!force&&Date.now()-(+LSg.get(sk)||0)<(k==="count"&&SG.hrs()===1?10:20)*60000)return false;
   const el=document.createElement("div");el.id="sgNag";el.className="sgnag";el.setAttribute("role","status");
-  el.dataset.k=k;el.innerHTML=`<b>${msg}</b><div><button class="nag-go" data-sgnag="${k}">अभी करें</button><button data-sgnag="later">20 मिनट बाद</button></div>`;
+  el.dataset.k=k;el.innerHTML=`<b>${msg}</b><div><button class="nag-go" data-sgnag="${k}">अभी करें</button><button data-sgnag="later">${k==="count"&&SG.hrs()===1?"10":"20"} मिनट बाद</button></div>`;
+  if(k==="count"||k==="open"){try{if(!force&&typeof beep==='function'){beep(true);setTimeout(()=>beep(true),700);setTimeout(()=>beep(true),1400)}}catch(e){}}
   const m=document.getElementById("main");if(m)m.prepend(el);else document.body.appendChild(el);return true;
 };
 document.addEventListener("click",e=>{
   const g=e.target.closest("[data-sg]");if(g){SG.sheet(g.dataset.sg);return}
   const h=e.target.closest("[data-sghrs]");if(h&&S.isOwner){saveSetting({gallaHrs:+h.dataset.sghrs});return}
+  const al=e.target.closest("[data-sgal]");if(al&&S.isOwner){saveSetting({gallaAlarm:al.dataset.sgal==="1"});setTimeout(()=>{try{window.SRG&&SRG.start&&SRG.start(false)}catch(x){}},800);return}
   const n=e.target.closest("[data-sgnag]");if(n){const el=document.getElementById("sgNag");const k=el?el.dataset.k:"count";
     if(el)el.remove();if(n.dataset.sgnag==="later"){LSg.set("sg_snz_"+today()+"_"+k,String(Date.now()));return}if(n.dataset.sgnag==="back"){SG.backSheet();return}SG.sheet(n.dataset.sgnag)}
   if(e.target.closest("[data-sgback]")){SG.backSheet();return}
@@ -238,7 +278,7 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-sgwho]")){SG.whoSheet();return}
   const pg=e.target.closest("[data-sgping]");if(pg){const el=document.getElementById("sgPing");if(el)el.remove();if(pg.dataset.sgping==="day"){S.tab="day";if(typeof showTab==="function")showTab()}return}
 });
-setTimeout(()=>{try{SG.loadOld().then(()=>{if(S.tab==="day"&&typeof renderDay==="function")renderDay()})}catch(e){}},8000);setTimeout(()=>{try{SG.nag()}catch(e){}},25000);setInterval(()=>{try{SG.nag();SG.ownerPing()}catch(e){}},60000);
+setTimeout(()=>{try{SG.loadOld().then(()=>{if(S.tab==="day"&&typeof renderDay==="function")renderDay()})}catch(e){}},8000);setTimeout(()=>{try{SG.nag()}catch(e){}},25000);setInterval(()=>{try{SG.nag();SG.ownerPing();SG.ownerMiss()}catch(e){}},60000);
 
 const css=document.createElement("style");css.textContent=`
 .sg-grid{display:grid;gap:6px}.sg-row{display:grid;grid-template-columns:72px 16px 1fr 84px;align-items:center;gap:6px}
@@ -246,6 +286,9 @@ const css=document.createElement("style");css.textContent=`
 .sg-row b{text-align:right;font-size:15px;color:var(--muted)}.sg-tot{margin:10px 0}.sg-tot b{font-size:26px}
 .sg-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sg-btns .big:first-child{grid-column:1/-1}
 html.camon .sgnag{display:none}
+.sg-graph{margin:8px 0;border:1px solid var(--line,#e5e7eb);border-radius:14px;padding:8px 10px;background:var(--card,#fff)}
+.sg-gh{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:4px}.sg-gh span{color:var(--muted)}
+.sg-leg{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11px;color:var(--muted)}.sg-leg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:3px;vertical-align:-1px}
 .sgnag{position:relative;margin:8px 0 10px;background:var(--warn-bg,#fff7e6);color:var(--ink);border:2px solid var(--haldi,#f59e0b);border-radius:16px;padding:12px 14px;display:grid;gap:8px;animation:pulse .5s ease}
 .sgnag b{font-size:15px;line-height:1.35}.sgnag div{display:flex;gap:8px}.sgnag button{flex:1;border:0;border-radius:12px;padding:10px;font-weight:700;background:var(--chip-bg,#eee);color:var(--ink)}
 .sgnag .nag-go{background:var(--haldi);color:var(--haldi-ink)}`;

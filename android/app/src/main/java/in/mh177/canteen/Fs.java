@@ -114,6 +114,21 @@ public final class Fs {
         }
     }
 
+    /** एक doc पढ़ो (GET) — न मिले तो null */
+    static JSONObject getDoc(Context c, String rel) throws Exception {
+        String t = token(c);
+        java.net.HttpURLConnection h = (java.net.HttpURLConnection) new URL("https://firestore.googleapis.com/v1/" + docPath(c, rel)).openConnection();
+        h.setConnectTimeout(15000);
+        h.setReadTimeout(20000);
+        h.setRequestProperty("Authorization", "Bearer " + t);
+        int code = h.getResponseCode();
+        if (code == 404) return null;
+        String s = readAll(code >= 400 ? h.getErrorStream() : h.getInputStream());
+        if (code == 401) forget();
+        if (code >= 400) throw new Exception("HTTP " + code);
+        return new JSONObject(s);
+    }
+
     static String runQuery(Context c, String q) throws Exception {
         String t = token(c);
         try {

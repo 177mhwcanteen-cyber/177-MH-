@@ -173,9 +173,19 @@ async function repHTML(){const [D,pr]=await Promise.all([loadDays(7),loadPrints(
 async function draw(){const sh=$("#sbcSheet");if(!sh||sh.dataset.new)return;const b=sh.querySelector(".sbc-body");const n=SBC.list().length;
   sh.querySelector(".sbc-tabs").innerHTML=`<button type="button" data-sbctab="need" aria-pressed="${V.tab==="need"}">🏷️ छापने बाकी <b>${SBC.todoList().length}</b></button><button type="button" data-sbctab="pr" aria-pressed="${V.tab==="pr"}">🖨️ छप गए <b>${SBC.prList().length}</b></button><button type="button" data-sbctab="ok" aria-pressed="${V.tab==="ok"}">✅ लग गए <b>${SBC.okList().length}</b></button>${isOwn()?`<button type="button" data-sbctab="rep" aria-pressed="${V.tab==="rep"}">📊 स्कैन-छपाई हिसाब</button>`:""}`;
   const tools=sh.querySelector(".sbc-tools");tools.hidden=V.tab==="rep";const nT=SBC.todoList().length;
-  tools.innerHTML=`<input id="sbcQ" type="search" placeholder="🔍 नाम / कोड" value="${esc(V.q)}" aria-label="सामान खोजें">`+(V.tab==="need"?`<button type="button" class="pri" data-sbcall ${nT?"":"disabled"}>🏷️ ${V.rk?(V.rk==="—"?"बिना रैक वाले":"रैक "+esc(V.rk)+" के"):"सब"} लिस्ट में</button>${isOwn()?`<button type="button" data-sbcai>🤖 AI से छाँटें</button>`:""}`:"")+(V.busy?`<div class="sbc-busy">${esc(V.busy)}</div>`:"");
+  tools.innerHTML=`<input id="sbcQ" type="search" placeholder="🔍 नाम / कोड" value="${esc(V.q)}" aria-label="सामान खोजें"><button type="button" data-sbca4 title="A4 सूची छापें">📄 सूची</button>`+(V.tab==="need"?`<button type="button" class="pri" data-sbcall ${nT?"":"disabled"}>🏷️ ${V.rk?(V.rk==="—"?"बिना रैक वाले":"रैक "+esc(V.rk)+" के"):"सब"} लिस्ट में</button>${isOwn()?`<button type="button" data-sbcai>🤖 AI से छाँटें</button>`:""}`:"")+(V.busy?`<div class="sbc-busy">${esc(V.busy)}</div>`:"");
   const html=V.tab==="rep"&&isOwn()?await repHTML():await needHTML();if($("#sbcSheet"))b.innerHTML=html;
   const c=SL&&SL.count?SL.count():0;sh.querySelector(".sbc-foot").innerHTML=c?`<button type="button" class="big" data-sbcgo>🖨️ लेबल टैब में छापें (${c} लेबल लिस्ट में)</button>`:""}
+/* 📄 20-11-2026 (विक्रम जी): बिना कंपनी-बारकोड वाले सामान की A4 सूची — नाम, 4 अंक कोड (खोज में डालें), रैक, स्टॉक, ☐ लगाया
+   साथी इसी से रैक-रैक जाकर लेबल छापें/चिपकाएँ। अभी वाला टैब + रैक-छाँट + खोज जैसा है वैसा ही छपता है। */
+SBC.listA4=async function(){const L=curList().slice().sort((a,b)=>{const ra=rkOf(a)||"zz",rb=rkOf(b)||"zz";return (+ra||999)-(+rb||999)||ra.localeCompare(rb)||String(a.rack||"").localeCompare(String(b.rack||""),"en",{numeric:true})||NM(a).localeCompare(NM(b))});
+  if(!L.length){toast("सूची खाली है");return}
+  const T={need:"🏷️ लेबल छापने बाकी",pr:"🖨️ छप गए — चिपकाने बाकी",ok:"✅ लग गए"}[V.tab]||"बिना बारकोड सामान";
+  let last=null,n=0;const rows=L.map(i=>{const r=rkOf(i)||"—",st=SBC.stock(i),h=r!==last?`<tr class="rk"><td colspan="6">${r==="—"?"📍 रैक नहीं लिखा":"📍 रैक "+esc(r)}</td></tr>`:"";last=r;n++;
+    return h+`<tr><td class="r">${n}</td><td><b>${esc(NM(i))}</b>${i.hi?`<br><small>${esc(i.hi)}</small>`:""}</td><td class="c"><b>${esc(i.code||"—")}</b></td><td>${esc(i.rack||"—")}</td><td class="r">${st==null?"—":Math.round(st*100)/100+" "+esc(i.unit||"")}</td><td class="c">☐</td></tr>`}).join("");
+  await SE.printA4(T+" · "+L.length+" सामान"+(V.rk?" · रैक "+V.rk:""),`<style>td.c,th.c{text-align:center}tr.rk td{background:#fff4d6;font-weight:800}small{color:#555}td b{font-size:15px}</style>
+    <p>कंपनी का बारकोड नहीं है — ऐप का अपना लेबल लगाना है। बिलिंग/लेबल टैब में <b>कोड</b> डालकर सामान खोजें → छापें → चिपकाएँ → ☐ पर ✓ करें।</p>
+    <table><thead><tr><th class="r">#</th><th>सामान</th><th class="c">कोड</th><th>जगह (रैक-खाना)</th><th class="r">स्टॉक</th><th class="c">लगाया</th></tr></thead><tbody>${rows}</tbody></table>`)};
 SBC.refresh=function(){if($("#sbcSheet"))draw();if(S.tab==="set"&&$("#sbcCard"))$("#sbcCard").outerHTML=SBC.settingsHTML();const bar=$("#sbcBar");if(bar)bar.outerHTML=barHTML()};
 function addLbl(id,n,mrp){const it=item(id);if(!it||!window.SL)return;const o=mrp||SBC.disc(it)>0?{mrp:1}:{};const k=SL.add(id,n,o);toast("🏷️ "+NM(it)+" · "+k+" लेबल लिस्ट में")}
 SBC.open=function(tab,rk){if(tab)V.tab=tab;V.more=0;if(rk!=null)V.rk=String(rk);loadCnt().then(()=>{if(Object.keys(CNT).length)draw()});
@@ -187,6 +197,7 @@ SBC.open=function(tab,rk){if(tab)V.tab=tab;V.more=0;if(rk!=null)V.rk=String(rk);
     if((b=g("[data-sbctab]"))){V.tab=b.dataset.sbctab;draw();return}
     if((b=g("[data-sbcadd]"))){addLbl(b.dataset.sbcadd,+b.dataset.n||1,!!b.dataset.mrp);draw();return}
     if((b=g("[data-sbcrk]"))){V.rk=b.dataset.none?"—":b.dataset.sbcrk;V.more=0;draw();return}
+    if(g("[data-sbca4]")){SBC.listA4();return}
     if(g("[data-sbcall]")){const L=curList();L.forEach(i=>SL.add(i.id,defN(i),SBC.disc(i)>0?{mrp:1}:{}));toast("🏷️ "+L.length+" सामान लिस्ट में — नीचे 🖨️ दबाएँ");draw();return}
     if((b=g("[data-sbcok]"))){SBC.arm={id:b.dataset.sbcok,kind:"ok"};draw();return}
     if((b=g("[data-sbcpr]"))){await SBC.setPr(b.dataset.sbcpr,+b.dataset.n||0);toast("🖨️ छप गए सूची में — ↩ से वापस");return}
