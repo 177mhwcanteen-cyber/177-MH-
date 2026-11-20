@@ -143,7 +143,8 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 (function(){"use strict";
 const C=(window.SE_CONFIG||{}).firebase||{},B="https://firestore.googleapis.com/v1/projects/"+C.projectId+"/databases/(default)/documents/";
 const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const LS={get:(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+/* 20-11: पुराने/बिगड़े डेटा से पेज कभी न अटके — जिस रूप (सूची/वस्तु) की उम्मीद हो, वैसा न हो तो डिफ़ॉल्ट */
+const LS={get:(k,d)=>{try{const v=localStorage.getItem(k);if(v==null)return d;const x=JSON.parse(v);if(Array.isArray(d)&&!Array.isArray(x))return d;if(d&&typeof d==="object"&&!Array.isArray(d)&&(!x||typeof x!=="object"||Array.isArray(x)))return d;return x}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const V=v=>{if(!v)return null;if("stringValue"in v)return v.stringValue;if("integerValue"in v)return +v.integerValue;if("doubleValue"in v)return v.doubleValue;if("booleanValue"in v)return v.booleanValue;if("nullValue"in v)return null;if("arrayValue"in v)return (v.arrayValue.values||[]).map(V);if("mapValue"in v){const o={};Object.entries(v.mapValue.fields||{}).forEach(([k,x])=>o[k]=V(x));return o}return null};
 const U={kg:"kg",pc:"pc",dz:"dozen",pkt:"pack",pk:"pack",pl:"plate",l:"litre",gd:"bundle"};const stepOf=u=>u==="kg"?0.25:1;
 const fq=(q,u)=>u==="kg"?(q<1?Math.round(q*1000)+"g":q+"kg"):q+(u==="pc"?"":" "+(U[u]||u));
@@ -219,7 +220,7 @@ const rasoiOpen=()=>{const H=(RJ&&RJ.shop&&RJ.shop.hours)||[];if(!H.length)retur
 /* सब्ज़ी एक्सप्रेस के आज के भाव न मिलें (उसका ऐप अभी तक खुला नहीं) → उसकी सामान-सूची से, "भाव पक्का होगा" नोट के साथ */
 let SXOLD=0;async function sabjiFallback(){if(LX.length||!SC.base)return;try{const r=await fetch(SC.base+"migrate.json",{cache:"no-store"});if(!r.ok)return;const M=(await r.json()).items||{};
     LX=Object.entries(M).filter(([k,v])=>v&&v.active!==false&&+v.sale>0&&!v.virtual).sort((a,b)=>(+a[1].order||0)-(+b[1].order||0)).map(([k,v])=>({id:"sx-"+k,n:k.toUpperCase(),hi:v.name||"",u:v.unit||"kg",s:+v.sale,c:["sabzi","patta","fal","packed"].includes(v.cat)?v.cat:"sabzi",p:v.photo==="b"?SC.base+"img/"+k+".jpg":"",h:v.hue,em:v.emoji||"🥬",st:"sabji"}));SXOLD=LX.length?1:0;build()}catch(e){}}
-async function loadSabji(){if(!SC.pid)return;const c=LS.get("mh_sx",null);if(c&&!LX.length){LX=c;build()}
+async function loadSabji(){if(!SC.pid)return;const c=LS.get("mh_sx",null);if(Array.isArray(c)&&c.length&&!LX.length){LX=c;build()}
   try{const r=await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/pub/rates?key="+SC.key,{cache:"no-store"});if(!r.ok)throw 0;
     const X=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
     LX=(X.items||[]).filter(i=>i&&i.id&&+i.s>0).map(i=>({id:"sx-"+i.id,n:String(i.e||i.n||"").toUpperCase(),hi:i.e?i.n:"",u:i.u||"kg",s:+i.s,c:["sabzi","patta","fal","packed"].includes(i.c)?i.c:"sabzi",p:i.p?(/^https?:/.test(i.p)?i.p:SC.base+String(i.p).replace(/^\.?\//,"")):"",h:i.h,em:"🥬",st:"sabji"}));
@@ -471,7 +472,7 @@ function welcome(change){const A=ACC();lock(!A.ph);
 function accChip(){meBtn()}/* नाम अब ऊपर 👤 बटन में */
 document.addEventListener("click",e=>{if(e.target.closest("[data-chacc2]"))welcome(true)});
 document.addEventListener("click",e=>{if(e.target.closest("#cpa")){me.cp=($("#cpi").value||"").trim().toUpperCase();LS.set("mh_me",me);cart();return}const f=e.target.closest("[data-fav]");if(f){let A=FAV();const id=f.dataset.fav;A=A.includes(id)?A.filter(x=>x!==id):[id,...A].slice(0,60);LS.set("mh_fav",A);document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>b.classList.toggle("on",A.includes(id)));return}const r=e.target.closest("[data-rv]");if(r){const n=+r.dataset.rv;document.querySelectorAll("#rvb [data-rv]").forEach(b=>b.classList.toggle("on",+b.dataset.rv<=n));$("#rvs").disabled=false;return}if(e.target.closest("#rvs"))rvSend()});
-(function(){const P=LS.get("mh_pend",null);if(P)report(P.nm,P.ph,P.old)})();/* बिना नेट बना खाता — अब भेजो */
+(function(){try{const P=LS.get("mh_pend",null);if(P&&P.ph)report(P.nm,P.ph,P.old)}catch(e){}})();/* बिना नेट बना खाता — अब भेजो */
 /* ---------- 📸 असली फोटो: pub/ph_<n> (112px, ~4 KB) पीछे से आती रहें ---------- */
 const PH=LS.get("mh_ph",{});let phT=0;
 async function loadPhotos(){try{const r=await fetch(B+"pub/phx?key="+C.apiKey,{cache:"no-store"});if(!r.ok)return;const x=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
