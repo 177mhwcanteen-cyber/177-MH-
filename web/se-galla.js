@@ -87,7 +87,7 @@ SG.backSheet=function(ref){if(!biller()){openBiller(()=>SG.backSheet(ref));retur
     if(!e.target.closest("[data-sgbsave]"))return;if(!(num(buy)>0)&&!(num(back)>0)){toast("खरीद या वापस — कम से कम एक लिखें");return}
     const doc={kind:"back",total:r2(num(back)),buy:r2(num(buy)),ref:sel.id,refDate:sel.date||today(),person:sel.person||"",given:num(sel.total),fark:r2(num(sel.total)-num(buy)-num(back)),note:String(note).trim().slice(0,120),ts:Date.now(),date:today(),by:S.uid||"",byName:biller()};
     const id="g"+doc.ts.toString(36)+Math.random().toString(36).slice(2,5);
-    try{if(!S.demo)await S.db.collection("days/"+today()+"/galla").doc(id).set(doc);if(kind!=="out")SG.ghMark(doc);S.galla.push({id,...doc});closeSheet();beep(Math.abs(doc.fark)<=1);
+    try{if(!S.demo)await S.db.collection("days/"+today()+"/galla").doc(id).set(doc);S.galla.push({id,...doc});closeSheet();beep(Math.abs(doc.fark)<=1);
       toast(Math.abs(doc.fark)<=1?"✓ हिसाब पूरा — "+esc(doc.person):"⚠ हिसाब में "+rs(doc.fark)+" फ़र्क — विक्रम जी को दिखेगा");if(S.tab==="day"&&typeof renderDay==="function")renderDay();const nb=document.getElementById("sgNag");if(nb)nb.remove()}
     catch(err){toast("सेव नहीं हुआ — नेट देखें")}}};
 /* cashCalc (दिन का हिसाब) के लिए: खोला/बंद/दिया */
