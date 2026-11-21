@@ -1,0 +1,30 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261121-03",
+ "date": "2026-11-21",
+ "by": "विक्रम जी (चैट)",
+ "note": "साबुत धनिया 200G की गिनती 50",
+ "items": [
+  {
+   "id": "g-sabut-dhaniya-200-g-loose",
+   "name": "SABUT DHANIYA 200 G",
+   "short": "SABUT DHANIYA 200G",
+   "size": "200g",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-10",
+   "open": {
+    "qty": 50,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
