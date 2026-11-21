@@ -55,6 +55,7 @@
 - 📍 रैक बदलें · माल ट्रांसफ़र (se-rkx.js = window.SRX: खाने-वार पीस items.rkx, meta/rkx, 🧠 सुपरमार्केट सुझाव, खरीद में 📍+🏷️) — पहले docs/रैक-बदलना-प्रॉम्प्ट.txt; जाँच `tests/rkx.py`।
 - 🛍️ **तीन दुकानें एक ऑर्डर-पेज पर** (🛒 177 MH · 🥬 सब्ज़ी एक्सप्रेस pub/rates · 🍛 मारवाड़ रसोई web/order/rasoi.json; हर दुकान का अलग ऑर्डर src web2:<दुकान>) — पहले docs/तीन-दुकान-प्रॉम्प्ट.txt; जाँच `tests/stores.py`।
 - 🔔 **ऑर्डर की घंटी** (APK: OrderRingService.java — ऐप बंद हो तब भी नए ऑर्डर पर अलार्म; JS se-ring.js = window.SRG) — पहले docs/ऑर्डर-घंटी-प्रॉम्प्ट.txt; जाँच `tests/ring.py`।
+- 💻 **लैपटॉप/कंप्यूटर** (PWA इंस्टॉल + Web Serial से सीधी छपाई, se-desk.js = window.SDK, SE.canDirect/SE.rawPrint) — पहले docs/लैपटॉप-ऐप-प्रॉम्प्ट.txt; जाँच `tests/desk.py`।
 - 💬 WhatsApp पर बिल/संदेश (10 अंक डालते ही सीधी चैट, SE.wa/waAuto) बदलने से पहले docs/व्हाट्सएप-प्रॉम्प्ट.txt; जाँच `tests/wa.py`।
 - 📸 हर फोटो ≤20 KB (SPH.compress) — कभी बड़ी फोटो सीधी Firestore में नहीं; पैकेट वाले सामान की फोटो असली ही।
 - 🔒 सार्वजनिक (pub/*, ग्राहक पेज) में तम्बाकू कभी नहीं — SON.list में isTob/secret/sub tob तीनों जाँच।

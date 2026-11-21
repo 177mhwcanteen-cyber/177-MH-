@@ -456,12 +456,15 @@ SE.tspl=function(cv,opt){
   return toB64([head,bmp,tail]);
 };
 SE.escpos=canvasToEscPos;
+/* 💻 21-11: सीधी छपाई — फोन में ब्लूटूथ (APK), लैपटॉप में Web Serial (se-desk.js SDK) */
+SE.canDirect=r=>SE.isNative||!!(window.SDK&&SDK.has(r));
+SE.rawPrint=async function(addr,data,r){if(SE.isNative)return N.BtPrinter.print({address:addr,data});return SDK.send(r||"label",data)};
 SE.printReceipt=async function(b,o){
   const cv=SE.receiptCanvas(b,o);
-  if(SE.isNative){
+  if(SE.canDirect("bill")){
     if(!SE.printer.addr)throw {code:"noprinter",msg:"इस फोन में बिल प्रिंटर नहीं चुना — 👤 (अपना नाम) → 🖨️ प्रिंटर, या लेबल टैब में ऊपर 🖨️"};
     const data=SE.printer.type==="tspl"?SE.tspl(cv,{gap:0}):canvasToEscPos(cv);
-    await N.BtPrinter.print({address:SE.printer.addr,data});return "bt"}
+    await SE.rawPrint(SE.printer.addr,data,"bill");return SE.isNative?"bt":"serial"}
   const url=cv.toDataURL("image/png");
   printHTMLWeb(`<!doctype html><html><head><meta charset="utf-8"><style>@page{size:${SE.printer.mm}mm auto;margin:0}body{margin:0}img{width:100%;display:block}</style></head><body><img src="${url}"></body></html>`);
   return "web";

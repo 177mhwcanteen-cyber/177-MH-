@@ -925,11 +925,11 @@ async function printLabels(){
   try{
     if(how==="a4"){const url=cv.toDataURL("image/png");const [w,h]=SIZES[L.size];
       await SE.printA4("बारकोड लेबल · "+sp.name,`<style>.lg{display:flex;flex-wrap:wrap;gap:2mm}.lg img{width:${w}mm;height:${h}mm;border:0.2mm dashed #bbb}</style><div class="lg">${Array.from({length:n},()=>`<img src="${url}">`).join("")}</div>`)}
-    else if(!SE.isNative){const url=cv.toDataURL("image/png");const [w,h]=SIZES[L.size];
+    else if(!SE.canDirect("label")){const url=cv.toDataURL("image/png");const [w,h]=SIZES[L.size];
       await SE.printA4("लेबल",`<style>@page{size:${w}mm ${h}mm;margin:0}body{margin:0}h1,.sub{display:none}img{width:${w}mm;height:${h}mm;display:block;page-break-after:always}</style>${Array.from({length:n},()=>`<img src="${url}">`).join("")}`)}
     else{const pr=SF.labelPrinter;if(!pr.addr)throw {msg:"इस फोन में लेबल प्रिंटर नहीं चुना — \"लेबल\" टैब में ऊपर 🖨️ प्रिंटर से चुनें"};
-      if(pr.type==="escpos"){const one=SE.escpos(cv);let all="";for(let i=0;i<n;i++)all+=atob(one);await SENative.BtPrinter.print({address:pr.addr,data:btoa(all)})}
-      else await SENative.BtPrinter.print({address:pr.addr,data:tspl(cv,L.size,n)});
+      if(pr.type==="escpos"){const one=SE.escpos(cv);let all="";for(let i=0;i<n;i++)all+=atob(one);await SE.rawPrint(pr.addr,btoa(all),"label")}
+      else await SE.rawPrint(pr.addr,tspl(cv,L.size,n),"label");
       toast("🏷️ "+n+" लेबल छप रहे हैं")}
     if(!S.demo)S.db.collection("labelLog").doc("l"+uid()).set({itemId:sp.it.id,name:sp.name,type:L.type,code:sp.code,price:sp.price,pack:sp.pack,exp:L.exp||"",copies:n,date:today(),ts:Date.now(),by:S.uid||"",byName:biller()}).catch(()=>{});
     // किराना: पैकेट की मात्रा याद रखो (मालिक के फोन से)
@@ -1020,7 +1020,7 @@ SF.batchA4=async function(mode){
 SF.labelSettingsHTML=function(noDesign){
   const pr=SF.labelPrinter;
   return `<div class="card2"><h3>🏷️ बारकोड लेबल प्रिंटर</h3>
-  <p class="note" style="margin:0">${SE.isNative?(pr.addr?`चुना हुआ: <b>${esc(pr.name)}</b> · ${pr.type==="escpos"?"रसीद वाला (ESC/POS)":"लेबल वाला (TSPL)"}`:"पहले फोन की Bluetooth सेटिंग में लेबल प्रिंटर pair करें।"):"लेबल प्रिंटर Android ऐप में चुना जाता है।"}</p>
+  <p class="note" style="margin:0">${SE.isNative?(pr.addr?`चुना हुआ: <b>${esc(pr.name)}</b> · ${pr.type==="escpos"?"रसीद वाला (ESC/POS)":"लेबल वाला (TSPL)"}`:"पहले फोन की Bluetooth सेटिंग में लेबल प्रिंटर pair करें।"):"फोन के ऐप में लेबल प्रिंटर यहीं चुना जाता है। लैपटॉप/कंप्यूटर पर नीचे वाले 💻 कार्ड से जोड़ें।"}</p>
   ${SE.isNative?`<div class="row2" style="margin:0"><button class="big ghost" data-lprn="tspl">लेबल प्रिंटर (TSC/Xprinter)</button><button class="big ghost" data-lprn="escpos">रसीद प्रिंटर पर लेबल</button></div><div class="lprnList" id="lprnList"></div>
   ${SF.lblRO()?`<p class="note" style="margin:0 0 6px">🔒 ये बारीक सेटिंग (गैप, उल्टा रंग, खिसकाना, गहराई) मालिक के फोन से सब फोन पर एक जैसी आती हैं — बदलनी हों तो विक्रम जी से कहें।</p>`:(typeof S!=="undefined"&&S.isOwner?`<p class="note" style="margin:0 0 6px">👑 यहाँ जो रखेंगे, वही सब साथियों के फोन पर लगेगा।</p>`:"")}
   <div class="row2" style="margin:0"><label class="fld">लेबल के बीच गैप (mm)<input class="inp" id="lGap" ${SF.lblRO()} inputmode="decimal" value="${esc(SE.lcfg("se_lgap")||"2")}"></label>

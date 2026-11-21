@@ -123,9 +123,9 @@ SRK.moveHTML=function(A){A=A||SRK.audit();return `<style>table{border-collapse:c
   <p style="font:10pt sans-serif">ले जाकर उस खाने का स्टिकर स्कैन करें, फिर सामान स्कैन करें — ऐप में जगह अपने-आप लग जाएगी।</p>`};
 SRK.codesOf=r=>{const d=RK[+r];if(!d)return [];return Array.from({length:d.n},(_,i)=>r+"-"+(i+1))};
 SRK.stickers=async function(codes){codes=(codes||[]).map(SRK.norm).filter(Boolean);if(!codes.length)return 0;if(codes.length>300){toast("एक बार में 300 तक");return 0}
-  const pr=window.SF&&SF.labelPrinter||{},nat=SE.isNative&&pr.addr&&typeof SENative!=="undefined";
+  const pr=window.SF&&SF.labelPrinter||{},nat=SE.canDirect("label")&&pr.addr;
   try{if(nat){let all="";for(const c of codes){const cv=SRK.stickerCanvas(c);all+=pr.type==="escpos"?atob(SE.escpos(cv)):atob(SE.tspl(cv,{wmm:50,hmm:25,copies:1}))}
-      await SENative.BtPrinter.print({address:pr.addr,data:btoa(all)})}
+      await SE.rawPrint(pr.addr,btoa(all),"label")}
     else await SE.printA4("खानों के स्टिकर · "+codes.length,`<style>.kg{display:flex;flex-wrap:wrap;gap:2mm}.kg img{width:50mm;height:25mm;border:0.2mm dashed #bbb}</style><div class="kg">${codes.map(c=>`<img src="${SRK.stickerCanvas(c).toDataURL("image/png")}">`).join("")}</div>`)}
   catch(e){toast(e.msg||"प्रिंट नहीं हुआ");return 0}
   toast("🏷️ "+codes.length+" खानों के स्टिकर छप रहे हैं");return codes.length};

@@ -205,12 +205,12 @@ SL.print=async function(rows){
   const sk=sizeKey(),[w,h]=SZ()[sk],cfg=SL.cfg(),how=LSl.get("se_lout")||"label";
   const jobs=rows.map(r=>({r,cv:SL.draw(SL.dataOf(r.it,r),cfg,sk)}));
   try{
-    if(how==="a4"||!SE.isNative){const imgs=[];jobs.forEach(j=>{const u=j.cv.toDataURL("image/png");for(let i=0;i<j.r.n;i++)imgs.push(u)});
+    if(how==="a4"||!SE.canDirect("label")){const imgs=[];jobs.forEach(j=>{const u=j.cv.toDataURL("image/png");for(let i=0;i<j.r.n;i++)imgs.push(u)});
       if(how==="a4")await SE.printA4("बारकोड स्टिकर · "+total+" लेबल",`<style>.lg{display:flex;flex-wrap:wrap;gap:2mm}.lg img{width:${w}mm;height:${h}mm;border:0.2mm dashed #bbb}</style><div class="lg">${imgs.map(u=>`<img src="${u}">`).join("")}</div>`);
       else await SE.printA4("लेबल",`<style>@page{size:${w}mm ${h}mm;margin:0}body{margin:0}h1,.sub{display:none}img{width:${w}mm;height:${h}mm;display:block;page-break-after:always}</style>${imgs.map(u=>`<img src="${u}">`).join("")}`)}
     else{const pr=SF.labelPrinter;if(!pr.addr)throw {msg:"इस फोन में लेबल प्रिंटर नहीं चुना — ऊपर 🖨️ प्रिंटर से चुनें"};let all="";
       for(const j of jobs){if(pr.type==="escpos"){const one=atob(SE.escpos(j.cv));for(let i=0;i<j.r.n;i++)all+=one}else all+=atob(SE.tspl(j.cv,{wmm:w,hmm:h,copies:j.r.n}))}
-      await SENative.BtPrinter.print({address:pr.addr,data:btoa(all)})}
+      await SE.rawPrint(pr.addr,btoa(all),"label")}
     toast("🏷️ "+total+" लेबल छप रहे हैं");
     await SL.markDone(rows.map(r=>({id:r.id,n:r.n})));
     if(!S.demo)S.db.collection("labelLog").doc("l"+uid()).set({batch:"list",items:rows.map(r=>({id:r.id,name:r.it.name,n:r.n})),copies:total,style:cfg.style,size:sk,date:today(),ts:Date.now(),by:S.uid||"",byName:biller()}).catch(()=>{});
