@@ -685,7 +685,7 @@ SE.autoUpdateLoop=function(toast){if(SE._loop)return;SE._loop=1;
 SE.applyUpdateNow=async()=>{if(SE._pendingBundle)try{_markTry(SE._pendingBundle.version||"");await N.CapacitorUpdater.set({id:SE._pendingBundle.id})}catch(e){}};
 
 /* वेब (Chrome) के लिए ऑफ़लाइन कैश */
-if(!SE.isNative&&"serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+if(!SE.isNative&&"serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
 })();
 
 /* 🏷️ दुकान का नाम (विक्रम जी, 12-11-2026): हर जगह "177 वेट कैंटीन / 177 WET CANTEEN", पता सिर्फ़ "बाड़मेर" — पुरानी सेटिंग में सेव नाम भी दिखाते समय ऐसे ही (डेटा दोबारा नहीं लिखते) */

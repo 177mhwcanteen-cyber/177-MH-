@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>177 वेट कैंटीन — ग्राहक स्क्रीन</title>
+<!-- 🖥️ ग्राहक स्क्रीन (21-11-2026): लैपटॉप की दूसरी स्क्रीन/खिड़की पर — बिलिंग वाले ऐप से BroadcastChannel("se-cust") से सामान, कुल, बचत, UPI QR।
+     नेट की ज़रूरत नहीं (एक ही कंप्यूटर की खिड़कियाँ आपस में बात करती हैं)। F11 = पूरी स्क्रीन। -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{--g:#0f5132;--g2:#16a34a;--bg:#f4f7f2;--ink:#0f172a;--mut:#64748b}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Mukta","Noto Sans Devanagari",system-ui,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;background:var(--g);color:#fff}
+header h1{margin:0;font:800 30px/1.1 "Baloo 2","Mukta",sans-serif}header span{opacity:.85;font-size:18px}
+main{display:grid;grid-template-columns:1fr 360px;gap:22px;padding:22px 26px;height:calc(100% - 74px)}
+.list{background:#fff;border-radius:20px;box-shadow:0 6px 24px rgba(15,23,42,.06);overflow:auto;padding:8px 18px}
+.r{display:grid;grid-template-columns:1fr 110px 130px;gap:10px;align-items:baseline;padding:12px 4px;border-bottom:1px dashed #e2e8f0;font-size:24px}
+.r b{font-weight:700}.r .q{color:var(--mut);text-align:center}.r .a{text-align:right;font-weight:800}
+.r.new{animation:fl 1.2s ease}@keyframes fl{from{background:#dcfce7}to{background:transparent}}
+.side{display:flex;flex-direction:column;gap:16px}
+.tot{background:var(--g);color:#fff;border-radius:20px;padding:20px 22px}.tot span{font-size:20px;opacity:.85}.tot b{display:block;font:800 64px/1.05 "Baloo 2",sans-serif}
+.sv{background:#dcfce7;color:#166534;border-radius:14px;padding:10px 16px;font-size:22px;font-weight:700;text-align:center}
+.qr{background:#fff;border-radius:20px;padding:16px;text-align:center}.qr #qr{display:inline-block}.qr p{margin:8px 0 0;font-size:18px;color:var(--mut)}
+.idle,.thanks{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.idle h2,.thanks h2{font:800 64px/1.1 "Baloo 2",sans-serif;margin:0;color:var(--g)}.idle p,.thanks p{font-size:28px;color:var(--mut);margin:12px 0 0}
+.thanks h2{color:var(--g2)}.thanks b{font:800 54px "Baloo 2",sans-serif}
+.empty{color:var(--mut);text-align:center;font-size:22px;margin-top:40px}
+#hint{position:fixed;bottom:8px;right:14px;font-size:13px;color:var(--mut)}
+</style></head><body>
+<header><h1>🛒 177 वेट कैंटीन</h1><span id="clk"></span></header>
+<main id="m"><div class="idle"><h2>स्वागत है 🙏</h2><p>177 MH वेट कैंटीन, आकाशवाणी रोड, बाड़मेर</p></div></main>
+<div id="hint">F11 = पूरी स्क्रीन</div>
+<script src="lib/qrcode.min.js"></script>
+<script>
+"use strict";
+const $=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rs=n=>"₹"+(Math.round(+n*100)/100).toLocaleString("en-IN");
+let last=null,prevIds=[],thanksT=0;
+function draw(d){last=d;const m=$("#m");
+  if(!d||d.state==="idle"||(!d.lines||!d.lines.length)&&d.state!=="paid"){if(Date.now()<thanksT)return;m.innerHTML=`<div class="idle"><h2>स्वागत है 🙏</h2><p>177 MH वेट कैंटीन, आकाशवाणी रोड, बाड़मेर</p></div>`;prevIds=[];return}
+  if(d.state==="paid"){thanksT=Date.now()+9000;m.innerHTML=`<div class="thanks"><h2>धन्यवाद! 🙏</h2><p>बिल नं. ${esc(d.no||"")}</p><b>${rs(d.total)}</b>${d.saved>0?`<p>आज आपकी बचत ${rs(d.saved)} 🎉</p>`:""}<p>फिर पधारें</p></div>`;prevIds=[];setTimeout(()=>{if(Date.now()>=thanksT)draw({state:"idle"})},9200);return}
+  thanksT=0;const ids=d.lines.map(l=>l.k);
+  m.innerHTML=`<div class="list">${d.lines.map(l=>`<div class="r${prevIds.includes(l.k)?"":" new"}"><b>${esc(l.n)}</b><span class="q">${esc(l.q)}</span><span class="a">${rs(l.a)}</span></div>`).join("")}</div>
+   <div class="side"><div class="tot"><span>${d.lines.length} सामान · कुल</span><b>${rs(d.total)}</b></div>${d.saved>0?`<div class="sv">🎉 MRP से बचत ${rs(d.saved)}</div>`:""}
+   ${d.upi?`<div class="qr"><div id="qr"></div><p>📱 UPI से ${rs(d.total)} दें · ${esc(d.payee||"")}</p></div>`:""}</div>`;
+  if(d.upi&&window.QRCode){try{new QRCode($("#qr"),{text:d.upi,width:230,height:230,correctLevel:QRCode.CorrectLevel.M})}catch(e){}}
+  const L=$(".list");if(L)L.scrollTop=L.scrollHeight;prevIds=ids}
+try{const bc=new BroadcastChannel("se-cust");bc.onmessage=e=>draw(e.data);bc.postMessage({hello:1})}catch(e){$("#m").innerHTML='<p class="empty">यह ब्राउज़र ग्राहक-स्क्रीन नहीं चलाता — Chrome/Edge खोलें</p>'}
+try{const s=JSON.parse(localStorage.getItem("se_cust_last")||"null");if(s&&Date.now()-s.t<5*60000)draw(s.d)}catch(e){}
+const tick=()=>{$("#clk").textContent=new Date().toLocaleString("hi-IN",{weekday:"short",hour:"2-digit",minute:"2-digit"})};tick();setInterval(tick,20000);
+document.addEventListener("keydown",e=>{if(e.key==="F11"){e.preventDefault();try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(x){}}});
+</script></body></html>

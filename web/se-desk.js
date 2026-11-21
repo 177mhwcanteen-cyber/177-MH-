@@ -67,5 +67,49 @@ SDK.test=async function(r){const cv=document.createElement("canvas"),W=r==="bill
   const t=LSd.get("se_lbl_t")||"tspl";return SDK.send("label",t==="escpos"?SE.escpos(cv):SE.tspl(cv,{wmm:50,hmm:30}))};
 /* ⌨️ लैपटॉप पर कीबोर्ड: F2 = खोज, (F9 बिल / Esc पहले से index.html में) */
 document.addEventListener("keydown",e=>{if(e.key==="F2"){const q=document.getElementById("q");if(q){e.preventDefault();q.focus();q.select&&q.select()}}});
-const css=document.createElement("style");css.textContent=`.sdk-r{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0;border-top:1px dashed var(--line,#e5e7eb)}.sdk-r>b{min-width:58px}.sdk-r>span{flex:1;min-width:120px;font-size:13px;color:var(--muted)}`;document.head.appendChild(css);
+/* 🖥️ ग्राहक स्क्रीन (display.html) — BroadcastChannel; चालू बिल बदलते ही भेजो, बिल सेव होते ही "धन्यवाद" */
+let bc=null;try{if(!(window.SE&&SE.isNative))bc=new BroadcastChannel("se-cust")}catch(e){}
+SDK.custState=function(){try{if(typeof S==="undefined"||S.tab!=="bill")return {state:"idle"};const L=S.cart||[];if(!L.length)return {state:"idle"};
+  const tot=Math.round(cartTotal()*100)/100,inst=S.mode==="inst";
+  return {state:"cart",lines:L.map((l,i)=>({k:l.id+":"+i,n:l.name,/* बिल वाला नाम — तम्बाकू पर "Misc Item" ही */q:typeof fq==="function"?fq(l.qty,l.unit):l.qty,a:l.amt})),total:inst?tot:Math.round(tot),
+    saved:inst?0:(typeof savedOf==="function"?savedOf({mode:S.mode,lines:L}):0),
+    upi:!inst&&tot>0&&typeof upiId==="function"&&upiId()?`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}&am=${Math.round(tot).toFixed(2)}&cu=INR&tn=${encodeURIComponent("177 Wet Canteen")}`:"",payee:typeof UPI_FIXED!=="undefined"?UPI_FIXED.payee:""}}catch(e){return {state:"idle"}}};
+SDK.custPost=function(d){if(!bc)return;try{bc.postMessage(d);localStorage.setItem("se_cust_last",JSON.stringify({t:Date.now(),d}))}catch(e){}};
+let lastJ="";SDK.custPush=function(){const d=SDK.custState(),j=JSON.stringify(d);if(j===lastJ)return;lastJ=j;SDK.custPost(d)};
+if(bc)bc.onmessage=e=>{if(e.data&&e.data.hello){lastJ="";SDK.custPush()}};
+SDK.custOpen=function(){const w=window.open("display.html","se_cust","popup,width=1000,height=700");if(!w){toast("पॉप-अप रुका — पते की पट्टी में 'पॉप-अप चालू करें' दबाएँ");return}setTimeout(()=>{lastJ="";SDK.custPush()},800);
+  toast("🖥️ ग्राहक स्क्रीन खुली — उसे दूसरी स्क्रीन पर खींचें, F11 दबाएँ")};
+let paidNo="";SDK.custPaid=function(b){try{if(!b||!b.no||paidNo===b.no)return;paidNo=b.no;lastJ="";const tot=+b.total||+b.net||0;
+  SDK.custPost({state:"paid",no:b.no,total:tot,saved:typeof savedOf==="function"?savedOf(b):0})}catch(e){}};
+/* index.html के फ़ंक्शन लपेटो (वहीं के global function, बदलना ज़रूरी नहीं) */
+function wrap(n,after){const f=window[n];if(typeof f!=="function"||f.__sdk)return;const g=function(){const r=f.apply(this,arguments);try{after.apply(this,arguments)}catch(e){}return r};g.__sdk=1;window[n]=g}
+function sideBtn(){if(!bc)return;const h=document.querySelector("#side .sdh");if(h&&!h.querySelector("[data-sdkcust]")){const b=document.createElement("button");b.type="button";b.className="sdk-cb";b.dataset.sdkcust="1";b.title="ग्राहक को सामान और कुल दिखाएँ (F10)";b.textContent="🖥️ ग्राहक स्क्रीन";h.appendChild(b)}
+  const l=document.querySelector("#side .sdl");if(l&&!document.querySelector("#side .sdk-keys")){const k=document.createElement("div");k.className="sdk-keys";k.innerHTML="<kbd>F2</kbd> खोज · <kbd>+</kbd>/<kbd>−</kbd> मात्रा · <kbd>Del</kbd> हटाएँ · <kbd>F9</kbd> बिल · <kbd>F10</kbd> ग्राहक स्क्रीन · <kbd>F1</kbd> मदद";l.after(k)}}
+setTimeout(()=>{wrap("renderSide",()=>{SDK.custPush();sideBtn()});wrap("showReceipt",(b,fresh)=>{if(fresh)SDK.custPaid(b)});wrap("quickDone",b=>SDK.custPaid(b));wrap("showTab",()=>SDK.custPush());try{sideBtn()}catch(e){}},0);
+document.addEventListener("click",e=>{if(e.target.closest("[data-sdkcust]"))SDK.custOpen()});
+/* ⌨️ पूरे कीबोर्ड से बिल (लैपटॉप) */
+SDK.help=function(){const o=document.getElementById("sdkHelp");if(o){o.remove();return}const d=document.createElement("div");d.id="sdkHelp";d.setAttribute("role","dialog");d.setAttribute("aria-label","कीबोर्ड की कुंजियाँ");
+  d.innerHTML=`<div class="sdk-hb"><h3>⌨️ लैपटॉप पर बिलिंग — कुंजियाँ</h3><table>${[["F2 या /","सामान खोजें (नाम / 4 अंक कोड / बारकोड)"],["Enter","खोज में एक ही सामान मिले तो बिल में जोड़ें · \"5*कोड\" = 5 नग"],["+ / −","आख़िरी सामान की मात्रा एक बढ़ाएँ / घटाएँ"],["Delete","आख़िरी सामान हटाएँ"],["F4","ग्राहक का मोबाइल नंबर"],["F9 या Ctrl+Enter","बिल बनाएँ → फिर से दबाएँ = सेव"],["F10","ग्राहक स्क्रीन (दूसरी स्क्रीन पर)"],["Esc","खिड़की बंद"],["F1","यह मदद"]].map(r=>`<tr><td><kbd>${r[0]}</kbd></td><td>${r[1]}</td></tr>`).join("")}</table><button type="button" class="big" onclick="this.closest('#sdkHelp').remove()">ठीक</button></div>`;
+  document.body.appendChild(d);d.addEventListener("click",e=>{if(e.target===d)d.remove()})};
+document.addEventListener("keydown",e=>{if(typeof S==="undefined")return;const t=e.target,inInput=t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.tagName==="SELECT"),sheetOpen=!!(document.getElementById("sheet")||{}).innerHTML?.trim();
+  if(e.key==="F1"){e.preventDefault();SDK.help();return}
+  if(e.key==="Escape"&&document.getElementById("sdkHelp")){document.getElementById("sdkHelp").remove();return}
+  if(S.tab!=="bill"||sheetOpen)return;
+  if(e.key==="F10"){e.preventDefault();SDK.custOpen();return}
+  if(e.key==="F4"){const c=document.getElementById("custPh");if(c){e.preventDefault();c.focus()}return}
+  const qEmpty=t&&t.id==="q"&&!String(t.value||"").trim();if(inInput&&!qEmpty)return;
+  const L=S.cart||[];if(!L.length)return;const i=L.length-1,l=L[i];
+  if(e.key==="+"||e.key==="="){const b=document.querySelector(`#side [data-sinc="${CSS.escape(l.id)}"]`);if(b){e.preventDefault();b.click()}return}
+  if(e.key==="-"){const b=document.querySelector(`#side [data-sdec="${CSS.escape(l.id)}"]`);if(b){e.preventDefault();b.click()}return}
+  if(e.key==="Delete"){const b=document.querySelector(`#side [data-sdel="${i}"]`);if(b){e.preventDefault();b.click()}}});
+/* 🔄 लैपटॉप पर नया वर्ज़न (sw.js बदला): खाली बिल हो तो चुपचाप ताज़ा, वरना बताओ */
+try{if(!(window.SE&&SE.isNative)&&navigator.serviceWorker){let had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(!had){had=true;return}
+  const busy=typeof S!=="undefined"&&((S.cart||[]).length||(document.getElementById("sheet")||{}).innerHTML?.trim());if(!busy)location.reload();else toast("🔄 ऐप का नया वर्ज़न आया — यह बिल पूरा होने के बाद F5 दबाएँ")})}}catch(e){}
+const css=document.createElement("style");css.textContent=`.sdk-r{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0;border-top:1px dashed var(--line,#e5e7eb)}.sdk-r>b{min-width:58px}.sdk-r>span{flex:1;min-width:120px;font-size:13px;color:var(--muted)}
+.sdk-cb{border:1px solid var(--line,#e2e8f0);background:var(--surface,#fff);border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.sdk-keys{padding:6px 12px;font-size:11.5px;color:var(--muted,#64748b);border-top:1px dashed var(--line,#e2e8f0);line-height:1.8}
+kbd{display:inline-block;min-width:18px;padding:0 5px;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;background:#f8fafc;font:700 11px/1.5 monospace;text-align:center;color:#0f172a}
+#sdkHelp{position:fixed;inset:0;z-index:99;background:rgba(15,23,42,.45);display:grid;place-items:center;padding:16px}
+.sdk-hb{background:var(--surface,#fff);border-radius:18px;padding:18px 20px;max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)}.sdk-hb h3{margin:0 0 10px}
+.sdk-hb table{width:100%;border-collapse:collapse;margin-bottom:12px}.sdk-hb td{padding:7px 6px;border-bottom:1px dashed var(--line,#e2e8f0);font-size:15px}.sdk-hb td:first-child{white-space:nowrap;width:1%}`;document.head.appendChild(css);
 })();

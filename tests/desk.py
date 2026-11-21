@@ -10,7 +10,7 @@ async def main():
     srv = subprocess.Popen([sys.executable, "-m", "http.server", "8799"], cwd=WWW, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
     try:
         async with async_playwright() as p:
-            b = await p.chromium.launch(); pg = await b.new_page(viewport={"width": 1366, "height": 768})
+            b = await p.chromium.launch(); ctx = await b.new_context(viewport={"width": 1366, "height": 768}); pg = await ctx.new_page()
             errs = []; pg.on("pageerror", lambda e: errs.append(str(e)))
             await pg.add_init_script(FAKE)
             await pg.route("**/config.js", lambda r: r.fulfill(body="window.SE_CONFIG={};", content_type="application/javascript"))
@@ -37,6 +37,32 @@ async def main():
             assert await pg.evaluate("[SDK.has('bill'),SE.canDirect('bill'),SE.printer.addr]") == [False, False, ""]
             # ⌨️ F2 = खोज
             await pg.evaluate("S.tab='bill';showTab()"); await pg.keyboard.press("F2"); assert await pg.evaluate("document.activeElement.id") == "q"
+            # 🖥️ ग्राहक स्क्रीन: बिल में सामान → दूसरी खिड़की में सामान + कुल + UPI QR; सेव → धन्यवाद
+            disp = await pg.context.new_page(); await disp.goto("http://localhost:8799/display.html"); await disp.wait_for_timeout(400)
+            await pg.evaluate("S.tab='bill';showTab()"); await pg.wait_for_timeout(200)
+            await pg.evaluate("(()=>{const L=S.items.filter(i=>i.unit==='pc'||!i.unit).slice(0,2);L.forEach((it,k)=>{it.sale=it.sale||(k?25:40);it.mrp=it.mrp||(k?30:40);quickAdd(it,k+1)})})()"); await pg.wait_for_timeout(400)
+            await pg.evaluate("closeSheet()")
+            assert await pg.evaluate("S.cart.length") >= 1
+            await disp.wait_for_timeout(500); t = await disp.inner_text("main")
+            assert "कुल" in t and await disp.locator("#qr canvas, #qr img").count() >= 1, t[:200]
+            assert await pg.locator("#side [data-sdkcust]").count() == 1 and await pg.locator("#side .sdk-keys").count() == 1
+            # ⌨️ + / − / Delete आख़िरी सामान पर
+            q0 = await pg.evaluate("S.cart[S.cart.length-1].qty"); await pg.evaluate("document.activeElement.blur()")
+            await pg.keyboard.press("+"); await pg.wait_for_timeout(200)
+            if await pg.evaluate("!!document.querySelector('#side [data-sinc]')"): assert await pg.evaluate("S.cart[S.cart.length-1].qty") == q0 + 1
+            await pg.screenshot(path=f"{SHOTS}/desk-bill.png"); await disp.screenshot(path=f"{SHOTS}/desk-display.png")
+            await pg.evaluate("SDK.custPaid({no:'T-9',total:120,lines:[]})"); await disp.wait_for_timeout(400)
+            assert "धन्यवाद" in await disp.inner_text("main")
+            await pg.keyboard.press("Delete"); await pg.wait_for_timeout(200)
+            await pg.keyboard.press("F1"); assert await pg.locator("#sdkHelp").count() == 1; await pg.keyboard.press("Escape"); assert await pg.locator("#sdkHelp").count() == 0
+            assert not errs, errs
+            # 📴 बिना इंटरनेट: दोबारा खोलें तो भी ऐप खुले (sw.js कैश)
+            await pg.evaluate("navigator.serviceWorker.ready.then(()=>1)"); await pg.wait_for_timeout(1500)
+            await pg.reload(); await pg.wait_for_timeout(1500)
+            await pg.context.set_offline(True); await pg.reload(); await pg.wait_for_timeout(2000)
+            assert await pg.locator("#q").count() == 1 and await pg.evaluate("typeof SDK==='object'"), "ऑफ़लाइन खुला नहीं"
+            d2 = await pg.context.new_page(); await d2.goto("http://localhost:8799/display.html"); assert "177" in await d2.inner_text("header")
+            await pg.context.set_offline(False)
             assert not errs, errs; await b.close()
     finally: srv.kill()
     print("✅ लैपटॉप टेस्ट पास")
