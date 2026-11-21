@@ -1,0 +1,28 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261121-02",
+ "date": "2026-11-21",
+ "by": "विक्रम जी (चैट)",
+ "note": "साबुत धनिया 200G (गिनती बाद में)",
+ "items": [
+  {
+   "id": "g-sabut-dhaniya-200-g-loose",
+   "name": "SABUT DHANIYA 200 G",
+   "short": "SABUT DHANIYA 200G",
+   "hi": "साबुत धनिया 200 ग्राम",
+   "size": "200g",
+   "alias": "dhaniya sabut coriander seeds whole dhania धनिया",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-10",
+   "ph": "3328bdb5"
+  }
+ ]
+}
