@@ -1,0 +1,143 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261121-01",
+ "date": "2026-11-21",
+ "by": "विक्रम जी (चैट)",
+ "note": "21-11 जमा: चिक्की, मूंग दाल, Lotus On&On, किशमिश की गिनती",
+ "items": [
+  {
+   "id": "g-gur-sing-chikki-250-g-box",
+   "name": "GUR SING CHIKKI 250 G (JAY KISAN)",
+   "short": "GUR SING CHIKKI 250G",
+   "hi": "गुड़ सिंग चिक्की 250 ग्राम",
+   "brand": "JAY KISAN",
+   "size": "250g",
+   "alias": "chikki chiki peanut moongfali gur jay kisan चिक्की",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "mrp": 70,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "f380957f",
+   "open": {
+    "qty": 32,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-gur-sing-chikki-500-g-box",
+   "name": "GUR SING CHIKKI 500 G (JAY KISAN)",
+   "short": "GUR SING CHIKKI 500G",
+   "hi": "गुड़ सिंग चिक्की 500 ग्राम",
+   "brand": "JAY KISAN",
+   "size": "500g",
+   "alias": "chikki chiki peanut moongfali gur jay kisan चिक्की",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "mrp": 130,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "8dd7a90d",
+   "open": {
+    "qty": 13,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-yellow-moong-dal-500-g-loose",
+   "name": "YELLOW MOONG DAL 500 G",
+   "short": "MOONG DAL YELLOW 500G",
+   "hi": "पीली मूंग दाल 500 ग्राम",
+   "size": "500g",
+   "alias": "moong dal mogar dhuli yellow मूंग दाल",
+   "cat": "kirana",
+   "sub": "dal",
+   "unit": "pc",
+   "mrp": 70,
+   "sale": 70,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-10",
+   "ph": "922b4780",
+   "open": {
+    "qty": 13,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-peanut-chikki-box-krishna",
+   "name": "PEANUT CHIKKI BOX (KRISHNA)",
+   "short": "PEANUT CHIKKI BOX",
+   "hi": "पीनट चिक्की डिब्बा",
+   "alias": "chikki peanut krishna shyam kripa gajak चिक्की",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "mrp": 150,
+   "sale": 120,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "11faee2c",
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-lotus-on-on-16-5-g-pc",
+   "name": "LOTUS ON & ON CHOCO GEMS 16.5 G",
+   "short": "LOTUS ON&ON 16.5G",
+   "hi": "लोटस ऑन एंड ऑन ₹10",
+   "brand": "LOTUS",
+   "size": "16.5g",
+   "alias": "on and on gems lotus chocolate rs 10 ऑन",
+   "cat": "kirana",
+   "sub": "chocolate",
+   "unit": "pc",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "dba4cb16",
+   "open": {
+    "qty": 62,
+    "exp": "2027-07",
+    "batchNo": "L260807"
+   }
+  },
+  {
+   "id": "b8906079510452",
+   "name": "20-20 HEALTHY RAISINS ABJOSH CLASSIC 250 G BOX",
+   "short": "20-20 ABJOSH RAISIN 250G",
+   "size": "250g",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510452",
+   "mrp": 0,
+   "sale": 209,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "8-5",
+   "open": {
+    "qty": 23,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
