@@ -1,0 +1,124 @@
+{
+ "app": "ok",
+ "appNote": "22-11: खेप S-20261122-06 से माल स्टॉक में (काजू W-300 +48, अखरोट +24, चिया +30, अंजीर डेली +24, अंजीर सिल्वर 500 +12); पिस्ता 24 व गोल्डन खजूर 20 पहले की खेप में; किशमिश लाल 40 व अंजीर सिल्वर 250 (24) नए। काजू टिन बाकी।",
+ "ask": [
+  "भुगतान कैसे/कब (₹68,480)?",
+  "CASHEW TIN 20 kg — ऐप में कैसे बिकता है, भाव ₹/kg?",
+  "W-300 POUCH = ऐप का '20-20 CASHEW CHOICE PREMIUM QUALITY 250 G' माना — पक्का करें",
+  "ANJEER SILVER 250G — MRP, बारकोड, रैक?"
+ ],
+ "buyer": "177,M.H WET CANTEEN",
+ "byName": "विक्रम जी",
+ "date": "2026-11-21",
+ "freight": 210,
+ "gst": 0,
+ "no": "JU/26-27/2813",
+ "note": "GST 5% रेट में शामिल (₹3,260.96), e-Way 781691752958, 88 kg, NAG 5 via VIRATRA, LABOUR ₹200+GST = freight 210, round off +0.08",
+ "paid": 0,
+ "pay": "?",
+ "src": "chat",
+ "sup": "LAKECITY DRY FRUITS PVT. LTD.",
+ "supAddr": "W-12,13 कृषि उपज मंडी, मंडोर रोड, जोधपुर · GSTIN 08AABCL4708Q2Z1",
+ "total": 68480,
+ "lines": [
+  {
+   "nm": "20-20 PISTA DODI IRANI 250G",
+   "qty": 6,
+   "u": "kg",
+   "rate": 1685,
+   "amt": 10110,
+   "fit": {
+    "b8906079510162": 0.25
+   }
+  },
+  {
+   "nm": "20-20 KISHMISH REG (INDIAN) 250G",
+   "qty": 10,
+   "u": "kg",
+   "rate": 505,
+   "amt": 5050,
+   "fit": {
+    "g-2020-raisins-regular-250-g": 0.25
+   }
+  },
+  {
+   "nm": "20-20 W-300 POUCH 250G",
+   "qty": 12,
+   "u": "kg",
+   "rate": 920,
+   "amt": 11040,
+   "fit": {
+    "b8906079510261": 0.25
+   }
+  },
+  {
+   "nm": "20-20 BRAIN NUT 250G",
+   "qty": 6,
+   "u": "kg",
+   "rate": 1170,
+   "amt": 7020,
+   "fit": {
+    "b8906079510872": 0.25
+   }
+  },
+  {
+   "nm": "20-20 CHIA SEED 200G JAR",
+   "qty": 6,
+   "u": "kg",
+   "rate": 330,
+   "amt": 1980,
+   "fit": {
+    "b8906079510834": 0.2
+   }
+  },
+  {
+   "nm": "20-20 ANJEER DAILY NEED 250G",
+   "qty": 6,
+   "u": "kg",
+   "rate": 720,
+   "amt": 4320,
+   "fit": {
+    "b8906079510520": 0.25
+   }
+  },
+  {
+   "nm": "20-20 ANJEER SILVER 250G",
+   "qty": 6,
+   "u": "kg",
+   "rate": 820,
+   "amt": 4920,
+   "fit": {
+    "g-2020-anjeer-silver-250-g": 0.25
+   }
+  },
+  {
+   "nm": "20-20 ANJEER SILVER 500G",
+   "qty": 6,
+   "u": "kg",
+   "rate": 830,
+   "amt": 4980,
+   "fit": {
+    "b8906079510063": 0.5
+   }
+  },
+  {
+   "nm": "20-20 DATES ZAHIDI (GOLDEN) 500G",
+   "qty": 10,
+   "u": "kg",
+   "rate": 185,
+   "amt": 1850,
+   "fit": {
+    "g-2020-golden-dates-500-g": 0.5
+   }
+  },
+  {
+   "nm": "CASHEW TIN",
+   "qty": 20,
+   "u": "kg",
+   "rate": 850,
+   "amt": 17000,
+   "ask": "2 टिन — ऐप में कैसे बिकता है?"
+  }
+ ],
+ "_pending": "बही-आर्टिफैक्ट में चढ़ाना बाकी (इस खाते से पेज नहीं खुला)"
+}
