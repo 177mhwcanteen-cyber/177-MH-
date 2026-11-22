@@ -1,0 +1,34 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-02",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "20-20 गोल्डन खजूर 500G — कंपनी बारकोड 8906079510872 ऐप में अखरोट पर दर्ज, इसलिए अपना बारकोड (लेबल छापकर कंपनी वाले पर चिपकाना)",
+ "items": [
+  {
+   "id": "g-2020-golden-dates-500-g",
+   "name": "20-20 GOLDEN DATES 500 G",
+   "short": "GOLDEN DATES 500G",
+   "hi": "20-20 गोल्डन खजूर 500 ग्राम",
+   "brand": "20-20",
+   "size": "500g",
+   "alias": "khajoor khajur dates golden 20-20 खजूर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 150,
+   "sale": 150,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-8",
+   "ph": "e1b1c26d",
+   "open": {
+    "qty": 20,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
