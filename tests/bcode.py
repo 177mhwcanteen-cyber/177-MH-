@@ -127,6 +127,13 @@ async def main():
         assert await pg.evaluate(f"S.cart.some(l=>l.id==='{ids[1]}')"), "चुना सामान बिल में"
         assert await pg.evaluate("findByCode('8901111222233')") is None
         assert await pg.evaluate(f"SF.itemCode(item('{ids[0]}'))") != "8901111222233", "लेबल पर अपना कोड"
+        # ✏️ भाव बदलने का मोड: स्कैन = भाव की शीट, बिल में नहीं जुड़े
+        await pg.evaluate("closeSheet&&closeSheet()")
+        await pg.evaluate(f"item('{ids[1]}').barcode='8901111222240';S.cart=[];S.rateMode=true;renderBill()")
+        await pg.evaluate("handleScan('8901111222240')"); await pg.wait_for_timeout(300)
+        assert await pg.locator("#sheet #rnIn").count() == 1, "भाव की शीट खुले"
+        assert await pg.evaluate("S.cart.length") == 0, "भाव-मोड में स्कैन से बिल न बने"
+        await pg.evaluate("closeSheet();S.rateMode=false;renderBill()")
         await br.close()
     assert not errs, errs
     print("✅ बारकोड-पहरा टेस्ट पास")

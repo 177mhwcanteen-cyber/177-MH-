@@ -1788,6 +1788,9 @@ async function handleScan(code){
   if(S.tab==="kharid"&&window.SI&&SI.active()&&SI.scan(code))return;
   if(window.SO&&SO.active()){const it=findByCode(code);beep(!!it);if(!it){unknownCode(code);return}SO.scan(it);return}
   if(S.tab==="mkt"&&window.SM&&SM.scan(code))return;
+  if(S.rateMode&&!S.scanIn&&window.SR&&SR.rateSheet){/* ✏️ भाव बदलने का मोड: स्कैन = उस सामान का भाव बदलें, बिल में नहीं (22-11) */
+    let rt=findByCode(code);if(!rt&&window.SF&&SF.parseVW){const v=SF.parseVW(code);if(v&&!v.bad)rt=v.it}
+    beep(!!rt);if(!rt){unknownCode(code);return}if(S.tab!=="bill"){S.tab="bill";showTab()}SR.rateSheet(rt);return}
   const vw=window.SF&&!S.scanIn&&!findByCode(code)?SF.parseVW(code):null;
   if(vw){if(vw.bad){beep(false);toast("लेबल का सामान (कोड "+vw.plu+") लिस्ट में नहीं");return}
     if(S.tab!=="bill"){S.tab="bill";showTab()}if(vw.it.active===false){toast(vw.it.name+" अभी बंद है");return}if(!(priceOf(vw.it)>0)){toast(vw.it.name+" का रेट नहीं डाला गया");return}
