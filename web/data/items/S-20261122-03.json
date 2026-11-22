@@ -1,0 +1,33 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-03",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "20-20 पिस्ता — 3600 के बाद; रैक बाद में बताना",
+ "items": [
+  {
+   "id": "b8906079510162",
+   "name": "20-20 DIVINE ROASTED & SALTED PISTACHIOS",
+   "short": "PISTACHIOS ROASTED SALTE",
+   "hi": "20-20 पिस्ता भुना नमकीन",
+   "brand": "20-20",
+   "alias": "pista pistachio 20-20 पिस्ता",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510162",
+   "mrp": 599,
+   "sale": 599,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "51954933",
+   "open": {
+    "qty": 24,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
