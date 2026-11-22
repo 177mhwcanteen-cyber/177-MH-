@@ -117,6 +117,16 @@ async def main():
         assert await pg.evaluate(f"item('{own_id}').barcode") == "2000000107509,8939119455734"
         assert await pg.evaluate(f"[findByCode('8939119455734').id,findByCode('2000000107509').id]") == [own_id, own_id]
         assert await pg.evaluate(f"SF.itemCode(item('{own_id}'))") == "2000000107509", "लेबल पर दुकान वाला ही छपे"
+        # ⚠️ एक कंपनी-बारकोड दो सामान पर → स्कैन पर "कौन सा?" पूछे, लेबल पर अपना कोड
+        await pg.evaluate("closeSheet&&closeSheet()")
+        ids = await pg.evaluate("""(()=>{const a=S.items.filter(i=>!i.virtual&&i.active!==false&&isPc(i.unit)&&!isTob(i)&&priceOf(i)>0).slice(1,3);a[0].barcode='8901111222233';S.settings.dupc={'8901111222233':[a[0].id,a[1].id]};return a.map(i=>i.id)})()""")
+        await pg.evaluate("S.cart=[];S.tab='bill';showTab()")
+        await pg.evaluate("handleScan('8901111222233')"); await pg.wait_for_timeout(300)
+        assert await pg.locator("#sheet [data-dupk]").count() == 2, "दोनों सामान पूछे"
+        await pg.click(f'#sheet [data-dupk="{ids[1]}"]'); await pg.wait_for_timeout(300)
+        assert await pg.evaluate(f"S.cart.some(l=>l.id==='{ids[1]}')"), "चुना सामान बिल में"
+        assert await pg.evaluate("findByCode('8901111222233')") is None
+        assert await pg.evaluate(f"SF.itemCode(item('{ids[0]}'))") != "8901111222233", "लेबल पर अपना कोड"
         await br.close()
     assert not errs, errs
     print("✅ बारकोड-पहरा टेस्ट पास")

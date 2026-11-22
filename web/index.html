@@ -3,6 +3,7 @@
 .pkb{display:flex;flex-direction:column;align-items:center;gap:1px;padding:12px 6px;border-radius:14px;border:2px solid var(--line,#e5e7eb);background:var(--card,#fff);font:inherit;color:inherit;position:relative}
 .pkb b{font-size:16px}.pkb small{font-size:12px;opacity:.75}.pkb i{font-style:normal;font-size:20px;font-weight:800;color:var(--leaf,#15803d)}.pkb em{font-style:normal;font-size:11px;background:#fef3c7;color:#92400e;border-radius:8px;padding:1px 6px}
 .pkb:active{transform:scale(.97)}.pkb.off i{color:var(--chili,#b91c1c);font-size:14px}
+.dupk-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.dupk-b{display:flex;flex-direction:column;gap:4px;align-items:stretch;text-align:left;padding:8px;border:2px solid var(--line,#e5e7eb);border-radius:16px;background:var(--surface,#fff);font:inherit;cursor:pointer}.dupk-b:hover,.dupk-b:focus-visible{border-color:var(--accent,#16a34a)}.dupk-b>span{color:var(--muted);font-size:13px}.dupk-ph{height:90px;overflow:hidden;border-radius:12px}
 </style></head><body>
 <title>177 वेट कैंटीन</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1764,7 +1765,7 @@ document.addEventListener("change",e=>{
 
 /* ---------- barcode ---------- */
 function codes(it){return String(it.barcode||"").split(/[,\s]+/).filter(Boolean)}
-function findByCode(c){const V=window.SE&&SE.codeVariants?SE.codeVariants(c):[String(c||"").trim()];for(const v of V){const it=S.items.find(i=>codes(i).includes(v));if(it)return it}const v0=V[0];return S.items.find(i=>i.code&&String(i.code)===v0)}
+function findByCode(c){const V=window.SE&&SE.codeVariants?SE.codeVariants(c):[String(c||"").trim()];if(window.SF&&SF.isDup&&SF.isDup(c))return null;for(const v of V){const it=S.items.find(i=>codes(i).includes(v));if(it)return it}const v0=V[0];return S.items.find(i=>i.code&&String(i.code)===v0)}
 function beep(ok){camFlash(ok);try{if(navigator.vibrate)navigator.vibrate(ok?35:[60,40,60])}catch(e){}try{const A=beep.a||(beep.a=new (window.AudioContext||window.webkitAudioContext)());const o=A.createOscillator(),g=A.createGain();o.frequency.value=ok?1250:330;g.gain.value=.08;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+(ok?.09:.25))}catch(e){}}
 async function adjStock(pairs,why){
   /* 📦→🔹 पैकेट वाला सामान (packOf) का स्टॉक उसके पीस वाले सामान में गिना जाता है: 1 पैकेट = perPack पीस */
@@ -1779,6 +1780,7 @@ function trackedPairs(lines,sign){return lines.filter(l=>{const it=item(l.id);re
 async function handleScan(code){
   code=window.SE&&SE.normCode?SE.normCode(code):String(code||"").trim();if(!code)return;
   if(window.SA&&SA.scan(code))return;/* 🔢 बिल का बारकोड (BW-…) = वही बिल + वापसी */
+  if(window.SF&&SF.isDup&&SF.isDup(code)&&SF.dupPick(code))return;/* ⚠️ एक कंपनी-बारकोड दो सामान पर → "कौन सा?" (22-11) */
   if(window.SRX&&SRX.scan(code))return;/* 📍 रैक बदलें शीट खुली: स्कैन = सामान / खाना */
   if(window.SRK&&SRK.scan(code))return;/* 📍 रैक लगाओ: स्कैन = यह सामान इस खाने का */
   if(window.SBC&&SBC.scan(code))return;/* 🏷️ बारकोड पहरा: "लग गया" की जाँच या पैकेट का बारकोड जोड़ना */

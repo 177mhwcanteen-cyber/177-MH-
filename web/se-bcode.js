@@ -14,7 +14,7 @@ const META=d=>"days/"+d+"/meta/bcode";
 
 /* ---------- पहचान ---------- */
 SBC.codes=it=>String(it&&it.barcode||"").split(/[,\s]+/).map(x=>x.trim()).filter(Boolean);
-SBC.co=it=>SBC.codes(it).find(c=>/^\d{8,14}$/.test(c)&&!OWN(c))||"";
+SBC.co=it=>SBC.codes(it).find(c=>/^\d{8,14}$/.test(c)&&!OWN(c)&&!(window.SF&&SF.isDup&&SF.isDup(c)))||"";/* 22-11: उलझन वाला कंपनी-बारकोड = "कंपनी बारकोड नहीं" → अपना लेबल छापो */
 SBC.ownCodes=it=>{const a=SBC.codes(it).filter(c=>!/^\d{8,14}$/.test(c)||OWN(c));const k=window.SF&&SF.itemCode?SF.itemCode(it):"";if(k&&!a.includes(k))a.push(k);return a};
 const OK=LSb.get("sbc_ok",{}),BC=LSb.get("sbc_bc",{}),PR=LSb.get("sbc_pr",{}),PRD=LSb.get("sbc_prd",{});
 /* 🖨️ छप गए (विक्रम जी, 09-11-2026): छापते ही सामान "बाकी" से "छप गए" सूची में; ↩ से वापस। मालिक: items.bcPr · साथी: फोन + meta pr_<id> */

@@ -859,8 +859,28 @@ const SIZES=SF.SIZES={"50x25":[50,25],"40x30":[40,30],"38x25":[38,25],"60x40":[6
 let L={id:"",type:"kirana",copies:"1",size:LS.get("se_lsize")||"50x25",pack:"",price:"",exp:"",mfg:"",q:""};
 const isKirana=it=>it&&(it.cat==="kirana"||it.cat==="packed"||isPc(it.unit)&&it.cat!=="sabzi"&&it.cat!=="patta"&&it.cat!=="fal"&&it.cat!=="fast");
 const ownBar=it=>/^2000000\d{6}$/.test(String(it.barcode||"").split(",")[0]);
+/* ⚠️ उलझन वाले कंपनी-बारकोड (विक्रम जी, 22-11-2026): एक ही कंपनी-बारकोड दो सामान पर (20-20 अखरोट 250G और 20-20 गोल्डन खजूर 500G)।
+   ऐसा कोड स्कैन हो तो ऐप कुछ नहीं जोड़ता — "यह कौन सा है?" पूछता है (SF.dupPick); दोनों सामान का अपना बारकोड (20+सामान-कोड) ही छपता/चलता है।
+   नए जोड़ने हों तो settings/main.dupc = {"<कोड>":["<id1>","<id2>"]} (मालिक) — DUPC0 के ऊपर मिलते हैं। */
+const DUPC0={"8906079510872":["b8906079510872","g-2020-golden-dates-500-g"]};
+SF.dupc=()=>{const m={...DUPC0};try{const x=(S.settings||{}).dupc||{};for(const k in x)if(Array.isArray(x[k]))m[k]=x[k]}catch(e){}return m};
+SF.isDup=c=>{const k=String(c||"").trim();if(!k)return false;const m=SF.dupc();if(m[k])return true;try{return (window.SE&&SE.codeVariants?SE.codeVariants(k):[k]).some(v=>m[v])}catch(e){return false}};
+SF.dupKey=c=>{const m=SF.dupc(),k=String(c||"").trim();if(m[k])return k;try{return (SE.codeVariants?SE.codeVariants(k):[k]).find(v=>m[v])||""}catch(e){return ""}};
+SF.ownCodeOf=it=>it&&it.plu?SF.vwCode(it.plu,"fix",0):"";
+SF.dupPick=function(code){const key=SF.dupKey(code),L=(SF.dupc()[key]||[]).map(id=>typeof item==="function"?item(id):null).filter(Boolean);
+  try{beep(false)}catch(e){}
+  if(!L.length){toast("⚠️ यह बारकोड ("+key+") दो सामान पर एक है — नाम से खोजें");return true}
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px dupk" role="dialog" aria-label="यह कौन सा सामान है"><div class="grab"></div>
+    <h3 style="margin:0 0 4px">⚠️ यह कौन सा सामान है?</h3>
+    <p class="note" style="margin:0 0 10px">यह <b>कंपनी का बारकोड (${esc(key)})</b> ${L.length} सामान पर एक ही है, इसलिए ऐप ने खुद नहीं जोड़ा। हाथ में जो है उसे दबाएँ। इस पैकेट पर <b>ऐप का अपना लेबल</b> लगा दें, फिर ऐसा नहीं पूछेगा।</p>
+    <div class="dupk-g">${L.map(it=>`<button type="button" class="dupk-b" data-dupk="${esc(it.id)}">${typeof tileHTML==="function"?`<div class="dupk-ph">${tileHTML(it)}</div>`:""}<b>${esc(SE.capNm?SE.capNm(it.name):it.name)}</b><span>₹${typeof priceOf==="function"?priceOf(it):it.sale}${it.rack?" · 📍 "+esc(it.rack):""}</span></button>`).join("")}</div>
+    <button type="button" class="big ghost" data-close style="margin-top:10px">रद्द करें</button></div></div>`;
+  $("#sheet").onclick=e=>{const b=e.target.closest("[data-dupk]");if(b){const it=item(b.dataset.dupk);closeSheet();if(!it)return;const oc=SF.ownCodeOf(it);
+      if(oc&&typeof handleScan==="function")handleScan(oc);else if(typeof quickAdd==="function"){if(S.tab!=="bill"){S.tab="bill";showTab()}quickAdd(it,1)}return}
+    if(e.target.matches("[data-close]")||e.target.closest("button[data-close]"))closeSheet()};
+  return true};
 function itemCode(it){
-  const own=String(it.barcode||"").split(",").map(x=>x.trim()).filter(Boolean)[0];
+  const own=String(it.barcode||"").split(",").map(x=>x.trim()).filter(c=>c&&!SF.isDup(c))[0];
   if(own)return own;                       // कंपनी का अपना बारकोड (पैकेट पर पहले से छपा)
   return it.plu?SF.vwCode(it.plu,"fix",0):""; // हमारा अपना पक्का कोड: 20 + सामान कोड + 00000
 }
