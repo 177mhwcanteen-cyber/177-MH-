@@ -274,7 +274,7 @@ function gtinOk(c){if(!/^\d+$/.test(c)||![8,12,13,14].includes(c.length))return 
 SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,maxZoom:1,
   canTorch:false,canZoom:false,
   _cand:{},
-  _emit(code,cb,fmt){code=SE.normCode(code);if(!code||code.length<4)return;if(!gtinOk(code)&&!(code.length===8&&SE.codeVariants(code).slice(1).some(gtinOk)))return;const now=Date.now();
+  _emit(code,cb,fmt){code=SE.normCode(code);if(!code||code.length<4)return;/* 22-11: पैकेट पर छपा कंपनी का QR (https://…) सामान का कोड नहीं — "किसी सामान में नहीं" न दिखे */if(/^(https?:|www\.)/i.test(code))return;if(!gtinOk(code)&&!(code.length===8&&SE.codeVariants(code).slice(1).some(gtinOk)))return;const now=Date.now();
     /* बिना जाँच-अंक वाले कोड: 700ms में 2 बार एक-सा पढ़ा जाए तभी */
     if(fmt&&NOCHK.test(String(fmt))){const k=this._cand[code];this._cand[code]=now;if(!(k&&now-k<700))return}
     const last=this._seen[code];this._seen[code]=now;if(last&&now-last<this.GAP)return;
@@ -290,7 +290,7 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
     if(this.on)return true;this._seen={};
     if(SE.isNative){const B=N.BarcodeScanner,F=N.BarcodeFormat;
       const pm=await B.checkPermissions().catch(()=>({}));if(pm.camera!=="granted"){const r=await B.requestPermissions().catch(()=>({}));if(r.camera!=="granted")throw {msg:"कैमरे की अनुमति नहीं मिली — फोन की सेटिंग में 177 वेट कैंटीन को कैमरा दें"}}
-      this._h.push(await B.addListener("barcodesScanned",ev=>{const L=((ev&&ev.barcodes)||[]).filter(b=>b&&b.rawValue);if(!L.length)return;const b=L.length>1?SE.pickCenter(L,window.innerWidth/2,(window.innerHeight)*.3):L[0];this._emit(String(b.rawValue),cb,b.format)}));
+      this._h.push(await B.addListener("barcodesScanned",ev=>{const L=((ev&&ev.barcodes)||[]).filter(b=>b&&b.rawValue);if(!L.length)return;const L2=L.filter(x=>!/^(https?:|www\.)/i.test(String(x.rawValue)));if(!L2.length)return;const b=L2.length>1?SE.pickCenter(L2,window.innerWidth/2,(window.innerHeight)*.3):L2[0];this._emit(String(b.rawValue),cb,b.format)}));
       document.documentElement.classList.add("camnative");
       await B.startScan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.Codabar,F.QrCode,F.DataMatrix].filter(Boolean)});
       try{this.canTorch=!!(await B.isTorchAvailable()).available}catch(e){this.canTorch=false}
@@ -315,7 +315,7 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
             if(vw&&vh&&el.width&&el.height){const sc=Math.max(el.width/vw,el.height/vh),visW=el.width/sc,visH=el.height/sc,ox=(vw-visW)/2,oy=(vh-visH)/2,r=roi();
               const sx=ox+visW*r[0],sy=oy+visH*r[1],sw=visW*(r[2]-r[0]),sh=visH*(r[3]-r[1]),k=Math.min(1,960/sw);
               cv.width=Math.round(sw*k);cv.height=Math.round(sh*k);cx.drawImage(video,sx,sy,sw,sh,0,0,cv.width,cv.height);src=cv}}
-          const r=await bd.detect(src);if(r&&r.length){const w=(src.videoWidth||src.width),h=(src.videoHeight||src.height);const b=r.length>1?SE.pickCenter(r,w/2,h/2):r[0];this._emit(String(b.rawValue),cb,b.format)}}catch(e){}
+          const r=await bd.detect(src);if(r&&r.length){const w=(src.videoWidth||src.width),h=(src.videoHeight||src.height);const r2=r.filter(x=>!/^(https?:|www\.)/i.test(String(x.rawValue)));if(r2.length){const b=r2.length>1?SE.pickCenter(r2,w/2,h/2):r2[0];this._emit(String(b.rawValue),cb,b.format)}}}catch(e){}
         busy=false}
       this._t=setTimeout(tick,110)};tick();
     return true},

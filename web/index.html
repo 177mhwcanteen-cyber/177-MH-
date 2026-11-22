@@ -2548,10 +2548,13 @@ async function runUpdate(){const B=[...document.querySelectorAll("[data-updnow]"
 /* नई रेट-लिस्ट वाला सामान पुराने को सिर्फ़ छिपाता है (active:false) — मिटता कुछ नहीं, पुराने बिल वैसे ही */
 async function hideReplaced(col,id,d){if(col!=="items"||!d.replaces)return;try{const o=item(d.replaces);if(o&&o.active===false)return;const r=S.db.collection("items").doc(d.replaces);const g=await r.get();if(g.exists&&g.data().active!==false)await r.update({active:false,replacedBy:id})}catch(e){}}
 /* 📝 _upd: Claude के भेजे सीमित बदलाव (जैसे भाव) — सिर्फ़ तब जब अभी का मान ठीक "from" हो (मालिक ने बीच में खुद बदला हो तो नहीं छूता), हर बदलाव priceLog में */
-async function applyUpd(m){const U=m&&m._upd;if(!U)return 0;let n=0;
+/* 22-11: हर _upd एक ही बार — पहले migrate.json का पुराना _upd हर नए संस्करण पर दोबारा चलता था (आप ₹280 रखें, अगले अपडेट पर फिर ₹255) */
+async function applyUpd(m){const U=m&&m._upd;if(!U)return 0;let n=0;const dref=S.db.collection("settings").doc("updDone");let DN={};try{const dg=await dref.get();DN=(dg.exists&&dg.data().d)||{}}catch(e){}const mark={};
+  const ukey=(col,id,k,v)=>(col+"|"+id+"|"+k+"|"+JSON.stringify(v.to)).replace(/[.~*\/\[\]]/g,"_");
   for(const [col,docs] of Object.entries(U))for(const [id,f] of Object.entries(docs)){try{const ref=S.db.collection(col).doc(id);const g=await ref.get();if(!g.exists)continue;const cur=g.data()||{},p={};
-    for(const [k,v] of Object.entries(f)){const now=cur[k]==null?null:cur[k];/* from = एक मान या सूची (22-11: बीच का बदलाव लगा हो या नहीं) */if((Array.isArray(v.from)?v.from.some(f=>now===(f==null?null:f)):now===(v.from==null?null:v.from))&&String(now)!==String(v.to))p[k]=v.to}
+    for(const [k,v] of Object.entries(f)){const uk=ukey(col,id,k,v);if(DN[uk])continue;const now=cur[k]==null?null:cur[k];if(String(now)===String(v.to)){mark[uk]=Date.now();continue}/* from = एक मान या सूची (22-11: बीच का बदलाव लगा हो या नहीं) */if((Array.isArray(v.from)?v.from.some(f=>now===(f==null?null:f)):now===(v.from==null?null:v.from))&&String(now)!==String(v.to)){p[k]=v.to;mark[uk]=Date.now()}}
     if(!Object.keys(p).length)continue;await ref.update(p);n++;if(col==="items"){const it=item(id);if(it)Object.assign(it,p);for(const k of ["sale","cost","mrp"])if(k in p&&typeof logPrice==="function")logPrice(id,k,cur[k]||0,p[k])}}catch(e){}}
+  if(Object.keys(mark).length)try{await dref.set({d:mark},{merge:true})}catch(e){}
   return n}
 async function autoNewData(force){if(!S.isOwner||S.demo||!S.db)return;if(!force&&lsGet("mh_data_ver")===SE.version)return;
   try{const r=await fetch("migrate.json",{cache:"no-store"});if(!r.ok)return;const m=await r.json();let n=0;if(!SE.orgOk(m._org)){toast(SE.orgErr(m._org));return}

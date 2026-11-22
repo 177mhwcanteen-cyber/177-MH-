@@ -90,7 +90,7 @@ async def main():
         r2 = await pg.evaluate("SPK.apply()")
         assert r2["packs"] == 0 and r2["stock"] == 0, r2
         # जिसका स्टॉक पहले से है: गिनती रुकी रहे, ▶ "चालू" से ही बदले
-        await pg.evaluate("window.__MOCK__['openings']=window.__MOCK__['openings']||{};window.__MOCK__['openings']['cnt_b8901786140503']={kind:'count',itemId:'b8901786140503',qty:7,done:false,pack:'X'}")
+        await pg.evaluate("window.__MOCK__['openings']=window.__MOCK__['openings']||{};window.__MOCK__['openings']['cnt_b8901786140503']={kind:'count',itemId:'b8901786140503',qty:7,done:false,pack:'X',ts:Date.now()+1000}")
         assert await pg.evaluate("SPK.autoStock()") == 0
         assert await pg.evaluate("S.pstock['b8901786140503'].qty") == 10
         await pg.evaluate("S.tab='set';showTab()"); await pg.wait_for_selector("#spkCard"); await pg.wait_for_timeout(300)
@@ -124,7 +124,7 @@ async def main():
                   open(os.path.join(WWW, "data/items/S-TEST-03.json"), "w"), ensure_ascii=False)
         json.dump({"app": "mh177-packs", "v": 5, "packs": [{"id": "S-TEST-01", "n": 4, "sha": "x1"}, {"id": "S-TEST-02", "n": 1, "sha": "x2"}, {"id": "S-TEST-03", "n": 1, "sha": "x3"}]},
                   open(os.path.join(WWW, "data/items/index.json"), "w"))
-        r4 = await pg.evaluate("SPK.apply()"); assert r4["inq"] == 1, r4
+        r4 = await pg.evaluate("SPK.apply()"); assert r4["packs"] == 1 and r4["inq"] == 1, r4
         assert await pg.evaluate("S.pstock['g-test-pc'].qty") == q0 + 17
         await pg.evaluate("SPK.apply(true)"); assert await pg.evaluate("S.pstock['g-test-pc'].qty") == q0 + 17, "माल दोबारा न जुड़े"
         bcs = await pg.evaluate("item('g-test-pc').barcode")

@@ -1,0 +1,48 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-12",
+ "date": "2026-11-22",
+ "by": "Claude (जाँच)",
+ "note": "बिल/लेबल पर एक-से छोटे नाम: अमूल पनीर ताज़ा व फ्रोज़न दोनों 'AMUL MALAI PANEER 200G'; पिस्ता के छोटे नाम में कंपनी/साइज़ नहीं",
+ "items": [
+  {
+   "id": "b8901262180016",
+   "name": "AMUL MALAI PANEER FRESH 200 G",
+   "short": "AMUL MALAI PANEER FRESH ",
+   "unit": "pc",
+   "upd": {
+    "short": {
+     "from": "AMUL MALAI PANEER 200G",
+     "to": "AMUL PANEER FRESH 200G"
+    }
+   }
+  },
+  {
+   "id": "b8901262180115",
+   "name": "AMUL MALAI PANEER FROZEN 200G",
+   "short": "AMUL MALAI PANEER FROZEN",
+   "unit": "pc",
+   "upd": {
+    "short": {
+     "from": "AMUL MALAI PANEER 200G",
+     "to": "AMUL PANEER FROZEN 200G"
+    }
+   }
+  },
+  {
+   "id": "b8906079510162",
+   "name": "20-20 DIVINE ROASTED & SALTED PISTACHIOS",
+   "short": "20-20 DIVINE ROASTED & S",
+   "unit": "pc",
+   "upd": {
+    "short": {
+     "from": "PISTACHIOS ROASTED SALTED",
+     "to": "20-20 PISTA IRANI 250G"
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}

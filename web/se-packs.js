@@ -51,6 +51,8 @@ async function one(x,pk,R){
   const name=window.SE&&SE.capNm?SE.capNm(x.name):String(x.name).toUpperCase();
   const ex=match(x),ts=Date.now();
   if(ex&&x.xloc&&typeof x.xloc==="object"){await xloc(ex,x.xloc,pk,R);return}
+  /* 22-11: सिर्फ़ बदलाव वाली पंक्ति (माल/भाव/रैक) का सामान ऐप में न मिले तो नया ₹0 वाला सामान मत बनाओ — गलती गिनो, खेप दोबारा आज़माई जाए */
+  if(!ex&&(x.inq||x.upd||x.xloc)&&!(+x.sale||+x.mrp)){R.bad++;R.miss=(R.miss||[]).concat(x.id);return}
   if(!ex){
     const d={name,short:String(x.short?SE.capNm(x.short):name).slice(0,24),hi:x.hi||"",brand:x.brand||"",size:x.size||"",alias:x.alias||"",
       emoji:x.emoji||(x.sub==="tob"?"🚬":"🛒"),cat:x.cat||"kirana",sub:x.sub||"",unit:x.unit||"pc",
@@ -110,8 +112,10 @@ SPK.apply=async function(force){
       /* पहले पीस वाले, फिर पैकेट (packOf को पीस मिल जाए) */
       const L=[...pk.items].sort((a,b)=>(a.packOf?1:0)-(b.packOf?1:0));
       for(const x of L)try{await one(x,P.id,R)}catch(e){R.bad++}
+      /* 22-11: किसी सामान में गलती हो तो खेप "चढ़ गई" मत लिखो — अगली बार फिर आज़माओ (हर कदम दोहराने पर सुरक्षित: नया नहीं बनता, माल/गिनती का निशान) */
+      if(R.bad){say("⚠ खेप "+P.id+": "+R.bad+" सामान नहीं चढ़े"+(R.miss?" ("+R.miss.join(", ")+")":"")+" — अगली बार फिर कोशिश");out.packs++;for(const k in R)if(typeof R[k]==="number")out[k]+=R[k];continue}
       await ref.set({done:{[P.id]:{ts:Date.now(),by:S.uid||"",n:L.length,...R}}},{merge:true});
-      out.packs++;for(const k in R)out[k]+=R[k]}
+      out.packs++;for(const k in R)if(typeof R[k]==="number")out[k]+=R[k]}
     out.stock=await SPK.autoStock();
     if(out.packs){try{typeof setSoon==="function"&&setSoon()}catch(e){}
       say(`📦 ${out.packs} खेप: ${out.add} नए सामान, ${out.fill} में भाव/रैक/फोटो भरे${out.cnt?`, ${out.cnt} की गिनती (अभी स्टॉक नहीं)`:""}${out.co?`, 🏭 ${out.co} कंपनी`:""}${out.inq?`, 🧾 ${out.inq} सामान का माल स्टॉक में जुड़ा`:""}${out.upd?`, ✏️ ${out.upd} सामान के भाव/रैक बदले`:""}${out.lbl?` · 🏷️ ${out.lbl} का अपना बारकोड तैयार — "बारकोड पहरा" में रैक चुनकर छापें`:""}${out.bad?` · ⚠ ${out.bad} अधूरे`:""}`)}
@@ -132,13 +136,16 @@ SPK.autoStock=async function(){if(!own())return 0;let L=[];try{L=await SPK.count
 SPK.counts=async function(){if(!own())return [];const s=await S.db.collection("openings").where("kind","==","count").get();return s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x.done&&item(x.itemId))};
 SPK.goLive=async function(){
   if(!own())return 0;const L=await SPK.counts();const ts=Date.now(),nm=typeof biller==="function"?biller():"";let n=0;
-  for(const c of L){const old=+((S.pstock||{})[c.itemId]||{}).qty||0,q=+c.qty||0;
+  let stale=0;
+  for(const c of L){const ps=(S.pstock||{})[c.itemId],old=+(ps||{}).qty||0,q=+c.qty||0;
+    /* 22-11: स्टॉक गिनती के बाद बदल चुका (बिक्री/खरीद हुई) तो पुरानी गिनती से स्टॉक मत बदलो — वह बिक्री मिट जाती */
+    if(ps&&+ps.ts>+(c.ts||0)){stale++;try{await S.db.collection("openings").doc(c.id).update({done:true,doneTs:Date.now(),stale:true})}catch(e){}continue}
     try{await S.db.collection("pstock").doc(c.itemId).set({qty:q,ts,by:S.uid||"",byName:nm,last:"▶ ओपनिंग गिनती"},{merge:true});
       S.db.collection("stockLog").doc("o"+ts.toString(36)+n).set({itemId:c.itemId,d:q-old,why:"▶ ओपनिंग गिनती ("+(c.pack||"")+") · पहले "+old,ts,date:today(),by:S.uid||"",byName:nm}).catch(()=>{});
       await S.db.collection("openings").doc(c.id).update({done:true,doneTs:ts});
       S.pstock[c.itemId]={...(S.pstock[c.itemId]||{}),qty:q,ts};n++}catch(e){}}
   const st=S.settings||{};if(!st.live){try{await S.db.collection("settings").doc("main").set({live:{ts,by:S.uid||"",byName:nm}},{merge:true});st.live={ts}}catch(e){}}
-  return n};
+  if(stale)say("⏭ "+stale+" पुरानी गिनती छोड़ी — स्टॉक उसके बाद बदल चुका था (बिक्री/खरीद)");return n};
 SPK.html=()=>{if(!own())return "";const live=(S.settings||{}).live;
   return `<div class="card2" id="spkCard"><h3 style="margin:0 0 4px">📦 GitHub से सामान ${live?"· ✅ बिलिंग चालू":"· ⏸ बिलिंग अभी बंद"}</h3>
   <p class="note" style="margin:0 0 8px">Claude जो सामान (फोटो, भाव, रैक, गिनती) GitHub में रखता है, वह "ऐप अपडेट करें" पर अपने-आप आता है। नए सामान की गिनती अपने-आप स्टॉक बनती है; जिसका स्टॉक पहले से है उसकी गिनती नीचे "बाकी" में रुकती है।</p>
@@ -150,7 +157,7 @@ SPK.info=async function(){const el=document.getElementById("spkInfo");if(!el||!o
   try{const g=await S.db.collection("settings").doc("packs").get();const d=(g.exists&&g.data().done)||{};const ks=Object.keys(d).sort();
     const nItems=(S.items||[]).filter(i=>String(i.src||"").startsWith("pack:")).length;const L=await SPK.counts();
     const real=ks.filter(k=>!/^S-TEST/.test(k));
-    el.innerHTML=`खेपें चढ़ीं: <b>${ks.length}</b>${(real.length||ks.length)?` (आख़िरी ${real.length?real[real.length-1]:ks[ks.length-1]})`:""} · GitHub वाले सामान: <b>${nItems}</b> · बाकी गिनती (स्टॉक पहले से था): <b>${L.length}</b>`+await SPK.diag(d,real)}catch(e){el.textContent="— "+(e&&e.message||"")}};
+    el.innerHTML=`खेपें चढ़ीं: <b>${real.length||ks.length}</b>${(real.length||ks.length)?` (आख़िरी ${real.length?real[real.length-1]:ks[ks.length-1]})`:""} · GitHub वाले सामान: <b>${nItems}</b> · बाकी गिनती (स्टॉक पहले से था): <b>${L.length}</b>`+await SPK.diag(d,real)}catch(e){el.textContent="— "+(e&&e.message||"")}};
 /* 🔍 पिछली 3 खेपों की जाँच (22-11, "ऐप में कुछ नहीं आ रहा"): हर खेप का नतीजा + हर सामान का ऐप में अभी का भाव/रैक/स्टॉक — स्क्रीनशॉट Claude को */
 SPK.diag=async function(d,real){let h="";try{const r=await fetch(SPK.url("data/items/index.json")+"?t="+Date.now(),{cache:"no-store"});const idx=r.ok?await r.json():{packs:[]};
     const ids=(idx.packs||[]).map(p=>p.id).filter(k=>!/^S-TEST/.test(k)),miss=ids.filter(k=>!d[k]);

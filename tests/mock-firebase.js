@@ -6,10 +6,12 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 function coll(p){D[p]=D[p]||{};return D[p]}
 const notify=()=>setTimeout(()=>subs.forEach(s=>s()),0);
 function snapDoc(p,id){const c=D[p]||{};const ex=id in c;return {exists:ex,id,ref:docRef(p+"/"+id),data:()=>ex?clone(c[id]):undefined}}
+/* असली Firestore की तरह: set(…,{merge:true}) में अंदर के map भी मिलते हैं (22-11: पहले पूरा map बदल जाता था → खेप-टेस्ट में "done" खो जाता था) */
+function deepM(old,d){const o=applyInc(old,{});for(const [k,v] of Object.entries(d)){if(v&&typeof v==="object"&&!Array.isArray(v)&&v.__inc==null&&!v.__union&&o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))o[k]=deepM(o[k],v);else Object.assign(o,applyInc(o,{[k]:v}))}return o}
 function applyInc(old,d){const o={...(old||{})};for(const [k,v] of Object.entries(d)){if(v&&v.__inc!=null)o[k]=(+o[k]||0)+v.__inc;else if(v&&v.__union)o[k]=(o[k]||[]).concat(v.__union);else o[k]=v}return o}
 function docRef(full){const p=full.split("/");const id=p.pop();const cp=p.join("/");return {id,
  get:async()=>snapDoc(cp,id),
- set:async(d,opt)=>{const c=coll(cp);c[id]=clone(applyInc(opt&&opt.merge?c[id]:{},d));notify()},
+ set:async(d,opt)=>{const c=coll(cp);c[id]=clone(opt&&opt.merge?deepM(c[id],d):applyInc({},d));notify()},
  update:async d=>{if(!(id in coll(cp)))throw {code:"not-found"};coll(cp)[id]=clone(applyInc(coll(cp)[id],d));notify()},
  delete:async()=>{delete coll(cp)[id];notify()},
  onSnapshot:(fn)=>{const s=()=>fn(snapDoc(cp,id));subs.push(s);setTimeout(s,5);return ()=>{}}}}
