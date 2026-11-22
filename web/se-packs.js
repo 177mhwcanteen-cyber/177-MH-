@@ -147,7 +147,16 @@ SPK.html=()=>{if(!own())return "";const live=(S.settings||{}).live;
 SPK.info=async function(){const el=document.getElementById("spkInfo");if(!el||!own())return;
   try{const g=await S.db.collection("settings").doc("packs").get();const d=(g.exists&&g.data().done)||{};const ks=Object.keys(d).sort();
     const nItems=(S.items||[]).filter(i=>String(i.src||"").startsWith("pack:")).length;const L=await SPK.counts();
-    el.innerHTML=`खेपें चढ़ीं: <b>${ks.length}</b>${ks.length?` (आख़िरी ${ks[ks.length-1]})`:""} · GitHub वाले सामान: <b>${nItems}</b> · बाकी गिनती (स्टॉक पहले से था): <b>${L.length}</b>`}catch(e){el.textContent="—"}};
+    const real=ks.filter(k=>!/^S-TEST/.test(k));
+    el.innerHTML=`खेपें चढ़ीं: <b>${real.length}</b>${real.length?` (आख़िरी ${real[real.length-1]})`:""} · GitHub वाले सामान: <b>${nItems}</b> · बाकी गिनती (स्टॉक पहले से था): <b>${L.length}</b>`+await SPK.diag(d,real)}catch(e){el.textContent="— "+(e&&e.message||"")}};
+/* 🔍 पिछली 3 खेपों की जाँच (22-11, "ऐप में कुछ नहीं आ रहा"): हर खेप का नतीजा + हर सामान का ऐप में अभी का भाव/रैक/स्टॉक — स्क्रीनशॉट Claude को */
+SPK.diag=async function(d,real){let h="";try{const r=await fetch(SPK.url("data/items/index.json")+"?t="+Date.now(),{cache:"no-store"});const idx=r.ok?await r.json():{packs:[]};
+    const ids=(idx.packs||[]).map(p=>p.id).filter(k=>!/^S-TEST/.test(k)),miss=ids.filter(k=>!d[k]);
+    h+=`<div class="note" style="margin-top:6px">GitHub पर खेपें: <b>${ids.length}</b>${miss.length?` · ⚠ अभी नहीं चढ़ीं: ${miss.join(", ")}`:" · ✅ सब चढ़ गईं"}</div>`;
+    for(const id of ids.slice(-3).reverse()){const R=d[id]||{};const rr=await fetch(SPK.url("data/items/"+id+".json")+"?t="+Date.now(),{cache:"no-store"});const pk=rr.ok?await rr.json():{items:[]};
+      h+=`<div class="note" style="margin-top:6px;border-top:1px dashed var(--line);padding-top:4px"><b>${esc(id)}</b> ${R.ts?new Date(R.ts).toLocaleString("hi-IN"):"(नहीं चढ़ी)"} · नए ${R.add||0} · भरे ${R.fill||0} · भाव ${R.upd||0} · माल ${R.inq||0} · गलती ${R.bad||0}</div>`;
+      for(const x of (pk.items||[])){const it=item(x.id)||(x.barcode&&typeof findByCode==="function"?findByCode(String(x.barcode)):null);const st=it&&(S.pstock||{})[it.id];
+        h+=`<div class="note" style="font-size:12px">• ${esc(String(x.name||x.id).slice(0,34))}: ${it?`₹${it.sale} · 📍${esc(it.rack||"—")} · स्टॉक ${st?st.qty:"—"}${it.id!==x.id?" · id "+esc(it.id):""}`:"❌ ऐप में नहीं"}</div>`}}}catch(e){h+=`<div class="note">जाँच नहीं हो पाई: ${esc(e&&e.message||"")}</div>`}return h};
 document.addEventListener("click",async e=>{
   if(e.target.closest("[data-spkapply]")){const b=e.target.closest("[data-spkapply]");b.disabled=true;const r=await SPK.apply();b.disabled=false;if(r&&!r.packs)say("✅ कोई नई खेप नहीं");SPK.info();return}
   const g=e.target.closest("[data-spklive]");if(!g||!own())return;const c=document.getElementById("spkConf");if(!c||c.value.trim()!=="चालू"){say('ऊपर "चालू" लिखें, फिर दबाएँ');return}
