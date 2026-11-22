@@ -1,0 +1,22 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-07",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "अंजीर सिल्वर 250G — MRP 549, कंपनी बारकोड 8906079510438, फोटो",
+ "items": [
+  {
+   "id": "g-2020-anjeer-silver-250-g",
+   "name": "20-20 ANJEER SILVER PREMIUM DRY FIG 250 G",
+   "short": "20-20 ANJEER SILVER PREM",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "barcode": "8906079510438",
+   "mrp": 549,
+   "ph": "ab998c63"
+  }
+ ]
+}

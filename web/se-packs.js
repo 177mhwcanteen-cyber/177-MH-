@@ -62,6 +62,9 @@ async function one(x,pk,R){
     await S.db.collection("items").doc(x.id).set(d);/* 19-11: set के बाद onSnapshot पहले ही जोड़ देता है → push से टाइल दो बार दिखती थी */if(!item(x.id))S.items.push({id:x.id,...d});R.add++;x._id=x.id;if(!x.barcode&&!x.packOf)R.lbl++}
   else{
     const p={};for(const k of FILL){const v=x[k];if(v==null||v==="")continue;if(empty(ex[k])&&!empty(v))p[k]=k==="perPack"||PRICE.includes(k)?+v:v}
+    /* 🏷️ कंपनी का बारकोड बाद में मिला (22-11): सामान पर अभी सिर्फ़ दुकान वाला (20…) कोड हो तो कंपनी वाला साथ में जोड़ो — पुराना कोड नहीं हटता */
+    {const bc=String(x.barcode||"").trim(),cur=String(ex.barcode||"");if(bc&&!p.barcode&&cur&&!cur.split(",").includes(bc)&&cur.split(",").every(c=>/^2\d{12}$/.test(c.trim()))){
+      const other=typeof findByCode==="function"?findByCode(bc):null;if(!other||other.id===ex.id)p.barcode=cur+","+bc}}
     if(Object.keys(p).length){await S.db.collection("items").doc(ex.id).set(p,{merge:true});
       for(const k of PRICE)if(k in p&&typeof logPrice==="function")logPrice(ex.id,k,ex[k]||0,p[k]);
       Object.assign(ex,p);R.fill++}else R.same++;x._id=ex.id}

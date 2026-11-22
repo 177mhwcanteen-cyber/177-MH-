@@ -120,13 +120,16 @@ async def main():
         assert (await pg.evaluate("SRX.locs(item('g-test-pc')).map(l=>[l.k,l.q])"))[1] == ["6-11", 5]
         await pg.evaluate("SPK.apply(true)"); assert await pg.evaluate("S.pstock['g-test-pc'].qty") == q0 + 5
         # 🧾 खरीद-बिल का माल (inq): मौजूदा स्टॉक में +12, खाली cost भरे, दोबारा नहीं
-        json.dump({"app": "mh177-pack", "org": "mh177", "v": 5, "id": "S-TEST-03", "items": [{"id": "g-test-pc", "name": "X", "inq": 12, "bill": "test-1"}]},
+        json.dump({"app": "mh177-pack", "org": "mh177", "v": 5, "id": "S-TEST-03", "items": [{"id": "g-test-pc", "name": "X", "inq": 12, "bill": "test-1", "barcode": "8906079599991"}]},
                   open(os.path.join(WWW, "data/items/S-TEST-03.json"), "w"), ensure_ascii=False)
         json.dump({"app": "mh177-packs", "v": 5, "packs": [{"id": "S-TEST-01", "n": 4, "sha": "x1"}, {"id": "S-TEST-02", "n": 1, "sha": "x2"}, {"id": "S-TEST-03", "n": 1, "sha": "x3"}]},
                   open(os.path.join(WWW, "data/items/index.json"), "w"))
         r4 = await pg.evaluate("SPK.apply()"); assert r4["inq"] == 1, r4
         assert await pg.evaluate("S.pstock['g-test-pc'].qty") == q0 + 17
         await pg.evaluate("SPK.apply(true)"); assert await pg.evaluate("S.pstock['g-test-pc'].qty") == q0 + 17, "माल दोबारा न जुड़े"
+        bcs = await pg.evaluate("item('g-test-pc').barcode")
+        assert bcs.split(",")[-1] == "8906079599991" and bcs.startswith("2"), bcs
+        assert await pg.evaluate("findByCode('8906079599991').id") == "g-test-pc"
         await br.close()
     assert not errs, errs
     print("✅ खेप टेस्ट पास")
