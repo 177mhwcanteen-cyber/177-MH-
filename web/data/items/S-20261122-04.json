@@ -1,0 +1,28 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-04",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "20-20 किशमिश रेगुलर (लाल) ₹175 — कंपनी बारकोड 8906079510247 नीले VIP ₹195 (b8906079510247) जैसा ही; दोनों को अपना बारकोड + स्कैन पर 'कौन सा?'",
+ "items": [
+  {
+   "id": "g-2020-raisins-regular-250-g",
+   "name": "20-20 HEALTHY RAISINS KISHMISH REGULAR 250 G",
+   "short": "KISHMISH REGULAR 250G",
+   "hi": "20-20 किशमिश रेगुलर (लाल पैकेट) 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "kishmish raisins regular lal red 20-20 किशमिश",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 175,
+   "sale": 175,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "34978ad3"
+  }
+ ]
+}

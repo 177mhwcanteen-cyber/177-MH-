@@ -862,7 +862,7 @@ const ownBar=it=>/^2000000\d{6}$/.test(String(it.barcode||"").split(",")[0]);
 /* ⚠️ उलझन वाले कंपनी-बारकोड (विक्रम जी, 22-11-2026): एक ही कंपनी-बारकोड दो सामान पर (20-20 अखरोट 250G और 20-20 गोल्डन खजूर 500G)।
    ऐसा कोड स्कैन हो तो ऐप कुछ नहीं जोड़ता — "यह कौन सा है?" पूछता है (SF.dupPick); दोनों सामान का अपना बारकोड (20+सामान-कोड) ही छपता/चलता है।
    नए जोड़ने हों तो settings/main.dupc = {"<कोड>":["<id1>","<id2>"]} (मालिक) — DUPC0 के ऊपर मिलते हैं। */
-const DUPC0={"8906079510872":["b8906079510872","g-2020-golden-dates-500-g"]};
+const DUPC0={"8906079510872":["b8906079510872","g-2020-golden-dates-500-g"],"8906079510247":["b8906079510247","g-2020-raisins-regular-250-g"]};/* अखरोट/खजूर; किशमिश VIP नीला ₹195 / रेगुलर लाल ₹175 */
 SF.dupc=()=>{const m={...DUPC0};try{const x=(S.settings||{}).dupc||{};for(const k in x)if(Array.isArray(x[k]))m[k]=x[k]}catch(e){}return m};
 SF.isDup=c=>{const k=String(c||"").trim();if(!k)return false;const m=SF.dupc();if(m[k])return true;try{return (window.SE&&SE.codeVariants?SE.codeVariants(k):[k]).some(v=>m[v])}catch(e){return false}};
 SF.dupKey=c=>{const m=SF.dupc(),k=String(c||"").trim();if(m[k])return k;try{return (SE.codeVariants?SE.codeVariants(k):[k]).find(v=>m[v])||""}catch(e){return ""}};
