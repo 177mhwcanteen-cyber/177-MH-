@@ -1,0 +1,52 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-11",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "लेकसिटी बिल 2813 का माल दोबारा — खेप 06 पुराने ऐप-कोड से चढ़ी थी, 'माल आया' (inq) नहीं चला (फोन पर डेली नीड स्टॉक 21, सिल्वर 500 स्टॉक 6 = पुरानी गिनती)",
+ "items": [
+  {
+   "id": "b8906079510261",
+   "name": "20-20 CASHEW CHOICE PREMIUM QUALITY 250 G",
+   "short": "20-20 CASHEW CHOICE PREM",
+   "unit": "pc",
+   "inq": 48,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "b8906079510872",
+   "name": "20-20 BRAIN NUT WALNUT KERNELS 250 G BOX",
+   "short": "20-20 BRAIN NUT WALNUT K",
+   "unit": "pc",
+   "inq": 24,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "b8906079510834",
+   "name": "20-20 CHIA SEED 200 G JAR",
+   "short": "20-20 CHIA SEED 200 G JA",
+   "unit": "pc",
+   "inq": 30,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "b8906079510520",
+   "name": "20-20 ANJEER DAILY NEEDS DRY FIG 250 G BOX",
+   "short": "20-20 ANJEER DAILY NEEDS",
+   "unit": "pc",
+   "inq": 24,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "b8906079510063",
+   "name": "20-20 ANJEER SILVER PREMIUM DRY FIG 500 G BOX",
+   "short": "20-20 ANJEER SILVER PREM",
+   "unit": "pc",
+   "inq": 12,
+   "bill": "lakecity-2813"
+  }
+ ],
+ "min": "1.221"
+}
