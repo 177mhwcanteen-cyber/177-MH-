@@ -1,0 +1,54 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-09",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "अंजीर के भाव (खरीद +40%) व रैक — खेप से, ताकि बंडल पुराना हो तब भी पहुँचे",
+ "items": [
+  {
+   "id": "b8906079510520",
+   "name": "20-20 ANJEER DAILY NEEDS DRY FIG 250 G BOX",
+   "short": "20-20 ANJEER DAILY NEEDS",
+   "unit": "pc",
+   "upd": {
+    "sale": {
+     "from": [
+      249,
+      280
+     ],
+     "to": 255
+    },
+    "rack": {
+     "from": "7-4",
+     "to": "8-5"
+    }
+   }
+  },
+  {
+   "id": "b8906079510063",
+   "name": "20-20 ANJEER SILVER PREMIUM DRY FIG 500 G BOX",
+   "short": "20-20 ANJEER SILVER PREM",
+   "unit": "pc",
+   "upd": {
+    "sale": {
+     "from": 598,
+     "to": 585
+    }
+   }
+  },
+  {
+   "id": "g-2020-anjeer-silver-250-g",
+   "name": "20-20 ANJEER SILVER PREMIUM DRY FIG 250 G",
+   "short": "20-20 ANJEER SILVER PREM",
+   "unit": "pc",
+   "upd": {
+    "sale": {
+     "from": 299,
+     "to": 290
+    }
+   }
+  }
+ ]
+}

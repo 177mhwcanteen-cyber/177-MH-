@@ -69,6 +69,8 @@ async function one(x,pk,R){
       for(const k of PRICE)if(k in p&&typeof logPrice==="function")logPrice(ex.id,k,ex[k]||0,p[k]);
       Object.assign(ex,p);R.fill++}else R.same++;x._id=ex.id}
   if(+x.inq>0){const it2=item(x._id)||ex;if(it2)await inq(it2,+x.inq,x.bill||"",pk,R)}
+  /* ✏️ भाव/रैक बदलना (22-11): {upd:{sale:{from:[249,280],to:255}}} — अभी का मान from हो तभी (applyUpd, priceLog में)। खेप Pages से आती है, इसलिए ऐप का बंडल पुराना हो तब भी पहुँचे */
+  if(ex&&x.upd&&typeof x.upd==="object"&&typeof applyUpd==="function"){try{const n=await applyUpd({_upd:{items:{[ex.id]:x.upd}}});if(n)R.upd=(R.upd||0)+n}catch(e){}}
   /* गिनती → सिर्फ़ ओपनिंग गिनती (स्टॉक नहीं) */
   const o=x.open;if(o&&o.qty!=null&&o.qty!==""){
     await S.db.collection("openings").doc("cnt_"+x._id).set({kind:"count",itemId:x._id,qty:+o.qty||0,exp:o.exp||"",batchNo:o.batchNo||"",rack:x.rack||"",pack:pk,ts,by:S.uid||"",done:false},{merge:true});R.cnt++}}
@@ -92,7 +94,7 @@ SPK.cleanTest=async function(){if(!own()||S.demo||!S.db)return 0;try{if(localSto
     const os=await S.db.collection("openings").where("pack","in",["S-TEST-01","S-TEST-02"]).get();for(const d of os.docs)if(!d.data().done){await d.ref.update({done:true,doneTs:Date.now(),testJunk:true});n++}
     try{localStorage.setItem("spk_tclean","1")}catch(e){}if(n)say("🩹 टेस्ट की "+n+" नकली चीज़ें बंद कर दीं (असली डेटा नहीं छुआ)")}catch(e){}return n};
 SPK.apply=async function(force){
-  if(!own()||SPK._busy)return null;SPK._busy=1;try{await SPK.cleanTest()}catch(e){}const out={packs:0,add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0,inq:0};
+  if(!own()||SPK._busy)return null;SPK._busy=1;try{await SPK.cleanTest()}catch(e){}const out={packs:0,add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0,inq:0,upd:0};
   try{
     const r=await fetch(SPK.url("data/items/index.json")+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)return null;
     const idx=await r.json();if(idx&&!SE.orgOk(idx.org)){say(SE.orgErr(idx.org));return null}const list=(idx&&idx.packs)||[];if(!list.length){out.stock=await SPK.autoStock();return out}
@@ -101,7 +103,7 @@ SPK.apply=async function(force){
       const rr=await fetch(SPK.url("data/items/"+P.id+".json")+"?v="+encodeURIComponent(P.sha||""),{cache:"no-store"});if(!rr.ok)continue;
       const pk=await rr.json();if(!pk||pk.app!=="mh177-pack"||!Array.isArray(pk.items))continue;
       if(!SE.orgOk(pk.org)){say(SE.orgErr(pk.org)+" (खेप "+P.id+")");continue}
-      const R={add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0,inq:0};
+      const R={add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0,inq:0,upd:0};
       for(const c of (Array.isArray(pk.companies)?pk.companies:[]))try{await company(c,P.id,R)}catch(e){R.bad++}
       /* पहले पीस वाले, फिर पैकेट (packOf को पीस मिल जाए) */
       const L=[...pk.items].sort((a,b)=>(a.packOf?1:0)-(b.packOf?1:0));
@@ -110,7 +112,7 @@ SPK.apply=async function(force){
       out.packs++;for(const k in R)out[k]+=R[k]}
     out.stock=await SPK.autoStock();
     if(out.packs){try{typeof setSoon==="function"&&setSoon()}catch(e){}
-      say(`📦 ${out.packs} खेप: ${out.add} नए सामान, ${out.fill} में भाव/रैक/फोटो भरे${out.cnt?`, ${out.cnt} की गिनती (अभी स्टॉक नहीं)`:""}${out.co?`, 🏭 ${out.co} कंपनी`:""}${out.inq?`, 🧾 ${out.inq} सामान का माल स्टॉक में जुड़ा`:""}${out.lbl?` · 🏷️ ${out.lbl} का अपना बारकोड तैयार — "बारकोड पहरा" में रैक चुनकर छापें`:""}${out.bad?` · ⚠ ${out.bad} अधूरे`:""}`)}
+      say(`📦 ${out.packs} खेप: ${out.add} नए सामान, ${out.fill} में भाव/रैक/फोटो भरे${out.cnt?`, ${out.cnt} की गिनती (अभी स्टॉक नहीं)`:""}${out.co?`, 🏭 ${out.co} कंपनी`:""}${out.inq?`, 🧾 ${out.inq} सामान का माल स्टॉक में जुड़ा`:""}${out.upd?`, ✏️ ${out.upd} सामान के भाव/रैक बदले`:""}${out.lbl?` · 🏷️ ${out.lbl} का अपना बारकोड तैयार — "बारकोड पहरा" में रैक चुनकर छापें`:""}${out.bad?` · ⚠ ${out.bad} अधूरे`:""}`)}
     return out}
   catch(e){return null}finally{SPK._busy=0}};
 /* 📦→📊 गिनती अपने-आप स्टॉक (विक्रम जी, 09-11-2026: "जो मैं स्टॉक दे रहा हूँ वो ऑटोमेटिक स्टॉक अपडेट कर दो"):
