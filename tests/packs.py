@@ -130,6 +130,10 @@ async def main():
         bcs = await pg.evaluate("item('g-test-pc').barcode")
         assert bcs.split(",")[-1] == "8906079599991" and bcs.startswith("2"), bcs
         assert await pg.evaluate("findByCode('8906079599991').id") == "g-test-pc"
+        # _upd: from सूची भी चले
+        s0 = await pg.evaluate("item('g-test-pc').sale")
+        n = await pg.evaluate(f"applyUpd({{_upd:{{items:{{'g-test-pc':{{sale:{{from:[-5,{s0}],to:{s0}+3}}}}}}}}}})")
+        assert n == 1 and await pg.evaluate("item('g-test-pc').sale") == s0 + 3
         await br.close()
     assert not errs, errs
     print("✅ खेप टेस्ट पास")

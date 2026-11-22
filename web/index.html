@@ -2550,7 +2550,7 @@ async function hideReplaced(col,id,d){if(col!=="items"||!d.replaces)return;try{c
 /* 📝 _upd: Claude के भेजे सीमित बदलाव (जैसे भाव) — सिर्फ़ तब जब अभी का मान ठीक "from" हो (मालिक ने बीच में खुद बदला हो तो नहीं छूता), हर बदलाव priceLog में */
 async function applyUpd(m){const U=m&&m._upd;if(!U)return 0;let n=0;
   for(const [col,docs] of Object.entries(U))for(const [id,f] of Object.entries(docs)){try{const ref=S.db.collection(col).doc(id);const g=await ref.get();if(!g.exists)continue;const cur=g.data()||{},p={};
-    for(const [k,v] of Object.entries(f)){const now=cur[k]==null?null:cur[k];if(now===(v.from==null?null:v.from)&&String(now)!==String(v.to))p[k]=v.to}
+    for(const [k,v] of Object.entries(f)){const now=cur[k]==null?null:cur[k];/* from = एक मान या सूची (22-11: बीच का बदलाव लगा हो या नहीं) */if((Array.isArray(v.from)?v.from.some(f=>now===(f==null?null:f)):now===(v.from==null?null:v.from))&&String(now)!==String(v.to))p[k]=v.to}
     if(!Object.keys(p).length)continue;await ref.update(p);n++;if(col==="items"){const it=item(id);if(it)Object.assign(it,p);for(const k of ["sale","cost","mrp"])if(k in p&&typeof logPrice==="function")logPrice(id,k,cur[k]||0,p[k])}}catch(e){}}
   return n}
 async function autoNewData(force){if(!S.isOwner||S.demo||!S.db)return;if(!force&&lsGet("mh_data_ver")===SE.version)return;
