@@ -103,6 +103,8 @@ SPK.apply=async function(force){
       const rr=await fetch(SPK.url("data/items/"+P.id+".json")+"?v="+encodeURIComponent(P.sha||""),{cache:"no-store"});if(!rr.ok)continue;
       const pk=await rr.json();if(!pk||pk.app!=="mh177-pack"||!Array.isArray(pk.items))continue;
       if(!SE.orgOk(pk.org)){say(SE.orgErr(pk.org)+" (खेप "+P.id+")");continue}
+      /* 22-11: नई तरह की खेप (inq/upd/बारकोड जोड़ना) पुराने ऐप-कोड से चढ़ी तो अधूरी रह गई → "min" से नया ऐप होने तक रुको (done नहीं) */
+      if(pk.min&&/^1\.\d+/.test(SE.version||"")&&+String(SE.version).split(".")[1]<+String(pk.min).split(".")[1]){say("📦 खेप "+P.id+" के लिए पहले 🔄 ऐप अपडेट करें");continue}
       const R={add:0,fill:0,same:0,cnt:0,co:0,lbl:0,bad:0,inq:0,upd:0};
       for(const c of (Array.isArray(pk.companies)?pk.companies:[]))try{await company(c,P.id,R)}catch(e){R.bad++}
       /* पहले पीस वाले, फिर पैकेट (packOf को पीस मिल जाए) */

@@ -119,7 +119,7 @@ def add(path):
     for c in cos:
         c["name"] = cap(c["name"])
         if not re.fullmatch(r"c-[a-z0-9-]{2,40}", c.get("id", "")): sys.exit(f"❌ कंपनी id ग़लत (c-<नाम>): {c}")
-    doc = {"app": "mh177-pack", "org": ORG, "v": 5, "id": pid, "date": src.get("date", ""), "by": src.get("by", ""), "note": src.get("note", ""), "items": out}
+    doc = {"app": "mh177-pack", "org": ORG, "v": 5, "id": pid, "date": src.get("date", ""), "by": src.get("by", ""), "note": src.get("note", ""), "items": out, **({"min": src["min"]} if src.get("min") else {})}
     if cos: doc["companies"] = cos
     txt = json.dumps(doc, ensure_ascii=False, indent=1)
     open(os.path.join(D, pid + ".json"), "w", encoding="utf8").write(txt + "\n")

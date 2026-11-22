@@ -1,0 +1,35 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-10",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "अंजीर सिल्वर 250G का कंपनी बारकोड (खेप 07 पुराने कोड से चढ़ी थी, बारकोड नहीं जुड़ा) + डेली नीड ₹255 पर वापस",
+ "items": [
+  {
+   "id": "g-2020-anjeer-silver-250-g",
+   "name": "20-20 ANJEER SILVER PREMIUM DRY FIG 250 G",
+   "short": "20-20 ANJEER SILVER PREM",
+   "unit": "pc",
+   "barcode": "8906079510438"
+  },
+  {
+   "id": "b8906079510520",
+   "name": "20-20 ANJEER DAILY NEEDS DRY FIG 250 G BOX",
+   "short": "20-20 ANJEER DAILY NEEDS",
+   "unit": "pc",
+   "upd": {
+    "sale": {
+     "from": [
+      290,
+      280,
+      249
+     ],
+     "to": 255
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
