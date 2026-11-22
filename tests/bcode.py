@@ -134,6 +134,45 @@ async def main():
         assert await pg.locator("#sheet #rnIn").count() == 1, "भाव की शीट खुले"
         assert await pg.evaluate("S.cart.length") == 0, "भाव-मोड में स्कैन से बिल न बने"
         await pg.evaluate("closeSheet();S.rateMode=false;renderBill()")
+        # 🧪 मोड × रास्ता: भाव-मोड / लेबल-मोड / माल आया में कोई भी रास्ता बिल न बनाए
+        it1 = ids[1]
+        code1 = await pg.evaluate(f"item('{it1}').code||''")
+        async def reset():
+            await pg.evaluate("closeSheet&&closeSheet();S.cart=[];S.rateMode=false;S.lblMode=false;S.scanIn=false;SL.clear();S.tab='bill';showTab()")
+        # भाव-मोड: खोज + Enter
+        if code1:
+            await reset(); await pg.evaluate("S.rateMode=true;renderBill()")
+            await pg.fill("#q", code1); await pg.press("#q", "Enter"); await pg.wait_for_timeout(300)
+            assert await pg.evaluate("S.cart.length") == 0, "भाव-मोड: खोज-Enter से बिल न बने"
+        # भाव-मोड: दोहरा कंपनी-बारकोड → चुनो → भाव की शीट
+        await reset(); await pg.evaluate("S.rateMode=true;renderBill()")
+        await pg.evaluate("handleScan('8901111222233')"); await pg.wait_for_timeout(300)
+        await pg.click(f'#sheet [data-dupk="{it1}"]'); await pg.wait_for_timeout(300)
+        assert await pg.locator("#sheet #rnIn").count() == 1 and await pg.evaluate("S.cart.length") == 0, "भाव-मोड: दोहरा कोड"
+        # लेबल-मोड: स्कैन, दोहरा कोड, खोज-Enter → लेबल +1, बिल नहीं
+        await reset(); await pg.evaluate("S.lblMode=true;renderBill()")
+        await pg.evaluate("handleScan('8901111222240')"); await pg.wait_for_timeout(300)
+        await pg.evaluate("handleScan('8901111222233')"); await pg.wait_for_timeout(300)
+        await pg.click(f'#sheet [data-dupk="{it1}"]'); await pg.wait_for_timeout(300)
+        if code1:
+            await pg.fill("#q", code1); await pg.press("#q", "Enter"); await pg.wait_for_timeout(300)
+        n = await pg.evaluate("SL.count()")
+        assert n >= 2 and await pg.evaluate("S.cart.length") == 0, f"लेबल-मोड: लेबल {n}, बिल न बने"
+        # माल आया (scanIn): दोहरा कोड → चुनो → स्टॉक +1, बिल नहीं
+        await reset()
+        before = await pg.evaluate(f"+(S.pstock['{it1}']?.qty||0)")
+        await pg.evaluate("S.tab='day';showTab();S.scanIn=true")
+        await pg.evaluate("handleScan('8901111222233')"); await pg.wait_for_timeout(300)
+        await pg.click(f'#sheet [data-dupk="{it1}"]'); await pg.wait_for_timeout(600)
+        after = await pg.evaluate(f"+(S.pstock['{it1}']?.qty||0)")
+        assert after == before + 1 and await pg.evaluate("S.cart.length") == 0, f"माल आया: {before}->{after}"
+        # सामान्य: दोहरा कोड → चुनो → बिल में
+        await reset()
+        await pg.evaluate("handleScan('8901111222233')"); await pg.wait_for_timeout(300)
+        await pg.click(f'#sheet [data-dupk="{it1}"]'); await pg.wait_for_timeout(300)
+        assert await pg.evaluate(f"S.cart.some(l=>l.id==='{it1}')"), "सामान्य: बिल में जुड़े"
+        await reset()
+        print("मोड × रास्ता ok")
         await br.close()
     assert not errs, errs
     print("✅ बारकोड-पहरा टेस्ट पास")

@@ -876,7 +876,7 @@ SF.dupPick=function(code){const key=SF.dupKey(code),L=(SF.dupc()[key]||[]).map(i
     <div class="dupk-g">${L.map(it=>`<button type="button" class="dupk-b" data-dupk="${esc(it.id)}">${typeof tileHTML==="function"?`<div class="dupk-ph">${tileHTML(it)}</div>`:""}<b>${esc(SE.capNm?SE.capNm(it.name):it.name)}</b><span>₹${typeof priceOf==="function"?priceOf(it):it.sale}${it.rack?" · 📍 "+esc(it.rack):""}</span></button>`).join("")}</div>
     <button type="button" class="big ghost" data-close style="margin-top:10px">रद्द करें</button></div></div>`;
   $("#sheet").onclick=e=>{const b=e.target.closest("[data-dupk]");if(b){const it=item(b.dataset.dupk);closeSheet();if(!it)return;const oc=SF.ownCodeOf(it);
-      if(S.rateMode&&window.SR&&SR.rateSheet){SR.rateSheet(it);return}if(oc&&typeof handleScan==="function")handleScan(oc);else if(typeof quickAdd==="function"){if(S.tab!=="bill"){S.tab="bill";showTab()}quickAdd(it,1)}return}
+      SF._force=it;try{handleScan(code)}finally{SF._force=null}return}/* वही रास्ता जो स्कैन का — भाव-मोड, लेबल-मोड, माल आया, गिनती, खरीद सब सही */
     if(e.target.matches("[data-close]")||e.target.closest("button[data-close]"))closeSheet()};
   return true};
 function itemCode(it){

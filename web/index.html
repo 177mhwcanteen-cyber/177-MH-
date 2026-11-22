@@ -1365,7 +1365,9 @@ function restoreHeld(i){
 $("#q").addEventListener("input",e=>{S.q=e.target.value;renderBill()});
 $("#q").addEventListener("focus",()=>{if(S.tab!=="bill"){S.tab="bill";showTab()}window.scrollTo(0,0)});
 $("#q").addEventListener("keydown",e=>{if(e.key!=="Enter"||e.defaultPrevented)return;const bl=billList();if(bl.list.length!==1)return;e.preventDefault();const x=bl.list[0];if(!(priceOf(x)>0)){toast("इसका रेट नहीं डाला गया");return}if(bl.qq>0)quickAdd(x,bl.qq);else if(isPc(x.unit))quickAdd(x,1);else{clearSearch();renderBill();openQty(x)}});
-function quickAdd(it,q){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(q);if(it&&!canSell(it))return;
+function quickAdd(it,q){if(it&&S.tab==="bill"&&!it.virtual){/* ✏️/🏷️ मोड में कोई भी रास्ता (खोज-Enter, पैकेट, + बटन) बिल न बनाए (22-11) */
+  if(S.rateMode&&window.SR&&SR.rateSheet){SR.rateSheet(it);return}if(S.lblMode&&window.SL&&SL.tap){SL.tap(it,+q||1);return}}
+  if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(q);if(it&&!canSell(it))return;
   const p=priceOf(it);if(!(p>0))return;
   const ex=S.cart.find(l=>l.id===it.id&&!l.changed&&!l.free);
   if(ex){ex.qty=Math.round((ex.qty+q)*1000)/1000;ex.amt=r2(ex.qty*ex.rate)}
@@ -1765,7 +1767,7 @@ document.addEventListener("change",e=>{
 
 /* ---------- barcode ---------- */
 function codes(it){return String(it.barcode||"").split(/[,\s]+/).filter(Boolean)}
-function findByCode(c){const V=window.SE&&SE.codeVariants?SE.codeVariants(c):[String(c||"").trim()];if(window.SF&&SF.isDup&&SF.isDup(c))return null;for(const v of V){const it=S.items.find(i=>codes(i).includes(v));if(it)return it}const v0=V[0];return S.items.find(i=>i.code&&String(i.code)===v0)}
+function findByCode(c){const V=window.SE&&SE.codeVariants?SE.codeVariants(c):[String(c||"").trim()];if(window.SF&&SF.isDup&&SF.isDup(c))return SF._force||null;for(const v of V){const it=S.items.find(i=>codes(i).includes(v));if(it)return it}const v0=V[0];return S.items.find(i=>i.code&&String(i.code)===v0)}
 function beep(ok){camFlash(ok);try{if(navigator.vibrate)navigator.vibrate(ok?35:[60,40,60])}catch(e){}try{const A=beep.a||(beep.a=new (window.AudioContext||window.webkitAudioContext)());const o=A.createOscillator(),g=A.createGain();o.frequency.value=ok?1250:330;g.gain.value=.08;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+(ok?.09:.25))}catch(e){}}
 async function adjStock(pairs,why){
   /* 📦→🔹 पैकेट वाला सामान (packOf) का स्टॉक उसके पीस वाले सामान में गिना जाता है: 1 पैकेट = perPack पीस */
@@ -1780,7 +1782,7 @@ function trackedPairs(lines,sign){return lines.filter(l=>{const it=item(l.id);re
 async function handleScan(code){
   code=window.SE&&SE.normCode?SE.normCode(code):String(code||"").trim();if(!code)return;
   if(window.SA&&SA.scan(code))return;/* 🔢 बिल का बारकोड (BW-…) = वही बिल + वापसी */
-  if(window.SF&&SF.isDup&&SF.isDup(code)&&SF.dupPick(code))return;/* ⚠️ एक कंपनी-बारकोड दो सामान पर → "कौन सा?" (22-11) */
+  if(window.SF&&SF.isDup&&!SF._force&&SF.isDup(code)&&SF.dupPick(code))return;/* ⚠️ एक कंपनी-बारकोड दो सामान पर → "कौन सा?" (22-11) */
   if(window.SRX&&SRX.scan(code))return;/* 📍 रैक बदलें शीट खुली: स्कैन = सामान / खाना */
   if(window.SRK&&SRK.scan(code))return;/* 📍 रैक लगाओ: स्कैन = यह सामान इस खाने का */
   if(window.SBC&&SBC.scan(code))return;/* 🏷️ बारकोड पहरा: "लग गया" की जाँच या पैकेट का बारकोड जोड़ना */
