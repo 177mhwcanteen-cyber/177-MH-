@@ -1,0 +1,20 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-05",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "किशमिश रेगुलर लाल — रैक 8-7",
+ "items": [
+  {
+   "id": "g-2020-raisins-regular-250-g",
+   "name": "20-20 HEALTHY RAISINS KISHMISH REGULAR 250 G",
+   "short": "20-20 HEALTHY RAISINS KI",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "rack": "8-7"
+  }
+ ]
+}
