@@ -148,7 +148,7 @@ SPK.info=async function(){const el=document.getElementById("spkInfo");if(!el||!o
   try{const g=await S.db.collection("settings").doc("packs").get();const d=(g.exists&&g.data().done)||{};const ks=Object.keys(d).sort();
     const nItems=(S.items||[]).filter(i=>String(i.src||"").startsWith("pack:")).length;const L=await SPK.counts();
     const real=ks.filter(k=>!/^S-TEST/.test(k));
-    el.innerHTML=`खेपें चढ़ीं: <b>${real.length}</b>${real.length?` (आख़िरी ${real[real.length-1]})`:""} · GitHub वाले सामान: <b>${nItems}</b> · बाकी गिनती (स्टॉक पहले से था): <b>${L.length}</b>`+await SPK.diag(d,real)}catch(e){el.textContent="— "+(e&&e.message||"")}};
+    el.innerHTML=`खेपें चढ़ीं: <b>${ks.length}</b>${(real.length||ks.length)?` (आख़िरी ${real.length?real[real.length-1]:ks[ks.length-1]})`:""} · GitHub वाले सामान: <b>${nItems}</b> · बाकी गिनती (स्टॉक पहले से था): <b>${L.length}</b>`+await SPK.diag(d,real)}catch(e){el.textContent="— "+(e&&e.message||"")}};
 /* 🔍 पिछली 3 खेपों की जाँच (22-11, "ऐप में कुछ नहीं आ रहा"): हर खेप का नतीजा + हर सामान का ऐप में अभी का भाव/रैक/स्टॉक — स्क्रीनशॉट Claude को */
 SPK.diag=async function(d,real){let h="";try{const r=await fetch(SPK.url("data/items/index.json")+"?t="+Date.now(),{cache:"no-store"});const idx=r.ok?await r.json():{packs:[]};
     const ids=(idx.packs||[]).map(p=>p.id).filter(k=>!/^S-TEST/.test(k)),miss=ids.filter(k=>!d[k]);
