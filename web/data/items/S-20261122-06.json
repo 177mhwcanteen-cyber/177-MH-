@@ -1,0 +1,118 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261122-06",
+ "date": "2026-11-22",
+ "by": "विक्रम जी (चैट)",
+ "note": "लेकसिटी ड्राई फ्रूट्स बिल JU/26-27/2813 (21-11-2026, ₹68,480) — माल स्टॉक में (inq), खाली cost भरे (GST+लेबर मिलाकर 1 का पड़ा)। पिस्ता/खजूर की गिनती पहले की खेप में थी, किशमिश लाल व अंजीर सिल्वर 250 नए = गिनती। काजू टिन बाकी (सवाल)।",
+ "items": [
+  {
+   "id": "b8906079510162",
+   "name": "20-20 DIVINE ROASTED & SALTED PISTACHIOS",
+   "short": "20-20 DIVINE ROASTED & S",
+   "hi": "20-20 पिस्ता डोडी ईरानी 250 ग्राम",
+   "size": "250g",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "cost": 422.48
+  },
+  {
+   "id": "g-2020-raisins-regular-250-g",
+   "name": "20-20 HEALTHY RAISINS KISHMISH REGULAR 250 G",
+   "short": "20-20 HEALTHY RAISINS KI",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "cost": 126.62,
+   "open": {
+    "qty": 40,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079510261",
+   "name": "20-20 CASHEW CHOICE PREMIUM QUALITY 250 G",
+   "short": "20-20 CASHEW CHOICE PREM",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "inq": 48,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "b8906079510872",
+   "name": "20-20 BRAIN NUT WALNUT KERNELS 250 G BOX",
+   "short": "20-20 BRAIN NUT WALNUT K",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "inq": 24,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "b8906079510834",
+   "name": "20-20 CHIA SEED 200 G JAR",
+   "short": "20-20 CHIA SEED 200 G JA",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "cost": 66.19,
+   "inq": 30,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "b8906079510520",
+   "name": "20-20 ANJEER DAILY NEEDS DRY FIG 250 G BOX",
+   "short": "20-20 ANJEER DAILY NEEDS",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "inq": 24,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "g-2020-anjeer-silver-250-g",
+   "name": "20-20 ANJEER SILVER PREMIUM DRY FIG 250 G",
+   "short": "ANJEER SILVER 250G",
+   "hi": "20-20 अंजीर सिल्वर 250 ग्राम",
+   "brand": "20-20",
+   "size": "250g",
+   "alias": "anjeer anjir fig silver 20-20 अंजीर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 0,
+   "sale": 299,
+   "cost": 205.6,
+   "rack": "",
+   "open": {
+    "qty": 24,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906079510063",
+   "name": "20-20 ANJEER SILVER PREMIUM DRY FIG 500 G BOX",
+   "short": "20-20 ANJEER SILVER PREM",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "inq": 12,
+   "bill": "lakecity-2813"
+  },
+  {
+   "id": "g-2020-golden-dates-500-g",
+   "name": "20-20 GOLDEN DATES 500 G",
+   "short": "20-20 GOLDEN DATES 500 G",
+   "alias": "khajoor khajur dates golden zahidi zahindi 20-20 खजूर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "cost": 92.77
+  }
+ ]
+}
