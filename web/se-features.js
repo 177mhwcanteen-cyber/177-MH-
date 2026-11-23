@@ -1303,17 +1303,48 @@ SF.drawCheckout=function(){
 /* =============== 🚫 बिल रद्द करने की अर्ज़ी → विक्रम जी के WhatsApp + ऐप में =============== */
 S.cancelReqs=[];
 SF.watchCancelReqs=function(db){
-  db.collection("cancelReq").where("status","==","pending").onSnapshot(s=>{S.cancelReqs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.ts-a.ts);
-    if(S.isOwner){renderTabs();if(S.tab==="report")renderReport();if(S.cancelReqs.length&&!SF._crToast){SF._crToast=1;toast("🚫 "+S.cancelReqs.length+" बिल रद्द करने की अर्ज़ी आई है — रिपोर्ट में देखें")}}},()=>{});
+  db.collection("cancelReq").where("status","==","pending").onSnapshot(s=>{const prev=(S.cancelReqs||[]).filter(r=>r.by===S.uid);
+    S.cancelReqs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.ts-a.ts);
+    if(S.isOwner){renderTabs();try{paneSoon()}catch(x){}if(S.cancelReqs.length&&!SF._crToast){SF._crToast=1;toast("🚫 "+S.cancelReqs.length+" बिल रद्द करने की अर्ज़ी आई है — रिपोर्ट में देखें")}}
+    else{/* 23-11: साथी — अर्ज़ी भेजते ही बिल "भुगतान बाकी" से हटे; विक्रम जी का फ़ैसला आते ही बताओ */
+      try{paneSoon(true)}catch(x){}
+      const now=new Set(S.cancelReqs.map(r=>r.id));prev.filter(r=>!now.has(r.id)&&!r._local).forEach(r=>setTimeout(()=>{const b=(S.dayBills||[]).find(x=>x.no===r.no);
+        toast(b&&b.cancelled?"✅ विक्रम जी ने बिल "+r.no+" रद्द कर दिया":"↩ विक्रम जी ने बिल "+r.no+" रद्द नहीं किया — बिल चालू है, भुगतान लें");try{paneSoon(true)}catch(x){}},1500))}},()=>{});
 };
+/* 🚫 23-11 (विक्रम जी): अर्ज़ी गई बिल — साथी के "भुगतान बाकी"/बिल-सूची से हटे, सीधा मालिक के पास; मालिक बिल खोले तो वहीं ✓ रद्द / ✗ मना */
+SF.crOf=no=>(S.cancelReqs||[]).find(r=>r.no===no)||null;
+SF.crBoxHTML=function(r){if(!r||!S.isOwner)return "";const req=r.done===false;
+  return `<div class="crbox" style="border:2px solid var(--chili);border-radius:14px;padding:10px;margin:0 0 10px;background:rgba(220,38,38,.07);display:grid;gap:4px">
+    <b style="color:var(--chili)">🚫 ${esc(r.byName||"साथी")} ने ${req?"यह बिल रद्द करने की अर्ज़ी भेजी":"यह बिल रद्द किया"} · ${ftime(r.ts)}</b><span>📝 वजह: ${esc(r.reason||"—")}</span>${r.settled?`<span>💰 इस बिल का पैसा लिया जा चुका है — रद्द करें तो ग्राहक को लौटाना होगा</span>`:`<span class="note">⏳ इस बिल का भुगतान अभी नहीं हुआ था</span>`}
+    <div class="row2" style="margin:6px 0 0">${req?`<button class="big" data-crdo="1" data-crid="${esc(r.id)}" style="background:var(--chili);color:#fff">✓ हाँ, बिल रद्द करें</button><button class="big ghost" data-crdo="0" data-crid="${esc(r.id)}">✗ मना करें — बिल चालू</button>`
+      :`<button class="big" data-crdo="1" data-crid="${esc(r.id)}">✓ ठीक है, देख लिया</button><button class="big ghost" data-crdo="0" data-crid="${esc(r.id)}">↩ गलत — बिल वापस चालू</button>`}</div></div>`};
+/* अर्ज़ी की पूरी झलक (सामान, रकम, किसने, क्यों) — यहीं एक दबाव में फ़ैसला */
+SF.crSheet=async function(id){const r=(S.cancelReqs||[]).find(x=>x.id===id);if(!r){toast("यह अर्ज़ी पहले ही निपट चुकी है");return}
+  let b=(S.dayBills||[]).find(x=>x.no===r.no);if(!b&&!S.demo&&S.db){try{const g=await S.db.doc("days/"+r.date+"/bills/"+r.no).get();if(g.exists)b=g.data()}catch(e){}}
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="रद्द की अर्ज़ी"><div class="grab"></div>
+    <div class="sh-head"><div><h3>🚫 ${r.done===false?"रद्द करने की अर्ज़ी":"रद्द हुआ बिल"}</h3><span class="note">बिल ${esc(r.no)} · ${fdate(r.date)}${b?" · "+ftime(b.ts):""} · बनाया ${esc(r.billBy||(b&&b.byName)||"")}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+    ${SF.crBoxHTML(r)}
+    ${b?(SF.compactPaperHTML?SF.compactPaperHTML(b,{}):""):`<p class="warn">⏳ बिल अभी सर्वर पर नहीं मिला — साथी के फोन में नेट आते ही आ जाएगा</p>`}</div></div>`;
+  $("#sheet").oninput=null;$("#sheet").onchange=null;$("#sheet").onclick=e=>{if(e.target.matches("[data-close]"))closeSheet()}};
+/* फ़ैसले के बटन — कहीं भी हों (रिपोर्ट का कार्ड, बिल की शीट, अर्ज़ी की शीट) */
+document.addEventListener("click",async e=>{const v=e.target.closest("[data-crview]");if(v){e.stopPropagation();SF.crSheet(v.dataset.crview);return}
+  const b=e.target.closest("[data-crdo]");if(!b||!S.isOwner)return;e.preventDefault();e.stopPropagation();
+  const box=b.closest(".crbox,.creq-row")||b.parentNode,bs=[...box.querySelectorAll("[data-crdo]")];if(bs.some(x=>x.disabled))return;
+  const t0=b.textContent;bs.forEach(x=>x.disabled=true);b.textContent="⏳ हो रहा है…";
+  const done=await SF.decideCancel(b.dataset.crid,b.dataset.crdo==="1");
+  if(done){if(b.closest("#sheet"))closeSheet()}else if(b.isConnected){bs.forEach(x=>x.disabled=false);b.textContent=t0}},true);
+/* वजह के बटन — "dykzru3" जैसी बेमतलब वजह की जगह एक दबाव (23-11) */
+SF.CRWHY=["ग्राहक ने सामान नहीं लिया","गलत सामान / गलत मात्रा","एक ही बिल दो बार बना","भाव गलत लगा","ग्राहक ने पैसे नहीं दिए"];
+SF.crWhyHTML=()=>`<div class="seg" style="margin:4px 0 0">${SF.CRWHY.map(w=>`<button type="button" class="chip" data-crwhy="${esc(w)}">${esc(w)}</button>`).join("")}</div>`;
+document.addEventListener("click",e=>{const w=e.target.closest("[data-crwhy]");if(!w)return;const i=document.getElementById("crWhy");if(i){i.value=w.dataset.crwhy;w.parentNode.querySelectorAll("[data-crwhy]").forEach(x=>x.setAttribute("aria-pressed",String(x===w)))}});
 SF.cancelReqHTML=function(b,fresh){
   if(S.isOwner||S.demo||b.cancelled||b.pending)return "";
   const mine=S.cancelReqs.find(r=>r.no===b.no);
-  if(mine&&mine.done===false)return `<div class="warn" style="margin-top:10px">⏳ इस बिल को रद्द करने की अर्ज़ी विक्रम जी के पास गई है</div>`;
+  if(mine)return `<div class="warn" style="margin-top:10px">⏳ इस बिल को रद्द करने की अर्ज़ी${mine.by&&mine.by!==S.uid?" ("+esc(mine.byName||"")+" की)":""} विक्रम जी के पास है — उनके फ़ैसले तक भुगतान न लें</div>`;
   return `<details class="creq"><summary>🚫 यह बिल रद्द करना है?</summary>
-    <label class="fld">रद्द करने की वजह<input class="inp" id="crWhy" placeholder="जैसे ग्राहक ने सामान लौटाया / गलत बिल बना"></label>
-    <p class="note" style="margin:4px 0 0">बिल अभी रद्द होगा, माल स्टॉक में वापस जुड़ेगा, विक्रम जी को सूचना जाएगी।</p>
-    <button class="big ghost" data-creq style="margin-top:8px;color:var(--chili)">🚫 बिल रद्द करें</button></details>`;
+    <label class="fld">रद्द करने की वजह<input class="inp" id="crWhy" placeholder="जैसे ग्राहक ने सामान लौटाया / गलत बिल बना"></label>${SF.crWhyHTML()}
+    <p class="note" style="margin:4px 0 0">अर्ज़ी विक्रम जी के पास जाएगी — वे मंज़ूर करें तो बिल रद्द होगा और माल स्टॉक में वापस।</p>
+    <button class="big ghost" data-creq style="margin-top:8px;color:var(--chili)">📩 रद्द की अर्ज़ी भेजें</button></details>`;
 };
 /* 🚫 कर्मचारी वजह लिखकर रद्द करे → बिल तुरंत रद्द (माल स्टॉक में वापस, उधार खाते से हटे), मालिक को सिर्फ़ सूचना (ऐप + चाहें तो WhatsApp) */
 /* 23-11: रद्द होने पर स्टॉक में वही लौटे जो ग्राहक के पास था — पहले "माल वापसी" में लौट चुका माल दोबारा नहीं जुड़ता */
@@ -1328,42 +1359,53 @@ SF.doCancel0=async function(b,why){
   try{await SB.patchBill(b,ch)}catch(e){Object.assign(b,before);throw e}
   if(b.pay&&num(b.pay.udhar)>0){try{G.okdel.add(b.no)}catch(x){}try{if(!S.demo&&S.db)await S.db.doc("ledger/"+b.no).delete()}catch(x){}S.ledger=(S.ledger||[]).filter(l=>l.id!==b.no)}
   try{await adjStock(trackedPairs(SF.cancelLines(b),1),"रद्द बिल "+b.no)}catch(x){}
+  /* मालिक ने खुद रद्द किया और उसी बिल की अर्ज़ी पड़ी थी → अर्ज़ी भी निपटी (कार्ड में न अटके) */
+  const cr=S.isOwner&&SF.crOf(b.no);if(cr&&!S.demo&&S.db){try{await S.db.doc("cancelReq/"+cr.id).update({status:"approved",decidedTs:Date.now(),decidedBy:biller()})}catch(x){}S.cancelReqs=S.cancelReqs.filter(x=>x.id!==cr.id);try{renderTabs()}catch(x){}}
 };
 SF.sendCancelReq=async function(b){
   const why=($("#crWhy")?.value||"").trim();if(why.length<3){toast("पहले रद्द करने की वजह लिखें");return}
   if(SF._crBusy||b.cancelled)return;SF._crBusy=1;try{await SF.sendCancelReq0(b,why)}finally{SF._crBusy=0}};
 SF.sendCancelReq0=async function(b,why){
-  let done=true;
-  try{await SF.doCancel(b,why)}catch(e){done=false}
+  /* 23-11: साथी सीधे रद्द नहीं कर सकते (सर्वर-नियम: रद्द सिर्फ़ मालिक) — पहले कोशिश करके बिल पल भर को "रद्द" दिखता था; अब सीधी अर्ज़ी */
+  let done=false;
+  if(S.isOwner){done=true;try{await SF.doCancel(b,why)}catch(e){done=false}}
   const req={no:b.no,date:b.date,total:b.total,partyName:b.partyName||"",byName:biller(),by:S.uid||"",reason:why,ts:Date.now(),status:"pending",billBy:b.byName||"",settled:b.settled!==false,done};if(window.SR&&SR.locNow&&SR.locNow())req.loc=SR.locNow();
-  try{await S.db.collection("cancelReq").doc(b.no).set(req)}catch(e){if(!done){toast("रद्द नहीं हुआ: "+(e.code||""));return}}
-  S.cancelReqs.push({id:b.no,...req});
-  const txt=`🚫 *बिल ${done?"रद्द किया गया":"रद्द करने की अर्ज़ी"}*\n177 वेट कैंटीन\n━━━━━━━━━━━━\n🧾 बिल नं: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n👤 ग्राहक: ${b.partyName||""}\n💰 रकम: ₹${b.total}\n🛒 ${(b.lines||[]).map(l=>l.name+" "+fq(l.qty,l.unit)).join(", ")}\n📝 वजह: ${why}\n🧑‍🌾 रद्द किया: ${biller()} · ${ftime(Date.now())}\n━━━━━━━━━━━━\n${done?"माल स्टॉक में वापस जुड़ गया। ठीक न लगे तो ऐप की \"रिपोर्ट\" से बिल वापस चालू कर सकते हैं।":"विक्रम जी, ऐप की \"रिपोर्ट\" में मंज़ूर करें।"}`;
+  let queued=false;
+  try{if(!S.demo&&S.db)await Promise.race([S.db.collection("cancelReq").doc(b.no).set(req),new Promise((_,rj)=>setTimeout(()=>rj({code:"slow"}),7000))])}
+  catch(e){if(e&&e.code==="slow")queued=true;else if(!done){toast("अर्ज़ी नहीं गई: "+(e.code||"")+" — नेट देखकर दोबारा दबाएँ");return}}
+  S.cancelReqs=(S.cancelReqs||[]).filter(r=>r.id!==b.no).concat([{id:b.no,...req,_local:queued}]);
+  const txt=`🚫 *बिल ${done?"रद्द किया गया":"रद्द करने की अर्ज़ी"}*\n177 वेट कैंटीन\n━━━━━━━━━━━━\n🧾 बिल नं: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n👤 ग्राहक: ${b.partyName||""}\n💰 रकम: ₹${b.total}\n🛒 ${(b.lines||[]).map(l=>l.name+" "+fq(l.qty,l.unit)).join(", ")}\n📝 वजह: ${why}\n🧑‍🌾 ${done?"रद्द किया":"अर्ज़ी भेजी"}: ${biller()} · ${ftime(Date.now())}\n━━━━━━━━━━━━\n${done?"माल स्टॉक में वापस जुड़ गया। ठीक न लगे तो ऐप की \"रिपोर्ट\" से बिल वापस चालू कर सकते हैं।":"विक्रम जी, ऐप की \"रिपोर्ट\" में मंज़ूर करें।"}`;
   closeSheet();try{renderPane()}catch(x){}
-  toast(done?"🚫 बिल "+b.no+" रद्द — माल स्टॉक में वापस · विक्रम जी को सूचना गई":"📩 अर्ज़ी विक्रम जी को गई");
+  toast(done?"🚫 बिल "+b.no+" रद्द — माल स्टॉक में वापस · विक्रम जी को सूचना गई":queued?"📴 अर्ज़ी फोन में — नेट आते ही विक्रम जी को जाएगी":"📩 अर्ज़ी विक्रम जी को गई — बिल अब उनके पास, आपकी सूची से हटा");
   const ph=String(S.settings.ownerPh||"").replace(/\D/g,"").slice(-10);
   if(ph.length===10)setTimeout(()=>{SB.waNotice&&SB.waNotice(txt,ph)},400);
 };
 SF.cancelReqsHTML=function(){
-  if(!S.isOwner||!S.cancelReqs.length)return "";
-  return `<div class="card2" style="border:2px solid var(--chili)"><h3 style="color:var(--chili)">🚫 रद्द हुए बिल (${S.cancelReqs.length})</h3>
-  ${S.cancelReqs.map(r=>`<div class="creq-row"><div><b>${esc(r.no)} · ${rs(r.total)} ${r.done===false?'<span class="pill red">अर्ज़ी — अभी रद्द नहीं</span>':'<span class="pill red">रद्द हो गया</span>'}</b><span class="note">${fdate(r.date)} · ${ftime(r.ts)} · ग्राहक ${esc(r.partyName)} · बिल बनाया ${esc(r.billBy)} · रद्द किया ${esc(r.byName)}</span><span>📝 ${esc(r.reason)}</span></div>
-    <div class="row2" style="margin:0">${r.done===false?`<button class="big" data-crok="${esc(r.id)}" style="background:var(--chili);color:#fff">✓ रद्द करें</button><button class="big ghost" data-crno="${esc(r.id)}">✗ मना करें</button>`:`<button class="big" data-crok="${esc(r.id)}">✓ ठीक है, देख लिया</button><button class="big ghost" data-crno="${esc(r.id)}">↩ गलत — बिल वापस चालू</button>`}</div></div>`).join("")}</div>`;
+  if(!S.isOwner||!S.cancelReqs.length)return "";const L=S.cancelReqs,nReq=L.filter(r=>r.done===false).length;
+  const cust=r=>{const n=String(r.partyName||"").trim();return !n||n==="VIP ग्राहक"?"VIP ग्राहक":n};
+  return `<div class="card2" style="border:2px solid var(--chili)"><h3 style="color:var(--chili)">🚫 ${nReq===L.length?"बिल रद्द करने की अर्ज़ी":nReq?"रद्द बिल और अर्ज़ी":"साथी ने बिल रद्द किए"} (${L.length})</h3>
+  ${L.map(r=>`<div class="creq-row"><div data-crview="${esc(r.id)}" role="button" tabindex="0" style="cursor:pointer"><b>${esc(r.no)} · ${rs(r.total)} ${r.done===false?'<span class="pill red">अर्ज़ी — आपके फ़ैसले का इंतज़ार</span>':'<span class="pill red">रद्द हो गया</span>'}</b><span class="note">${fdate(r.date)} · ${ftime(r.ts)} · 👤 ${esc(cust(r))} · बिल बनाया ${esc(r.billBy||"")} · ${r.done===false?"अर्ज़ी भेजी":"रद्द किया"} ${esc(r.byName||"")}</span><span>📝 ${esc(r.reason)} <u style="color:var(--chili)">· बिल देखें ›</u></span></div>
+    <div class="row2" style="margin:0">${r.done===false?`<button class="big" data-crview="${esc(r.id)}" style="background:var(--chili);color:#fff">✓ रद्द करें</button><button class="big ghost" data-crdo="0" data-crid="${esc(r.id)}">✗ मना करें</button>`:`<button class="big" data-crdo="1" data-crid="${esc(r.id)}">✓ ठीक है, देख लिया</button><button class="big ghost" data-crview="${esc(r.id)}">↩ गलत — बिल वापस चालू</button>`}</div></div>`).join("")}</div>`;
 };
 SF.decideCancel=async function(id,ok){
-  const r=S.cancelReqs.find(x=>x.id===id);if(!r)return;
+  const r=(S.cancelReqs||[]).find(x=>x.id===id);if(!r){toast("यह अर्ज़ी पहले ही निपट चुकी है");return false}
+  if(SF._dcBusy)return false;SF._dcBusy=1;
   try{
-    if(ok){const ref=S.db.doc("days/"+r.date+"/bills/"+r.no);const g=await ref.get();if(!g.exists){toast("बिल नहीं मिला");return}const b=g.data();
-      if(!b.cancelled){await ref.update({cancelled:true,cancelledBy:S.uid||"",cancelReason:"अर्ज़ी: "+r.reason+" ("+r.byName+")",cancelTs:Date.now()});
-        if(b.pay&&b.pay.udhar>0){try{await S.db.doc("ledger/"+b.no).delete()}catch(e){}}
+    if(ok){const ref=S.db.doc("days/"+r.date+"/bills/"+r.no);const g=await ref.get();if(!g.exists){toast("⏳ बिल अभी सर्वर पर नहीं पहुँचा (साथी के फोन में नेट नहीं) — थोड़ी देर बाद दबाएँ");return false}const b=g.data();
+      if(!b.cancelled){const ch={cancelled:true,cancelledBy:S.uid||"",cancelByName:biller(),cancelReason:"अर्ज़ी: "+r.reason+" ("+r.byName+")",cancelTs:Date.now()};await ref.update(ch);
+        SF._lastCx={no:r.no,paid:b.settled!==false?r2(num(b.pay&&b.pay.cash)+num(b.pay&&b.pay.upi)):0};
+        const lb=(S.dayBills||[]).find(x=>x.no===r.no);if(lb)Object.assign(lb,ch);
+        if(b.pay&&b.pay.udhar>0){try{G.okdel.add(b.no)}catch(x){}try{await S.db.doc("ledger/"+b.no).delete()}catch(e){}S.ledger=(S.ledger||[]).filter(l=>l.id!==b.no)}
         await adjStock(trackedPairs(SF.cancelLines(b),1),"रद्द बिल "+b.no)}}
     if(!ok){const ref=S.db.doc("days/"+r.date+"/bills/"+r.no);const g=await ref.get();const b=g.exists?g.data():null;
       if(b&&b.cancelled){await ref.update({cancelled:false,restoredTs:Date.now(),restoredBy:S.uid||"",cancelNote:"रद्द वापस — "+(b.cancelReason||"")});
         if(b.pay&&b.pay.udhar>0&&b.partyId)await S.db.collection("ledger").doc(b.no).set({ts:b.ts,date:b.date,partyId:b.partyId,partyName:b.partyName||"",type:"udhar",amt:b.pay.udhar,billNo:b.no,by:b.by||"",byName:b.byName||"",restored:true});
         await adjStock(trackedPairs(SF.cancelLines(b),-1),"रद्द वापस "+b.no)}}
-    await S.db.doc("cancelReq/"+id).update({status:ok?"approved":"rejected",decidedTs:Date.now()});
-    S.cancelReqs=S.cancelReqs.filter(x=>x.id!==id);renderTabs();renderReport();toast(ok?"✓ ठीक — बिल रद्द रहेगा":"↩ बिल वापस चालू — पहले जैसा रहेगा");
-  }catch(e){toast("नहीं हुआ: "+(e.code||e.message||""))}
+    await S.db.doc("cancelReq/"+id).update({status:ok?"approved":"rejected",decidedTs:Date.now(),decidedBy:biller()});
+    S.cancelReqs=S.cancelReqs.filter(x=>x.id!==id);try{renderTabs();renderPane(true)}catch(x){}
+    const back=ok&&SF._lastCx&&SF._lastCx.no===r.no?SF._lastCx.paid:0;
+    toast(ok?"✓ बिल "+r.no+" रद्द — माल स्टॉक में वापस"+(back>0?" · ग्राहक को "+rs(back)+" लौटाएँ":""):r.done===false?"↩ अर्ज़ी मना — बिल "+r.no+" चालू है (भुगतान बाकी में दिखेगा)":"↩ बिल "+r.no+" वापस चालू");return true;
+  }catch(e){toast("नहीं हुआ: "+(e.code||e.message||"")+" — नेट देखकर दोबारा दबाएँ");return false}finally{SF._dcBusy=0}
 };
 
 /* A4 रिपोर्ट में खरीद */
@@ -1629,7 +1671,7 @@ SF.fetchRange=async function(from,to){const key=from+"|"+to;if(SF.rng.key===key&
   SF.rng={key,bills:out,loading:false,ts:Date.now()};return out};
 const BF=[["all","सब"],["cash","💵 नकद"],["upi","📱 UPI"],["udhar","📒 उधार"],["inst","🏢 संस्था"],["pend","⏳ बाकी"],["cancel","🚫 रद्द"],["phone","☎️ नंबर वाले"],["edit","✏️ बदले गए"]];
 const bfOk={all:b=>true,cash:b=>!b.cancelled&&num(b.pay&&b.pay.cash)>0,upi:b=>!b.cancelled&&num(b.pay&&b.pay.upi)>0,udhar:b=>!b.cancelled&&num(b.pay&&b.pay.udhar)>0,inst:b=>!b.cancelled&&b.mode==="inst",
-  pend:b=>!b.cancelled&&b.settled===false,cancel:b=>!!b.cancelled,phone:b=>String(b.custPhone||"").length===10,edit:b=>num(b.editCount)>0};
+  pend:b=>!b.cancelled&&b.settled===false&&!SF.crOf(b.no),cancel:b=>!!b.cancelled||!!SF.crOf(b.no),phone:b=>String(b.custPhone||"").length===10,edit:b=>num(b.editCount)>0};
 SF.bfRange=function(){const f=SF.bf,from=f.from||S.billsDate,to=f.to||S.billsDate;if(from===to)return [S.billsDate,S.billsDate];return from<=to?[from,to]:[to,from]};
 SF.renderBills=function(){
   const el=$("#p-bills");if(!el)return;const f=SF.bf,[from,to]=SF.bfRange(),multi=from!==to;
@@ -1652,7 +1694,7 @@ SF.renderBills=function(){
   ${multi&&SF.rng.loading?'<p class="note">⏳ '+fdate(from)+' से '+fdate(to)+' तक के बिल आ रहे हैं…</p>':""}
   <div class="kpis k4"><div class="kpi"><span>बिल</span><b>${live.length}</b></div><div class="kpi"><span>बिक्री</span><b>${rs(saleT)}</b></div><div class="kpi"><span>नकद</span><b>${rs(sum("cash"))}</b></div><div class="kpi blue"><span>UPI</span><b>${rs(sum("upi"))}</b></div><div class="kpi red"><span>उधार</span><b>${rs(sum("udhar"))}</b></div><div class="kpi"><span>संस्था</span><b>${rs(instT)}</b></div></div>
   ${SF.profitKpiHTML?SF.profitKpiHTML(live):""}
-  <div class="list">${list.length?list.map(b=>`<button class="li${b.cancelled?" bcx":""}" data-bill="${esc(b.no)}" data-bdate="${esc(b.date||"")}"><div class="mid"><b>${b.pending?"📴 ":""}${esc(b.partyName)} ${b.rateChanged||b.disc?'<span class="pill red">ध्यान दें</span>':""}${b.cancelled?' <span class="pill red">रद्द</span>':""}</b><span>${multi?fdate(b.date).slice(0,5)+" ":""}${ftime(b.ts)} · ${esc(b.no)} · ${esc(b.byName)} · ${(b.lines||[]).length} चीज़ें${b.custPhone?" · ☎️ "+esc(b.custPhone):""}</span></div><div class="rt">${rs(b.total)}<small>${b.mode==="inst"?"संस्था":b.payMode==="upi"?"UPI":b.payMode==="cash"?"नकद":b.payMode==="split"?"नकद+उधार":b.settled===false?"⏳ बाकी":"उधार"}</small>${!b.cancelled&&SF.billProfitTag?SF.billProfitTag(b):""}${SF.gpTag&&!multi?SF.gpTag(b):""}</div></button>`).join(""):`<div class="empty"><b>इस फिल्टर में कोई बिल नहीं</b>ऊपर फिल्टर बदलें।</div>`}</div>`;
+  <div class="list">${list.length?list.map(b=>`<button class="li${b.cancelled?" bcx":""}" data-bill="${esc(b.no)}" data-bdate="${esc(b.date||"")}"><div class="mid"><b>${b.pending?"📴 ":""}${esc(b.partyName)} ${b.rateChanged||b.disc?'<span class="pill red">ध्यान दें</span>':""}${b.cancelled?' <span class="pill red">रद्द</span>':SF.crOf(b.no)?' <span class="pill red">🚫 रद्द-अर्ज़ी</span>':""}</b><span>${multi?fdate(b.date).slice(0,5)+" ":""}${ftime(b.ts)} · ${esc(b.no)} · ${esc(b.byName)} · ${(b.lines||[]).length} चीज़ें${b.custPhone?" · ☎️ "+esc(b.custPhone):""}</span></div><div class="rt">${rs(b.total)}<small>${b.mode==="inst"?"संस्था":b.payMode==="upi"?"UPI":b.payMode==="cash"?"नकद":b.payMode==="split"?"नकद+उधार":b.settled===false?"⏳ बाकी":"उधार"}</small>${!b.cancelled&&SF.billProfitTag?SF.billProfitTag(b):""}${SF.gpTag&&!multi?SF.gpTag(b):""}</div></button>`).join(""):`<div class="empty"><b>इस फिल्टर में कोई बिल नहीं</b>ऊपर फिल्टर बदलें।</div>`}</div>`;
   const h=document.querySelector("header");if(h)document.documentElement.style.setProperty("--hdrh",h.offsetHeight+"px");
 };
 document.addEventListener("click",e=>{

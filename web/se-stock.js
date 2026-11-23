@@ -147,7 +147,7 @@ function dayNums(){
   /* ↩️ 23-11: आज की ग्राहक-वापसी का असर मुनाफ़े पर — लौटाई रकम, माल ठीक होकर स्टॉक में लौटा तो उसकी लागत वापस (पहले मुनाफ़ा बिना वापसी घटाए दिखता था) */
   const rl=window.SV&&SV.day?r2(SV.day(S.billsDate).filter(r=>r.kind==="sale").reduce((a,r)=>a+(+r.total||0)-(r.good?(+r.cost||0):0),0)):0;
   return {n:sale.length,tot:sum(sale,b=>b.total),cash:sum(sale,b=>b.pay&&b.pay.cash),upi:sum(sale,b=>b.pay&&b.pay.upi),ud:sum(sale,b=>b.pay&&b.pay.udhar),
-    pend:sale.filter(b=>b.settled===false).length,inst:sum(inst,b=>b.total),nInst:inst.length,cost,noCost,rl,gm:r2(sum(sale,b=>b.total)-noCost-cost-rl),
+    pend:sale.filter(b=>b.settled===false&&!(window.SF&&SF.crOf&&SF.crOf(b.no))).length,inst:sum(inst,b=>b.total),nInst:inst.length,cost,noCost,rl,gm:r2(sum(sale,b=>b.total)-noCost-cost-rl),
     saved:sum(sale,b=>typeof savedOf==="function"?savedOf(b):0),cancel:all.filter(b=>b.cancelled),
     buy:sum(P.filter(p=>p.src!=="mh"),p=>p.total),mh:sum(P.filter(p=>p.src==="mh"),p=>p.total),mhUnsent:P.filter(p=>p.src==="mh"&&!p.mhSent).length,
     waste:r2(W.reduce((a,w)=>a+(+w.qty||0)*(+w.cost||0),0)),nWaste:W.length,
@@ -167,6 +167,7 @@ function ownerText(){
   (window.SG?SG.ownerLine():"")+
   (window.SB&&SB.rateLine?SB.rateLine(S.dayBills):"")+
   (window.SV?SV.dayLine(S.billsDate):"")+
+  ((S.cancelReqs||[]).length?`🚫 रद्द की अर्ज़ी — आपका फ़ैसला बाकी: ${S.cancelReqs.map(r=>r.no+" "+rs(r.total)+" ("+(r.byName||"")+")").join(", ")}\n`:"")+
   (cnt.length?`🔢 गिनती: ${cnt.map(c=>c.byName+" · "+(c.nDiff?c.nDiff+" सामान में फर्क"+(c.short>0?", कम "+rs(c.short):""):"सब मिला")).join(", ")}\n`:"")+
   (d.cancel.length?`❌ रद्द बिल: ${d.cancel.map(b=>b.no+" "+rs(b.total)+(b.cancelReason?" ("+b.cancelReason+")":"")).join(", ")}\n`:"")+
   `👤 ${Object.entries(d.byStaff).map(([k,v])=>k+" "+rs(v)).join(" · ")||"—"}\n`+
