@@ -9,9 +9,9 @@
  "items": [
   {
    "id": "g-chatpata-chana-shraddha-bites",
-   "name": "CHATPATA CHANA (SHRADDHA BITES)",
-   "short": "SHRADDHA CHATPATA CHANA",
-   "hi": "चटपटा चना (श्रद्धा बाइट्स)",
+   "name": "CHATPATA CHANA 500 G (SHRADDHA BITES)",
+   "short": "SHRADDHA CHATPATA 500G",
+   "hi": "चटपटा चना 500 ग्राम (श्रद्धा बाइट्स)",
    "brand": "SHRADDHA BITES",
    "alias": "chatpata chana shraddha bites masala chana चटपटा चना",
    "cat": "snacks",
@@ -27,7 +27,8 @@
     "qty": 16,
     "exp": "",
     "batchNo": ""
-   }
+   },
+   "size": "500g"
   }
  ]
 }
