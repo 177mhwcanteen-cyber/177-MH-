@@ -1,0 +1,33 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261123-02",
+ "date": "2026-11-23",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "चटपटा चना (Shraddha Bites) — MRP 110, 16, रैक 9-7 — सामान #23",
+ "items": [
+  {
+   "id": "g-chatpata-chana-shraddha-bites",
+   "name": "CHATPATA CHANA (SHRADDHA BITES)",
+   "short": "SHRADDHA CHATPATA CHANA",
+   "hi": "चटपटा चना (श्रद्धा बाइट्स)",
+   "brand": "SHRADDHA BITES",
+   "alias": "chatpata chana shraddha bites masala chana चटपटा चना",
+   "cat": "snacks",
+   "sub": "namkeen",
+   "unit": "pc",
+   "mrp": 110,
+   "sale": 110,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "9-7",
+   "ph": "73dc25ab",
+   "open": {
+    "qty": 16,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
