@@ -1,0 +1,33 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261123-01",
+ "date": "2026-11-23",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "गुड़ 500 g खुला पैक — सामान #20",
+ "items": [
+  {
+   "id": "g-gud-500-g",
+   "name": "GUD JAGGERY 500 G",
+   "short": "GUD JAGGERY 500G",
+   "hi": "गुड़ 500 ग्राम",
+   "size": "500g",
+   "alias": "gud gur jaggery gudh गुड़ गुड",
+   "cat": "kirana",
+   "sub": "sugar",
+   "unit": "pc",
+   "mrp": 38,
+   "sale": 38,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "7-11",
+   "ph": "c18a9f31",
+   "open": {
+    "qty": 22,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
