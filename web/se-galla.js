@@ -87,9 +87,10 @@ SG.backSheet=function(ref){if(!biller()){openBiller(()=>SG.backSheet(ref));retur
     if(!e.target.closest("[data-sgbsave]"))return;if(!(num(buy)>0)&&!(num(back)>0)){toast("खरीद या वापस — कम से कम एक लिखें");return}
     const doc={kind:"back",total:r2(num(back)),buy:r2(num(buy)),ref:sel.id,refDate:sel.date||today(),person:sel.person||"",given:num(sel.total),fark:r2(num(sel.total)-num(buy)-num(back)),note:String(note).trim().slice(0,120),ts:Date.now(),date:today(),by:S.uid||"",byName:biller()};
     const id="g"+doc.ts.toString(36)+Math.random().toString(36).slice(2,5);
+    if(SG._busy)return;SG._busy=1;/* 23-11: दो बार दबने पर दो एंट्री नहीं */
     try{if(!S.demo)await S.db.collection("days/"+today()+"/galla").doc(id).set(doc);S.galla.push({id,...doc});closeSheet();beep(Math.abs(doc.fark)<=1);
       toast(Math.abs(doc.fark)<=1?"✓ हिसाब पूरा — "+esc(doc.person):"⚠ हिसाब में "+rs(doc.fark)+" फ़र्क — विक्रम जी को दिखेगा");if(S.tab==="day"&&typeof renderDay==="function")renderDay();const nb=document.getElementById("sgNag");if(nb)nb.remove()}
-    catch(err){toast("सेव नहीं हुआ — नेट देखें")}}};
+    catch(err){toast("सेव नहीं हुआ — नेट देखें")}finally{SG._busy=0}}};
 /* cashCalc (दिन का हिसाब) के लिए: खोला/बंद/दिया */
 SG.forCalc=function(){const st=SG.state();if(!st.open&&!st.close&&!st.outs.length)return null;
   return {float:st.open?num(st.open.total):null,counted:st.close?num(st.close.total):null,out:r2(st.outs.reduce((a,o)=>a+num(o.total),0)-st.L.filter(g=>g.kind==="back").reduce((a,g)=>a+num(g.total),0)),closeBy:st.close?st.close.byName:""}};
@@ -151,13 +152,14 @@ SG.sheet=function(kind){
     const doc={kind,total,ts:Date.now(),date:today(),by:S.uid||"",byName:biller(),
       ...(kind==="out"?{to,note:String(note).trim().slice(0,120),...(String(per).trim()&&!NOPER(to)?{person:String(per).trim().slice(0,30)}:{}),...(to===ADV?{adv:true}:{})}:{notes,coins:num(coins)}),...(kind==="close"&&String(keep).trim()!==""?{keep:num(keep)}:{})};
     const id="g"+doc.ts.toString(36)+Math.random().toString(36).slice(2,5);
+    if(SG._busy)return;SG._busy=1;/* 23-11: "पैसा दिया"/गिनती दो बार दबने पर दो एंट्री नहीं (गल्ला कम दिखता था) */
     try{if(S.demo)S.galla.push({id,...doc});else await S.db.collection("days/"+today()+"/galla").doc(id).set(doc);
       if(!S.galla.some(g=>g.id===id))S.galla.push({id,...doc});
       LSg.set("sg_last_"+today(),String(doc.ts));closeSheet();beep(true);
       toast(kind==="out"?"✓ "+rs(total)+" दर्ज हुए"+(doc.adv?" — लौटने पर 🔁 हिसाब ज़रूर दर्ज करें":""):"✓ गल्ला "+(kind==="open"?"खुला":kind==="close"?"बंद हुआ":"गिनती सेव")+" · कुल "+rs(total)+" — धन्यवाद 🙏");
       if(kind==="close"&&doc.keep!=null&&S.isOwner)saveSetting({float:doc.keep});
       if(S.tab==="day")renderDay();const nb=document.getElementById("sgNag");if(nb)nb.remove();
-    }catch(err){toast("सेव नहीं हुआ — नेट देखें और दोबारा दबाएँ")}
+    }catch(err){toast("सेव नहीं हुआ — नेट देखें और दोबारा दबाएँ")}finally{SG._busy=0}
   };
 };
 

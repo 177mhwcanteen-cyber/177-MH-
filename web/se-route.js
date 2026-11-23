@@ -242,7 +242,7 @@ SR.newItemSheet=function(q){
   <div class="sh-head"><div><h3>➕ नया सामान जोड़ें</h3><span class="note">${S.isOwner?"यह सबके फोन में तुरंत आ जाएगा":"यह सबके फोन में तुरंत आ जाएगा"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
   <label class="fld">नाम (हिंदी में)<input class="inp" id="niName" value="${esc(q||"")}" placeholder="जैसे शकरकंद"></label>
   <label class="fld">अंग्रेज़ी नाम (अगर पता हो)<input class="inp" id="niEn" placeholder="जैसे Sweet Potato"></label>
-  <div class="row2"><label class="fld">किस हिसाब से बिकेगा<select class="inp" id="niUnit"><option value="kg">किलो</option><option value="pc">पीस / पैकेट</option></select></label>
+  <div class="row2"><label class="fld">किस हिसाब से बिकेगा<select class="inp" id="niUnit"><option value="pc">पीस / पैकेट</option><option value="kg">किलो</option></select></label>
   <label class="fld">बेचने का भाव ₹<input class="inp" id="niRate" inputmode="decimal" placeholder="₹"></label></div>
   <label class="fld">किस में रखें<select class="inp" id="niCat">${[["kirana","🛒 किराना"],["fast","🍔 फास्ट फूड"],["sabzi","🥬 सब्ज़ी-फल"]].map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
   <button class="big" data-nisave style="margin-top:10px">✓ जोड़ें और बिल में डालें</button></div></div>`;
@@ -252,11 +252,13 @@ SR.newItemSheet=function(q){
 SR.saveNewItem=async function(){
   const name=$("#niName").value.trim(),en=$("#niEn").value.trim(),unit=$("#niUnit").value,rate=r2(parseFloat(String($("#niRate").value).replace(",","."))||0),cat=$("#niCat").value;
   if(!name){toast("सामान का नाम लिखें");return}if(!(rate>0)){toast("बेचने का भाव लिखें");return}
-  const dup=S.items.find(i=>!i.virtual&&i.name===name);if(dup){closeSheet();toast(name+" पहले से लिस्ट में है");openQty(dup);return}
+  const nk=s=>String(s||"").trim().replace(/\s+/g," ").toUpperCase();/* 23-11: parle g = PARLE G — छोटे/बड़े अक्षर से दोहरा सामान नहीं */
+  const dup=S.items.find(i=>!i.virtual&&i.active!==false&&(nk(i.name)===nk(name)||(i.hi&&nk(i.hi)===nk(name))||(en&&nk(i.name)===nk(en))));if(dup){closeSheet();toast(SE.capNm(dup.name)+" पहले से लिस्ट में है");openQty(dup);return}
+  if(SR._niBusy)return;SR._niBusy=1;setTimeout(()=>{SR._niBusy=0},4000);/* दो बार दबने पर दो सामान नहीं */
   const id="n"+Date.now().toString(36);
-  const it={name,en,unit,sale:rate,cost:0,cat,emoji:{sabzi:"🛒",fal:"🍎",patta:"🌿",packed:"📦"}[cat]||"🛒",hue:Math.floor(Math.random()*360),active:true,
+  const it={name,en,unit,sale:rate,cost:0,cat,code:typeof nextCode==="function"?nextCode(cat):""/* 4 अंक का कोड — हर सामान का (23-11) */,emoji:{sabzi:"🛒",fal:"🍎",patta:"🌿",packed:"📦"}[cat]||"🛒",hue:Math.floor(Math.random()*360),active:true,
     addedBy:S.uid||"",addedByName:biller(),addedTs:Date.now(),pending:!S.isOwner,ts:Date.now()};
-  try{if(!S.demo&&S.db)await S.db.collection("items").doc(id).set(it)}catch(e){toast("सेव नहीं हुआ: "+(e.code||e.message||""));return}
+  try{if(!S.demo&&S.db)await S.db.collection("items").doc(id).set(it)}catch(e){SR._niBusy=0;toast("सेव नहीं हुआ: "+(e.code||e.message||""));return}
   if(!S.items.find(x=>x.id===id))S.items.push({id,...it});
   closeSheet();toast("✓ "+name+" जुड़ गया");
   const x=item(id);if(x)openQty(x);
@@ -613,7 +615,10 @@ SR.billsRange=async function(n){const end=R.date||today(),out=[];
     if(!L1){if(d===S.billsDate)L1=S.dayBills;else{try{L1=S.demo||!S.db?[]:(await S.db.collection("days/"+d+"/bills").get()).docs.map(x=>x.data())}catch(e){L1=[]}if(d!==today())R.bcache[d]=L1}}
     out.push(...L1.filter(b=>!b.cancelled))}
   return out};
-function shrink(file,max){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);img.onload=()=>{const sc=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.62))};img.onerror=rej;img.src=u})}
+/* 📸 23-11: जगह की फोटो Firestore में ≤20 KB (पहले 720px ~60 KB) */
+function shrink(file,max){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(u);let out="";
+  for(const m of [max,Math.round(max*.75),Math.round(max*.55),Math.round(max*.4),240]){const sc=Math.min(1,m/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*sc));c.height=Math.max(1,Math.round(img.height*sc));c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    for(const q of [.62,.5,.4]){out=c.toDataURL("image/jpeg",q);if(out.length*.75<=20*1024)return res(out)}}res(out)};img.onerror=rej;img.src=u})}
 SR.placeSheet=async function(name,n){
   n=n||1;const G=SR.places.filter(p=>p.name===name);if(!G.length)return;const c=G.find(p=>p.src==="gps")||G[0],photo=(G.find(p=>p.photo)||{}).photo||"";
   const head=`<div class="sh-head"><div><h3>📍 ${esc(name)}</h3><span class="note">${G.length} जगह · ${c.src==="gps"?"✅ फोन GPS से पक्की ±"+(c.acc||"?")+" मी.":"⚠ अंदाज़े से बनी"} · दायरा ${+c.r||150} मी.</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
@@ -815,8 +820,9 @@ SR.kharchSheet=function(){
     if(!e.target.closest("[data-qksave]"))return;
     const what=$("#qkW").value.trim(),amt=r2(parseFloat(String($("#qkA").value).replace(",","."))||0);
     if(!what||!(amt>0)){toast("किस चीज़ का और कितने रुपये — दोनों लिखें");return}
+    if(SR._qkBusy)return;SR._qkBusy=1;/* 23-11: दो बार दबने पर दो खर्चे नहीं */
     const k={what,amt,mode,ts:Date.now(),by:S.uid||"",byName:biller()};
-    try{if(S.demo)S.kharch.push({id:"k"+k.ts,...k});else await S.db.collection("days/"+today()+"/kharch").doc("k"+k.ts.toString(36)).set(k);closeSheet();toast("💸 "+what+" "+rs(amt)+" जुड़ा")}catch(err){toast("खर्चा सेव नहीं हुआ")}
+    try{if(S.demo)S.kharch.push({id:"k"+k.ts,...k});else await S.db.collection("days/"+today()+"/kharch").doc("k"+k.ts.toString(36)).set(k);closeSheet();toast("💸 "+what+" "+rs(amt)+" जुड़ा")}catch(err){toast("खर्चा सेव नहीं हुआ")}finally{SR._qkBusy=0}
   };
   setTimeout(()=>{const x=$("#qkW");if(x)x.focus()},120);
 };
@@ -847,10 +853,13 @@ SR.wasteSheet=function(id,why0){
     const w=e.target.closest("[data-wr]");if(w){why=w.dataset.wr;document.querySelectorAll("[data-wr]").forEach(x=>x.setAttribute("aria-pressed",x===w));return}
     if(!e.target.closest("[data-wsave]"))return;
     const q=r2(parseFloat(String($("#wQ").value).replace(",","."))*1000||0)/1000;if(!(q>0)){toast("कितना खराब हुआ — लिखें");return}
+    /* 📦 23-11: पैकेट (packOf) — स्टॉक पीस वाले में; पहले पैकेट खराब करने पर स्टॉक नहीं घटता था और नुकसान ₹0 गिनता था */
+    const pa=!it.track&&it.packOf&&+it.perPack>0?item(it.packOf):null,trk=it.track||!!(pa&&pa.track);
     if(it.track){const have=+(S.pstock[it.id]?.qty)||0;if(q>have+0.001){toast("स्टॉक में "+fq(have,it.unit)+" ही हैं");return}}
+    else if(trk){const have=Math.floor(((+(S.pstock[pa.id]?.qty)||0)/+it.perPack)*1000)/1000;if(q>have+0.001){toast("स्टॉक में "+have+" पैकेट ही हैं");return}}
     const items=S.stock.items||(S.stock.items={});const o=items[it.id]||(items[it.id]={});o.waste=r2((+o.waste||0)+q);
     (S.stock.wlog||(S.stock.wlog=[])).push({id:it.id,name:it.name,unit:it.unit,qty:q,reason:why,ts:Date.now(),by:S.uid||"",byName:biller()});
-    if(it.track){(S.stock.wlog[S.stock.wlog.length-1]).cost=(window.SF?SF.costOf(it):(+it.cost||0))||(+it.sale||0);await adjStock([[it.id,-q]],"खराब: "+why)}
+    if(trk){(S.stock.wlog[S.stock.wlog.length-1]).cost=(window.SF?SF.costOf(it):(+it.cost||0))||(+it.sale||0);await adjStock([[it.id,-q]],"खराब: "+why)}
     await saveStock();closeSheet();toast("🗑️ "+it.name+" "+fq(q,it.unit)+" हटाया ("+why+")");try{renderPane()}catch(err){}
   };
   setTimeout(()=>{const x=$("#wQ");if(x)x.focus()},60);
@@ -873,7 +882,7 @@ SR.rateSheet=function(it){
     if(old>0&&(n>old*3||n<old/3)&&sure!==String(n)){sure=String(n);beep(false);toast("⚠️ "+rs(old)+" → "+rs(n)+" बहुत बड़ा बदलाव है — सही है तो दोबारा दबाएँ");return}
     try{if(!S.demo){await S.db.collection("items").doc(it.id).update({sale:n,rateTs:Date.now(),rateBy:S.uid||"",rateByName:biller(),ratePrev:old});
         await S.db.collection("priceLog").doc("r"+Date.now().toString(36)).set({itemId:it.id,name:it.name,field:"sale",old,new:n,ts:Date.now(),by:S.uid||"",byName:biller()})}
-      it.sale=n;closeSheet();refreshAfterCart();toast("✏️ "+it.name+": "+rs(old)+" → "+rs(n))}
+      it.sale=n;/* 23-11: चालू बिलों में पहले से जुड़ी वही चीज़ भी नए भाव पर (पहले पुराना भाव ही रहता) */try{const rp=L=>(L||[]).forEach(l=>{if(l.id===it.id&&!l.changed&&!l.free&&S.mode!=="inst"){l.rate=n;l.board=n;l.amt=r2(num(l.qty)*n)}});rp(S.cart);(S.bt||[]).forEach(b=>{if(b.cart!==S.cart&&b.mode!=="inst")rp(b.cart)});if(typeof syncTab==="function")syncTab()}catch(x){}closeSheet();refreshAfterCart();toast("✏️ "+it.name+": "+rs(old)+" → "+rs(n))}
     catch(e){toast("भाव नहीं बदला: "+(e.code||""))}};
   $("#sheet").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();save()}};
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}if(e.target.closest("[data-rnsave]"))save()};
@@ -933,7 +942,7 @@ setInterval(()=>{if(!document.hidden)SR.lockCheck()},60000);
 SR.remindText=function(p,b){
   const L=(S.ledger||[]).filter(l=>l.partyId===p.id).sort((a,c)=>c.ts-a.ts).slice(0,6);
   const ph=window.SF?SF.orderPh():"";
-  return `🙏 नमस्ते ${p.name} जी,\n177 वेट कैंटीन का आपका बाकी हिसाब: *₹${b}*\n━━━━━━━━━━━━\n${L.map(l=>`${fdate(l.date).slice(0,5)} · ${l.type==="udhar"?(l.opening?"पुराना बाकी":"बिल "+(l.billNo||"")):"जमा ✓"} · ₹${l.amt}`).join("\n")}\n━━━━━━━━━━━━\nUPI से भुगतान: ${upiId()}${ph?"\nसवाल हो तो कॉल/WhatsApp: "+SF.fmtPh(ph):""}\nधन्यवाद 🙏`;
+  return `🙏 नमस्ते ${p.name} जी,\n177 वेट कैंटीन का आपका बाकी हिसाब: *₹${b}*\n━━━━━━━━━━━━\n${L.map(l=>`${fdate(l.date).slice(0,5)} · ${l.type==="udhar"?(l.opening||l.billNo==="पिछला बाकी"?"पुराना बाकी":"बिल "+(l.billNo||"")):l.mode==="return"?"माल वापसी ✓":"जमा ✓"} · ₹${l.amt}`).join("\n")}\n━━━━━━━━━━━━\nUPI से भुगतान: ${upiId()}${ph?"\nसवाल हो तो कॉल/WhatsApp: "+SF.fmtPh(ph):""}\nधन्यवाद 🙏`;
 };
 SR.jamaDone=function(p,amt,mode){
   const b=bal(p.id);if(!p.phone)return;
@@ -1265,7 +1274,7 @@ SR.delParty=async function(p,why,extra){
   try{const seen=JSON.parse(localStorage.getItem("se_pdel")||"{}");seen[p.id]=d.deletedTs;localStorage.setItem("se_pdel",JSON.stringify(seen))}catch(e){}
 };
 SR.delListHTML=function(){const L=(S.partiesDel||[]).slice().sort((a,b)=>num(b.deletedTs)-num(a.deletedTs));if(!L.length)return "";
-  return `<details class="pdel"><summary>🗑️ हटाए गए खाते (${L.length})</summary>${L.map(p=>`<div class="pdel-r"><div><b>${esc(p.name)}</b><span>मालिक ने हटाया · ${p.deletedTs?fdate(new Date(p.deletedTs).toISOString().slice(0,10))+" "+ftime(p.deletedTs):""}${p.movedTo?" · 🏢 संस्था में भेजा: "+esc(p.movedTo):""}${S.isOwner&&p.deleteWhy?" · "+esc(p.deleteWhy):""}${S.isOwner&&num(p.oldBal)?" · बाकी था "+rs(p.oldBal):""}${S.isOwner&&p.deletedDevTxt?" · 📱 "+esc(p.deletedDevTxt):""}</span></div>${S.isOwner?`<button class="lnk" data-pundel="${esc(p.id)}">↩ वापस लाएँ</button>`:""}</div>`).join("")}</details>`};
+  return `<details class="pdel"><summary>🗑️ हटाए गए खाते (${L.length})</summary>${L.map(p=>`<div class="pdel-r"><div><b>${esc(p.name)}</b><span>मालिक ने हटाया · ${p.deletedTs?fdate(today(new Date(p.deletedTs)))+" "+ftime(p.deletedTs):""}${p.movedTo?" · 🏢 संस्था में भेजा: "+esc(p.movedTo):""}${S.isOwner&&p.deleteWhy?" · "+esc(p.deleteWhy):""}${S.isOwner&&num(p.oldBal)?" · बाकी था "+rs(p.oldBal):""}${S.isOwner&&p.deletedDevTxt?" · 📱 "+esc(p.deletedDevTxt):""}</span></div>${S.isOwner?`<button class="lnk" data-pundel="${esc(p.id)}">↩ वापस लाएँ</button>`:""}</div>`).join("")}</details>`};
 /* मालिक की ID से किसी दूसरे फ़ोन पर खाता हटे → इस फ़ोन पर तुरंत 🚨 सूचना (पहरेदार में दर्ज) */
 SR.watchDel=function(L){if(!S.isOwner)return;let seen={};try{seen=JSON.parse(localStorage.getItem("se_pdel")||"null")}catch(e){}
   const first=!seen;seen=seen||{};let ch=false;

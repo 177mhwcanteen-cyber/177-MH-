@@ -13,6 +13,8 @@ SPK.url=p=>base()+p;
 const empty=v=>v==null||v===""||v===0||v==="0";
 const FILL=["offer","packMrp","subtitle","mfr","ctn","rack","mrp","sale","cost","barcode","ph","hi","brand","size","alias","emoji","sub","secret","perPack","packOf","unit"];
 const PRICE=["mrp","sale","cost"];
+/* ⏰ 23-11: खेप की एक्सपायरी (open.exp) — "2027-12" (सिर्फ़ महीना) = उस महीने का आख़िरी दिन; पहले यह सामान तक पहुँचती ही नहीं थी */
+const normExp=s=>{s=String(s||"").trim();const m=/^(\d{4})-(\d{1,2})$/.exec(s);if(m){const y=+m[1],mo=+m[2];if(mo<1||mo>12)return "";return y+"-"+String(mo).padStart(2,"0")+"-"+String(new Date(y,mo,0).getDate()).padStart(2,"0")}return /^\d{4}-\d{2}-\d{2}$/.test(s)?s:""};SPK.normExp=normExp;
 const say=m=>{try{toast(m)}catch(e){}};
 /* कोड: index.html का nextCode (4 अंक, किस्म-वार) — यह सिर्फ़ बचाव */
 function nextPkCode(){return String(Math.max(10000,...(S.items||[]).map(i=>+i.code||0).filter(c=>c>=10000))+1)}
@@ -58,12 +60,13 @@ async function one(x,pk,R){
       emoji:x.emoji||(x.sub==="tob"?"🚬":"🛒"),cat:x.cat||"kirana",sub:x.sub||"",unit:x.unit||"pc",
       code:String(x.code&&!(S.items||[]).some(i=>String(i.code)===String(x.code))?x.code:(typeof nextCode==="function"?nextCode(x.cat||"kirana"):nextPkCode())),barcode:String(x.barcode||""),mrp:+x.mrp||0,sale:+x.sale||+x.mrp||0,cost:+x.cost||0,
       perPack:+x.perPack||0,...(x.packOf?{packOf:x.packOf}:{}),track:x.track!=null?!!x.track:!x.packOf,min:+x.min||(x.packOf?0:2),
-      rack:x.rack||"",secret:x.secret||"",ph:x.ph||"",...(x.mfr?{mfr:x.mfr}:{}),...(+x.ctn>1?{ctn:+x.ctn}:{}),hue:Math.floor(Math.random()*360),active:true,
+      rack:x.rack||"",secret:x.secret||"",ph:x.ph||"",...(normExp((x.open||{}).exp||x.exp)?{exp:normExp((x.open||{}).exp||x.exp)}:{}),...(x.mfr?{mfr:x.mfr}:{}),...(+x.ctn>1?{ctn:+x.ctn}:{}),hue:Math.floor(Math.random()*360),active:true,
       order:(S.items||[]).length+1,src:"pack:"+pk,addedTs:ts,addedBy:S.uid||""};
     if(!d.barcode&&typeof ean13==="function")d.barcode=ean13(("200000"+d.code.padStart(5,"0")).slice(0,11)+"0");
     await S.db.collection("items").doc(x.id).set(d);/* 19-11: set के बाद onSnapshot पहले ही जोड़ देता है → push से टाइल दो बार दिखती थी */if(!item(x.id))S.items.push({id:x.id,...d});R.add++;x._id=x.id;if(!x.barcode&&!x.packOf)R.lbl++}
   else{
     const p={};for(const k of FILL){const v=x[k];if(v==null||v==="")continue;if(empty(ex[k])&&!empty(v))p[k]=k==="perPack"||PRICE.includes(k)?+v:v}
+    {const e0=normExp((x.open||{}).exp||x.exp);if(e0&&empty(ex.exp))p.exp=e0}
     /* 🏷️ कंपनी का बारकोड बाद में मिला (22-11): सामान पर अभी सिर्फ़ दुकान वाला (20…) कोड हो तो कंपनी वाला साथ में जोड़ो — पुराना कोड नहीं हटता */
     {const bc=String(x.barcode||"").trim(),cur=String(ex.barcode||"");if(bc&&!p.barcode&&cur&&!cur.split(",").includes(bc)&&cur.split(",").every(c=>/^2\d{12}$/.test(c.trim()))){
       const other=typeof findByCode==="function"?findByCode(bc):null;if(!other||other.id===ex.id)p.barcode=cur+","+bc}}
@@ -116,7 +119,7 @@ SPK.apply=async function(force){
       if(R.bad){say("⚠ खेप "+P.id+": "+R.bad+" सामान नहीं चढ़े"+(R.miss?" ("+R.miss.join(", ")+")":"")+" — अगली बार फिर कोशिश");out.packs++;for(const k in R)if(typeof R[k]==="number")out[k]+=R[k];continue}
       await ref.set({done:{[P.id]:{ts:Date.now(),by:S.uid||"",n:L.length,...R}}},{merge:true});
       out.packs++;for(const k in R)if(typeof R[k]==="number")out[k]+=R[k]}
-    out.stock=await SPK.autoStock();
+    out.stock=await SPK.autoStock();try{await SPK.fillExp()}catch(e){}
     if(out.packs){try{typeof setSoon==="function"&&setSoon()}catch(e){}
       say(`📦 ${out.packs} खेप: ${out.add} नए सामान, ${out.fill} में भाव/रैक/फोटो भरे${out.cnt?`, ${out.cnt} की गिनती (अभी स्टॉक नहीं)`:""}${out.co?`, 🏭 ${out.co} कंपनी`:""}${out.inq?`, 🧾 ${out.inq} सामान का माल स्टॉक में जुड़ा`:""}${out.upd?`, ✏️ ${out.upd} सामान के भाव/रैक बदले`:""}${out.lbl?` · 🏷️ ${out.lbl} का अपना बारकोड तैयार — "बारकोड पहरा" में रैक चुनकर छापें`:""}${out.bad?` · ⚠ ${out.bad} अधूरे`:""}`)}
     return out}
@@ -132,6 +135,12 @@ SPK.autoStock=async function(){if(!own())return 0;let L=[];try{L=await SPK.count
       S.pstock=S.pstock||{};S.pstock[c.itemId]={qty:q,ts};n++}catch(e){}}
   if(n)say("📦 "+n+" सामान की गिनती स्टॉक में जुड़ गई — 🔢 स्टॉक → गिनती (रैक चुनकर) से कभी भी मिलाएँ");
   return n};
+/* ⏰ 23-11: पहले चढ़ी खेपों की एक्सपायरी (openings/cnt_* में पड़ी) — जिस सामान में एक्सपायरी खाली है, उसमें भरो (सिर्फ़ खाली खाना; एक बार) */
+SPK.fillExp=async function(){if(!own()||!(S.items||[]).length)return 0;/* सामान लोड न हुए हों तो अगली बार */try{if(localStorage.getItem("spk_exp1")==="1")return 0}catch(e){}let n=0;
+  try{const s=await S.db.collection("openings").where("kind","==","count").get();const seen={};
+    for(const d of s.docs){const v=d.data()||{},e0=normExp(v.exp),it=item(v.itemId);if(!e0||!it||!empty(it.exp)||seen[it.id])continue;seen[it.id]=1;
+      try{await S.db.collection("items").doc(it.id).set({exp:e0},{merge:true});it.exp=e0;n++}catch(e){}}
+    try{localStorage.setItem("spk_exp1","1")}catch(e){}if(n)say("⏰ "+n+" सामान में खेप वाली एक्सपायरी भरी — अब पास आने पर चेतावनी आएगी")}catch(e){}return n};
 /* ▶ बिलिंग चालू / गिनती को स्टॉक बनाओ */
 SPK.counts=async function(){if(!own())return [];const s=await S.db.collection("openings").where("kind","==","count").get();return s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x.done&&item(x.itemId))};
 SPK.goLive=async function(){

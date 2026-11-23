@@ -22,7 +22,7 @@ SF.onDb=function(db){
   loadHist();
   setTimeout(SF.flushPhotos,6000);setInterval(SF.flushPhotos,60000);
   window.addEventListener("online",()=>setTimeout(SF.flushPhotos,2000));
-  if(S.isOwner)ensurePLU();
+  if(S.isOwner){ensurePLU();setTimeout(ensurePLU,25000)}/* सामान लोड होने के बाद भी एक बार */
 };
 /* पिछले 20 दिन की खरीद — भाव की तुलना और संस्था का खरीद भाव */
 async function loadHist(){
@@ -381,7 +381,10 @@ function viewPurchase(p){
     if(e.target.closest("[data-paddphoto]")){pickPhoto(async blob=>{const k=p.id+"_x"+Date.now();await IDB.put({k,pid:p.id,date:p.date,name:`${p.date}_${p.supName}_x.jpg`,blob,ts:Date.now()});S.db.doc("purchases/"+p.id).update({photoPending:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});toast("फोटो जुड़ी — नेट मिलते ही Drive पर जाएगी");closeSheet();SF.flushPhotos()})}};
 }
 /* बिल की फोटो: छोटी (लगभग 40KB) — Firestore में अलग जगह, बिल हल्का रहे */
-function smallPhoto(blob){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(blob);img.onload=()=>{const m=640,sc=Math.min(1,m/Math.max(img.width,img.height));const cv=document.createElement("canvas");cv.width=Math.round(img.width*sc);cv.height=Math.round(img.height*sc);cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);URL.revokeObjectURL(u);res(cv.toDataURL("image/jpeg",.62))};img.onerror=rej;img.src=u})}
+/* 📸 23-11: Firestore में जाने वाली हर फोटो ≤20 KB (पक्का नियम) — पहले बिल की फोटो ~40-60 KB जाती थी */
+function smallPhoto(blob){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(blob);img.onload=()=>{URL.revokeObjectURL(u);let out="";
+  for(const m of [640,520,420,340,280,220]){const sc=Math.min(1,m/Math.max(img.width,img.height));const cv=document.createElement("canvas");cv.width=Math.max(1,Math.round(img.width*sc));cv.height=Math.max(1,Math.round(img.height*sc));cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);
+    for(const q of [.62,.52,.44,.36]){out=cv.toDataURL("image/jpeg",q);if(out.length*.75<=20*1024)return res(out)}}res(out)};img.onerror=rej;img.src=u})}
 function confirmPhotoRetake(){return false}
 SF.addBillPhoto=function(b,done){pickPhoto(async blob=>{try{const k="b_"+b.no+"_"+Date.now();
   await IDB.put({k,kind:"bill",no:b.no,pid:b.no,date:b.date||today(),by:biller(),name:`${b.date||today()}_बिल_${b.no}_${(b.photoN||0)+1}.jpg`,blob,ts:Date.now()});
@@ -849,6 +852,8 @@ async function ensurePLU(){
   if(S.demo||!S.isOwner||ensurePLU.busy)return;ensurePLU.busy=true;try{
   const used=new Set(S.items.map(i=>+i.plu).filter(Boolean));let next=Math.max(100,...used)+1;
   for(const it of S.items.filter(i=>!i.plu)){while(used.has(next))next++;used.add(next);it.plu=next;try{await S.db.doc("items/"+it.id).update({plu:next})}catch(e){}next++}
+  /* 🔢 23-11: बिना 4 अंक कोड वाले सामान (बिलिंग से "नया सामान" वगैरह) — खाली खाने में कोड (पुराना कोड कभी नहीं बदलता) */
+  if(typeof nextCode==="function")for(const it of S.items.filter(i=>!i.virtual&&i.id!=="xyz"&&!String(i.code||"").trim())){const c=nextCode(typeof mcat==="function"?mcat(it):(it.cat||"kirana"));it.code=c;try{await S.db.doc("items/"+it.id).update({code:c})}catch(e){}}
   }finally{ensurePLU.busy=false}
 }
 SF.ensurePLU=ensurePLU;
@@ -864,6 +869,30 @@ const ownBar=it=>/^2000000\d{6}$/.test(String(it.barcode||"").split(",")[0]);
    नए जोड़ने हों तो settings/main.dupc = {"<कोड>":["<id1>","<id2>"]} (मालिक) — DUPC0 के ऊपर मिलते हैं। */
 const DUPC0={"8906079510872":["b8906079510872","g-2020-golden-dates-500-g"],"8906079510247":["b8906079510247","g-2020-raisins-regular-250-g"]};/* अखरोट/खजूर; किशमिश VIP नीला ₹195 / रेगुलर लाल ₹175 */
 SF.dupc=()=>{const m={...DUPC0};try{const x=(S.settings||{}).dupc||{};for(const k in x)if(Array.isArray(x[k]))m[k]=x[k]}catch(e){}return m};
+/* 🔗 23-11 (विक्रम जी की बाकी सूची): "एक बारकोड पर दो सामान" की जोड़ी ऐप से ही — ⚙️ सामान → 🔗 जोड़ी। settings/main.dupc[कोड]=[id…] (सिर्फ़ मालिक) */
+SF.dupSheet=function(id,code){if(!S.isOwner){toast("सिर्फ़ विक्रम जी");return}const it=item(id);if(!it)return;
+  const cos=String(it.barcode||"").split(/[,\s]+/).filter(c=>/^\d{8,14}$/.test(c)&&!/^2[01]\d{11}$/.test(c));
+  if(!cos.length){toast("⚠ इस सामान पर कंपनी का बारकोड नहीं — पहले बारकोड डालें");return}
+  code=code&&cos.includes(code)?code:cos[0];let q="";
+  const cur=()=>{const m=SF.dupc();return (m[code]||[]).slice()};
+  const save=async L=>{const x={...((S.settings||{}).dupc||{})};if(L.length>=2)x[code]=L;else delete x[code];
+    try{if(typeof saveSetting==="function")await saveSetting({dupc:x});else S.settings.dupc=x}catch(e){toast("सेव नहीं हुआ");return false}S.settings.dupc=x;return true};
+  const draw=()=>{const L=cur(),own=new Set(L),ql=q.trim().toLowerCase();
+    const hits=ql?S.items.filter(i=>!i.virtual&&i.active!==false&&!own.has(i.id)&&i.id!==it.id&&((i.name+" "+(i.short||"")+" "+(i.hi||"")).toLowerCase().includes(ql)||String(i.code||"")===q.trim())).slice(0,10):[];
+    $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="एक बारकोड दो सामान"><div class="grab"></div>
+    <div class="sh-head"><div><h3>🔗 एक बारकोड — दो सामान</h3><span class="note">जब कंपनी ने दो अलग सामान पर एक ही बारकोड छापा हो (जैसे किशमिश नीला/लाल) — स्कैन पर ऐप पूछेगा "कौन सा?"</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+    ${cos.length>1?`<div class="seg">${cos.map(c=>`<button class="chip" data-dupc="${esc(c)}" aria-pressed="${c===code}">${esc(c)}</button>`).join("")}</div>`:`<p class="note code" style="margin:0 0 6px">बारकोड: <b>${esc(code)}</b></p>`}
+    <h4 style="margin:6px 0">इस बारकोड पर अभी:</h4>
+    ${L.length>=2?L.map(x=>{const y=item(x);return `<div class="sbe-row"><div class="sbe-n"><b>${esc(y?SE.capNm(y.name):x)}</b><span>${y?"₹"+(+y.sale||0)+(y.code?" · #"+esc(y.code):""):"सामान नहीं मिला"}</span></div>${DUPC0[code]&&DUPC0[code].includes(x)?'<span class="note">पक्की</span>':`<button class="chip" data-dupx="${esc(x)}">✕ हटाएँ</button>`}</div>`}).join(""):`<p class="note">अभी कोई जोड़ी नहीं — सिर्फ़ ${esc(SE.capNm(it.name))}</p>`}
+    <label class="fld" style="margin-top:8px">➕ दूसरा सामान जोड़ें (नाम / 4 अंक कोड)<input class="inp" id="dupQ" value="${esc(q)}" autocomplete="off" placeholder="जैसे किशमिश"></label>
+    <div class="nb-hits">${hits.map(i=>`<button type="button" data-dupadd="${esc(i.id)}">${esc(SE.capNm(i.name))}${i.code?" · #"+esc(i.code):""} · ₹${+i.sale||0}</button>`).join("")||(ql?'<p class="note">नहीं मिला</p>':"")}</div></div></div>`;
+    const f=$("#dupQ");if(f&&q){f.focus();try{f.setSelectionRange(q.length,q.length)}catch(e){}}};
+  draw();const sh=$("#sheet");
+  sh.oninput=e=>{if(e.target.id==="dupQ"){q=e.target.value;draw()}};
+  sh.onclick=async e=>{const t=e.target;if(t.matches("[data-close]")){closeSheet();return}let b;
+    if((b=t.closest("[data-dupc]"))){code=b.dataset.dupc;draw();return}
+    if((b=t.closest("[data-dupadd]"))){const L=cur();if(!L.includes(it.id))L.unshift(it.id);if(!L.includes(b.dataset.dupadd))L.push(b.dataset.dupadd);if(await save(L)){q="";toast("🔗 जोड़ी बनी — अब "+code+" स्कैन पर \"कौन सा?\" पूछेगा");draw()}return}
+    if((b=t.closest("[data-dupx]"))){const L=cur().filter(x=>x!==b.dataset.dupx);if(await save(L)){toast("हटाया");draw()}return}}};
 SF.isDup=c=>{const k=String(c||"").trim();if(!k)return false;const m=SF.dupc();if(m[k])return true;try{return (window.SE&&SE.codeVariants?SE.codeVariants(k):[k]).some(v=>m[v])}catch(e){return false}};
 SF.dupKey=c=>{const m=SF.dupc(),k=String(c||"").trim();if(m[k])return k;try{return (SE.codeVariants?SE.codeVariants(k):[k]).find(v=>m[v])||""}catch(e){return ""}};
 SF.ownCodeOf=it=>it&&it.plu?SF.vwCode(it.plu,"fix",0):"";
@@ -1287,15 +1316,23 @@ SF.cancelReqHTML=function(b,fresh){
     <button class="big ghost" data-creq style="margin-top:8px;color:var(--chili)">🚫 बिल रद्द करें</button></details>`;
 };
 /* 🚫 कर्मचारी वजह लिखकर रद्द करे → बिल तुरंत रद्द (माल स्टॉक में वापस, उधार खाते से हटे), मालिक को सिर्फ़ सूचना (ऐप + चाहें तो WhatsApp) */
+/* 23-11: रद्द होने पर स्टॉक में वही लौटे जो ग्राहक के पास था — पहले "माल वापसी" में लौट चुका माल दोबारा नहीं जुड़ता */
+SF.cancelLines=function(b){const ret={};try{if(window.SV&&SV.ofBill)SV.ofBill(b.no).forEach(r=>(r.lines||[]).forEach(l=>{ret[l.k]=(ret[l.k]||0)+num(l.qty)}))}catch(e){}
+  return (b.lines||[]).map((l,i)=>({...l,qty:Math.max(0,r2(num(l.qty)-(ret[i+"|"+l.id]||0)))})).filter(l=>l.qty>0)};
 SF.doCancel=async function(b,why){
+  if(b.cancelled||b._cx)return;b._cx=1;/* 23-11: जल्दी-जल्दी दबाने पर माल दो बार स्टॉक में न जुड़े */
+  try{await SF.doCancel0(b,why)}finally{delete b._cx}};
+SF.doCancel0=async function(b,why){
   const ch={cancelled:true,cancelledBy:S.uid||"",cancelByName:biller(),cancelReason:why,cancelTs:Date.now()};
   const before={cancelled:b.cancelled,cancelledBy:b.cancelledBy,cancelByName:b.cancelByName,cancelReason:b.cancelReason,cancelTs:b.cancelTs};
   try{await SB.patchBill(b,ch)}catch(e){Object.assign(b,before);throw e}
   if(b.pay&&num(b.pay.udhar)>0){try{G.okdel.add(b.no)}catch(x){}try{if(!S.demo&&S.db)await S.db.doc("ledger/"+b.no).delete()}catch(x){}S.ledger=(S.ledger||[]).filter(l=>l.id!==b.no)}
-  try{await adjStock(trackedPairs(b.lines||[],1),"रद्द बिल "+b.no)}catch(x){}
+  try{await adjStock(trackedPairs(SF.cancelLines(b),1),"रद्द बिल "+b.no)}catch(x){}
 };
 SF.sendCancelReq=async function(b){
   const why=($("#crWhy")?.value||"").trim();if(why.length<3){toast("पहले रद्द करने की वजह लिखें");return}
+  if(SF._crBusy||b.cancelled)return;SF._crBusy=1;try{await SF.sendCancelReq0(b,why)}finally{SF._crBusy=0}};
+SF.sendCancelReq0=async function(b,why){
   let done=true;
   try{await SF.doCancel(b,why)}catch(e){done=false}
   const req={no:b.no,date:b.date,total:b.total,partyName:b.partyName||"",byName:biller(),by:S.uid||"",reason:why,ts:Date.now(),status:"pending",billBy:b.byName||"",settled:b.settled!==false,done};if(window.SR&&SR.locNow&&SR.locNow())req.loc=SR.locNow();
@@ -1319,11 +1356,11 @@ SF.decideCancel=async function(id,ok){
     if(ok){const ref=S.db.doc("days/"+r.date+"/bills/"+r.no);const g=await ref.get();if(!g.exists){toast("बिल नहीं मिला");return}const b=g.data();
       if(!b.cancelled){await ref.update({cancelled:true,cancelledBy:S.uid||"",cancelReason:"अर्ज़ी: "+r.reason+" ("+r.byName+")",cancelTs:Date.now()});
         if(b.pay&&b.pay.udhar>0){try{await S.db.doc("ledger/"+b.no).delete()}catch(e){}}
-        await adjStock(trackedPairs(b.lines||[],1),"रद्द बिल "+b.no)}}
+        await adjStock(trackedPairs(SF.cancelLines(b),1),"रद्द बिल "+b.no)}}
     if(!ok){const ref=S.db.doc("days/"+r.date+"/bills/"+r.no);const g=await ref.get();const b=g.exists?g.data():null;
       if(b&&b.cancelled){await ref.update({cancelled:false,restoredTs:Date.now(),restoredBy:S.uid||"",cancelNote:"रद्द वापस — "+(b.cancelReason||"")});
         if(b.pay&&b.pay.udhar>0&&b.partyId)await S.db.collection("ledger").doc(b.no).set({ts:b.ts,date:b.date,partyId:b.partyId,partyName:b.partyName||"",type:"udhar",amt:b.pay.udhar,billNo:b.no,by:b.by||"",byName:b.byName||"",restored:true});
-        await adjStock(trackedPairs(b.lines||[],-1),"रद्द वापस "+b.no)}}
+        await adjStock(trackedPairs(SF.cancelLines(b),-1),"रद्द वापस "+b.no)}}
     await S.db.doc("cancelReq/"+id).update({status:ok?"approved":"rejected",decidedTs:Date.now()});
     S.cancelReqs=S.cancelReqs.filter(x=>x.id!==id);renderTabs();renderReport();toast(ok?"✓ ठीक — बिल रद्द रहेगा":"↩ बिल वापस चालू — पहले जैसा रहेगा");
   }catch(e){toast("नहीं हुआ: "+(e.code||e.message||""))}

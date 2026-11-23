@@ -19,11 +19,13 @@ SQ.calc=async function(days){
   const od=(S.settings||{}).openDate;const eff=od&&od>from?Math.max(1,Math.round((new Date(to+"T12:00:00")-new Date(od+"T12:00:00"))/864e5)+1):days;/* ओपनिंग के बाद के दिन ही गिनो */
   const rows=Object.values(M).map(o=>{const it=item(o.id);const pf=r2(o.sale-o.miss-o.cost);const base=o.sale-o.miss;
     return {...o,it,qty:r2(o.qty),sale:r2(o.sale),pf,pct:base>0?Math.round(pf/base*100):null,perDay:r2(o.qty/eff),nd:o.days.size,stock:it&&it.track?qOf(it):null}}).filter(o=>o.qty>0||o.sale>0);
-  const sold=new Set(rows.map(r=>r.id));
+  /* 📦 23-11: पैकेट बिका = उसका पीस वाला सामान भी "बिका" (पहले पीस वाला "30 दिन से नहीं बिका" में दिखता था) */
+  const withPa=S2=>{[...S2].forEach(id=>{const x=item(id);if(x&&x.packOf)S2.add(x.packOf)});return S2};
+  const sold=withPa(new Set(rows.map(r=>r.id)));
   const T=S.items.filter(i=>i.track&&i.active!==false&&!i.virtual);
   /* 30 दिन से नहीं बिका — हमेशा 30 दिन देखते हैं (या जितने दिन चुने, उससे ज़्यादा) */
   let dead=T.filter(it=>qOf(it)>0&&!sold.has(it.id));
-  if(days<30){const B30=(await SF.fetchRange(dAdd(to,-29),to)).filter(b=>!b.cancelled);const s30=new Set();B30.forEach(b=>(b.lines||[]).forEach(l=>s30.add(l.id)));dead=T.filter(it=>qOf(it)>0&&!s30.has(it.id))}
+  if(days<30){const B30=(await SF.fetchRange(dAdd(to,-29),to)).filter(b=>!b.cancelled);const s30=new Set();B30.forEach(b=>(b.lines||[]).forEach(l=>s30.add(l.id)));withPa(s30);dead=T.filter(it=>qOf(it)>0&&!s30.has(it.id))}
   /* पुराना-नया: जो ओपनिंग/खरीद के बाद आया ही हाल में, उसे "नया" बताओ */
   dead=dead.map(it=>({it,qty:qOf(it),val:r2(qOf(it)*(SF.costOf(it)||0)),mrpVal:r2(qOf(it)*(+it.mrp||+it.sale||0)),newish:(it.addedTs&&Date.now()-it.addedTs<30*864e5)||(it.openTs&&Date.now()-it.openTs<30*864e5)}))
     .sort((a,b)=>b.val-a.val||b.mrpVal-a.mrpVal);

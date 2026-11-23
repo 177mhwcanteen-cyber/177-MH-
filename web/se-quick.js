@@ -64,8 +64,10 @@ SA.openBill=async function(no){const d=window.SF&&SF.decodeBill?SF.decodeBill(no
   if(!b&&d&&!S.demo&&S.db){try{const g=await S.db.doc("days/"+d.date+"/bills/"+no).get();if(g.exists)b=g.data()}catch(e){}}
   if(!b){toast("🔢 बिल "+no+" नहीं मिला"+(d?" ("+fdate(d.date)+")":""));return}
   if(b.cancelled){toast("यह बिल रद्द हो चुका है");return}
-  if(window.SV&&SV.saleSheet&&b.mode!=="inst"){toast("🔢 बिल "+no+" · "+rs(b.total)+" — वापसी का माल चुनें");SV.saleSheet(b)}
-  else if(typeof openBill==="function")openBill(b);};
+  /* 23-11: भुगतान-बाकी बिल पर वापसी नहीं (पैसा मिला ही नहीं) और संस्था-चालान पर पहले कुछ नहीं होता था — अब बिल खुलता है */
+  if(window.SV&&SV.saleSheet&&b.mode!=="inst"&&b.settled!==false){toast("🔢 बिल "+no+" · "+rs(b.total)+" — वापसी का माल चुनें");SV.saleSheet(b)}
+  else if(b.settled===false&&window.SB&&SB.settleSheet){toast("⏳ बिल "+no+" का भुगतान अभी बाकी है");SB.settleSheet(b)}
+  else if(typeof showReceipt==="function")showReceipt(b,false);};
 
 /* ================= 🎁 ग्राहक पॉइंट (customers/<मोबाइल> में ही) ================= */
 const PCFG=()=>({per:100,min:20,...((S.settings&&S.settings.pts)||{})});
@@ -95,7 +97,7 @@ SA.remindHTML=function(){const L=(S.parties||[]).filter(p=>!p.hide).map(p=>({p,b
 SA.remind=async function(pid){const p=(S.parties||[]).find(x=>x.id===pid);if(!p)return;const b=typeof bal==="function"?bal(pid):0,n=String(p.phone||"").replace(/\D/g,"").slice(-10);if(n.length!==10)return;
   const upi=typeof upiId==="function"?upiId():"";const shop=(S.settings&&S.settings.rcpt&&S.settings.rcpt.shop)||"177 वेट कैंटीन";
   const t=`🙏 नमस्ते ${p.name} जी,\n${shop} में आपका उधार *₹${b}* बाकी है।\nसुविधा अनुसार चुका दें${upi?`\n📱 UPI: ${upi}`:""}\nधन्यवाद 🙏`;
-  window.open("https://wa.me/91"+n+"?text="+encodeURIComponent(t),"_blank");
+  if(window.SE&&SE.isNative&&SE.wa)SE.wa(n,t);else window.open("https://wa.me/91"+n+"?text="+encodeURIComponent(t),"_blank");/* 23-11: ऐप में सीधी उसी ग्राहक की WhatsApp चैट (पहले ब्राउज़र खुलता था) */
   p.remindTs=Date.now();try{if(!S.demo&&S.db)await S.db.collection("parties").doc(pid).update({remindTs:p.remindTs})}catch(e){}
   SA._rmOpen=true;try{renderUdhar()}catch(e){}};
 document.addEventListener("click",e=>{const b=e.target.closest("[data-rmd]");if(b){e.preventDefault();SA.remind(b.dataset.rmd)}

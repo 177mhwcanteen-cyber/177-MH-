@@ -25,9 +25,10 @@ const lidOf=i=>D.no+"-"+String(i).padStart(2,"0");
 function nextLid(){let n=0;D.lines.forEach(l=>{const k=+String(l.lid).split("-").pop();if(k>n)n=k});return lidOf(n+1)}
 
 /* ---------- फोटो ---------- */
-function shrink(file,max,q){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);
-  img.onload=()=>{const sc=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
-    c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",q))};
+/* 📸 23-11: यहाँ की हर फोटो (सामान, दुकान का बिल, रसीद) सीधी Firestore (mbuys) में जाती है — पक्का नियम ≤20 KB (पहले बिल ~120 KB, रसीद ~50 KB) */
+function shrink(file,max,q,forAI){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);
+  img.onload=()=>{URL.revokeObjectURL(u);let out="";for(const m of forAI?[max]:[max,Math.round(max*.8),Math.round(max*.65),Math.round(max*.5),Math.round(max*.4)]){const sc=Math.min(1,m/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*sc));c.height=Math.max(1,Math.round(img.height*sc));
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);if(forAI)return res(c.toDataURL("image/jpeg",q));/* AI को पढ़ने के लिए साफ़ फोटो — यह कहीं सेव नहीं होती */for(const qq of [q,Math.min(q,.5),.42,.35]){out=c.toDataURL("image/jpeg",qq);if(out.length*.75<=20*1024)return res(out)}}res(out)};
   img.onerror=e=>{URL.revokeObjectURL(u);rej(e)};img.src=u})}
 async function pick(cb){const wasCam=SE.cam&&SE.cam.on;if(wasCam)try{await camOff(false)}catch(e){}
   const fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.capture="environment";
@@ -358,7 +359,7 @@ SM.bind=function(){const el=$("#p-mkt");if(!el)return;
     const ln=t.closest("[data-lid]");
     if(ln&&D&&VIEW==="draft"){const l=D.lines.find(x=>x.lid===ln.dataset.lid);if(!l)return;
       const ph=t.closest("[data-ph]");if(ph){const k=t.closest("em[data-ph]")?"m":"f";pick(async f=>{try{l[k]=await shrink(f,k==="m"?240:200,.6);save();draw();
-        if(!S.demo&&(l.aiNo||!String(l.name).trim()||l.web||!l.itemId&&!num(l.mrp)||k==="m"&&!num(l.mrp))){if(SE.aiReady())imgFill(l,await shrink(f,1100,.75));else toast("🔑 AI चाबी सेटिंग में नहीं है — मालिक ⚙ सेटिंग में Gemini चाबी डालें")}}catch(x){toast("फोटो नहीं बनी")}});return}
+        if(!S.demo&&(l.aiNo||!String(l.name).trim()||l.web||!l.itemId&&!num(l.mrp)||k==="m"&&!num(l.mrp))){if(SE.aiReady())imgFill(l,await shrink(f,1100,.75,true));else toast("🔑 AI चाबी सेटिंग में नहीं है — मालिक ⚙ सेटिंग में Gemini चाबी डालें")}}catch(x){toast("फोटो नहीं बनी")}});return}
       const q=t.closest("[data-q]");if(q&&q.hasAttribute("data-crate")&&!(+q.dataset.q>0)){l.perOpen=1;save();draw();setTimeout(()=>{const pi=document.querySelector(`[data-lid="${l.lid}"] [data-f=per]`);if(pi)pi.focus()},50);return}if(q){const n=r2(num(l.qty)+(+q.dataset.q));if(n<=0){if(q.dataset.sure!=="1"){q.dataset.sure="1";toast("एक और बार − दबाएँ तो हट जाएगा");setTimeout(()=>{q.dataset.sure=""},2000);return}D.lines=D.lines.filter(x=>x!==l)}else l.qty=n;save();draw();beep(true);return}
       const dl=t.closest("[data-del]");if(dl){if(dl.dataset.sure!=="1"){dl.dataset.sure="1";dl.textContent="पक्का?";setTimeout(()=>{if(dl.isConnected){dl.dataset.sure="";dl.textContent="✕"}},2500);return}D.lines=D.lines.filter(x=>x!==l);save();draw();return}
       return}

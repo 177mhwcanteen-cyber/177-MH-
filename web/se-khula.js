@@ -73,7 +73,7 @@ SKH.sheet=function(mode){if(typeof biller==="function"&&!biller()){openBiller(()
     $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px sg-sh skh-sh" role="dialog" aria-label="${refill?"खुले का रिफिल":"खुले दिए"}"><div class="grab"></div>
     <div class="sh-head"><div><h3>${refill?"➕ खुले का रिफिल":"🔄 खुले दिए"}</h3><span class="note">${esc(typeof biller==="function"?biller():"")} · डिब्बे में ${rs(tot(CUR))}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
     ${refill?`<p class="note" style="margin:0 0 6px">बैंक/दुकान से जो खुले लाए, वे "डिब्बे में डाले"; बदले में जो बड़े नोट दिए, वे "डिब्बे से निकाले"।</p>`:
-    `<p class="note" style="margin:0 0 6px">एक दबाएँ — बड़ा नोट डिब्बे में, खुले बाहर:</p><div class="skh-q">${SWAP.filter(([b,o])=>ok({[b]:1},o)).map(([b,o],i)=>`<button type="button" data-skq="${i}">₹${b} → ${Object.entries(o).map(([v,c])=>c+"×₹"+v).join(" + ")}</button>`).join("")}</div>`}
+    `<p class="note" style="margin:0 0 6px">एक दबाएँ — बड़ा नोट डिब्बे में, खुले बाहर:</p><div class="skh-q">${SWAP.map((x,i)=>[x,i]).filter(([[b,o]])=>ok({[b]:1},o)).map(([[b,o],i])=>`<button type="button" data-skq="${i}">₹${b} → ${Object.entries(o).map(([v,c])=>c+"×₹"+v).join(" + ")}</button>`).join("")}</div>`}
     ${row("i",inN,refill?"⬇️ डिब्बे में डाले (खुले)":"⬇️ डिब्बे में डाले")}${row("o",outN,refill?"⬆️ डिब्बे से निकाले (बड़े नोट)":"⬆️ डिब्बे से निकाले (खुले)")}
     <label class="fld">नोट (चाहें तो)<input class="inp" id="skhNote" value="${esc(note)}" placeholder="${refill?"जैसे: SBI से ₹10 की गड्डी":"जैसे: ग्राहक को ₹500 के खुले"}"></label>
     <div class="amtline sg-tot"><span>${eq?"✅ बराबर":"डाले − निकाले"}</span><b style="color:${eq?"inherit":"#b91c1c"}">${eq?rs(a):rs(a-b)}</b></div>
@@ -83,7 +83,7 @@ SKH.sheet=function(mode){if(typeof biller==="function"&&!biller()){openBiller(()
   sh.onclick=async e=>{const t=e.target;if(t.matches("[data-close]")){closeSheet();return}
     const q=t.closest("[data-skq]");if(q){const [b,o]=SWAP[+q.dataset.skq];DN.forEach(v=>{delete inN[v];delete outN[v]});inN[b]=1;Object.assign(outN,o);draw();return}
     const m=t.closest("[data-skm]");if(m){const [s,v,d]=m.dataset.skm.split(":");const N=s==="i"?inN:outN;N[v]=Math.max(0,num(N[v])+(+d));if(!N[v])delete N[v];draw();return}
-    if(t.closest("[data-skhsave]")){const r=await SKH.move(inN,outN,refill?"krefill":"khula",note);if(r){closeSheet();try{beep(true)}catch(x){}toast("✓ "+rs(tot(inN))+" के "+(refill?"खुले डिब्बे में आए":"खुले दिए")+" · डिब्बा "+rs(tot(CUR)))}}}};
+    if(t.closest("[data-skhsave]")){if(SKH._busy)return;SKH._busy=1;let r=false;try{r=await SKH.move(inN,outN,refill?"krefill":"khula",note)}finally{SKH._busy=0}if(r){closeSheet();try{beep(true)}catch(x){}toast("✓ "+rs(tot(inN))+" के "+(refill?"खुले डिब्बे में आए":"खुले दिए")+" · डिब्बा "+rs(tot(CUR)))}}}};
 /* मालिक: डिब्बा सेट */
 SKH.setSheet=function(){if(!S.isOwner)return;const N={...(CUR||{})},T={...SKH.target()};
   const draw=()=>{$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px sg-sh" role="dialog" aria-label="खुले का डिब्बा सेट"><div class="grab"></div>

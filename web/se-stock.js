@@ -93,8 +93,10 @@ function setCnt(id,v){if(v==null||v==="")delete C.n[id];else{C.n[id]=Math.max(0,
 const racks=()=>[...new Set(S.items.map(i=>{const r=String(i.rack||""),m=/^(\d{1,2})-\d/.exec(r);return m?m[1]:r}).filter(Boolean).concat(C&&C.rack?[C.rack]:[]))].sort((a,b)=>(/^\d+$/.test(a)&&/^\d+$/.test(b))?a-b:String(a).localeCompare(b));/* 📍 11-23 जैसे खाने = रैक 11 की चिप */
 function setRack(it){if(!C.rack||it.rack===C.rack)return;if(/^\d{1,2}$/.test(C.rack)&&String(it.rack||"").startsWith(C.rack+"-"))return;/* 📍 "11" गिनते समय 11-23 वाला खाना नहीं बिगड़ता */C.rk=C.rk||{};C.rk[it.id]=C.rack;it.rack=C.rack;if(!S.demo&&S.db)S.db.doc("items/"+it.id).update({rack:C.rack}).catch(()=>{})}
 SK.scanCount=function(it){
+  /* 📦 23-11: पैकेट (packOf) का बारकोड स्कैन = उसके पीस वाले सामान में perPack पीस (पहले "गिनती नहीं रखी जाती" आता था) */
+  let add=1;if(!it.track&&it.packOf&&+it.perPack>0){const pa=item(it.packOf);if(pa&&pa.track){add=+it.perPack;toast("📦 "+it.name+" = "+add+" पीस "+SE.capNm(pa.name)+" में");it=pa}}
   if(!it.track){toast(it.name+" की गिनती नहीं रखी जाती");return}
-  C.n[it.id]=(+C.n[it.id]||0)+1;setRack(it);saveC();toast("✓ "+it.name+" · गिने: "+C.n[it.id]+(C.rack?" · 🗄️ "+C.rack:""));
+  C.n[it.id]=(+C.n[it.id]||0)+add;setRack(it);saveC();toast("✓ "+it.name+" · गिने: "+C.n[it.id]+(C.rack?" · 🗄️ "+C.rack:""));
   let inp=document.querySelector(`[data-cn="${CSS.escape(it.id)}"]`);if(!inp){drawCount();inp=document.querySelector(`[data-cn="${CSS.escape(it.id)}"]`)}
   if(inp){inp.value=C.n[it.id];updD(it.id);const r=inp.closest(".cntrow");r.classList.add("ok","flash");setTimeout(()=>r.classList.remove("flash"),500);try{r.scrollIntoView({block:"nearest"})}catch(e){}}
   const d=$("#ckdone");if(d)d.textContent=Object.keys(C.n).length+" / "+tracked().length;
@@ -142,8 +144,10 @@ function dayNums(){
   const noCost=sum(sale,b=>(b.lines||[]).reduce((y,l)=>y+(lc(l,b)>0||l.free?0:(+l.amt||0)),0));
   const P=(S.purch||[]).filter(p=>!p.cancelled);
   const W=((S.stock&&S.stock.wlog)||[]);
+  /* ↩️ 23-11: आज की ग्राहक-वापसी का असर मुनाफ़े पर — लौटाई रकम, माल ठीक होकर स्टॉक में लौटा तो उसकी लागत वापस (पहले मुनाफ़ा बिना वापसी घटाए दिखता था) */
+  const rl=window.SV&&SV.day?r2(SV.day(S.billsDate).filter(r=>r.kind==="sale").reduce((a,r)=>a+(+r.total||0)-(r.good?(+r.cost||0):0),0)):0;
   return {n:sale.length,tot:sum(sale,b=>b.total),cash:sum(sale,b=>b.pay&&b.pay.cash),upi:sum(sale,b=>b.pay&&b.pay.upi),ud:sum(sale,b=>b.pay&&b.pay.udhar),
-    pend:sale.filter(b=>b.settled===false).length,inst:sum(inst,b=>b.total),nInst:inst.length,cost,noCost,gm:r2(sum(sale,b=>b.total)-noCost-cost),
+    pend:sale.filter(b=>b.settled===false).length,inst:sum(inst,b=>b.total),nInst:inst.length,cost,noCost,rl,gm:r2(sum(sale,b=>b.total)-noCost-cost-rl),
     saved:sum(sale,b=>typeof savedOf==="function"?savedOf(b):0),cancel:all.filter(b=>b.cancelled),
     buy:sum(P.filter(p=>p.src!=="mh"),p=>p.total),mh:sum(P.filter(p=>p.src==="mh"),p=>p.total),mhUnsent:P.filter(p=>p.src==="mh"&&!p.mhSent).length,
     waste:r2(W.reduce((a,w)=>a+(+w.qty||0)*(+w.cost||0),0)),nWaste:W.length,
@@ -155,7 +159,7 @@ function ownerText(){
   return `🛒 *177 वेट कैंटीन — ${fdate(S.billsDate)} का हिसाब*\n────────\n`+
   `💰 बिक्री: *${rs(d.tot)}* (${d.n} बिल)${window.SV&&SV.saleTotal(S.billsDate)>0?" · वापसी घटाकर "+rs(r2(d.tot-SV.saleTotal(S.billsDate))):""}\n   नकद ${rs(d.cash)} · UPI ${rs(d.upi)} · उधार ${rs(d.ud)}${d.pend?`\n   ⏳ ${d.pend} बिल का भुगतान बाकी`:""}\n`+
   (d.nInst?`🏢 संस्था को: ${rs(d.inst)} (${d.nInst} बिल)\n`:"")+
-  `📈 लगभग मुनाफ़ा: *${rs(d.gm)}* (लागत ${rs(d.cost)})\n`+(d.noCost>0?`   ⚠ ${rs(d.noCost)} की बिक्री वाले सामान का खरीद भाव नहीं भरा — उसका मुनाफ़ा इसमें नहीं गिना\n`:"")+
+  `📈 लगभग मुनाफ़ा: *${rs(d.gm)}* (लागत ${rs(d.cost)}${d.rl?" · वापसी का असर −"+rs(d.rl):""})\n`+(d.noCost>0?`   ⚠ ${rs(d.noCost)} की बिक्री वाले सामान का खरीद भाव नहीं भरा — उसका मुनाफ़ा इसमें नहीं गिना\n`:"")+
   (d.saved>0?`🎉 ग्राहकों की MRP से बचत: ${rs(d.saved)}\n`:"")+
   `🚚 माल आया: ${rs(d.buy)}${d.mh?` · 177 MH से ${rs(d.mh)}${d.mhUnsent?` (⚠ ${d.mhUnsent} पर्ची भेजनी बाकी)`:""}`:""}\n`+
   (d.kh?`💸 खर्चा: ${rs(d.kh)}\n`:"")+

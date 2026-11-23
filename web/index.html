@@ -1055,7 +1055,7 @@ function mcat(it){const c=OLDCAT[it.cat]||it.cat||"kirana";return c==="kirana"&&
 const LOW=5;
 function lowOf(it){return +it.min>0?+it.min:LOW}
 function isLow(it){return !!it.track&&(+(S.pstock[it.id]?.qty)||0)<=lowOf(it)}
-function expInfo(it){const e0=window.SF&&SF.nearExp?SF.nearExp(it):it.exp;if(e0!==it.exp)it={...it,exp:e0};if(!it.exp)return it.chk?{k:"chk",t:"तारीख जाँचें"}:null;const d=Math.floor((new Date(String(it.exp)+"T23:59:59")-Date.now())/864e5);if(isNaN(d))return null;if(d<0)return {k:"dead",t:"एक्सपायर",d};if(d<=30)return {k:"soon",t:d+" दिन बचे",d};return it.chk?{k:"chk",t:"तारीख जाँचें"}:null}
+function expInfo(it){const e0=window.SF&&SF.nearExp?SF.nearExp(it):it.exp;if(e0!==it.exp)it={...it,exp:e0};if(!it.exp)return it.chk?{k:"chk",t:"तारीख जाँचें"}:null;const ed=window.SPK&&SPK.normExp?SPK.normExp(it.exp)||String(it.exp):String(it.exp);/* "2027-12" (सिर्फ़ महीना) = महीने का आख़िरी दिन (23-11) */const d=Math.floor((new Date(ed+"T23:59:59")-Date.now())/864e5);if(isNaN(d))return null;if(d<0)return {k:"dead",t:"एक्सपायर",d};if(d<=30)return {k:"soon",t:d+" दिन बचे",d};return it.chk?{k:"chk",t:"तारीख जाँचें"}:null}
 function ean13(s12){let t=0;for(let i=0;i<12;i++)t+=(+s12[i])*(i%2?3:1);return s12+((10-t%10)%10)}
 /* 🔢 हर सामान का अपना 4 अंक का कोड (विक्रम जी, 09-11-2026: "हमेशा चालू रखना" — बारकोड न चले तो 4 अंक लिखकर बिल)।
    किस्म-वार हिस्सा, भर जाए तो अगला खाली हिस्सा, फिर 1001–9999 में कोई भी खाली — कभी 5 अंक या दोहरा कोड नहीं। */
@@ -1154,7 +1154,7 @@ function renderBillTabs(){
 $("#btabs").onclick=e=>{
   const x=e.target.closest("[data-btx]");if(x){const i=+x.dataset.btx;const t=i===S.ai?{cart:S.cart}:S.bt[i];
     if(t.cart&&t.cart.length&&x.dataset.sure!=="1"){x.dataset.sure="1";x.textContent="?";toast("इस बिल में सामान है — बंद करने के लिए ✕ दोबारा दबाएँ");return}
-    syncTab();S.bt.splice(i,1);if(!S.bt.length)S.bt=[blankTab()];loadTab(i<S.ai?S.ai-1:Math.min(S.ai===i?i:S.ai,S.bt.length-1));refreshAfterCart();return}
+    syncTab();S.bt.splice(i,1);if(!S.bt.length)S.bt=[blankTab()];loadTab(i<S.ai?S.ai-1:Math.min(S.ai===i?i:S.ai,S.bt.length-1));lsSet("se_tabs",JSON.stringify(S.bt));/* 23-11: बंद किया बिल ऐप दोबारा खोलने पर फिर न आए */refreshAfterCart();return}
   if(e.target.closest("[data-btnew]")){newTab();return}
   const b=e.target.closest("[data-bt]");if(b&&+b.dataset.bt!==S.ai)switchTab(+b.dataset.bt);
 };
@@ -1230,11 +1230,11 @@ function billList(){
   if(mm&&!S.items.some(i=>i.rack&&String(i.rack).toLowerCase()===raw.toLowerCase())){q=mm[1].trim();qq=parseFloat(mm[2].replace(",","."))||0}/* "A3-2" रैक है, मात्रा नहीं */
   const ql=q.toLowerCase();
   const catOk=i=>S.flt==="fav"?!!(window.SA&&SA.isFav(i)):S.flt==="low"?isLow(i):S.flt==="exp"?!!expInfo(i):(S.cat==="all"||mcat(i)===S.cat)&&(S.sub==="all"||(S.cat==="mela"?melaSub(i):i.sub)===S.sub);
-  const hit=i=>String(i.name).toLowerCase().includes(ql)||String(i.hi||"").includes(q)||i.id.includes(ql)||String(i.alias||"").toLowerCase().includes(ql)||SN.en(i).toLowerCase().includes(ql)||String(i.code||"")===q||codes(i).includes(q)||(ql.length>=2&&String(i.rack||"").toLowerCase()===ql);/* 📍 A3-2 = उस खाने का सारा सामान */
+  const hit=i=>String(i.name).toLowerCase().includes(ql)||String(i.short||"").toLowerCase().includes(ql)||String(i.hi||"").includes(q)||i.id.includes(ql)||String(i.alias||"").toLowerCase().includes(ql)||SN.en(i).toLowerCase().includes(ql)||String(i.code||"")===q||codes(i).includes(q)||(ql.length>=2&&String(i.rack||"").toLowerCase()===ql);/* 📍 A3-2 = उस खाने का सारा सामान */
   const exact=q&&S.items.find(i=>i.active!==false&&String(i.code||"")===q);
   const list=exact?[exact]:S.items.filter(i=>i.active!==false&&!(i.cat==="mela"&&!melaOn())&&(q?true:catOk(i)&&!isVariant(i))&&(!q||hit(i)));
   if(S.sortTop){const sc=S.top7||{};list.sort((a,b)=>(sc[b.id]||0)-(sc[a.id]||0))}
-  if(q)list.sort((a,b)=>(b.name.startsWith(q)?1:0)-(a.name.startsWith(q)?1:0));
+  if(q){const QU=q.toUpperCase(),st=i=>String(i.name||"").toUpperCase().startsWith(QU)||String(i.hi||"").startsWith(q)?1:0;list.sort((a,b)=>st(b)-st(a))}/* 23-11: छोटे अक्षर में लिखें (ma) तब भी MAGGI ऊपर */
   return {raw,q,qq,list};
 }
 function clearSearch(){if(S.q){S.q="";$("#q").value="";S.qq=0}}
@@ -1304,7 +1304,10 @@ function cardHTML(it,LL){{
 /* कार्ट बदला तो सिर्फ़ वही एक कार्ड दोबारा बनाओ — 5000 सामान पर भी झटपट */
 function patchCard(id){const g=$("#grid");const c=g&&g.querySelector('[data-item="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');const it=item(id);if(!c||!it)return false;
   const LL=window.SF&&SF.liveLeftMap?SF.liveLeftMap():null;const t=document.createElement("div");t.innerHTML=cardHTML(it,LL);const n=t.firstElementChild;if(!n)return false;c.replaceWith(n);return true}
-function cartTouched(id){renderCart();if(S.tab!=="bill")return;if(S.q||!patchCard(id))renderBill()}
+/* 💾 23-11: सामान जुड़ते/घटते ही चालू बिल फोन में (पहले सिर्फ़ टैब बदलने पर) — ऐप पीछे जाकर बंद हो तो भी बिल न खोए */
+let _stT=0;function syncSoon(){clearTimeout(_stT);_stT=setTimeout(()=>{try{syncTab()}catch(e){}},300)}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)try{syncTab()}catch(e){}});window.addEventListener("pagehide",()=>{try{syncTab()}catch(e){}});
+function cartTouched(id){syncSoon();renderCart();if(S.tab!=="bill")return;if(S.q||!patchCard(id))renderBill()}
 function setQty(id,q){q=Math.round((+q||0)*1000)/1000;const i=S.cart.findIndex(l=>l.id===id&&!l.changed&&!l.free);const it=item(id);
   if(i<0){if(q>0&&it)quickAdd(it,q);return}
   if(!(q>0))S.cart.splice(i,1);else{const l=S.cart[i];l.qty=q;l.amt=r2(q*l.rate)}cartTouched(id)}
@@ -1346,9 +1349,9 @@ $("#p-bill").addEventListener("change",e=>{
 function repeatLast(){
   const src=S.mode==="walk"?S.customers.find(x=>x.id===S.cust.phone):S.parties.find(x=>x.id===S.partyId);
   if(!src||!src.lastCart)return;let n=0;
-  src.lastCart.forEach(lc=>{const it=item(lc.id);if(!it||it.active===false)return;const p=priceOf(it);if(!(p>0))return;
+  let skip=0;src.lastCart.forEach(lc=>{const it=item(lc.id);if(!it||it.active===false)return;const p=priceOf(it);if(!(p>0))return;if(expInfo(it)?.k==="dead"){skip++;return}/* 23-11: एक्सपायर सामान दोहराने में भी नहीं */
     S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:lc.qty,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,amt:r2(lc.qty*p)});n++});
-  refreshAfterCart();toast(n+" चीज़ें आज के रेट पर जुड़ीं");
+  refreshAfterCart();toast(n+" चीज़ें आज के रेट पर जुड़ीं"+(skip?" · ⚠ "+skip+" एक्सपायर सामान नहीं जोड़ा":""));
 }
 function holdCurrent(){newTab()}
 function holdCurrentOld(){
@@ -1383,6 +1386,7 @@ function setMode(m){
 /* ---------- quantity sheet ---------- */
 function presets(it){if(it.unit==="kg")return [[.1,"0.1"],[.25,"¼ · 0.25"],[.5,"½ · 0.5"],[1,"1 किलो"],[1.5,"1.5 किलो"],[2,"2 किलो"],[3,"3 किलो"],[5,"5 किलो"]];return [1,2,3,4,5,6,10,12].map(n=>[n,n+" "+(UNITS[it.unit]||"")])}
 function openQty(it,lineIdx){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(null,lineIdx);
+  if(it&&lineIdx==null&&!canSell(it))return;/* 23-11: एक्सपायर हुआ खुला/किलो वाला सामान भी बिल में न जुड़े (पहले सिर्फ़ पीस वाले पर रोक थी) */
   const ln=lineIdx!=null?S.cart[lineIdx]:null,kg=it.unit==="kg",u=UNITS[it.unit]||it.unit;
   const board=priceOf(it);let rate=ln&&it.flex?ln.rate:board;const st={qty:ln?ln.qty:0,amt:null};
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
@@ -1546,7 +1550,7 @@ async function saveBill(){
   for(const l of lines){const it=S.items.find(x=>x.id===l.id),base=it?(+it.sale||0):0;
     if(!(l.rate>0)&&!l.free){toast(`"${l.name}" का भाव ₹0 है — बिल नहीं बनेगा`);return}
     if(base>0&&(l.rate>base*3||l.rate<base/3)){if(!S.isOwner){toast(`"${l.name}" का भाव ₹${l.rate} गलत लगता है (असली ₹${base}) — विक्रम जी से पूछें`);return}warn.push(`भाव ${l.name}: ₹${l.rate} (असली ₹${base})`)}
-    const big=l.unit==="kg"?l.qty>10:l.qty>50;if(big)warn.push(`ज़्यादा मात्रा: ${l.name} ${l.qty}${l.unit==="kg"?" किलो":""}`)}
+    const big=l.id!=="xyz"&&(l.unit==="kg"?l.qty>10:l.qty>50);/* 23-11: XYZ की "मात्रा" = रुपये — ₹100 पर "ज़्यादा मात्रा" नहीं */if(big)warn.push(`ज़्यादा मात्रा: ${l.name} ${l.qty}${l.unit==="kg"?" किलो":""}`)}
   /* 🚫 स्टॉक नहीं फिर भी बिक्री — बिलिंग कभी नहीं रुकती (विक्रम जी, 09-11-2026); लाइन पर ns = बिकते समय कितना था → मालिक की रिपोर्ट।
      बिलिंग चालू (settings.live) से पहले सिर्फ़ उन्हीं सामान पर जिनका स्टॉक-खाता है। रात को खरीद चढ़े तो स्टॉक अपने-आप सही (+) हो जाता है। */
   {const used={};for(const l of lines){if(l.free&&!(l.qty>0))continue;const [pid,q]=packMap(l.id,l.qty),pi=S.items.find(x=>x.id===pid);if(!pi||!pi.track||!(S.settings.live||S.pstock[pid]))continue;
@@ -1659,7 +1663,9 @@ function showReceipt(b,fresh,offline){
 /* उधार खाता: नाम + मोबाइल (ज़रूरी) + पिछला बाकी + यूनिट */
 /* 🛡️ C5: हर नए उधार खाते की सीमा पहले से तय (मालिक बदल सकते हैं) */
 const UD_LIMIT=2000;
-async function createParty(o){
+let _cpBusy=0;/* 23-11: "खाता बनाएँ" दो बार दबा → एक ही नंबर के दो खाते न बनें */
+async function createParty(o){if(_cpBusy){toast("खाता बन रहा है…");return null}_cpBusy=1;try{return await createParty0(o)}finally{_cpBusy=0}}
+async function createParty0(o){
   const name=String(o.name||"").trim(),phone=String(o.phone||"").replace(/\D/g,"").slice(-10),qtr=String(o.qtr||"").trim(),open=r2(parseFloat(String(o.open||"").replace(",","."))||0);
   if(!name){toast("नाम लिखें");return null}
   if(window.SR&&SR.instOf&&SR.instOf(name)){toast("🏢 "+name+" अपनी संस्था है — इसका उधार खाता नहीं बनता। बिलिंग में ऊपर 🏢 संस्था चुनें");return null}
@@ -1741,9 +1747,10 @@ function openParty(pid){
     if(e.target.closest("[data-jama]")){
       const amt=parseFloat($("#jAmt").value)||0;if(amt<=0){toast("रकम लिखें");return}
       if(!biller()){openBiller(()=>openParty(pid));return}
+      const jb=e.target.closest("[data-jama]");if(jb.dataset.busy)return;jb.dataset.busy="1";jb.disabled=true;/* 23-11: धीमे नेट पर दो बार दबने से दो जमा नहीं */
       const now=Date.now(),id="j"+now.toString(36)+Math.random().toString(36).slice(2,4);
       const ent={...(window.SR&&SR.locNow&&SR.locNow()?{loc:SR.locNow()}:{}),ts:now,date:today(),partyId:pid,partyName:p.name,type:"jama",amt:r2(amt),mode:st.mode,by:S.uid||"",byName:biller()};
-      try{if(S.demo)S.ledger.push({id,...ent});else await S.db.collection("ledger").doc(id).set(ent);toast(rs(amt)+" जमा हुए");closeSheet();renderPane();if(window.SR)setTimeout(()=>SR.jamaDone(p,r2(amt),st.mode),250)}catch(err){toast("जमा नहीं हुआ, दोबारा कोशिश करें")}
+      try{if(S.demo)S.ledger.push({id,...ent});else await S.db.collection("ledger").doc(id).set(ent);toast(rs(amt)+" जमा हुए");closeSheet();renderPane();if(window.SR)setTimeout(()=>SR.jamaDone(p,r2(amt),st.mode),250)}catch(err){delete jb.dataset.busy;jb.disabled=false;toast("जमा नहीं हुआ, दोबारा कोशिश करें")}
     }
   };
 }
@@ -1805,7 +1812,8 @@ async function handleScan(code){
   if(S.scanIn){
     await adjStock([[it.id,1]],"माल आया");
     if(!S.demo){try{await S.db.collection("inward").doc("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,4)).set({itemId:it.id,name:it.name,qty:1,cost:(window.SF?SF.costOf(it):(+it.cost||0)),code,date:today(),ts:Date.now(),by:S.uid||"",byName:biller()})}catch(e){}}
-    toast("📦 "+it.name+" +1 · अब स्टॉक "+fq(S.pstock[it.id].qty,it.unit));if(S.tab==="day")renderDay();return}
+    {const [sid]=packMap(it.id,1),si=item(sid)||it;/* 23-11: पैकेट वाला सामान — स्टॉक पीस वाले में (पहले यहाँ ऐप अटकता था) */
+    toast("📦 "+it.name+" +1 · अब स्टॉक "+fq(+(S.pstock[sid]?.qty)||0,si.unit)+(sid!==it.id?" ("+SE.capNm(si.name)+")":""))}if(S.tab==="day")renderDay();return}
   if(S.tab!=="bill"){S.tab="bill";showTab()}
   if(it.active===false){toast(it.name+" अभी बंद है");return}
   const p=priceOf(it);if(!(p>0)){toast(it.name+" का रेट नहीं डाला गया");return}
@@ -1880,13 +1888,14 @@ function unknownCode(code){
       if(!name||!(sale>0)){toast("नाम और MRP/बिक्री भाव लिखें");return}
       if(mrp>0&&sale>mrp){toast("बिक्री भाव MRP से ज़्यादा नहीं हो सकता");return}
       if(findByCode(code)){closeSheet();handleScan(code);return}
+      const nbb=e.target.closest("[data-nbsave]");if(nbb.dataset.busy)return;nbb.dataset.busy="1";nbb.disabled=true;/* 23-11: दो बार दबने पर एक ही बारकोड के दो सामान नहीं */
       const id="b"+Date.now().toString(36),sub=$("#nbSub").value;
       const pc=window.PEH_HIT&&PEH_HIT.code===code?PEH_HIT.x:null;
       const it={name,hi:$("#nbHi").value.trim(),emoji:"📦",cat:"kirana",sub,unit:"pc",mrp,sale,cost,code:nextCode("kirana"),brand:pc?pc.brand||"":"",size:pc?pc.size||"":"",secret:pc&&pc.secret?pc.secret:"",hue:210,order:S.items.length+1,active:true,barcode:code,track:true,min:5,alias:"",
         addedBy:S.uid||"",addedByName:biller(),addedTs:Date.now(),pending:!own};
       try{if(!S.demo)await S.db.collection("items").doc(id).set(it);if(!item(id))S.items.push({id,...it});if(!S.demo&&own)logPrice(id,"sale",0,sale);
         if(window.SO&&SO.active()){closeSheet();toast("✓ "+name+" जुड़ गया · कोड "+it.code);SO.addNew(id,qty);return}
-        if(qty>0)await adjStock([[id,qty]],"शुरुआती स्टॉक");closeSheet();toast("✓ "+name+" जुड़ गया · कोड "+it.code);if(!S.scanIn)handleScan(code);else if(S.tab==="day")renderDay()}catch(err){toast("नहीं जुड़ा — "+(err.code||err.message||""))}return}
+        if(qty>0)await adjStock([[id,qty]],"शुरुआती स्टॉक");closeSheet();toast("✓ "+name+" जुड़ गया · कोड "+it.code);if(!S.scanIn)handleScan(code);else if(S.tab==="day")renderDay()}catch(err){delete nbb.dataset.busy;nbb.disabled=false;toast("नहीं जुड़ा — "+(err.code||err.message||""))}return}
     const nbp=e.target.closest("[data-nbpick]");if(nbp){const it=item(nbp.dataset.nbpick);if(!it)return;
       if(codes(it).some(c=>/^\d{8,14}$/.test(c)&&!/^2[01]\d{11}$/.test(c))&&!nbp.dataset.ok){nbp.dataset.ok="1";toast("⚠ "+SE.capNm(it.name)+" पर पहले से कंपनी का बारकोड है — फिर भी जोड़ना है तो दोबारा दबाएँ");return}
       let ok=false;if(window.SBC&&SBC.attach)ok=await SBC.attach(it.id,code);else if(own){const p={barcode:[...codes(it),code].join(",")};await saveItem(it.id,p);Object.assign(it,p);ok=true}
@@ -2359,7 +2368,7 @@ function setItemEdit(it){return `<div class="setitem" data-sid="${esc(it.id)}">
       <label class="note"><input type="checkbox" id="f-${esc(it.id)}" data-if="flex" ${it.flex?"checked":""}> बिलर भाव बदल सके</label>
       <button type="button" class="chip" data-lbladd="${esc(it.id)}" aria-label="${esc(SE.capNm(it.name))} के बारकोड लेबल छापें">🏷️ लेबल</button>
       <button type="button" class="chip" data-noonline="${esc(it.id)}" aria-pressed="${!it.noOnline}" aria-label="${esc(SE.capNm(it.name))} ऑनलाइन दिखे">🌐</button>
-      <button type="button" class="chip" data-favpin="${esc(it.id)}" aria-pressed="${((S.settings.favs||[]).includes(it.id))}" aria-label="${esc(SE.capNm(it.name))} फ़ेवरेट">⭐</button></div>
+      <button type="button" class="chip" data-favpin="${esc(it.id)}" aria-pressed="${((S.settings.favs||[]).includes(it.id))}" aria-label="${esc(SE.capNm(it.name))} फ़ेवरेट">⭐</button>${/\b(?!2[01]\d{11}\b)\d{8,14}\b/.test(String(it.barcode||""))?`<button type="button" class="chip" data-dupset="${esc(it.id)}" aria-label="${esc(SE.capNm(it.name))} — एक बारकोड पर दो सामान" title="एक बारकोड पर दो सामान">🔗 जोड़ी</button>`:""}</div>
       <div class="flds3">
       <label class="fld">हिंदी नाम<input class="inp" data-if="hi" value="${esc(it.hi||"")}"></label>
       <label class="fld">MRP ₹<input class="inp" data-if="mrp" inputmode="decimal" value="${it.mrp||""}"></label>
@@ -2467,6 +2476,7 @@ $("#p-set").addEventListener("click",async e=>{
   if(e.target.closest("[data-migrate]")){migrateOld();return}
   if(e.target.closest("[data-updnow]")){runUpdate();return}
   const fp=e.target.closest("[data-favpin]");if(fp&&window.SA){SA.togglePin(fp.dataset.favpin);return}
+  const dps=e.target.closest("[data-dupset]");if(dps&&window.SF&&SF.dupSheet){SF.dupSheet(dps.dataset.dupset);return}
   if(e.target.closest("[data-aikey]")){const k=$("#aiKey").value.replace(/\s+/g,""),m=$("#aiMsg");if(k&&(k.length<20||!/^[\w.\-]+$/.test(k))){m.textContent="चाबी अधूरी लगती है — aistudio.google.com से पूरी कॉपी करें (AIza… या AQ.… से शुरू)";return}
     if(window.SA&&!S.demo){SA.saveKey(k).catch(()=>{})}else{S.settings.gk=k}SE._ogk=k;if(!k){m.textContent="चाबी हटा दी";return}m.textContent="⏳ जाँच रहे हैं…";
     SE.ai({mode:"ping",onStep:md=>{m.textContent="⏳ Google से पूछ रहे हैं ("+md+")… 5-20 सेकंड"}}).then(r=>{m.textContent=r.ok&&r.busy?"✅ चाबी सही है — Google अभी थोड़ा व्यस्त है, ऐप अपने-आप दोबारा कोशिश करेगा":r.ok?"✅ AI तैयार है ("+r.model+") — अनजान बारकोड इंटरनेट से और पैकेट की फोटो AI से भरेगी":r.error==="quota"?"⚠ चाबी सही है, पर आज की मुफ़्त सीमा पूरी — कल चलेगा ("+(r.detail||"").slice(0,80)+")":r.error==="bad-key"?"⚠ Google ने चाबी नहीं मानी — aistudio.google.com/apikey से दोबारा पूरी कॉपी करें"+(r.detail?" ("+r.detail.replace(/[{}"\n]/g," ").slice(0,90)+")":""):"⚠ नहीं चला: "+(r.error||"")+" "+(r.detail||"")});return}
@@ -2595,6 +2605,12 @@ function subBills(){
     S.db.doc(d+"/meta/close").onSnapshot(s=>{S.close=s.exists?s.data():null;if(S.tab!=="day")paneSoon()},()=>{})];
   if(window.SG)S.unsubDay.push(SG.listen(S.billsDate));
 }
+/* 🌅 23-11: नया दिन — ऐप रात भर खुला रहे या सुबह पीछे से खुले, तो "आज" वाली स्क्रीन (बिल, खर्चा, गल्ला, दिन का हिसाब) अपने-आप नई तारीख पर।
+   जो पुरानी तारीख खुद चुनकर देख रहा है, उसे नहीं छेड़ते। */
+let _dayNow=today();
+function dayRoll(){const t=today();if(t===_dayNow)return;const was=_dayNow;_dayNow=t;if(!S.db&&!S.demo)return;if(S.billsDate!==was)return;
+  S.billsDate=t;S.repDate=t;try{subBills()}catch(e){}try{renderTabs();renderPane(true)}catch(e){}}
+setInterval(dayRoll,60000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)dayRoll()});
 function loadDemo(){
   S.demo=true;S.isOwner=true;
   S.items=DEMO_ITEMS.map(([id,name,emoji,cat,unit,sale,cost,hue,barcode,sub,code,mrp,oldSale],i)=>({id,name,emoji,cat,unit,sale,cost,hue,sub,code,mrp,oldSale:oldSale||0,alias:ALIAS[id]||"",barcode:barcode||"",track:!!barcode,min:5,order:i,active:true,photo:SE.bundled.has(id)?"b":""}));
@@ -2617,6 +2633,8 @@ async function boot(){
   if(window.SF)SF.onDb(db);
   if(window.SK)SK.onDb(db);
   if(S.isOwner)db.collection("staff").onSnapshot(s=>{S.staffDocs=s.docs.map(d=>({id:d.id,...d.data()}));setSoon()},()=>{});
+  /* 🔒 23-11: मालिक ने साथी का खाता बंद किया (या नया PIN दिया) → उसके खुले ऐप से तुरंत बाहर (पहले ऐप चलता रहता, सब जगह "लोड नहीं हुआ") */
+  else if(S.uid)db.doc("staff/"+S.uid).onSnapshot(s=>{if(s.exists&&s.data().active===false&&!S._offOut){S._offOut=1;toast("🔒 आपका यह खाता विक्रम जी ने बंद किया है"+(s.data().offWhy?" ("+s.data().offWhy+")":"")+" — दोबारा लॉगिन करें");setTimeout(()=>SE.logout(),2500)}},()=>{});
   setTimeout(()=>SE.checkUpdate(toast),4000);SE.autoUpdateLoop(toast);if(window.SM)SM.watch();SE.beforeUpdate=()=>{try{syncTab()}catch(e){}};
   if(S.isOwner&&!S.demo)setTimeout(autoNewData,6000);
   if(S.isOwner&&!S.demo&&window.SPK)setTimeout(()=>SPK.apply(),9000);

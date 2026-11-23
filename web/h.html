@@ -27,7 +27,7 @@ try{const r=await fetch("https://firestore.googleapis.com/v1/projects/"+C.projec
   m.innerHTML=`<div class="c bal"><div>नमस्ते <b style="display:inline;font:inherit;color:inherit">${esc(d.name)}</b> जी</div><div class="mut">आज तक का बाकी</div><b>${rs(b)}</b>
    ${b>0?`<a class="pay" href="${up}">📱 UPI से अभी चुकाएँ · ${rs(b)}</a><div id="qr"></div><div class="mut">या यह QR किसी भी UPI ऐप से स्कैन करें</div>`:'<p style="color:var(--ok);font-weight:800">✓ कोई बाकी नहीं — धन्यवाद 🙏</p>'}
    <p class="mut">हिसाब बना: ${new Date(+d.ts||Date.now()).toLocaleString("hi-IN")}</p></div>
-   <div class="c"><h3 style="margin:0 0 6px">📒 तारीख-वार हिसाब</h3><table>${E.map(x=>`<tr><td>${fd(x.d)}<div class="mut">${x.t==="udhar"?(x.o?"पुराना बाकी":"सब्ज़ी · बिल "+esc(x.b)):"जमा · "+(x.m==="upi"?"UPI":"नकद")}</div></td><td class="r ${x.t==="udhar"?"u":"j"}">${x.t==="udhar"?"+":"−"}${rs(x.a)}</td></tr>`).join("")||'<tr><td>कोई एंट्री नहीं</td></tr>'}</table></div>
+   <div class="c"><h3 style="margin:0 0 6px">📒 तारीख-वार हिसाब</h3><table>${E.map(x=>`<tr><td>${fd(x.d)}<div class="mut">${x.t==="udhar"?(x.o||x.b==="पिछला बाकी"?"पुराना बाकी":"सामान · बिल "+esc(x.b)):x.m==="return"?"↩️ माल वापसी"+(x.b?" · बिल "+esc(x.b):""):"जमा · "+(x.m==="upi"?"UPI":"नकद")}</div></td><td class="r ${x.t==="udhar"?"u":"j"}">${x.t==="udhar"?"+":"−"}${rs(x.a)}</td></tr>`).join("")||'<tr><td>कोई एंट्री नहीं</td></tr>'}</table></div>
    <p class="mut" style="text-align:center">🛒 177 वेट कैंटीन · बाड़मेर</p>`;
   if(b>0&&window.QRCode)new QRCode(document.getElementById("qr"),{text:up,width:190,height:190,correctLevel:QRCode.CorrectLevel.M});
 }catch(e){m.innerHTML='<div class="c err">❌ हिसाब नहीं मिला — लिंक पुराना हो सकता है। दुकान वाले भाई से नया लिंक माँगें।</div>'}})();

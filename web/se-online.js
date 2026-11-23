@@ -16,7 +16,10 @@ SON.save=async function(p){const c={...SON.cfg(),...p};S.settings={...(S.setting
   try{if(!S.demo&&S.db)await S.db.doc("settings/main").set({online:c},{merge:true})}catch(e){toast("सेव नहीं हुआ — सिर्फ़ विक्रम जी बदल सकते हैं");return}SON.publish(true)};
 
 /* ================= 📢 सार्वजनिक भाव-सूची (pub/rates) ================= */
-SON.inStock=it=>!it.track?1:((+(S.pstock&&S.pstock[it.id]&&S.pstock[it.id].qty)||0)>0?1:0);
+SON.inStock=it=>{const q=id=>+(S.pstock&&S.pstock[id]&&S.pstock[id].qty)||0;
+  /* 23-11: पैकेट वाला सामान — पीस वाले में कम से कम एक पैकेट जितने पीस हों तभी "स्टॉक में" */
+  if(!it.track&&it.packOf&&+it.perPack>0){const pa=typeof item==="function"?item(it.packOf):null;if(pa&&pa.track)return q(pa.id)>=+it.perPack?1:0}
+  return !it.track?1:(q(it.id)>0?1:0)};
 SON.list=function(){const top=S.top7||{};
   return S.items.filter(i=>i.active!==false&&!i.virtual&&!i.pending&&!i.noOnline&&num(i.sale)>0&&i.id!=="xyz"&&!(typeof isTob==="function"&&isTob(i))&&!i.secret&&i.sub!=="tob")
     .map(i=>{const ps=SE.photoSrc(i);const o={id:i.id,n:SE.capNm(i.short||i.name),u:i.unit||"pc",s:num(i.sale),c:i.cat||"",k:SON.inStock(i)};
@@ -24,7 +27,8 @@ SON.list=function(){const top=S.top7||{};
       if(ps&&!/^data:/.test(ps))o.p=ps;if(i.emoji)o.em=i.emoji;if(num(i.hue))o.h=num(i.hue);if(i.size)o.sz=String(i.size).slice(0,16);if(top[i.id])o.t=Math.round(top[i.id]);return o})};
 SON.publish=async function(force){if(S.demo||!S.db||!(S.isOwner||S.uid))return;
   const c=SON.cfg(),L=SON.list(),cfg={...c,phone:String(S.settings.ownerPh||S.settings.shopPh||"").replace(/\D/g,"").slice(-10),upi:typeof upiId==="function"?upiId():""};
-  const h=JSON.stringify([cfg,L]).length+":"+JSON.stringify(L.map(i=>[i.id,i.s,i.k,i.p||"",i.m||0])).replace(/[^0-9a-z]/gi,"").slice(-4000);
+  /* 23-11: पूरी सूची की छाप (पहले सिर्फ़ आख़िरी 4000 अक्षर — शुरू के सामान का भाव/स्टॉक बदले तो 6 घंटे तक ग्राहक-पेज पर पुराना भाव) */
+  const h=(s=>{let a=0x811c9dc5,b=5381;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=Math.imul(a^c,16777619)>>>0;b=(Math.imul(b,33)+c)>>>0}return s.length+":"+a.toString(36)+b.toString(36)})(JSON.stringify([cfg,L]));
   if(!force&&LSx.get("son_h")===h&&Date.now()-(+LSx.get("son_t")||0)<6*3600e3)return;
   try{await S.db.collection("pub").doc("rates").set({type:"rates",items:L,cfg,ts:Date.now(),phone:cfg.phone});LSx.set("son_h",h);LSx.set("son_t",String(Date.now()))}catch(e){}};
 /* 📸 ग्राहक-पेज की फोटो: pub/phx {n,v} + pub/ph_<k> {m:{id:112px JPEG}} — 40-40 के टुकड़े, सिर्फ़ सार्वजनिक सूची वाले सामान */
@@ -96,7 +100,7 @@ SON.step=async function(id,st,extra){extra=extra||{};const o=(SX.orders||[]).fin
   const stamp=["acc","out","done","cancel"].includes(st)?{[st+"Ts"]:Date.now(),[st+"Uid"]:S.uid||"",...(loc?{[st+"Loc"]:loc}:{})}:{};
   try{if(!S.demo&&S.db){await S.db.collection("orders").doc(id).update({status:st,dts:Date.now(),byName:biller()||"",...stamp,...(etaTs?{etaTs}:{}),...(extra.rider?{rider:extra.rider}:{}),...(extra.billNo?{billNo:extra.billNo}:{}),...(extra.reason?{reason:extra.reason}:{})});
       const pp=window.SA&&SA.points&&o.phone?SA.points(String(o.phone).replace(/\D/g,"").slice(-10)):null;/* 🎁 ग्राहक को उसके पॉइंट दिखें (सिर्फ़ गिनती) */
-      await S.db.collection("pub").doc("ot_"+id).set({st:pubSt,ts:Date.now(),by,...(pp?{pts:pp.left,ptsPer:+((S.settings&&S.settings.pts&&S.settings.pts.per)||100)}:{}),...(etaTs?{eta:etaTs}:{}),...(msg?{msg}:{}),...(extra.billNo?{billNo:extra.billNo}:{})},{merge:true})}}
+      await S.db.collection("pub").doc("ot_"+id).set({st:pubSt,ts:Date.now(),by,...(pp?{pts:pp.left,ptsPer:+((S.settings&&S.settings.pts&&S.settings.pts.per)||100)}:{}),...(etaTs?{eta:etaTs}:{}),msg:msg||""/* 23-11: पुराना संदेश ("being packed") अगले कदम पर न दिखे */,...(extra.billNo?{billNo:extra.billNo}:{})},{merge:true})}}
   catch(e){toast("नहीं हुआ: "+(e.code||e.message||""));return false}
   toast(({acc:"✓ ऑर्डर स्वीकार — ग्राहक को दिख रहा",pack:"📦 पैक हो रहा",out:"🛵 रास्ते में",done:"✅ ऑर्डर पूरा",cancel:"✕ रद्द"})[st]||"✓");return true};
 if(window.SX)SX.orderSet=(id,status,extra)=>SON.step(id,status,extra);
@@ -124,8 +128,8 @@ SON.sheet=function(){if(window.SRG)SRG.silence();const L=SX.orders||[];const lin
   <div class="son-ft"><button class="big ghost" data-srgopen>🔔 घंटी</button><button class="big ghost" data-sxolink>🔗 लिंक भेजें</button><button class="big ghost" data-sonqr>📲 QR कार्ड</button></div>
   <p class="note" style="text-align:center;margin:6px 0 0">${esc(link)}</p></div></div>`};
 document.addEventListener("click",async e=>{const t=e.target;let b;
-  if((b=t.closest("[data-sona]"))){b.disabled=true;await SON.step(b.dataset.sona,"acc",{mins:+b.dataset.mins});SON.alarm();return}
-  if((b=t.closest("[data-sonst]"))){b.disabled=true;await SON.step(b.dataset.id,b.dataset.sonst);return}
+  if((b=t.closest("[data-sona]"))){b.disabled=true;const ok=await SON.step(b.dataset.sona,"acc",{mins:+b.dataset.mins});if(!ok)b.disabled=false;/* 23-11: नेट न हो तो बटन फिर दबे */SON.alarm();return}
+  if((b=t.closest("[data-sonst]"))){b.disabled=true;const ok=await SON.step(b.dataset.id,b.dataset.sonst);if(!ok)b.disabled=false;return}
   if((b=t.closest("[data-sonout]"))){const r=prompt("कौन ले जा रहा है? (नाम)",LSx.get("son_rider")||String(biller()||"").split(/\s+/)[0]);if(r===null)return;LSx.set("son_rider",r.trim());await SON.step(b.dataset.sonout,"out",{rider:r.trim().slice(0,20)});return}
   if((b=t.closest("[data-sonx]"))){const r=prompt("रद्द क्यों? (ग्राहक को अंग्रेज़ी में दिखेगा)","Item out of stock");if(r===null)return;await SON.step(b.dataset.sonx,"cancel",{reason:r.slice(0,60),msg:r.slice(0,60)});return}
   if((b=t.closest("[data-sonstore]"))){const k=b.dataset.sonstore,st={...(SON.cfg().stores||{})};st[k]={...(st[k]||{}),on:(st[k]||{}).on===false};SON.save({stores:st});try{renderSettings()}catch(x){}return}

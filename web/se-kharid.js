@@ -146,7 +146,7 @@ function itemsHTML(I){if(!I)return "";const k=I.filter(x=>x.ok).length;
   return `<div class="skj-b">${I.map(x=>{const l=x.l,pp=+l.pp||0;return `<div class="skj-l"><b>${l.tob?"🔒 ":""}${esc(SE.capNm(l.nm))}</b> ${pp>1?`<span>खुला 1 PC ₹${esc(l.saleOne||"?")} + पैकेट ${pp} ₹${esc(l.sale||"?")}</span>`:`<span>₹${esc(l.sale||l.saleOne||"?")}</span>`}${l.bc?`<span>${esc(l.bc)}</span>`:""}<i style="font-style:normal;margin-left:4px">${esc(x.why||"🆕 बनेगा")}</i></div>`}).join("")}</div>
   ${k?`<button type="button" class="pri big" data-skjmk>🆕 ${k} सामान ऐप में बनाओ</button>`:""}`}
 /* 📋 ऐप में साथियों की चढ़ाई सारी खरीद → Claude (खरीद-बही से मिलान, docs/खरीद-बही/README.md §ऐप-नकल) */
-SKJ.appCode=async function(days){days=+days||30;const to=today(),from=new Date(Date.now()-days*864e5).toISOString().slice(0,10);
+SKJ.appCode=async function(days){days=+days||30;const to=today(),from=today(new Date(Date.now()-days*864e5));
   const L=(await appBuys(from,to)).sort((a,b)=>String(a.date).localeCompare(b.date)||(a.ts||0)-(b.ts||0));
   const bc=id=>{const it=id&&item(id);const b=it&&String(it.barcode||"").replace(/\D/g,"");return b&&b.length>=8?b:""};
   return JSON.stringify({app:"mh177-appbuys",org:SE.org,v:1,from,to,n:L.length,ts:Date.now(),

@@ -181,7 +181,7 @@ SB.editSheet=function(b){
   const step=l=>l.unit==="kg"?0.25:1;
   const draw=()=>{
     const tot=Math.round(sumLines(E));
-    const L=q?S.items.filter(i=>i.active!==false&&!i.virtual&&(+i.sale||0)>0&&(i.name+" "+(window.SN?SN.en(i):"")+" "+i.id).toLowerCase().includes(q.toLowerCase())).slice(0,12):[];
+    const L=q?S.items.filter(i=>i.active!==false&&!i.virtual&&(+i.sale||0)>0&&((i.name+" "+(i.short||"")+" "+(i.hi||"")+" "+(i.alias||"")+" "+(window.SN?SN.en(i):"")+" "+i.id).toLowerCase().includes(q.toLowerCase())||String(i.code||"")===q.trim())).slice(0,12):[];/* 23-11: हिंदी नाम / 4 अंक कोड से भी */
     $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="बिल बदलें"><div class="grab"></div>
     <div class="sh-head ppc-sh"><h3>✏️ बिल बदलें <small class="note">· ${esc(b.no)}</small></h3><button class="x" data-close aria-label="बंद करें">✕</button></div>
     <p class="note" style="margin:0 0 8px">मात्रा बदलें, नया सामान जोड़ें, या <b>भाव पर दबाकर</b> सिर्फ़ इस बिल का भाव बदलें। हर बदलाव दर्ज होगा${S.isOwner?"":" और विक्रम जी को दिखेगा"}।</p>
@@ -369,7 +369,7 @@ SB.peopleFor=function(inst){
 };
 SB.instText=function(b,p){
   const L=b.lines||[],LN="━━━━━━━━━━━━━━";const kind=p?p.kind:"manager";
-  let t=`🙏 नमस्ते${p?" "+p.n:""},\n🛒 *177 वेट कैंटीन* से *${b.partyName}* के लिए सामान भेजी गई है।\n🧾 चालान: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n🚚 माल लाए: ${b.byName||""}\n${LN}\n`;
+  let t=`🙏 नमस्ते${p?" "+p.n:""},\n🛒 *177 वेट कैंटीन* से *${b.partyName}* के लिए सामान भेजा गया है।\n🧾 चालान: ${b.no}\n📅 ${fdate(b.date)} · ${ftime(b.ts)}\n🚚 माल लाए: ${b.byName||""}\n${LN}\n`;
   if(kind==="chef"){
     L.forEach((l,i)=>t+=`${i+1}. ${l.name} — *${qtxt(l)}*\n`);
     t+=`${LN}\nकुल ${L.length} सामान\n\n✅ कृपया तौलकर/गिनकर मिलान करें और *"मिल गई ✓"* लिखकर जवाब दें।\nकुछ कम, ज़्यादा या खराब हो तो अभी फोटो के साथ बताएँ।\n`;
@@ -378,7 +378,7 @@ SB.instText=function(b,p){
     L.forEach((l,i)=>{const s=saleOf(l),m=r2((s-num(l.rate))*num(l.qty));st+=num(l.qty)*s;pf+=m;
       t+=`${i+1}. ${l.name} — *${qtxt(l)}*\n    खरीद ₹${l.rate} → बेचना *₹${s}*${m>0?" · मुनाफ़ा ₹"+m:" ⚠ मुनाफ़ा नहीं"}\n`});
     st=r2(st);pf=r2(pf);
-    t+=`${LN}\n📦 माल की कीमत (खरीद भाव): *₹${b.total}*\n🏷️ 177 वेट कैंटीन के भाव से पूरी बिक्री: *₹${st}*\n💚 *${p?p.n+", ":""}यह सब्ज़ी ${(p&&p.place)||b.partyName} में इन्हीं भाव पर पूरी बिक गई तो ₹${pf} का मुनाफ़ा होगा।*\n\n📌 बिक्री भाव वही रखें जो ऊपर लिखा है (177 वेट कैंटीन का भाव) — न कम, न ज़्यादा।\n🌙 रोज़ शाम बिकी और बची सब्ज़ी की जानकारी भेजें।\n✅ माल मिलान करके *"मिल गई ✓"* लिखकर जवाब दें।\n`;
+    t+=`${LN}\n📦 माल की कीमत (खरीद भाव): *₹${b.total}*\n🏷️ 177 वेट कैंटीन के भाव से पूरी बिक्री: *₹${st}*\n💚 *${p?p.n+", ":""}यह सामान ${(p&&p.place)||b.partyName} में इन्हीं भाव पर पूरा बिक गया तो ₹${pf} का मुनाफ़ा होगा।*\n\n📌 बिक्री भाव वही रखें जो ऊपर लिखा है (177 वेट कैंटीन का भाव) — न कम, न ज़्यादा।\n🌙 रोज़ शाम बिका और बचा सामान बताएँ।\n✅ माल मिलान करके *"मिल गई ✓"* लिखकर जवाब दें।\n`;
   }else{
     L.forEach((l,i)=>t+=`${i+1}. ${l.name}\n    ${qtxt(l)} × ₹${l.rate} = *₹${l.amt}*\n`);
     t+=`${LN}\n💰 *कुल: ₹${b.total}* (खरीद भाव पर)\n\n✅ कृपया मिलान करके *"मिल गई ✓"* लिखकर जवाब दें। कुछ फर्क हो तो अभी बताएँ।\n`;

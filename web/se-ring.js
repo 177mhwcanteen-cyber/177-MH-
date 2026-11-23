@@ -47,7 +47,7 @@ SRG.boot=async function(){if(SRG._boot||!SRG.native()||S.demo)return;SRG._boot=1
   setTimeout(SRG.nag,2500);SRG.checkOpened()};
 /* पहली बार (और जब कोई ज़रूरी इजाज़त कम हो — दिन में एक बार) छोटी शीट */
 SRG.nag=async function(){if(SRG.off()||!SRG.ok)return;const r=await SRG.status();if(!r)return;const g=SRG.gaps(r);if(!g.length)return;
-  const d=new Date().toISOString().slice(0,10);if(LS.get("srg_nag")===d)return;LS.set("srg_nag",d);SRG.sheet()};
+  const d=typeof today==="function"?today():new Date().toISOString().slice(0,10);/* 23-11: भारत की तारीख (UTC से रात 12–5:30 में दो बार पूछता था) */if(LS.get("srg_nag")===d)return;LS.set("srg_nag",d);SRG.sheet()};
 /* 🔔 सूचना से ऐप खुला → सीधे ऑर्डर दिखाओ, घंटी चुप */
 SRG.checkOpened=async function(){const r=await SRG.status(true);if(r&&r.opened){const n=((window.SX&&SX.orders)||[]).filter(o=>o.status==="new");if(n.length)SRG.popup(n[0],true);else{try{if(window.SX&&SX.ordersSheet)SX.ordersSheet()}catch(e){}SRG.silence()}}};
 /* 🛵 नया ऑर्डर आते ही पूरी स्क्रीन का पॉप-अप (Blinkit राइडर जैसा) — स्वीकार / सब ऑर्डर / बाद में */

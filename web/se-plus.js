@@ -115,7 +115,7 @@ SX.hisabLink=async function(pid){const p=(S.parties||[]).find(x=>x.id===pid);if(
   try{if(!S.demo)await S.db.collection("pub").doc(tok).set(doc)}catch(e){toast("लिंक नहीं बना (सर्वर नियम नए चिपकाएँ): "+(e.code||""));return}
   const url=pubBase()+"h.html?t="+tok;
   const txt=`🙏 नमस्ते ${p.name} जी,\n177 वेट कैंटीन में आपका हिसाब: *₹${r2(b)} बाकी*\nपूरा तारीख-वार हिसाब और UPI से चुकाने का बटन इस लिंक पर 👇\n${url}\nधन्यवाद 🙏`;
-  window.open(waLink(txt,p.phone||""),"_blank");SX._lastLink=url;return url};
+  if(window.SE&&SE.isNative&&SE.wa)SE.wa(p.phone||"",txt);else window.open(waLink(txt,p.phone||""),"_blank");SX._lastLink=url;return url};
 
 /* ======================= 5b) 📄 उधार का हिसाब PDF (तारीख-वार + UPI QR) ======================= */
 function loadPdfLib(){return window.jspdf?Promise.resolve():new Promise((res,rej)=>{const x=document.createElement("script");x.src="lib/jspdf.min.js";x.onload=res;x.onerror=rej;document.head.appendChild(x)})}
@@ -126,14 +126,14 @@ SX.hisabPdf=async function(pid){const p=(S.parties||[]).find(x=>x.id===pid);if(!
   toast("📄 हिसाब का PDF बन रहा है…");
   try{await loadPdfLib();try{await document.fonts.load('700 30px "Baloo 2"')}catch(e){}
     const L=(S.ledger||[]).filter(l=>l.partyId===pid).sort((a,b)=>a.ts-b.ts);let run=0;
-    const R=L.map(l=>{const u=l.type==="udhar",a=num(l.amt);run=r2(run+(u?a:-a));return {d:l.date||"",t:u?(l.opening?"पुराना बाकी"+(l.note?" ("+String(l.note).slice(0,28)+")":""):"बिल "+(l.billNo||"")):"जमा — "+(l.mode==="upi"?"UPI":"नकद"),u:u?a:0,j:u?0:a,b:run}});
+    const R=L.map(l=>{const u=l.type==="udhar",a=num(l.amt);run=r2(run+(u?a:-a));return {d:l.date||"",t:u?(l.opening||l.billNo==="पिछला बाकी"?"पुराना बाकी"+(l.note?" ("+String(l.note).slice(0,28)+")":""):"बिल "+(l.billNo||"")):l.mode==="return"?"माल वापसी"+(l.billNo?" — बिल "+l.billNo:""):"जमा — "+(l.mode==="upi"?"UPI":"नकद"),u:u?a:0,j:u?0:a,b:run}});
     const due=r2(typeof balRaw==="function"?balRaw(pid):bal(pid));
     const W=1240,H=1754,M=80,RH=46,F='"Baloo 2","Noto Sans Devanagari",sans-serif';
     const qr=due>0?await qrCanvas(`upi://pay?pa=${encodeURIComponent(upiId())}&pn=${encodeURIComponent(UPI_FIXED.payee)}&am=${due.toFixed(2)}&cu=INR&tn=${encodeURIComponent("177 Wet Canteen hisab "+p.name)}`,320):null;
     const pages=[];let i=0;
     while(i<R.length||!pages.length){const cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,W,H);
       const first=!pages.length;let y=M;
-      if(first){g.fillStyle="#7c2d12";g.fillRect(0,0,W,190);g.fillStyle="#fff";g.font=`800 60px ${F}`;g.fillText("🛒 177 वेट कैंटीन",M,95);g.font=`500 30px ${F}`;g.fillText("किराना · फास्ट फूड · सब्ज़ी · बाड़मेर",M,145);
+      if(first){g.fillStyle="#7c2d12";g.fillRect(0,0,W,190);g.fillStyle="#fff";g.font=`800 60px ${F}`;g.fillText("🛒 177 वेट कैंटीन",M,95);g.font=`500 30px ${F}`;g.fillText("किराना · मिठाई · फास्ट फूड · बाड़मेर",M,145);
         y=250;g.fillStyle="#111827";g.font=`800 44px ${F}`;g.fillText("उधार का हिसाब — "+p.name,M,y);y+=48;g.font=`500 28px ${F}`;g.fillStyle="#4b5563";
         g.fillText([p.qtr?"क्वार्टर "+p.qtr:"",p.phone?"मो. "+p.phone:"","तारीख "+fdate(today())].filter(Boolean).join("  ·  "),M,y);y+=40;
         g.fillStyle=due>0?"#fef2f2":"#f0fdf4";g.fillRect(M,y,W-2*M,110);g.fillStyle=due>0?"#b91c1c":"#15803d";g.font=`800 52px ${F}`;g.fillText((due>0?"कुल बाकी: ₹":"हिसाब साफ़ ✓  ₹")+due.toLocaleString("en-IN"),M+30,y+72);y+=150}
@@ -178,7 +178,10 @@ SX.ordersSheet=function(){const L=SX.orders;$("#sheet").innerHTML=`<div class="s
     <div class="row2" style="margin-top:6px"><button class="big ghost" data-sxodone="${esc(o.id)}">✓ पूरा हो गया</button><button class="big ghost" data-sxono="${esc(o.id)}" style="color:var(--chili)">✕ रद्द</button></div></div>`).join(""):'<div class="empty">अभी कोई ऑर्डर नहीं</div>'}
   <button class="big ghost" data-sxolink style="margin-top:6px">🔗 ऑर्डर-लिंक ग्राहकों को भेजें</button></div></div>`};
 SX.orderBill=async function(id){const o=SX.orders.find(x=>x.id===id);if(!o)return;closeSheet();S.tab="bill";showTab();
-  if(String(o.phone||"").length===10){S.mode="walk";S.cust={phone:o.phone,name:o.name||""}}
+  /* 23-11: चालू बिल में किसी और ग्राहक का सामान हो तो ऑर्डर नए बिल-टैब में (पहले उसी बिल में मिल जाता था) */
+  if((S.cart||[]).length&&typeof newTab==="function")try{newTab()}catch(e){}
+  if(S.rateMode)S.rateMode=false;if(S.lblMode)S.lblMode=false;
+  if(String(o.phone||"").length===10){S.mode="walk";S.cust={phone:o.phone,name:o.name||""};try{if(typeof syncTab==="function")syncTab()}catch(e){}}
   (o.items||[]).forEach(x=>{const it=item(x.id);if(it&&num(x.q)>0)try{quickAdd(it,num(x.q))}catch(e){}});
   try{if(!S.demo)await S.db.collection("orders").doc(id).update({status:"billing",byName:biller()||"",bts:Date.now()})}catch(e){}
   const cp=window.SON&&SON.parse?SON.parse(o):{};/* 🎟️ ऑनलाइन कूपन की छूट बिल में अपने-आप (बिलर बदल सकता है) */
@@ -194,7 +197,7 @@ SX.pubRates=async function(force){if(S.demo||!S.db||!S.isOwner)return;const k="s
 /* ======================= 8) रोज़ का भाव-पोस्टर ======================= */
 const loadImg=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
 SX.poster=async function(){toast("🖼️ भाव-पोस्टर बन रहा है…");try{await document.fonts.load('800 40px "Baloo 2"');await document.fonts.load('700 28px "Mukta"')}catch(e){}
-  const L=S.items.filter(i=>i.active!==false&&!i.virtual&&!i.pending&&num(i.sale)>0&&i.id!=="xyz"&&!i.track).sort((a,b)=>(+a.order||0)-(+b.order||0)).slice(0,24);
+  const L=S.items.filter(i=>i.active!==false&&!i.virtual&&!i.pending&&num(i.sale)>0&&i.id!=="xyz"&&!i.track&&!i.secret&&i.sub!=="tob"&&!(typeof isTob==="function"&&isTob(i))/* 🔒 23-11: ग्राहकों वाले पोस्टर पर तम्बाकू कभी नहीं */).sort((a,b)=>(+a.order||0)-(+b.order||0)).slice(0,24);
   const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,"#0d1a33");g.addColorStop(1,"#1b3566");x.fillStyle=g;x.fillRect(0,0,W,H);
   x.fillStyle="#fff";x.font='800 64px "Baloo 2",sans-serif';x.textAlign="center";x.fillText("🛒 177 वेट कैंटीन",W/2,92);

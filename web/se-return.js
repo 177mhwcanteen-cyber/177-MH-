@@ -22,7 +22,8 @@ SV.day=d=>live().filter(r=>r.date===d);
 SV.cashAt=function(d,t0,t){return r2(SV.day(d).filter(r=>r.ts>t0&&r.ts<=t).reduce((a,r)=>a+(r.kind==="sale"&&r.refund==="cash"?-num(r.total):r.kind==="purchase"&&r.refund==="cash"?num(r.total):0),0))};
 /* सप्लायर का बाकी जितना घटा */
 SV.supCredit=id=>r2(live().filter(r=>r.kind==="purchase"&&r.supId===id&&r.refund==="due").reduce((a,r)=>a+num(r.total),0));
-const trackedIt=id=>{const it=item(id);return it&&it.track};
+/* 23-11: पैकेट वाला सामान (packOf) — उसका स्टॉक पीस वाले में गिना जाता है (adjStock खुद बदलता है) */
+const trackedIt=id=>{const it=item(id);if(!it)return false;if(it.track)return true;const pa=it.packOf?item(it.packOf):null;return !!(pa&&pa.track&&+it.perPack>0)};
 
 /* ---------- बिक्री वापसी ---------- */
 SV.billBtnHTML=function(b){if(!b||b.cancelled||b.mode==="inst"||b.settled===false||S.demo&&false)return "";const R=SV.ofBill(b.no);
@@ -31,7 +32,9 @@ SV.billBtnHTML=function(b){if(!b||b.cancelled||b.mode==="inst"||b.settled===fals
 SV.saleSheet=function(b){
   if(!biller()){openBiller(()=>SV.saleSheet(b));return}
   const prev={};SV.ofBill(b.no).forEach(r=>(r.lines||[]).forEach(l=>{prev[l.k]=(prev[l.k]||0)+num(l.qty)}));
-  const L=(b.lines||[]).map((l,i)=>({k:i+"|"+l.id,i,id:l.id,name:l.name,unit:l.unit,rate:l.free?0:num(l.rate),max:r2(num(l.qty)-(prev[i+"|"+l.id]||0)),q:0})).filter(l=>l.max>0);
+  /* 23-11: लौटाने का भाव = ग्राहक ने असल में जितना दिया (बिल की छूट/गोलाई घटाकर) — पहले पूरी लाइन का भाव लौटता था */
+  const fct=num(b.sub)>0&&num(b.total)>0?Math.min(1,num(b.total)/num(b.sub)):1;
+  const L=(b.lines||[]).map((l,i)=>({k:i+"|"+l.id,i,id:l.id,name:l.name,unit:l.unit,rate:l.free?0:r2((num(l.qty)>0&&num(l.amt)>0?num(l.amt)/num(l.qty):num(l.rate))*fct),max:r2(num(l.qty)-(prev[i+"|"+l.id]||0)),q:0})).filter(l=>l.max>0);
   if(!L.length){toast("इस बिल का सारा माल पहले ही वापस हो चुका");return}
   const party=b.mode==="udhar"&&b.partyId?(S.parties||[]).find(p=>p.id===b.partyId):null;
   const WHY=["खराब निकला","एक्सपायर","ग्राहक ने बदला","गलत सामान दिया","ज़्यादा ले गए"];
@@ -63,6 +66,7 @@ SV.saleSheet=function(b){
     if(!t.closest("[data-svsave]"))return;
     const lines=L.filter(l=>l.q>0).map(l=>({k:l.k,id:l.id,name:l.name,unit:l.unit,qty:l.q,rate:l.rate,amt:r2(l.q*l.rate),restock:st.good}));
     if(!lines.length){toast("कितना लौटाया — मात्रा लिखें");return}if(!st.why){toast("वापसी की वजह चुनें");return}
+    if(st.busy)return;st.busy=1;/* 23-11: दो बार दबने पर दो वापसी नहीं */
     const total=r2(lines.reduce((a,l)=>a+l.amt,0)),ts=Date.now();
     const doc={kind:"sale",billNo:b.no,billDate:b.date||"",date:today(),ts,by:S.uid||"",byName:biller(),lines,total,refund:st.refund,why:st.why,good:st.good,
       partyId:st.refund==="udhar"&&party?party.id:"",partyName:b.partyName||"",cost:r2(lines.reduce((a,l)=>{const bl=(b.lines||[])[+l.k.split("|")[0]];return a+num(bl&&bl.cost)*l.qty},0))};
@@ -75,7 +79,7 @@ SV.saleSheet=function(b){
         if(S.demo)S.ledger.push({id:"r"+id,...le});else await S.db.collection("ledger").doc("r"+id).set(le)}
       closeSheet();try{beep(true)}catch(x){}
       toast("↩️ वापसी दर्ज · "+rs(total)+(st.refund==="cash"?" — गल्ले से नकद लौटाएँ":st.refund==="upi"?" — UPI से लौटाएँ":" — उधार में कम हुआ")+(st.good?" · माल स्टॉक में":""));
-    }catch(err){toast("वापसी सेव नहीं हुई — नेट देखकर दोबारा दबाएँ")}
+    }catch(err){st.busy=0;toast("वापसी सेव नहीं हुई — नेट देखकर दोबारा दबाएँ")}
   };
 };
 
@@ -114,6 +118,7 @@ SV.purSheet=function(p){
     if(!t.closest("[data-svsave]"))return;
     const lines=L.filter(l=>l.q>0).map(l=>({k:l.k,id:l.id,name:l.name,unit:l.unit,qty:l.q,rate:l.rate,amt:r2(l.q*l.rate)}));
     if(!lines.length){toast("कितना लौटाया — मात्रा लिखें");return}if(!st.why){toast("वजह चुनें");return}
+    if(st.busy)return;st.busy=1;
     const total=r2(lines.reduce((a,l)=>a+l.amt,0)),ts=Date.now();
     const doc={kind:"purchase",pid:p.id,pDate:p.date||"",supId:p.supId||"",supName:p.supName||"",src:p.src||"",date:today(),ts,by:S.uid||"",byName:biller(),lines,total,refund:st.refund,why:st.why};
     const id="v"+uid();
@@ -123,7 +128,7 @@ SV.purSheet=function(p){
       const pr=lines.filter(l=>l.id&&trackedIt(l.id)).map(l=>[l.id,-l.qty]);if(pr.length)await adjStock(pr,"माल लौटाया · "+(p.supName||""));
       closeSheet();try{beep(true)}catch(x){}
       toast("↩️ "+rs(total)+" का माल लौटाया दर्ज"+(st.refund==="due"?" · दुकान का बाकी घटा":st.refund==="cash"?" · नकद गल्ले में रखें":" · 177 MH के हिसाब में"));
-    }catch(err){toast("सेव नहीं हुआ — नेट देखकर दोबारा दबाएँ")}
+    }catch(err){st.busy=0;toast("सेव नहीं हुआ — नेट देखकर दोबारा दबाएँ")}
   };
 };
 
