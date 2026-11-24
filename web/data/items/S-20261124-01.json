@@ -1,0 +1,31 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261124-01",
+ "date": "2026-11-24",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "आलू चिप्स खुला पैकेट ₹80, 40 — सामान #26 (वज़न/रैक बाद में)",
+ "items": [
+  {
+   "id": "g-aloo-chips-loose-pack-80",
+   "name": "ALOO CHIPS LOOSE PACK",
+   "short": "ALOO CHIPS LOOSE PACK",
+   "hi": "आलू चिप्स (खुला पैकेट)",
+   "alias": "aloo chips potato wafer loose khula आलू चिप्स वेफर",
+   "cat": "snacks",
+   "sub": "namkeen",
+   "unit": "pc",
+   "mrp": 80,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "bb526c96",
+   "open": {
+    "qty": 40,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
