@@ -117,7 +117,7 @@ SL.draw=function(d,cfg,sk){
      पर ऊँचाई आधी (~7.5 mm, पहले ~15 mm) · सबसे नीचे तारीखें / "धन्यवाद · फिर पधारें"। */
   if(st==="pro"){
     const G=Math.max(3,Math.round(4*U)),avail=H-PT-PB;
-    const hdrR=[sh.rack&&d.rack?d.rack:"",sh.code&&d.code?"#"+d.code:""].filter(Boolean).join(" · ");
+    const rackT=sh.rack&&d.rack?"रैक "+d.rack:"",codeT=sh.code&&d.code?"#"+d.code:"",hdrR=rackT||codeT;
     const offer=d.offer&&d.pmrp>0,mrpT=!offer&&(sh.mrp||d.mrpOn)&&d.mrp>d.price&&price?"MRP ₹"+fmtP(d.mrp):"";
     const subR=[offer?d.offer+" · पैक MRP ₹"+fmtP(d.pmrp)+" (2 पीस)":"",brand,sh.size&&d.size].filter(Boolean).join(" · ");
     const hasSub=!!(mrpT||subR);
@@ -125,8 +125,8 @@ SL.draw=function(d,cfg,sk){
     let foot=[dates,extra].filter(Boolean);
     if(foot.length>1){x.font=`700 ${Math.round(14*U)}px ${F}`;if(x.measureText(foot.join("   ·   ")).width<=X1-X0)foot=[foot.join("   ·   ")]}
     const digPx=sh.digits?Math.max(13,Math.round(16*U)):0,digH=digPx?digPx+Math.max(1,Math.round(digPx*.1)):0;
-    let hdrH=(shop||hdrR)?Math.round(18*U):0;const ruleH=hdrH?2:0;let footH=foot.length?Math.round(16*U):0;
-    const bT=Math.min(Math.round(48*U),80),bMax=Math.min(Math.round(56*U),88),bMin=Math.min(Math.max(40,Math.round(40*U)),56);
+    let hdrH=(shop||hdrR)?Math.round(22*U):0;const ruleH=hdrH?2:0;let footH=foot.length?Math.round(16*U):0;
+    const bT=Math.min(Math.round(44*U),76),bMax=Math.min(Math.round(56*U),88),bMin=Math.min(Math.max(40,Math.round(40*U)),56);
     const hasMid=!!(name||price);
     /* भाव का डिब्बा पहले नापो (नाम को बाकी चौड़ाई) */
     const pW=s0=>{x.font=`800 ${s0}px ${F}`;return Math.round(x.measureText(price).width+s0*.5)};
@@ -141,18 +141,20 @@ SL.draw=function(d,cfg,sk){
     const need=()=>hdrH+ruleH+midH+(d.bc?barH+digH:0)+footH*foot.length+G*Math.max(0,blocks-1);
     /* जगह कम: पहले बार (कम से कम ~5.5 mm), फिर लिखाई थोड़ी छोटी */
     if(need()>avail&&d.bc)barH=Math.max(bMin,barH-(need()-avail));
-    if(need()>avail){const fixed=(d.bc?barH+digH:0)+ruleH+G*Math.max(0,blocks-1),fl=hdrH+midH+footH*foot.length,f=Math.max(.5,(avail-fixed)/Math.max(1,fl));
-      hdrH=Math.round(hdrH*f);midH=Math.round(midH*f);footH=Math.round(footH*f)}
+    if(need()>avail){/* रैक वाली ऊपर की पट्टी छोटी नहीं होती (सामान कहाँ रखा है — साफ़ दिखे) */const fixed=(d.bc?barH+digH:0)+ruleH+hdrH+G*Math.max(0,blocks-1),fl=midH+footH*foot.length,f=Math.max(.5,(avail-fixed)/Math.max(1,fl));
+      midH=Math.round(midH*f);footH=Math.max(Math.round(12*U),Math.round(footH*f))}
     /* जगह बची: पहले नाम/भाव बड़ा, फिर बार थोड़ी (ज़्यादा से ज़्यादा ~7 mm) — बाकी खाली जगह हिस्सों के बीच बराबर */
     if(need()<avail&&hasMid)midH=Math.min(midMax,midH+(avail-need()));
     if(need()<avail&&d.bc)barH=Math.min(bMax,barH+(avail-need()));
     const spare=Math.max(0,avail-need()),gx=blocks>1?Math.min(Math.round(8*U),Math.floor(spare/(blocks+1))):0;
     let y=PT+Math.round((spare-gx*Math.max(0,blocks-1))/2);
     /* 1) ऊपर: दुकान का नाम (बाएँ) + रैक/कोड (दाएँ, काली पट्टी) */
-    if(hdrH){const yc=y+hdrH/2;let rx=X1;
-      if(hdrR){fitF(hdrR,Math.round(hdrH*.82),(X1-X0)*.45,800);const tw=x.measureText(hdrR).width,pw=Math.round(tw+hdrH*.8);rx=X1-pw;
-        x.save();rr(rx,y,pw,hdrH,Math.round(hdrH*.3));x.fill();x.fillStyle="#fff";x.fillText(hdrR,Math.round(rx+(pw-tw)/2),Math.round(yc+hdrH*.04));x.restore();rx-=Math.round(8*U)}
-      if(shop)txt(shop,yc+hdrH*.04,hdrH*.9,700,X0,rx,hdrR?"l":"c");
+    if(hdrH){const yc=y+hdrH/2;let lx=X0,rx=X1;
+      /* 📍 रैक — सबसे पहले, काली पट्टी में मोटा (सामान कहाँ रखा है, तुरंत दिखे) */
+      if(rackT){fitF(rackT,Math.round(hdrH*.92),(X1-X0)*.5,800);const tw=x.measureText(rackT).width,pw=Math.round(tw+hdrH*.8);
+        x.save();rr(X0,y,pw,hdrH,Math.round(hdrH*.3));x.fill();x.fillStyle="#fff";x.fillText(rackT,Math.round(X0+(pw-tw)/2),Math.round(yc+hdrH*.05));x.restore();lx=X0+pw+Math.round(8*U)}
+      if(codeT){const r=txt(codeT,yc+hdrH*.05,hdrH*.86,800,lx,X1,"r");rx=Math.round(r.tx)-Math.round(8*U)}
+      if(shop)txt(shop,yc+hdrH*.04,hdrH*.85,700,lx,rx,rackT?"c":"l");
       y+=hdrH+1;x.fillRect(X0,y,X1-X0,ruleH);y+=ruleH+G+gx}
     /* 2) बीच: बाएँ नाम (+ MRP/कंपनी/मात्रा की छोटी लाइन), दाएँ काले डिब्बे में बड़ा भाव */
     let midEnd=y;
@@ -160,7 +162,7 @@ SL.draw=function(d,cfg,sk){
       /* QR (चालू हो तो): सबसे दाएँ, पूरे डॉट — भाव का डिब्बा उसके बाएँ */
       if(sh.qr&&d.bc){const M=qrMatrix(d.bc),ms=M?Math.floor(midH/(M.n+2)):0;if(M&&ms>=2){const qs=ms*M.n,qx=X1-qs,qy=y+Math.round((midH-qs)/2);
         for(let r=0;r<M.n;r++)for(let c=0;c<M.n;c++)if(M.dark(r,c))x.fillRect(qx+c*ms,qy+r*ms,ms,ms);cv._qr=1;bx=qx-ms-Math.round(6*U)}}
-      if(price){const ph=Math.min(midH,Math.round(54*U));let s=Math.round(ph*.74);const maxW=name?(bx-ax)*.46:(bx-ax)*.8;
+      if(price){const ph=Math.min(midH,Math.round(64*U));let s=Math.round(ph*.8);const maxW=name?(bx-ax)*.42:(bx-ax)*.8;
         while(s>12&&pW(s)>maxW)s--;const pw=pW(s);
         const px0=name?bx-pw:Math.round((ax+bx-pw)/2),py0=y+Math.round((midH-ph)/2);
         x.save();rr(px0,py0,pw,ph,Math.round(Math.min(ph,pw)*.18));x.fill();x.fillStyle="#fff";x.font=`800 ${s}px ${F}`;
@@ -218,9 +220,12 @@ SL.draw=function(d,cfg,sk){
   if(f<.5){gap=1;const fx=rows.filter(r=>r.fixed).reduce((a,r)=>a+r.h,0)+gap*rows.length;f=Math.max(.3,(avail-(d.bc?barFloor+digH+2:0)-fx)/flex)}
   f=Math.min(1,f);
   rows.forEach(r=>{if(!r.fixed)r.h=Math.max(10,Math.round(r.h*f))});
-  const used=rows.reduce((a,r)=>a+r.h,0)+gap*rows.length;
+  let used=rows.reduce((a,r)=>a+r.h,0)+gap*rows.length;
   const bcBlock=d.bc?Math.max(Math.min(barFloor+digH,avail-used),30+digH,Math.min(barMax+digH,avail-used)):0;
   const topH=avail-bcBlock;
+  /* 24-11: बारकोड की कम से कम जगह के बाद लिखाई न समाए तो और छोटी (पहले "नीचे की लाइन" बारकोड पर चढ़ जाती थी — प्राइस टैग) */
+  if(used>topH-2&&rows.length){const fl=rows.filter(r=>!r.fixed),fs=fl.reduce((a,r)=>a+r.h,0),k=Math.max(.35,(topH-2-(used-fs))/Math.max(1,fs));
+    fl.forEach(r=>{r.h=Math.max(8,Math.floor(r.h*k))});used=rows.reduce((a,r)=>a+r.h,0)+gap*rows.length;if(used>topH-2){gap=1;used=rows.reduce((a,r)=>a+r.h,0)+rows.length}}
   /* --- QR (चालू हो तो): ऊपर दाएँ, पूरे डॉट --- */
   let qrDrawn=0;
   if(sh.qr&&d.bc&&topH>40){const M=qrMatrix(d.bc);if(M){const side=Math.min(topH-4,Math.round((W-2*PX)*.3));const ms=Math.floor(side/(M.n+2));
@@ -230,7 +235,7 @@ SL.draw=function(d,cfg,sk){
   const spare=Math.max(0,topH-used),sp=rows.length?Math.min(spare/(rows.length+1),12*U):0;
   let y=PT+sp+(rows.length?Math.max(0,spare-sp*(rows.length+1))/2:0);
   /* बड़ी लिखाई में हिंदी की मात्रा/शिरोरेखा अक्षर-डिब्बे से ऊपर निकलती है — पहली पंक्ति को उतना नीचे रखो (बड़े लेबल पर ऊपर से न कटे) */
-  if(rows.length)y=Math.max(y,PT+Math.round(rows[0].h*.16));
+  if(rows.length)y=Math.max(y,PT+Math.min(Math.round(rows[0].h*.16),Math.max(0,topH-used)));
   let topEnd=PT;rows.forEach(r=>{r.draw(Math.round(y),r.h);topEnd=Math.round(y+r.h);y+=r.h+gap+sp});cv._top=topEnd;
   /* --- बारकोड: बीच में, नीचे, कभी स्केल नहीं (बार साफ़-धारदार) --- */
   if(d.bc){const bm=SL.barCanvas(d.bc,W-2*PX,bcBlock-digH,digPx>0,digPx,4);
