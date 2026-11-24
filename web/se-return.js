@@ -33,7 +33,7 @@ SV.saleSheet=function(b){
   if(!biller()){openBiller(()=>SV.saleSheet(b));return}
   const prev={};SV.ofBill(b.no).forEach(r=>(r.lines||[]).forEach(l=>{prev[l.k]=(prev[l.k]||0)+num(l.qty)}));
   /* 23-11: लौटाने का भाव = ग्राहक ने असल में जितना दिया (बिल की छूट/गोलाई घटाकर) — पहले पूरी लाइन का भाव लौटता था */
-  const fct=num(b.sub)>0&&num(b.total)>0?Math.min(1,num(b.total)/num(b.sub)):1;
+  const fct=num(b.disc)>0&&num(b.sub)>0?Math.max(0,Math.min(1,(num(b.sub)-num(b.disc))/num(b.sub))):1;/* सिर्फ़ छूट पर — पैसे-पैसे की गोलाई से ₹119.8 जैसा भाव न दिखे */
   const L=(b.lines||[]).map((l,i)=>({k:i+"|"+l.id,i,id:l.id,name:l.name,unit:l.unit,rate:l.free?0:r2((num(l.qty)>0&&num(l.amt)>0?num(l.amt)/num(l.qty):num(l.rate))*fct),max:r2(num(l.qty)-(prev[i+"|"+l.id]||0)),q:0})).filter(l=>l.max>0);
   if(!L.length){toast("इस बिल का सारा माल पहले ही वापस हो चुका");return}
   const party=b.mode==="udhar"&&b.partyId?(S.parties||[]).find(p=>p.id===b.partyId):null;

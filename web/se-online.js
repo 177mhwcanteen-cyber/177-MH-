@@ -18,7 +18,7 @@ SON.save=async function(p){const c={...SON.cfg(),...p};S.settings={...(S.setting
 /* ================= 📢 सार्वजनिक भाव-सूची (pub/rates) ================= */
 SON.inStock=it=>{const q=id=>+(S.pstock&&S.pstock[id]&&S.pstock[id].qty)||0;
   /* 23-11: पैकेट वाला सामान — पीस वाले में कम से कम एक पैकेट जितने पीस हों तभी "स्टॉक में" */
-  if(!it.track&&it.packOf&&+it.perPack>0){const pa=typeof item==="function"?item(it.packOf):null;if(pa&&pa.track)return q(pa.id)>=+it.perPack?1:0}
+  if(!it.track&&it.packOf&&+it.perPack>0){const pa=typeof item==="function"?item(it.packOf):null;if(pa&&pa.track)return q(pa.id)>=+it.perPack||q(it.id)>0?1:0}/* पैकेट की अपनी गिनती हो तब भी "स्टॉक में" */
   return !it.track?1:(q(it.id)>0?1:0)};
 SON.list=function(){const top=S.top7||{};
   return S.items.filter(i=>i.active!==false&&!i.virtual&&!i.pending&&!i.noOnline&&num(i.sale)>0&&i.id!=="xyz"&&!(typeof isTob==="function"&&isTob(i))&&!i.secret&&i.sub!=="tob")

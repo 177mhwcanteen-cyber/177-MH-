@@ -383,8 +383,9 @@ function viewPurchase(p){
 /* बिल की फोटो: छोटी (लगभग 40KB) — Firestore में अलग जगह, बिल हल्का रहे */
 /* 📸 23-11: Firestore में जाने वाली हर फोटो ≤20 KB (पक्का नियम) — पहले बिल की फोटो ~40-60 KB जाती थी */
 function smallPhoto(blob){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(blob);img.onload=()=>{URL.revokeObjectURL(u);let out="";
-  for(const m of [640,520,420,340,280,220]){const sc=Math.min(1,m/Math.max(img.width,img.height));const cv=document.createElement("canvas");cv.width=Math.max(1,Math.round(img.width*sc));cv.height=Math.max(1,Math.round(img.height*sc));cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);
-    for(const q of [.62,.52,.44,.36]){out=cv.toDataURL("image/jpeg",q);if(out.length*.75<=20*1024)return res(out)}}res(out)};img.onerror=rej;img.src=u})}
+  /* पहले रंगीन; न समाए तो काली-सफ़ेद (कागज़ के बिल की लिखावट 20 KB में ज़्यादा साफ़ रहती है) */
+  for(const gray of [false,true])for(const m of gray?[720,600,500,420,340]:[640,520]){const sc=Math.min(1,m/Math.max(img.width,img.height));const cv=document.createElement("canvas");cv.width=Math.max(1,Math.round(img.width*sc));cv.height=Math.max(1,Math.round(img.height*sc));const g=cv.getContext("2d");if(gray)g.filter="grayscale(1) contrast(1.25)";g.drawImage(img,0,0,cv.width,cv.height);
+    for(const q of [.6,.5,.42,.36]){out=cv.toDataURL("image/jpeg",q);if(out.length*.75<=20*1024)return res(out)}}res(out)};img.onerror=rej;img.src=u})}
 function confirmPhotoRetake(){return false}
 SF.addBillPhoto=function(b,done){pickPhoto(async blob=>{try{const k="b_"+b.no+"_"+Date.now();
   await IDB.put({k,kind:"bill",no:b.no,pid:b.no,date:b.date||today(),by:biller(),name:`${b.date||today()}_बिल_${b.no}_${(b.photoN||0)+1}.jpg`,blob,ts:Date.now()});
@@ -853,7 +854,7 @@ async function ensurePLU(){
   const used=new Set(S.items.map(i=>+i.plu).filter(Boolean));let next=Math.max(100,...used)+1;
   for(const it of S.items.filter(i=>!i.plu)){while(used.has(next))next++;used.add(next);it.plu=next;try{await S.db.doc("items/"+it.id).update({plu:next})}catch(e){}next++}
   /* 🔢 23-11: बिना 4 अंक कोड वाले सामान (बिलिंग से "नया सामान" वगैरह) — खाली खाने में कोड (पुराना कोड कभी नहीं बदलता) */
-  if(typeof nextCode==="function")for(const it of S.items.filter(i=>!i.virtual&&i.id!=="xyz"&&!String(i.code||"").trim())){const c=nextCode(typeof mcat==="function"?mcat(it):(it.cat||"kirana"));it.code=c;try{await S.db.doc("items/"+it.id).update({code:c})}catch(e){}}
+  if(typeof nextCode==="function")for(const it of S.items.filter(i=>!i.virtual&&i.id!=="xyz"&&i.active!==false&&!String(i.code||"").trim())){/* 24-11: बंद (पुराने) सामान को कोड नहीं — किस्म के खाने न भरें */const c=nextCode(typeof mcat==="function"?mcat(it):(it.cat||"kirana"));it.code=c;try{await S.db.doc("items/"+it.id).update({code:c})}catch(e){}}
   }finally{ensurePLU.busy=false}
 }
 SF.ensurePLU=ensurePLU;
@@ -1307,9 +1308,9 @@ SF.watchCancelReqs=function(db){
     S.cancelReqs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.ts-a.ts);
     if(S.isOwner){renderTabs();try{paneSoon()}catch(x){}if(S.cancelReqs.length&&!SF._crToast){SF._crToast=1;toast("🚫 "+S.cancelReqs.length+" बिल रद्द करने की अर्ज़ी आई है — रिपोर्ट में देखें")}}
     else{/* 23-11: साथी — अर्ज़ी भेजते ही बिल "भुगतान बाकी" से हटे; विक्रम जी का फ़ैसला आते ही बताओ */
-      try{paneSoon(true)}catch(x){}
+      try{paneSoon()}catch(x){}
       const now=new Set(S.cancelReqs.map(r=>r.id));prev.filter(r=>!now.has(r.id)&&!r._local).forEach(r=>setTimeout(()=>{const b=(S.dayBills||[]).find(x=>x.no===r.no);
-        toast(b&&b.cancelled?"✅ विक्रम जी ने बिल "+r.no+" रद्द कर दिया":"↩ विक्रम जी ने बिल "+r.no+" रद्द नहीं किया — बिल चालू है, भुगतान लें");try{paneSoon(true)}catch(x){}},1500))}},()=>{});
+        toast(b&&b.cancelled?"✅ विक्रम जी ने बिल "+r.no+" रद्द कर दिया":"↩ विक्रम जी ने बिल "+r.no+" रद्द नहीं किया — बिल चालू है, भुगतान लें");try{paneSoon()}catch(x){}},1500))}},()=>{});
 };
 /* 🚫 23-11 (विक्रम जी): अर्ज़ी गई बिल — साथी के "भुगतान बाकी"/बिल-सूची से हटे, सीधा मालिक के पास; मालिक बिल खोले तो वहीं ✓ रद्द / ✗ मना */
 SF.crOf=no=>(S.cancelReqs||[]).find(r=>r.no===no)||null;
@@ -1364,7 +1365,7 @@ SF.doCancel0=async function(b,why){
 };
 SF.sendCancelReq=async function(b){
   const why=($("#crWhy")?.value||"").trim();if(why.length<3){toast("पहले रद्द करने की वजह लिखें");return}
-  if(SF._crBusy||b.cancelled)return;SF._crBusy=1;try{await SF.sendCancelReq0(b,why)}finally{SF._crBusy=0}};
+  SF._crB=SF._crB||{};if(SF._crB[b.no]||b.cancelled)return;SF._crB[b.no]=1;/* 24-11: रोक सिर्फ़ इसी बिल पर (नेट अटके तो दूसरे बिल की अर्ज़ी न रुके) */try{await SF.sendCancelReq0(b,why)}finally{delete SF._crB[b.no]}};
 SF.sendCancelReq0=async function(b,why){
   /* 23-11: साथी सीधे रद्द नहीं कर सकते (सर्वर-नियम: रद्द सिर्फ़ मालिक) — पहले कोशिश करके बिल पल भर को "रद्द" दिखता था; अब सीधी अर्ज़ी */
   let done=false;
@@ -1389,7 +1390,7 @@ SF.cancelReqsHTML=function(){
 };
 SF.decideCancel=async function(id,ok){
   const r=(S.cancelReqs||[]).find(x=>x.id===id);if(!r){toast("यह अर्ज़ी पहले ही निपट चुकी है");return false}
-  if(SF._dcBusy)return false;SF._dcBusy=1;
+  SF._dcB=SF._dcB||{};if(SF._dcB[id]){toast("⏳ इस अर्ज़ी का फ़ैसला सेव हो रहा है…");return false}SF._dcB[id]=1;/* 24-11: रोक सिर्फ़ इसी अर्ज़ी पर */
   try{
     if(ok){const ref=S.db.doc("days/"+r.date+"/bills/"+r.no);const g=await ref.get();if(!g.exists){toast("⏳ बिल अभी सर्वर पर नहीं पहुँचा (साथी के फोन में नेट नहीं) — थोड़ी देर बाद दबाएँ");return false}const b=g.data();
       if(!b.cancelled){const ch={cancelled:true,cancelledBy:S.uid||"",cancelByName:biller(),cancelReason:"अर्ज़ी: "+r.reason+" ("+r.byName+")",cancelTs:Date.now()};await ref.update(ch);
@@ -1405,7 +1406,7 @@ SF.decideCancel=async function(id,ok){
     S.cancelReqs=S.cancelReqs.filter(x=>x.id!==id);try{renderTabs();renderPane(true)}catch(x){}
     const back=ok&&SF._lastCx&&SF._lastCx.no===r.no?SF._lastCx.paid:0;
     toast(ok?"✓ बिल "+r.no+" रद्द — माल स्टॉक में वापस"+(back>0?" · ग्राहक को "+rs(back)+" लौटाएँ":""):r.done===false?"↩ अर्ज़ी मना — बिल "+r.no+" चालू है (भुगतान बाकी में दिखेगा)":"↩ बिल "+r.no+" वापस चालू");return true;
-  }catch(e){toast("नहीं हुआ: "+(e.code||e.message||"")+" — नेट देखकर दोबारा दबाएँ");return false}finally{SF._dcBusy=0}
+  }catch(e){toast("नहीं हुआ: "+(e.code||e.message||"")+" — नेट देखकर दोबारा दबाएँ");return false}finally{delete SF._dcB[id]}
 };
 
 /* A4 रिपोर्ट में खरीद */

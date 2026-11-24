@@ -123,7 +123,8 @@ async function apply(leftMode){
   const oid="o"+ts.toString(36);
   if(!S.demo)await S.db.collection("openings").doc(oid).set(doc);   // पहले रिकॉर्ड — फिर बदलाव
   await adjStock(lines.filter(l=>l.diff).map(l=>[l.id,l.diff]),"ओपनिंग स्टॉक "+fdate(date));
-  for(const l of lines){const it=item(l.id);const p={openTs:ts,openQty:l.qty,exp:l.exp||l.oldExp||""};/* 23-11: नई एक्सपायरी न लिखी हो तो पुरानी न मिटे (पहले खाली हो जाती थी — चेतावनी बंद) */
+  for(const l of lines){const it=item(l.id);const oe=l.oldExp&&!(Math.floor((new Date((window.SPK&&SPK.normExp&&SPK.normExp(l.oldExp)||l.oldExp)+"T23:59:59")-Date.now())/864e5)<0)?l.oldExp:"";
+    const p={openTs:ts,openQty:l.qty,exp:l.exp||oe};/* 23-11: नई एक्सपायरी न लिखी हो तो पुरानी न मिटे (चेतावनी चलती रहे) — 24-11: पर निकल चुकी पुरानी तारीख नहीं (वरना नई गिनती का माल भी बिल में न जुड़ता) */
     if(l.off)p.active=false;if(l.cost>0&&l.cost!==l.oldCost)p.cost=l.cost;
     Object.assign(it,p);
     if(!S.demo){try{await S.db.doc("items/"+l.id).update(p)}catch(e){}if(p.cost)try{logPrice(l.id,"cost",l.oldCost,l.cost)}catch(e){}}

@@ -240,13 +240,15 @@ SR.addCardHTML=function(q){return `<button class="card addnew" data-newitem="${e
 SR.newItemSheet=function(q){
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="नया सामान"><div class="grab"></div>
   <div class="sh-head"><div><h3>➕ नया सामान जोड़ें</h3><span class="note">${S.isOwner?"यह सबके फोन में तुरंत आ जाएगा":"यह सबके फोन में तुरंत आ जाएगा"}</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
-  <label class="fld">नाम (हिंदी में)<input class="inp" id="niName" value="${esc(q||"")}" placeholder="जैसे शकरकंद"></label>
+  <label class="fld">नाम (हिंदी में)<input class="inp" id="niName" value="${esc(q||"")}" placeholder="जैसे पारले-जी बिस्किट / शकरकंद"></label>
   <label class="fld">अंग्रेज़ी नाम (अगर पता हो)<input class="inp" id="niEn" placeholder="जैसे Sweet Potato"></label>
   <div class="row2"><label class="fld">किस हिसाब से बिकेगा<select class="inp" id="niUnit"><option value="pc">पीस / पैकेट</option><option value="kg">किलो</option></select></label>
   <label class="fld">बेचने का भाव ₹<input class="inp" id="niRate" inputmode="decimal" placeholder="₹"></label></div>
   <label class="fld">किस में रखें<select class="inp" id="niCat">${[["kirana","🛒 किराना"],["fast","🍔 फास्ट फूड"],["sabzi","🥬 सब्ज़ी-फल"]].map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
   <button class="big" data-nisave style="margin-top:10px">✓ जोड़ें और बिल में डालें</button></div></div>`;
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}if(e.target.closest("[data-nisave]"))SR.saveNewItem()};
+  /* 23-11: इकाई अपने-आप — सब्ज़ी-फल = किलो, बाकी = पीस (जब तक बिलर खुद न बदले) */
+  {let ut=0;$("#sheet").onchange=e=>{if(e.target.id==="niUnit")ut=1;if(e.target.id==="niCat"&&!ut){const u=$("#niUnit");if(u)u.value=e.target.value==="sabzi"?"kg":"pc"}}}
   setTimeout(()=>{const x=$(q?"#niRate":"#niName");if(x)x.focus()},120);
 };
 SR.saveNewItem=async function(){
@@ -820,9 +822,9 @@ SR.kharchSheet=function(){
     if(!e.target.closest("[data-qksave]"))return;
     const what=$("#qkW").value.trim(),amt=r2(parseFloat(String($("#qkA").value).replace(",","."))||0);
     if(!what||!(amt>0)){toast("किस चीज़ का और कितने रुपये — दोनों लिखें");return}
-    if(SR._qkBusy)return;SR._qkBusy=1;/* 23-11: दो बार दबने पर दो खर्चे नहीं */
+    const kb=e.target.closest("[data-qksave]");if(kb.dataset.busy)return;kb.dataset.busy="1";kb.disabled=true;/* 23-11: दो बार दबने पर दो खर्चे नहीं — 24-11: रोक सिर्फ़ इसी बटन पर */
     const k={what,amt,mode,ts:Date.now(),by:S.uid||"",byName:biller()};
-    try{if(S.demo)S.kharch.push({id:"k"+k.ts,...k});else await S.db.collection("days/"+today()+"/kharch").doc("k"+k.ts.toString(36)).set(k);closeSheet();toast("💸 "+what+" "+rs(amt)+" जुड़ा")}catch(err){toast("खर्चा सेव नहीं हुआ")}finally{SR._qkBusy=0}
+    try{if(S.demo)S.kharch.push({id:"k"+k.ts,...k});else await S.db.collection("days/"+today()+"/kharch").doc("k"+k.ts.toString(36)).set(k);closeSheet();toast("💸 "+what+" "+rs(amt)+" जुड़ा")}catch(err){delete kb.dataset.busy;kb.disabled=false;toast("खर्चा सेव नहीं हुआ")}
   };
   setTimeout(()=>{const x=$("#qkW");if(x)x.focus()},120);
 };

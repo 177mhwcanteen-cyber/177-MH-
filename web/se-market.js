@@ -25,10 +25,15 @@ const lidOf=i=>D.no+"-"+String(i).padStart(2,"0");
 function nextLid(){let n=0;D.lines.forEach(l=>{const k=+String(l.lid).split("-").pop();if(k>n)n=k});return lidOf(n+1)}
 
 /* ---------- फोटो ---------- */
-/* 📸 23-11: यहाँ की हर फोटो (सामान, दुकान का बिल, रसीद) सीधी Firestore (mbuys) में जाती है — पक्का नियम ≤20 KB (पहले बिल ~120 KB, रसीद ~50 KB) */
-function shrink(file,max,q,forAI){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);
-  img.onload=()=>{URL.revokeObjectURL(u);let out="";for(const m of forAI?[max]:[max,Math.round(max*.8),Math.round(max*.65),Math.round(max*.5),Math.round(max*.4)]){const sc=Math.min(1,m/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*sc));c.height=Math.max(1,Math.round(img.height*sc));
-    c.getContext("2d").drawImage(img,0,0,c.width,c.height);if(forAI)return res(c.toDataURL("image/jpeg",q));/* AI को पढ़ने के लिए साफ़ फोटो — यह कहीं सेव नहीं होती */for(const qq of [q,Math.min(q,.5),.42,.35]){out=c.toDataURL("image/jpeg",qq);if(out.length*.75<=20*1024)return res(out)}}res(out)};
+/* 📸 यहाँ की हर फोटो सीधी Firestore (mbuys) में जाती है — पक्का नियम ≤20 KB (विक्रम जी)। 24-11: सामान की फोटो रंगीन;
+   दुकान का बिल / दुकान का QR / भुगतान की रसीद (max>400) काली-सफ़ेद + गाढ़ी — 20 KB में भी लिखावट और QR साफ़ (रंगीन 20 KB में QR पढ़ा नहीं जाता था)।
+   AI वाली फोटो (forAI) कहीं सेव नहीं होती — वह बड़ी ही रहे। */
+function shrink(file,max,q,forAI){const doc=!forAI&&max>400;return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);
+  img.onload=()=>{URL.revokeObjectURL(u);let out="";const S0=forAI?[max]:doc?[max,.85,.72,.6,.5,.4].map((f,i)=>i?Math.round(max*f):max):[max,Math.round(max*.8),Math.round(max*.65),Math.round(max*.5),Math.round(max*.4)];
+    for(const m of S0){const sc=Math.min(1,m/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*sc));c.height=Math.max(1,Math.round(img.height*sc));
+      const g=c.getContext("2d");if(doc)g.filter="grayscale(1) contrast(1.35)";g.drawImage(img,0,0,c.width,c.height);
+      if(forAI)return res(c.toDataURL("image/jpeg",q));
+      for(const qq of doc?[.62,.52,.44,.36,.3]:[q,Math.min(q,.5),.42,.35]){out=c.toDataURL("image/jpeg",qq);if(out.length*.75<=20*1024)return res(out)}}res(out)};
   img.onerror=e=>{URL.revokeObjectURL(u);rej(e)};img.src=u})}
 async function pick(cb){const wasCam=SE.cam&&SE.cam.on;if(wasCam)try{await camOff(false)}catch(e){}
   const fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.capture="environment";

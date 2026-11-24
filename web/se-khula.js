@@ -83,7 +83,7 @@ SKH.sheet=function(mode){if(typeof biller==="function"&&!biller()){openBiller(()
   sh.onclick=async e=>{const t=e.target;if(t.matches("[data-close]")){closeSheet();return}
     const q=t.closest("[data-skq]");if(q){const [b,o]=SWAP[+q.dataset.skq];DN.forEach(v=>{delete inN[v];delete outN[v]});inN[b]=1;Object.assign(outN,o);draw();return}
     const m=t.closest("[data-skm]");if(m){const [s,v,d]=m.dataset.skm.split(":");const N=s==="i"?inN:outN;N[v]=Math.max(0,num(N[v])+(+d));if(!N[v])delete N[v];draw();return}
-    if(t.closest("[data-skhsave]")){if(SKH._busy)return;SKH._busy=1;let r=false;try{r=await SKH.move(inN,outN,refill?"krefill":"khula",note)}finally{SKH._busy=0}if(r){closeSheet();try{beep(true)}catch(x){}toast("✓ "+rs(tot(inN))+" के "+(refill?"खुले डिब्बे में आए":"खुले दिए")+" · डिब्बा "+rs(tot(CUR)))}}}};
+    if(t.closest("[data-skhsave]")){if(SKH._busy&&Date.now()-SKH._busy<8000)return;SKH._busy=Date.now();/* 24-11: रोक ज़्यादा से ज़्यादा 8 सेकंड — नेट अटके तो डिब्बा हमेशा के लिए न रुके */let r=false;try{r=await SKH.move(inN,outN,refill?"krefill":"khula",note)}finally{SKH._busy=0}if(r){closeSheet();try{beep(true)}catch(x){}toast("✓ "+rs(tot(inN))+" के "+(refill?"खुले डिब्बे में आए":"खुले दिए")+" · डिब्बा "+rs(tot(CUR)))}}}};
 /* मालिक: डिब्बा सेट */
 SKH.setSheet=function(){if(!S.isOwner)return;const N={...(CUR||{})},T={...SKH.target()};
   const draw=()=>{$("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px sg-sh" role="dialog" aria-label="खुले का डिब्बा सेट"><div class="grab"></div>
