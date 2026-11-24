@@ -1,0 +1,28 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261124-03",
+ "date": "2026-11-24",
+ "by": "विक्रम जी",
+ "note": "5 STAR शुगर बूरा 1 KG: ₹75→80 (विक्रम जी), रैक 9-25→9-23 (साथी)",
+ "items": [
+  {
+   "id": "g-5-star-sugar-bura-1-kg",
+   "name": "5 STAR SUGAR BURA 1 KG",
+   "short": "5 STAR SUGAR BURA 1 KG",
+   "unit": "pc",
+   "upd": {
+    "sale": {
+     "from": 75,
+     "to": 80
+    },
+    "rack": {
+     "from": "9-25",
+     "to": "9-23"
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
