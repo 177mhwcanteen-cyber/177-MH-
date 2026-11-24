@@ -9,7 +9,28 @@ const LSd={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set
 const SDK=window.SDK={ok:!(window.SE&&SE.isNative)&&("serial" in navigator),port:{},w:{}};
 const key=r=>"se_ser_"+r;
 SDK.info=r=>{try{return JSON.parse(LSd.get(key(r))||"null")}catch(e){return null}};
-SDK.has=r=>{const i=SDK.info(r);return !!i&&(i.ble?SDK.bleOk:SDK.ok)};
+SDK.has=r=>{const i=SDK.info(r);return !!i&&(i.ble?SDK.bleOk:i.usb?SDK.usbOk:SDK.ok)};
+/* 🔌 24-11 (GitHub: NielsLeenheer/WebUSBReceiptPrinter का तरीका): USB प्रिंटर बिना ड्राइवर/COM — Chrome/Edge का WebUSB।
+   प्रिंटर का interface (class 7 = printer, नहीं तो जिसमें bulk OUT हो) claim करके सीधे बाइट। (Windows में अगर प्रिंटर का अपना ड्राइवर
+   लगा है तो Chrome उसे नहीं ले पाता — तब पुराना 58mm/80mm (Web Serial) या Windows प्रिंट।) */
+SDK.usbOk=!(window.SE&&SE.isNative)&&!!(navigator.usb&&navigator.usb.requestDevice);
+SDK.usb={};
+async function usbOpen(dev){if(!dev.opened)await dev.open();if(dev.configuration===null)await dev.selectConfiguration(1);
+  const ifs=dev.configuration.interfaces,pick=ifs.find(i=>i.alternate.interfaceClass===7)||ifs.find(i=>i.alternate.endpoints.some(e=>e.direction==="out"&&e.type==="bulk"));
+  if(!pick)throw {msg:"इस USB डिवाइस में छापने का रास्ता नहीं मिला — सही प्रिंटर चुनें"};
+  try{await dev.claimInterface(pick.interfaceNumber)}catch(e){throw {msg:"USB प्रिंटर पर Windows का ड्राइवर लगा है — 58mm/80mm वाला तरीका या Windows प्रिंट इस्तेमाल करें"}}
+  const ep=pick.alternate.endpoints.find(e=>e.direction==="out"&&e.type==="bulk");return {dev,ep:ep.endpointNumber}}
+SDK.pickUsb=async function(r,o){o=o||{};if(!SDK.usbOk)throw {msg:"यह ब्राउज़र USB से सीधे नहीं जुड़ता — Chrome या Edge खोलें"};
+  const dev=await navigator.usb.requestDevice({filters:[]});SDK.usb[r]=await usbOpen(dev);
+  const nm=(dev.productName||"USB प्रिंटर")+" (USB)";LSd.set(key(r),JSON.stringify({usb:1,v:dev.vendorId,p:dev.productId,sn:dev.serialNumber||""}));
+  if(r==="bill"){LSd.set("se_prn","web-serial");LSd.set("se_prn_n",nm);LSd.set("se_prn_w",String(o.w||"58"));LSd.set("se_prn_t",o.t||(String(o.w)==="100"?"tspl":"escpos"))}
+  else{LSd.set("se_lbl","web-serial");LSd.set("se_lbl_n",nm);LSd.set("se_lbl_t",o.t||"tspl")}
+  return nm};
+async function usbGet(r){const c=SDK.usb[r];if(c&&c.dev.opened)return c;const inf=SDK.info(r)||{};
+  const dev=(await navigator.usb.getDevices()).find(d=>d.vendorId===inf.v&&d.productId===inf.p&&(!inf.sn||d.serialNumber===inf.sn));
+  if(!dev)throw {msg:"USB प्रिंटर नहीं मिला — तार/चालू देखें, या 🖨️ में 🔌 दोबारा दबाएँ"};SDK.usb[r]=await usbOpen(dev);return SDK.usb[r]}
+async function usbSend(r,u){for(let t=0;t<2;t++){try{const c=await usbGet(r);for(let i=0;i<u.length;i+=4096)await c.dev.transferOut(c.ep,u.slice(i,i+4096));return true}
+    catch(e){const c=SDK.usb[r];try{c&&c.dev.opened&&await c.dev.close()}catch(x){}SDK.usb[r]=null;if(t)throw e.msg?e:{msg:"USB प्रिंटर तक नहीं पहुँचा: "+(e.message||e)}}}}
 /* 🔵 24-11 (GitHub: NielsLeenheer/WebBluetoothReceiptPrinter, MIT — उसकी प्रिंटर-सूची से): लैपटॉप Chrome/Edge से सीधे BLE ब्लूटूथ
    थर्मल प्रिंटर (MPT-II, "BlueTooth Printer", Printer001, Epson TM-P, Star, GB/MX कैट-प्रिंटर…) — Windows में pair/COM की ज़रूरत नहीं।
    सेवा मिले तो उसके "print" खाने में 180 बाइट के टुकड़े, बीच में ज़रा रुककर (बफ़र न भरे)। */
@@ -49,6 +70,7 @@ const sleep=ms=>new Promise(f=>setTimeout(f,ms));
 /* data = base64 (ESC/POS या TSPL बाइट) — 1 KB के टुकड़ों में, बीच में थोड़ा रुककर (ब्लूटूथ का बफ़र न भरे) */
 SDK.send=async function(r,b64){const raw=atob(b64),u=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)u[i]=raw.charCodeAt(i);
   if((SDK.info(r)||{}).ble)return bleSend(r,u);
+  if((SDK.info(r)||{}).usb)return usbSend(r,u);
   for(let t=0;t<2;t++){let w=null;try{const p=await openPort(r);w=p.writable.getWriter();
       for(let i=0;i<u.length;i+=1024){await w.write(u.subarray(i,i+1024));if(u.length>4096)await sleep(15)}
       w.releaseLock();return true}
@@ -62,7 +84,7 @@ SDK.pick=async function(r,o){o=o||{};if(!SDK.ok)throw {msg:"यह ब्रा�
   if(r==="bill"){LSd.set("se_prn","web-serial");LSd.set("se_prn_n",nm);LSd.set("se_prn_w",String(o.w||"58"));LSd.set("se_prn_t",o.t||(String(o.w)==="100"?"tspl":"escpos"))}
   else{LSd.set("se_lbl","web-serial");LSd.set("se_lbl_n",nm);LSd.set("se_lbl_t",o.t||"tspl")}
   return nm};
-SDK.forget=async function(r){try{const b=SDK.ble[r];if(b&&b.dev&&b.dev.gatt.connected)b.dev.gatt.disconnect()}catch(e){}SDK.ble[r]=null;try{const p=SDK.port[r];if(p&&p.readable==null&&p.writable)await p.close()}catch(e){}SDK.port[r]=null;LSd.set(key(r),null);
+SDK.forget=async function(r){try{const c=SDK.usb[r];if(c&&c.dev.opened)await c.dev.close()}catch(e){}SDK.usb[r]=null;try{const b=SDK.ble[r];if(b&&b.dev&&b.dev.gatt.connected)b.dev.gatt.disconnect()}catch(e){}SDK.ble[r]=null;try{const p=SDK.port[r];if(p&&p.readable==null&&p.writable)await p.close()}catch(e){}SDK.port[r]=null;LSd.set(key(r),null);
   if(r==="bill"&&LSd.get("se_prn")==="web-serial"){LSd.set("se_prn",null);LSd.set("se_prn_n",null)}
   if(r==="label"&&LSd.get("se_lbl")==="web-serial"){LSd.set("se_lbl",null);LSd.set("se_lbl_n",null)}};
 /* 🖨️ कार्ड (प्रिंटर कार्ड में, सिर्फ़ लैपटॉप/कंप्यूटर पर) */
@@ -71,10 +93,11 @@ SDK.cardHTML=function(){if(window.SE&&SE.isNative)return "";
     return `<div class="sdk-r"><b>${t}</b><span>${inf?"✓ "+esc(nm||"चुना"):"नहीं चुना"}</span>
       ${r==="bill"?`<button type="button" class="chip" data-sdkpick="bill" data-w="58">58mm</button><button type="button" class="chip" data-sdkpick="bill" data-w="80">80mm</button><button type="button" class="chip" data-sdkpick="bill" data-w="100">4 इंच</button>`
         :`<button type="button" class="chip" data-sdkpick="label" data-t="tspl">लेबल प्रिंटर (TSPL)</button><button type="button" class="chip" data-sdkpick="label" data-t="escpos">रसीद प्रिंटर पर</button>`}
+      ${SDK.usbOk?`<button type="button" class="chip" data-sdkusb="${r}" title="USB तार वाला प्रिंटर सीधे — ड्राइवर/COM नहीं">🔌 USB</button>`:""}
       ${SDK.bleOk?`<button type="button" class="chip" data-sdkble="${r}" title="ब्लूटूथ (BLE) प्रिंटर सीधे — pair की ज़रूरत नहीं">🔵 ब्लूटूथ</button>`:""}
       ${inf?`<button type="button" class="chip" data-sdktest="${r}">🧪 जाँच</button><button type="button" class="chip" data-sdkx="${r}">✕</button>`:""}</div>`};
   return `<div class="card2 sdk-c"><h3>💻 लैपटॉप / कंप्यूटर से सीधी छपाई</h3>
-    ${SDK.ok||SDK.bleOk?`<p class="note" style="margin:0 0 6px">① Windows की Bluetooth सेटिंग में प्रिंटर pair करें (PIN अक्सर 0000 या 1234) ② यहाँ साइज़ दबाएँ → सूची में "Serial over Bluetooth (COM…)" चुनें → Connect ③ 🧪 जाँच। USB वाला प्रिंटर भी (अगर COM पोर्ट बनाता हो)।</p>${row("bill","🧾 बिल")}${row("label","🏷️ लेबल")}
+    ${SDK.ok||SDK.bleOk||SDK.usbOk?`<p class="note" style="margin:0 0 6px">① Windows की Bluetooth सेटिंग में प्रिंटर pair करें (PIN अक्सर 0000 या 1234) ② यहाँ साइज़ दबाएँ → सूची में "Serial over Bluetooth (COM…)" चुनें → Connect ③ 🧪 जाँच। USB वाला प्रिंटर भी (अगर COM पोर्ट बनाता हो)।</p>${row("bill","🧾 बिल")}${row("label","🏷️ लेबल")}
       <p class="note" style="margin:6px 0 0">न जुड़े तो भी चलेगा: बिल/लेबल Windows के प्रिंट से छपेंगे (प्रिंटर का ड्राइवर डालकर)।</p>`
       :`<p class="note" style="margin:0">यह ब्राउज़र प्रिंटर से सीधे नहीं जुड़ता। <b>Google Chrome</b> या <b>Microsoft Edge</b> में यही पता खोलें। अभी बिल/लेबल ब्राउज़र के प्रिंट से छपेंगे।</p>`}
     ${SDK.installHTML()}</div>`};
@@ -85,6 +108,7 @@ SDK.installHTML=()=>SDK.standalone()?`<p class="note" style="margin:6px 0 0">✅
   :`<button type="button" class="big ghost" data-sdkinst ${deferred?"":"hidden"} style="margin-top:6px">📥 इस कंप्यूटर पर ऐप इंस्टॉल करें</button><p class="note" style="margin:6px 0 0">इंस्टॉल का बटन न दिखे: Chrome/Edge में ऊपर पते के दाएँ ⊕ / "ऐप इंस्टॉल करें" दबाएँ।</p>`;
 document.addEventListener("click",async e=>{const g=s=>e.target.closest(s);
   const pk=g("[data-sdkpick]");if(pk){try{const nm=await SDK.pick(pk.dataset.sdkpick,{w:pk.dataset.w,t:pk.dataset.t});toast("🖨️ जुड़ गया: "+nm);SDK.refresh()}catch(x){if(x&&x.name==="NotFoundError")return;toast(x.msg||("नहीं जुड़ा: "+(x.message||x)))}return}
+  const us=g("[data-sdkusb]");if(us){const r=us.dataset.sdkusb;try{const nm=await SDK.pickUsb(r,{w:r==="bill"?(LSd.get("se_prn_w")||"58"):undefined});toast("🔌 जुड़ गया: "+nm);SDK.refresh()}catch(x){if(x&&x.name==="NotFoundError")return;toast(x.msg||("नहीं जुड़ा: "+(x.message||x)))}return}
   const bl=g("[data-sdkble]");if(bl){const r=bl.dataset.sdkble;try{const nm=await SDK.pickBle(r,{w:r==="bill"?(LSd.get("se_prn_w")||"58"):undefined});toast("🔵 जुड़ गया: "+nm);SDK.refresh()}catch(x){if(x&&x.name==="NotFoundError")return;toast(x.msg||("नहीं जुड़ा: "+(x.message||x)))}return}
   const ts=g("[data-sdktest]");if(ts){try{await SDK.test(ts.dataset.sdktest);toast("🧪 जाँच भेजी")}catch(x){toast(x.msg||String(x.message||x))}return}
   const xx=g("[data-sdkx]");if(xx){await SDK.forget(xx.dataset.sdkx);toast("हटाया");SDK.refresh();return}

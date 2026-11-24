@@ -615,7 +615,7 @@ html.camon header{top:0}
 .sdl{flex:1;overflow-y:auto;padding:6px 10px}
 .sdr{display:grid;grid-template-columns:1fr auto 64px 26px;align-items:center;gap:6px;padding:8px 4px;border-bottom:1px dashed var(--line,#e2e8f0)}
 .sdn{min-width:0}.sdn b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sdn span{font-size:12px;color:var(--muted,#64748b)}
-.rkin{display:flex;gap:4px;align-items:center}.rkin .inp{flex:1;min-width:0}.rkin .scanbtn{flex:0 0 auto}
+.rkin{display:flex;gap:4px;align-items:stretch}.rkin .inp{flex:1;min-width:0}.rkin .scanbtn{flex:0 0 auto;min-height:36px;min-width:40px}
 .nb-hits{display:grid;gap:6px;margin-top:6px}.nb-hit{display:flex;gap:8px;align-items:center;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:5px}.nb-hit .tile{width:40px;height:40px;flex:none;border-radius:9px}.nb-hit span{flex:1}.nb-hit small{display:block;font-size:11.5px;color:var(--muted)}.nb-hit em{font-style:normal;font-weight:800;color:var(--leaf);font-size:13px}
 .card .rkb{position:absolute;top:6px;left:6px;z-index:2;font:800 10px/1.3 monospace;padding:1px 5px;border-radius:999px;background:#0f766ee6;color:#fff;pointer-events:none}
 .sdrk{font-style:normal;font:700 11px monospace;color:#0f766e}
@@ -928,7 +928,9 @@ html .ob-g>div{background:var(--surface2)}
 [id^="p-"] .card2,[id^="p-"] .card{min-width:0;max-width:100%}
 [id^="p-"] .card2>*,[id^="p-"] .li .mid,[id^="p-"] .kpi{min-width:0}
 [id^="p-"] img,[id^="p-"] svg,[id^="p-"] canvas,[id^="p-"] video,[id^="p-"] table{max-width:100%}
-[id^="p-"] .warn,[id^="p-"] .li .mid span{overflow-wrap:anywhere}/* ⚠ एक्सपायरी डेट चेक करें (24-11) */
+[id^="p-"] .warn,[id^="p-"] .li .mid span{overflow-wrap:anywhere}
+/* 👆 24-11 (axe-core/WCAG "target size" का नियम): छोटे लिंक-बटन भी उँगली से आसानी से दबें — कम से कम 28px ऊँचे */
+[id^="p-"] button.lnk{min-height:28px;min-width:28px;padding-top:4px;padding-bottom:4px}/* ⚠ एक्सपायरी डेट चेक करें (24-11) */
 </style>
 
 <header class="px">
@@ -1989,8 +1991,10 @@ document.addEventListener("keydown",e=>{
     const b=W.buf,avg=W.gaps.length?W.gaps.reduce((a,x)=>a+x,0)/W.gaps.length:999;W.buf="";W.gaps=[];
     const inPop=document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#sheet");
     /* 🛡️ 24-11: गन ने तेज़ी से जो लिखा वह सामान का कोड जैसा न हो (QR की वेबसाइट/UPI/लिखाई) — खाने से हटाओ, बिल में कुछ नहीं */
-    if(b.length>=6&&avg<50&&window.SE&&SE.scanOk&&!SE.scanOk(SE.normCode(b),"gun")){e.preventDefault();const ae=document.activeElement;if(ae&&ae.tagName==="INPUT"&&ae.value.endsWith(b)){ae.value=ae.value.slice(0,-b.length);if(ae.id==="q")S.q=ae.value}try{beep(false)}catch(x){}toast("⚠ यह सामान का बारकोड नहीं — छोड़ दिया");return}
-    if(b.length>=6&&avg<50&&(!inPop||/^\d{8,14}$/.test(b)&&!(document.activeElement&&document.activeElement.matches&&document.activeElement.matches("#qIn,#aIn,#rtIn")))){e.preventDefault();e.stopImmediatePropagation();
+    /* 💻 24-11: लैपटॉप पर ब्लूटूथ गन कभी-कभी थोड़ी धीमी लिखती है — 8+ अंक हों तो 70ms तक भी गन मानो (इंसान इतना तेज़ नहीं लिखता) */
+    const gun=b.length>=6&&(avg<50||(/^\d{8,14}$/.test(b)&&avg<70));
+    if(gun&&window.SE&&SE.scanOk&&!SE.scanOk(SE.normCode(b),"gun")){e.preventDefault();const ae=document.activeElement;if(ae&&ae.tagName==="INPUT"&&ae.value.endsWith(b)){ae.value=ae.value.slice(0,-b.length);if(ae.id==="q")S.q=ae.value}try{beep(false)}catch(x){}toast("⚠ यह सामान का बारकोड नहीं — छोड़ दिया");return}
+    if(gun&&(!inPop||/^\d{8,14}$/.test(b)&&!(document.activeElement&&document.activeElement.matches&&document.activeElement.matches("#qIn,#aIn,#rtIn")))){e.preventDefault();e.stopImmediatePropagation();
       const ae=document.activeElement;if(ae&&ae.tagName==="INPUT"&&ae.value.endsWith(b)){ae.value=ae.value.slice(0,-b.length);if(ae.id==="q"){S.q=ae.value}}
       handleScan(b);return}
     if(e.target&&e.target.id==="q"){const v=e.target.value.trim();if(v&&findByCode(v)){e.preventDefault();e.target.value="";S.q="";handleScan(v)}else if(/^\d{6,}$/.test(v)){e.preventDefault();e.target.value="";S.q="";renderBill();handleScan(v)}}
@@ -2053,8 +2057,17 @@ function liveHTML(){
 }
 
 /* ---------- offline outbox ---------- */
-function outbox(){try{return JSON.parse(lsGet("se_outbox")||"[]")}catch(e){return []}}
-function saveOutbox(o){lsSet("se_outbox",JSON.stringify(o))}
+/* 🗄️ 24-11 (Dexie.js का विचार, बिना लाइब्रेरी): बिना नेट वाले बिलों की कतार localStorage के साथ IndexedDB में भी।
+   localStorage भर जाए / साफ़ हो जाए तब भी बिल न खोए — पढ़ते समय localStorage न चले तो IndexedDB वाली नकल। */
+const OBX={v:null,db:null,
+  open(){if(this.db)return this.db;this.db=new Promise((res,rej)=>{try{const r=indexedDB.open("se177",1);r.onupgradeneeded=()=>r.result.createObjectStore("kv");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}});return this.db},
+  async put(o){try{const d=await this.open();await new Promise((res,rej)=>{const t=d.transaction("kv","readwrite");t.objectStore("kv").put(JSON.stringify(o),"outbox");t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}},
+  async get(){try{const d=await this.open();return await new Promise(res=>{const q=d.transaction("kv").objectStore("kv").get("outbox");q.onsuccess=()=>{try{res(JSON.parse(q.result||"[]"))}catch(e){res([])}};q.onerror=()=>res([])})}catch(e){return []}}};
+function outbox(){let L=null;try{const t=lsGet("se_outbox");L=t?JSON.parse(t):[]}catch(e){L=null}if(OBX.v&&(!L||OBX.v.length>L.length&&lsGet("se_outbox_full")==="1"))return OBX.v.slice();return L||[]}
+function saveOutbox(o){const j=JSON.stringify(o);lsSet("se_outbox",j);const ok=lsGet("se_outbox")===j;lsSet("se_outbox_full",ok?"":"1");OBX.v=ok?null:o.slice();OBX.put(o)}
+/* खुलते समय: localStorage खाली पर IndexedDB में बचे बिल हों (फोन ने साफ़ किया) → वापस कतार में */
+setTimeout(async()=>{try{if(lsGet("se_outbox"))return;/* सिर्फ़ तब जब localStorage वाली कतार पूरी गायब हो */const I=await OBX.get();if(!I.length)return;const L=outbox(),k=x=>x&&x.bill&&x.bill.no,have=new Set(L.map(k));
+  const add=I.filter(x=>k(x)&&!have.has(k(x))&&Date.now()-(+x.bill.ts||Date.now())<7*864e5);if(add.length){saveOutbox(L.concat(add));toast("🗄️ "+add.length+" बिल बचाए गए — नेट आते ही सेव होंगे");try{flushOutbox()}catch(e){}}}catch(e){}},900);
 function withTimeout(p,ms){return Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej({code:"timeout"}),ms))])}
 async function commitBill(item){
   const bill=item.bill,date=bill.date,f=item.done||(item.done={});

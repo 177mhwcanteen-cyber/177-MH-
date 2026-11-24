@@ -61,9 +61,17 @@ const files = [];
 (function walk(d) { for (const f of fs.readdirSync(d)) { const a = path.join(d, f); fs.statSync(a).isDirectory() ? walk(a) : files.push(path.relative(OUT, a).split(path.sep).join("/")); } })(OUT);
 const shell = files.filter(f => !f.endsWith("migrate.json"));
 fs.writeFileSync(path.join(OUT, "sw.js"), `const C="se-${VERSION}",F=${JSON.stringify(["./", ...shell])};
-self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(F)))});
-self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
+/* 24-11 (GoogleChrome/workbox के तरीके, बिना लाइब्रेरी): एक फ़ाइल न आए तो पूरा कैश न टूटे (हर फ़ाइल अलग);
+   सामान की फोटो p/* = cache-first (एक बार देखी तो बिना नेट भी), खेप data/*.json = network-first (नया पहले, नेट न हो तो पुराना);
+   रनटाइम कैश 1500 फ़ाइल तक (पुरानी पहले हटें) */
+const R="se-rt",MAX=1500;
+const trim=async()=>{try{const c=await caches.open(R),k=await c.keys();for(let i=0;i<k.length-MAX;i++)await c.delete(k[i])}catch(e){}};
+self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>Promise.allSettled(F.map(f=>c.add(f)))))});
+self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C&&x!==R).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.method!=="GET"||u.origin!==location.origin||u.pathname.includes("/update/"))return;
+const p=u.pathname;
+if(/\/p\/[^/]+\.(jpe?g|png|webp)$/i.test(p)){e.respondWith(caches.open(R).then(c=>c.match(e.request).then(r=>r||fetch(e.request).then(x=>{if(x.ok){c.put(e.request,x.clone());trim()}return x}))));return}
+if(/\/data\/.+\.json$/i.test(p)){e.respondWith(fetch(e.request).then(x=>{if(x.ok){const y=x.clone();caches.open(R).then(c=>c.put(e.request,y))}return x}).catch(()=>caches.open(R).then(c=>c.match(e.request)).then(r=>r||Response.error())));return}
 e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(r=>r||fetch(e.request)))});
 `);
 

@@ -34,14 +34,23 @@ sandbox/CI में टेस्ट चल सके (यह sandbox npm नह
     टूटे तो दोबारा जुड़कर एक बार और; बिल और लेबल दोनों (SDK.pickBle / bleSend)।
     जाँच tests/scanlap.py (नकली वेबकैम पर EAN-13 + नकली navigator.bluetooth)।
 
-== ⏳ आगे (हर एक अलग काम, विक्रम जी से पूछकर) ==
-11b. Sec-ant/zxing-wasm — QR भी लैपटॉप पर और तेज़ (wasm फ़ाइल चाहिए — CI में npm से)।
-12. NielsLeenheer/ReceiptPrinterEncoder — बिल की ESC/POS छपाई एक जगह से, हर प्रिंटर (58/80 mm) पर एक जैसी।
-13. NielsLeenheer/WebUSBReceiptPrinter — USB प्रिंटर बिना ड्राइवर (Web Serial पहले से है)।
-14. GoogleChrome/workbox — लैपटॉप PWA का ऑफ़लाइन कैश (नेट जाए तो भी ऐप खुले)।
-15. dexie/Dexie.js — ऑफ़लाइन बिल/फोटो की कतार IndexedDB में (अभी localStorage/idb हाथ से)।
-16. Firestore persistentLocalCache + persistentMultipleTabManager (firebase-js-sdk) — लैपटॉप पर कई टैब खोलें तो भी ऑफ़लाइन डेटा ठीक।
-17. leeoniya/uPlot — रिपोर्ट के ग्राफ़ (हल्का, 40 KB) — मोबाइल पर तेज़।
-18. iamkun/dayjs (+ timezone) — तारीख/समय एक जगह से (UTC वाली गलतियाँ पहले आई थीं)।
-19. dequelabs/axe-core — टेस्ट में हर स्क्रीन की पहुँच/बटन-साइज़ की जाँच।
-20. Playwright screenshot-तुलना — हर बदलाव पर बिल/लेबल/गल्ला की तस्वीर पिछली से मिलाओ (डिज़ाइन बिगड़े तो पकड़ में आए)।
+== ✅ 24-11 देर रात (विक्रम जी: "बाकी पूरे काम कर दो, मेरी आज्ञा है · लैपटॉप पर स्कैन गन से होगा, कैमरे से नहीं") ==
+13. NielsLeenheer/WebUSBReceiptPrinter का तरीका — se-desk.js में 🔌 USB: तार वाला प्रिंटर बिना ड्राइवर/COM (class 7 या bulk OUT,
+    4096 बाइट टुकड़े, टूटे तो दोबारा खोलकर)। Windows का ड्राइवर लगा हो तो साफ़ संदेश।
+14. GoogleChrome/workbox के तरीके (बिना लाइब्रेरी, build.mjs का sw.js): हर फ़ाइल अलग कैश (एक न मिले तो पूरा न टूटे), सामान की फोटो
+    p/* cache-first, खेप data/*.json network-first, रनटाइम कैश 1500 तक। जाँच tests/sw.py (बिना नेट: पेज+फोटो+खेप)।
+15. dexie/Dexie.js का विचार (बिना लाइब्रेरी): बिना नेट वाले बिलों की कतार localStorage के साथ IndexedDB (se177/kv/outbox) में भी;
+    localStorage पूरा साफ़ हो जाए तो 7 दिन तक के बचे बिल वापस कतार में (index.html OBX)।
+16. Firestore persistence synchronizeTabs:true — पहले से था (se-platform.js:35), लैपटॉप पर कई टैब ठीक।
+19. dequelabs/axe-core / WCAG के नियम (लाइब्रेरी repo में बनी फ़ाइल नहीं — इसलिए नियम अपने टेस्ट में): tests/a11y.py — 360px और
+    1280px पर हर टैब: हर बटन/खाने का नाम, बटन ≥24px, पेज/कार्ड स्क्रीन से बाहर नहीं, JS गलती नहीं। मिली गलतियाँ ठीक: छोटे
+    "हटाएँ" जैसे लिंक-बटन (≥28px), रैक-खाने के 📷 बटन।
+20. Playwright snapshot-तुलना का तरीका: tests/visual.py — 7 लेबल डिज़ाइन × 3 साइज़ × 2 सामान का ढाँचा (बारकोड कहाँ/कितना/मॉड्यूल,
+    लिखाई कहाँ खत्म) tests/visual/labels.json से ±3 डॉट (फ़ॉन्ट बदलने पर भी पास — जाँचा)। जानबूझकर बदला तो --update।
++  गन (लैपटॉप): ब्लूटूथ गन धीमी लिखे तो भी 8–14 अंक 70ms तक "गन" (index.html keyboard-wedge) + SE.scanOk छलनी।
+
+== ❌ जानबूझकर नहीं लगाए (ऐप भारी/कमज़ोर होता, फ़ायदा नहीं) ==
+11b. Sec-ant/zxing-wasm — लैपटॉप पर स्कैन गन से (विक्रम जी); कैमरा के लिए quagga2 काफ़ी।
+12.  NielsLeenheer/ReceiptPrinterEncoder — बिल हिंदी में तस्वीर बनकर छपता है (ESC/POS इमेज); टेक्स्ट-एनकोडर से हिंदी नहीं छपती।
+17.  leeoniya/uPlot — ऐप के ग्राफ़ हल्के SVG हैं (मोबाइल पर कसे, जाँचे हुए); 40 KB और जोड़ने का फ़ायदा नहीं।
+18.  iamkun/dayjs — तारीख today()/fdate पहले से (UTC गलती 23-11 को ठीक, टेस्ट में); नई लाइब्रेरी = दो तरीके, गलती का खतरा।

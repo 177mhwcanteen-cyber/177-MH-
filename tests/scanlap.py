@@ -57,7 +57,17 @@ async def main():
           window.__bleFail=1;window.__ble=[];await SDK.send('bill',btoa(b.slice(0,300)));R.retry=window.__ble.slice();await SDK.forget('bill');R.after=SDK.has('bill');return R}""")
         print(r)
         assert r == {"ok": True, "can": True, "chunks": [180, 180, 180, 180, 180, 100], "retry": [180, 120], "after": False}, r
+        # 🔌 USB प्रिंटर (नकली navigator.usb): class 7 interface, bulk OUT, 4096 के टुकड़े, टूटे तो दोबारा खोलकर
+        r = await pg2.evaluate("""async()=>{window.__usb=[];let opened=false,fail=0;const dev={vendorId:0x0483,productId:0x5743,serialNumber:'X1',productName:'POS58',get opened(){return opened},
+            open:async()=>{opened=true},close:async()=>{opened=false},configuration:{interfaces:[{interfaceNumber:0,alternate:{interfaceClass:7,endpoints:[{direction:'in',type:'bulk',endpointNumber:2},{direction:'out',type:'bulk',endpointNumber:1}]}}]},
+            selectConfiguration:async()=>{},claimInterface:async()=>{},transferOut:async(ep,d)=>{if(window.__usbFail){window.__usbFail--;throw new Error('lost')}window.__usb.push(ep+':'+d.length)}};
+          Object.defineProperty(navigator,'usb',{value:{requestDevice:async()=>dev,getDevices:async()=>[dev]},configurable:true});SDK.usbOk=true;
+          const c=document.createElement('div');c.innerHTML=SDK.cardHTML();document.body.appendChild(c);c.querySelector('[data-sdkusb=label]').click();await new Promise(r=>setTimeout(r,400));
+          const R={has:SDK.has('label')};let b='';for(let i=0;i<9000;i++)b+='a';await SDK.send('label',btoa(b));R.out=window.__usb.slice();
+          window.__usbFail=1;window.__usb=[];await SDK.send('label',btoa('abc'));R.retry=window.__usb.slice();return R}""")
+        print(r)
+        assert r == {"has": True, "out": ["1:4096", "1:4096", "1:808"], "retry": ["1:3"]}, r
         await b.close()
     assert not errs, errs
-    print("✅ लैपटॉप स्कैन + ब्लूटूथ टेस्ट पास")
+    print("✅ लैपटॉप स्कैन + ब्लूटूथ + USB टेस्ट पास")
 asyncio.run(main())
