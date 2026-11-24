@@ -1,0 +1,32 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261124-04",
+ "date": "2026-11-24",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "चकली खुला पैकेट ₹140, 9, काउंटर — सामान #27 (वज़न बाद में)",
+ "items": [
+  {
+   "id": "g-chakli-loose-pack-140",
+   "name": "CHAKLI LOOSE PACK",
+   "short": "CHAKLI LOOSE PACK",
+   "hi": "चकली (खुला पैकेट)",
+   "alias": "chakli chakri murukku namkeen चकली चकरी",
+   "cat": "snacks",
+   "sub": "namkeen",
+   "unit": "pc",
+   "mrp": 140,
+   "sale": 140,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "c8330ebb",
+   "open": {
+    "qty": 9,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
