@@ -1,0 +1,32 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261124-02",
+ "date": "2026-11-24",
+ "by": "विक्रम जी",
+ "note": "आलू चिप्स खुला पैकेट: 200 g, रैक 6-11",
+ "items": [
+  {
+   "id": "g-aloo-chips-loose-pack-80",
+   "name": "ALOO CHIPS LOOSE PACK",
+   "short": "ALOO CHIPS LOOSE PACK",
+   "size": "200g",
+   "cat": "snacks",
+   "sub": "namkeen",
+   "unit": "pc",
+   "rack": "6-11",
+   "upd": {
+    "short": {
+     "from": "ALOO CHIPS LOOSE PACK",
+     "to": "ALOO CHIPS 200G LOOSE"
+    },
+    "name": {
+     "from": "ALOO CHIPS LOOSE PACK",
+     "to": "ALOO CHIPS 200 G LOOSE PACK"
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
