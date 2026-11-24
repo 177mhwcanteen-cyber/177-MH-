@@ -105,9 +105,16 @@ async def main():
         # ---------- 3) स्कैन से बिल ----------
         ps0 = await pg.evaluate("JSON.parse(JSON.stringify(window.__MOCK__.pstock||{}))")
         lays0 = (ps0.get("k1027") or {}).get("qty", 0)
-        # Lays (k1009) पुराने डेटा में एक्सपायर है — वो बिल में नहीं जुड़ना चाहिए
+        # Lays (k1009) पुराने डेटा में एक्सपायर है — 24-11 (विक्रम जी): एक्सपायरी से बिल कभी न रुके,
+        # पैकेट पर बस "एक बार इसकी एक्सपायरी डेट चेक कर लें" (हर सामान पर दिन में एक बार); दूध-दही/खुले पर कोई संदेश नहीं
         await pg.evaluate("handleScan('8901491981682')"); await pg.wait_for_timeout(150)
-        assert "एक्सपायर" in await pg.text_content("#toast") and await pg.evaluate("S.cart.length") == 0, "expired item must be blocked"
+        assert "एक्सपायरी डेट चेक" in await pg.text_content("#toast") and await pg.evaluate("S.cart.filter(l=>l.id==='k1009').length") == 1, "expired packet: added + reminder"
+        await pg.evaluate("handleScan('8901491981682')"); await pg.wait_for_timeout(150)
+        assert "एक्सपायरी डेट चेक" not in await pg.text_content("#toast") and await pg.evaluate("S.cart.find(l=>l.id==='k1009').qty") == 2, "reminder once a day"
+        xd = await pg.evaluate("""(()=>{const D={...item('k1009'),id:'xd1',sub:'dairy',name:'AMUL DAHI TEST'};const K={...item('k1009'),id:'xk1',unit:'kg'};
+            return [expInfo(D),expInfo(K),expNote(D),expNote(K),canSell(item('k1009'))]})()""")
+        assert xd == [None, None, "", "", True], xd
+        await pg.evaluate("S.cart=S.cart.filter(l=>l.id!=='k1009');refreshAfterCart()")
         for c in ["8908013982899", "8908013982899"]:
             await pg.evaluate(f"handleScan('{c}')"); await pg.wait_for_timeout(150)
         await pg.click('[data-item="k1010"]'); await pg.wait_for_timeout(150)

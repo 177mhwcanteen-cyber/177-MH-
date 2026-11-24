@@ -182,10 +182,10 @@ SX.orderBill=async function(id){const o=SX.orders.find(x=>x.id===id);if(!o)retur
   if((S.cart||[]).length&&typeof newTab==="function")try{newTab()}catch(e){}
   if(S.rateMode)S.rateMode=false;if(S.lblMode)S.lblMode=false;
   if(String(o.phone||"").length===10){S.mode="walk";S.cust={phone:o.phone,name:o.name||""};try{if(typeof syncTab==="function")syncTab()}catch(e){}}
-  (o.items||[]).forEach(x=>{const it=item(x.id);if(it&&num(x.q)>0)try{quickAdd(it,num(x.q))}catch(e){}});
+  const xw=[];(o.items||[]).forEach(x=>{const it=item(x.id);if(it&&num(x.q)>0)try{quickAdd(it,num(x.q));if(typeof expInfo==="function"&&expInfo(it)?.d<0)xw.push(SE.capNm(it.short||it.name))}catch(e){}});
   try{if(!S.demo)await S.db.collection("orders").doc(id).update({status:"billing",byName:biller()||"",bts:Date.now()})}catch(e){}
   const cp=window.SON&&SON.parse?SON.parse(o):{};/* 🎟️ ऑनलाइन कूपन की छूट बिल में अपने-आप (बिलर बदल सकता है) */
-  S.sxOrder={id,phone:o.phone,ts:Date.now(),cpn:cp.cpn||"",cpnOff:num(cp.cpnOff)};try{refreshAfterCart()}catch(e){}toast(cp.cpn?"📥 ऑर्डर बिल में — 🎟️ कूपन "+cp.cpn+" की ₹"+num(cp.cpnOff)+" छूट लग जाएगी":"📥 ऑर्डर का सामान बिल में — तौलकर मात्रा ठीक करें, फिर सेव करें")};
+  S.sxOrder={id,phone:o.phone,ts:Date.now(),cpn:cp.cpn||"",cpnOff:num(cp.cpnOff)};try{refreshAfterCart()}catch(e){}toast((cp.cpn?"📥 ऑर्डर बिल में — 🎟️ कूपन "+cp.cpn+" की ₹"+num(cp.cpnOff)+" छूट लग जाएगी":"📥 ऑर्डर का सामान बिल में — तौलकर मात्रा ठीक करें, फिर सेव करें")+(xw.length?" · ⚠ "+xw.slice(0,3).join(", ")+" — एक बार एक्सपायरी डेट चेक कर लें":""),xw.length?5000:0)};/* 24-11: एक्सपायरी से कोई सामान नहीं रुकता — पैक करते समय बस संदेश */
 SX.orderSet=async function(id,status,extra){try{if(!S.demo)await S.db.collection("orders").doc(id).update({status,dts:Date.now(),byName:biller()||"",...(extra||{})})}catch(e){toast("नहीं हुआ: "+(e.code||""))}};
 /* बिल सेव हुआ तो उसी ग्राहक का ऑर्डर अपने-आप पूरा */
 SX.checkOrderDone=function(){const o=S.sxOrder;if(!o)return;const b=(S.dayBills||[]).find(x=>!x.cancelled&&x.ts>o.ts&&(!o.phone||x.custPhone===o.phone));if(b){S.sxOrder=null;SX.orderSet(o.id,"done",{billNo:b.no});toast("✓ ऑर्डर पूरा — बिल "+b.no)}};

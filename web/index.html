@@ -922,6 +922,7 @@ html .ob-g>div{background:var(--surface2)}
 .grid.rows .tile.art .em{position:static;transform:none;width:auto;height:auto;background:none;box-shadow:none}
 .grid .card{border-radius:14px;border:1px solid rgba(15,23,42,.07);box-shadow:0 1px 2px rgba(16,24,40,.05),0 3px 10px rgba(16,24,40,.06)}
 .toast{font-size:14px;padding:8px 16px;border-radius:14px;max-width:80%;background:rgba(20,24,28,.9);color:#fff;backdrop-filter:blur(6px);box-shadow:0 6px 22px rgba(0,0,0,.25)}
+.toast.xw{background:#b45309;color:#fff;font-weight:700}/* ⚠ एक्सपायरी डेट चेक करें (24-11) */
 </style>
 
 <header class="px">
@@ -1055,9 +1056,14 @@ function mcat(it){const c=OLDCAT[it.cat]||it.cat||"kirana";return c==="kirana"&&
 const LOW=5;
 function lowOf(it){return +it.min>0?+it.min:LOW}
 function isLow(it){return !!it.track&&(+(S.pstock[it.id]?.qty)||0)<=lowOf(it)}
-function expInfo(it){const e0=window.SF&&SF.nearExp?SF.nearExp(it):it.exp;if(e0!==it.exp)it={...it,exp:e0};
-  if(!it.exp){/* 📦 खेप की तारीख (pexp, 23-11) — सिर्फ़ चेतावनी, बिल कभी नहीं रुकता; रोज़ आने वाले (दूध-दही, ब्रेड, सब्ज़ी-फल) पर नहीं */
-    const pe=it.pexp&&!(mcat(it)==="sabzi"||["dairy","bakery"].includes(it.sub))&&window.SPK&&SPK.normExp?SPK.normExp(it.pexp):"";
+/* ⏰ एक्सपायरी — विक्रम जी (24-11-2026): "एक्सपायरी के आधार पर किसी की भी बिलिंग मत रोको (एक्सपायर माल मैं हटा देता हूँ, नया ही रखता हूँ),
+   सिर्फ़ संदेश — एक बार इसकी एक्सपायरी डेट चेक कर लें; दूध-दही वाले इस मामले में नहीं, सिर्फ़ पैकेट वाले"।
+   इसलिए: एक्सपायरी (बिल्ला, सूची, गिनती, संदेश) सिर्फ़ पैकेट वाले सामान पर — 🥛 दूध-दही (dairy), 🍰 बेकरी-ब्रेड, सब्ज़ी-फल, नाश्ता,
+   खुला/किलो वाला: कहीं नहीं। बिल कभी नहीं रुकता (canSell हमेशा true); तारीख निकले पैकेट पर बस expNote() का संदेश, दिन में एक बार। */
+function expPkt(it){return !!it&&isPc(it.unit)&&!["dairy","bakery"].includes(it.sub)&&!["sabzi","fast"].includes(mcat(it))}
+function expInfo(it){if(!expPkt(it))return null;const e0=window.SF&&SF.nearExp?SF.nearExp(it):it.exp;if(e0!==it.exp)it={...it,exp:e0};
+  if(!it.exp){/* 📦 खेप की तारीख (pexp, 23-11) — सिर्फ़ चेतावनी */
+    const pe=it.pexp&&window.SPK&&SPK.normExp?SPK.normExp(it.pexp):"";
     if(pe&&(+(S.pstock[it.id]?.qty)||0)>0){const d=Math.floor((new Date(pe+"T23:59:59")-Date.now())/864e5);if(!isNaN(d)&&d<=30)return {k:"soon",t:d<0?"खेप-तारीख निकली":d+" दिन बचे",d,soft:true}}
     return it.chk?{k:"chk",t:"तारीख जाँचें"}:null}const ed=window.SPK&&SPK.normExp?SPK.normExp(it.exp)||String(it.exp):String(it.exp);/* "2027-12" (सिर्फ़ महीना) = महीने का आख़िरी दिन (23-11) */const d=Math.floor((new Date(ed+"T23:59:59")-Date.now())/864e5);if(isNaN(d))return null;if(d<0)return {k:"dead",t:"एक्सपायर",d};if(d<=30)return {k:"soon",t:d+" दिन बचे",d};return it.chk?{k:"chk",t:"तारीख जाँचें"}:null}
 function ean13(s12){let t=0;for(let i=0;i<12;i++)t+=(+s12[i])*(i%2?3:1);return s12+((10-t%10)%10)}
@@ -1070,7 +1076,11 @@ function nextCode(cat,also){const used=new Set((S.items||[]).map(i=>String(i.cod
     if(m<b&&!used.has(String(m+1)))return String(m+1);
     for(let n=a;n<=b;n++)if(!used.has(String(n)))return String(n)}
   return String(Date.now()).slice(-6)}
-function canSell(it){if(expInfo(it)?.k==="dead"){beep(false);toast("⚠ "+it.name+" एक्सपायर है — इसे काउंटर से हटाएँ, बिल में नहीं जुड़ेगा");return false}return true}
+function canSell(it){return true}/* 24-11: एक्सपायरी से बिल कभी नहीं रुकता (विक्रम जी) — पुराने बुलावे के लिए बचा है */
+/* तारीख निकले पैकेट पर संदेश — हर सामान पर दिन में एक बार (इस फोन पर); दूध-दही/खुला वगैरह पर कभी नहीं (expInfo null) */
+function expNote(it){const x=expInfo(it);if(!x||!(x.d<0))return "";const t=today();let m;try{m=JSON.parse(localStorage.getItem("se_xnote")||"{}")||{}}catch(e){m={}}
+  if(m.d!==t||!m.ids)m={d:t,ids:{}};if(m.ids[it.id])return "";m.ids[it.id]=1;try{localStorage.setItem("se_xnote",JSON.stringify(m))}catch(e){}
+  return "⚠ एक बार इसकी एक्सपायरी डेट चेक कर लें"}
 /* MRP से ग्राहक की बचत (संस्था बिल में नहीं) */
 function savedOf(b){if(!b||b.mode==="inst")return 0;return r2((b.lines||[]).reduce((a,l)=>{const m=+l.mrp||+(S.items.find(x=>x.id===l.id)?.mrp)||0;return a+(m>l.rate&&!l.free?(m-l.rate)*l.qty:0)},0)+(+b.disc||0))}
 /* ✨ ऊपर का स्वागत: समय के हिसाब से + आज की बिक्री */
@@ -1098,7 +1108,7 @@ function ftime(ts){const d=new Date(ts);return d.toLocaleTimeString("hi-IN",{hou
 function fdate(s){const [y,m,d]=s.split("-");return d+"-"+m+"-"+y}
 function lsGet(k){try{return localStorage.getItem(k)||""}catch(e){return ""}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function toast(m){if(document.documentElement.classList.contains("camon")){const c=$("#camlast");if(c)c.textContent=m;if(/^[✓📦]/.test(m))return}const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
+function toast(m,ms){if(document.documentElement.classList.contains("camon")){const c=$("#camlast");if(c)c.textContent=m;if(/^[✓📦]/.test(m))return}const t=$("#toast");t.textContent=m;t.classList.toggle("xw",!!ms);t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,ms||2200)}
 function insts(){return (S.settings.insts&&S.settings.insts.length)?S.settings.insts:["177 वेट कैंटीन","मारवाड़ रसोई (होटल)","रामविनायक डोसा पॉइंट","सब्ज़ी एक्सप्रेस"]}
 function item(id){return S.items.find(i=>i.id===id)}
 function priceOf(it){return +it.sale||0} /* संस्था: चुनते समय बिक्री भाव, सेव होते ही खरीद भाव (SB.instReprice) */
@@ -1307,7 +1317,7 @@ function cardHTML(it,LL){{
     const id=esc(it.id),pc=isPc(it.unit),xp=expInfo(it),low=left!=null&&(it.track?left<=lowOf(it):left<=0.5);
     const mrp=+it.mrp||0,off=S.mode!=="inst"&&p>0&&mrp>p?Math.round((mrp-p)/mrp*100):0;
     const pkN=packsOf(it).map(x=>+x.perPack||0).filter(Boolean);const sz=[pkN.length?"🔹खुला+📦"+pkN.join("/"):"",it.size,it.code?"#"+it.code:""].filter(Boolean).join(" · ");
-    return `<div class="card ${p>0?"":"off"} ${inCart>0?"in":""}" role="button" tabindex="0" data-item="${id}">${pcIn?`<span class="qbub" aria-hidden="true">${+inCart.toFixed(2)}</span>`:""}${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${rkOf(it)?`<span class="rkb${xp?" rkb2":""}">📍${esc(rkOf(it))}${window.SRX&&SRX.more(it)?`<i>+${SRX.more(it)}</i>`:""}</span>`:""}${xp&&!xp.soft?`<span class="xp ${xp.k}">${xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(SE.capNm(it.name))}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(SE.capNm(it.name))} एक कम">−</button><b data-qo="${id}" role="button" aria-label="${esc(SE.capNm(it.name))} की गिनती लिखें">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(SE.capNm(it.name))} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
+    return `<div class="card ${p>0?"":"off"} ${inCart>0?"in":""}" role="button" tabindex="0" data-item="${id}">${pcIn?`<span class="qbub" aria-hidden="true">${+inCart.toFixed(2)}</span>`:""}${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${rkOf(it)?`<span class="rkb${xp?" rkb2":""}">📍${esc(rkOf(it))}${window.SRX&&SRX.more(it)?`<i>+${SRX.more(it)}</i>`:""}</span>`:""}${xp&&!xp.soft?`<span class="xp ${xp.k}">${xp.k==="dead"?"तारीख देखें"/* 24-11: बिलर को "एक्सपायर" नहीं — सिर्फ़ जाँच का इशारा */:xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(SE.capNm(it.name))}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(SE.capNm(it.name))} एक कम">−</button><b data-qo="${id}" role="button" aria-label="${esc(SE.capNm(it.name))} की गिनती लिखें">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(SE.capNm(it.name))} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
   }}
 /* कार्ट बदला तो सिर्फ़ वही एक कार्ड दोबारा बनाओ — 5000 सामान पर भी झटपट */
 function patchCard(id){const g=$("#grid");const c=g&&g.querySelector('[data-item="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');const it=item(id);if(!c||!it)return false;
@@ -1357,9 +1367,9 @@ $("#p-bill").addEventListener("change",e=>{
 function repeatLast(){
   const src=S.mode==="walk"?S.customers.find(x=>x.id===S.cust.phone):S.parties.find(x=>x.id===S.partyId);
   if(!src||!src.lastCart)return;let n=0;
-  let skip=0;src.lastCart.forEach(lc=>{const it=item(lc.id);if(!it||it.active===false)return;const p=priceOf(it);if(!(p>0))return;if(isPc(it.unit)&&expInfo(it)?.k==="dead"){skip++;return}/* 23-11: एक्सपायर पीस वाला सामान दोहराने में भी नहीं (स्कैन जैसा) */
+  const xn=[];src.lastCart.forEach(lc=>{const it=item(lc.id);if(!it||it.active===false)return;const p=priceOf(it);if(!(p>0))return;if(expNote(it))xn.push(SE.capNm(it.short||it.name));/* 24-11: एक्सपायरी से कोई सामान नहीं छूटता — सिर्फ़ संदेश */
     S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:lc.qty,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,amt:r2(lc.qty*p)});n++});
-  refreshAfterCart();toast(n+" चीज़ें आज के रेट पर जुड़ीं"+(skip?" · ⚠ "+skip+" एक्सपायर सामान नहीं जोड़ा":""));
+  refreshAfterCart();toast(n+" चीज़ें आज के रेट पर जुड़ीं"+(xn.length?" · ⚠ "+xn.slice(0,3).join(", ")+" — एक बार एक्सपायरी डेट चेक कर लें":""),xn.length?4500:0);
 }
 function holdCurrent(){newTab()}
 function holdCurrentOld(){
@@ -1378,12 +1388,12 @@ $("#q").addEventListener("focus",()=>{if(S.tab!=="bill"){S.tab="bill";showTab()}
 $("#q").addEventListener("keydown",e=>{if(e.key!=="Enter"||e.defaultPrevented)return;const bl=billList();if(bl.list.length!==1)return;e.preventDefault();const x=bl.list[0];if(!(priceOf(x)>0)){toast("इसका रेट नहीं डाला गया");return}if(bl.qq>0)quickAdd(x,bl.qq);else if(isPc(x.unit))quickAdd(x,1);else{clearSearch();renderBill();openQty(x)}});
 function quickAdd(it,q){if(it&&S.tab==="bill"&&!it.virtual){/* ✏️/🏷️ मोड में कोई भी रास्ता (खोज-Enter, पैकेट, + बटन) बिल न बनाए (22-11) */
   if(S.rateMode&&window.SR&&SR.rateSheet){SR.rateSheet(it);return}if(S.lblMode&&window.SL&&SL.tap){SL.tap(it,+q||1);return}}
-  if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(q);if(it&&!canSell(it))return;
+  if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(q);
   const p=priceOf(it);if(!(p>0))return;
   const ex=S.cart.find(l=>l.id===it.id&&!l.changed&&!l.free);
   if(ex){ex.qty=Math.round((ex.qty+q)*1000)/1000;ex.amt=r2(ex.qty*ex.rate)}
   else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:q,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:r2(q*p)});
-  const wasQ=!!S.q;clearSearch();if(wasQ)refreshAfterCart();else cartTouched(it.id);popItem(it.id);beep(true);toast("✓ "+it.name+" "+fq(q,it.unit)+" · "+rs(r2(q*p)));
+  const wasQ=!!S.q;clearSearch();if(wasQ)refreshAfterCart();else cartTouched(it.id);popItem(it.id);beep(true);const xn=expNote(it);toast((xn?xn+" — ":"✓ ")+it.name+" "+fq(q,it.unit)+" · "+rs(r2(q*p)),xn?4500:0);
 }
 function setMode(m){
   if(m===S.mode)return;S.mode=m;
@@ -1394,7 +1404,6 @@ function setMode(m){
 /* ---------- quantity sheet ---------- */
 function presets(it){if(it.unit==="kg")return [[.1,"0.1"],[.25,"¼ · 0.25"],[.5,"½ · 0.5"],[1,"1 किलो"],[1.5,"1.5 किलो"],[2,"2 किलो"],[3,"3 किलो"],[5,"5 किलो"]];return [1,2,3,4,5,6,10,12].map(n=>[n,n+" "+(UNITS[it.unit]||"")])}
 function openQty(it,lineIdx){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(null,lineIdx);
-  if(it&&lineIdx==null&&expInfo(it)?.k==="dead"){beep(false);toast("⚠ "+it.name+" की एक्सपायरी तारीख निकल चुकी है — माल जाँचकर ही दें")}/* 23-11: खुला/किलो वाला — सिर्फ़ चेतावनी (रोक नहीं: मिठाई वगैरह की पुरानी लिखी तारीख से बिक्री न रुके) */
   const ln=lineIdx!=null?S.cart[lineIdx]:null,kg=it.unit==="kg",u=UNITS[it.unit]||it.unit;
   const board=priceOf(it);let rate=ln&&it.flex?ln.rate:board;const st={qty:ln?ln.qty:0,amt:null};
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
@@ -1828,13 +1837,12 @@ async function handleScan(code){
   if(it.active===false){toast(it.name+" अभी बंद है");return}
   const p=priceOf(it);if(!(p>0)){toast(it.name+" का रेट नहीं डाला गया");return}
   if(!isPc(it.unit)){openQty(it);return}
-  if(!canSell(it))return;
   const ex=S.cart.find(l=>l.id===it.id&&!l.changed&&!l.free);
   if(ex){ex.qty=r2(ex.qty+1);ex.amt=r2(ex.qty*ex.rate);ex.sc=(ex.sc||0)+1}
   else S.cart.push({key:Math.random().toString(36).slice(2),id:it.id,name:billNm(it),realName:it.name,emoji:it.emoji,unit:it.unit,qty:1,rate:p,board:p,cost:(window.SF?SF.costOf(it):(+it.cost||0)),changed:false,free:false,amt:p,sc:1});
   clearSearch();refreshAfterCart();popItem(it.id);
   const inCart=S.cart.filter(l=>l.id===it.id).reduce((a,l)=>a+l.qty,0),left=it.track?r2((+(S.pstock[it.id]?.qty)||0)-inCart):null;
-  toast("✓ "+it.name+" · "+rs(p)+(inCart>1?" · कुल "+inCart:"")+(left!=null&&left<0?" · ⚠ स्टॉक में इतना नहीं दिखता":""));
+  const xn=expNote(it);toast((xn?xn+" — ":"✓ ")+it.name+" · "+rs(p)+(inCart>1?" · कुल "+inCart:"")+(left!=null&&left<0?" · ⚠ स्टॉक में इतना नहीं दिखता":""),xn?4500:0);
 }
 /* 🗂️ पहचान सूची (पुराने Vyapar के 657 सामान) — सिर्फ़ नाम/कंपनी/पिछला भाव भरने के लिए; स्टॉक नहीं */
 let PEH=null;async function pehchan(){if(PEH)return PEH;try{const r=await fetch("pehchan.json");const j=await r.json();PEH=new Map();j.items.forEach(x=>x.barcodes.forEach(b=>PEH.set(b.code,x)))}catch(e){PEH=new Map()}return PEH}
