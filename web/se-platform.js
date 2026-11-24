@@ -233,7 +233,41 @@ async function nativeScan(){
   const r=await B.scan({formats:[F.Ean13,F.Ean8,F.UpcA,F.UpcE,F.Code128,F.Code39,F.Code93,F.Itf,F.QrCode]});
   return (r&&r.barcodes&&r.barcodes[0]&&r.barcodes[0].rawValue)||null;
 }
-/* Chrome (वेब) में लाइव कैमरा — BarcodeDetector */
+/* 💻 24-11 (GitHub: zxing-js/library — ऐप में पहले से lib/zxing.min.js): जिन ब्राउज़र में BarcodeDetector नहीं
+   (Windows/Linux का Chrome, Firefox, Safari — यानी ज़्यादातर लैपटॉप) वहाँ भी लाइव कैमरा-स्कैन। BarcodeDetector जैसा ही detect() —
+   सिर्फ़ बारकोड वाले फ़ॉर्मेट, TRY_HARDER (तिरछा/उल्टा), कोने के निशान (pickCenter के लिए)। */
+SE.loadZX=()=>new Promise((res,rej)=>{if(window.ZXing)return res(window.ZXing);const sc=document.createElement("script");sc.src="lib/zxing.min.js";sc.onload=()=>window.ZXing?res(window.ZXing):rej(new Error("zx"));sc.onerror=rej;document.head.appendChild(sc)});
+SE.zxDetector=async function(){const Z=await SE.loadZX(),F=Z.BarcodeFormat,H=new Map();
+  H.set(Z.DecodeHintType.POSSIBLE_FORMATS,["EAN_13","EAN_8","UPC_A","UPC_E","CODE_128","CODE_39","CODE_93","ITF","CODABAR","QR_CODE","DATA_MATRIX"].map(k=>F[k]).filter(v=>v!=null));
+  H.set(Z.DecodeHintType.TRY_HARDER,true);const rd=new Z.MultiFormatReader();rd.setHints(H);
+  const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
+  /* ZXing की लाइन वाली दहलीज़ पूरी पंक्ति से बनती है — बारकोड के आसपास गहरा/धूसर हिस्सा ज़्यादा हो तो नहीं पढ़ता (जाँच में मिला)।
+     इसलिए पूरा फ्रेम, फिर बीच का 70% और 50% — बारकोड चौखटे में हो तो दूसरी-तीसरी बार में ज़रूर। */
+  const one=(sx,sy,sw,sh,k)=>{cv.width=Math.max(1,Math.round(sw*k));cv.height=Math.max(1,Math.round(sh*k));cx.drawImage(one.src,sx,sy,sw,sh,0,0,cv.width,cv.height);
+    try{const r=rd.decodeWithState(new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.HTMLCanvasElementLuminanceSource(cv))));
+      return [{rawValue:r.getText(),format:String(F[r.getBarcodeFormat()]||""),cornerPoints:(r.getResultPoints()||[]).map(p=>({x:sx+p.getX()/k,y:sy+p.getY()/k}))}]}
+    catch(e){return null}finally{try{rd.reset()}catch(e){}}};
+  return {zx:true,async detect(src){const w=src.videoWidth||src.width,h=src.videoHeight||src.height;if(!w||!h)return [];one.src=src;
+    for(const f of [1,.7,.5]){const sw=w*f,sh=h*f,k=Math.min(1,1000/Math.max(sw,sh)),r=one((w-sw)/2,(h-sh)/2,sw,sh,k);if(r)return r}return []}}};
+/* 💻 24-11 (GitHub: ericblade/quagga2, MIT — web/vendor/quagga2.min.js): लैपटॉप के 1D बारकोड के लिए। ZXing को बारकोड के आसपास
+   धूसर/गहरा हिस्सा हो तो दिक्कत होती है (जाँच में नकली वेबकैम पर नहीं पढ़ा); Quagga2 पहले बारकोड की जगह ढूँढता है (locate) — वही
+   फ्रेम पढ़ लिया। Quagga में गलत पढ़ने का खतरा → एक ही कोड लगातार 2 फ्रेम में मिले तभी। QR के लिए हर तीसरे फ्रेम ZXing। */
+SE.loadQG=()=>new Promise((res,rej)=>{if(window.Quagga)return res(window.Quagga);const sc=document.createElement("script");sc.src="vendor/quagga2.min.js";sc.onload=()=>window.Quagga?res(window.Quagga):rej(new Error("qg"));sc.onerror=rej;document.head.appendChild(sc)});
+SE.qgDetector=async function(){const Q=await SE.loadQG();let zx=null;try{zx=await SE.zxDetector()}catch(e){}
+  const cv=document.createElement("canvas"),cx=cv.getContext("2d");let last="",lastT=0,n=0;
+  const FM={ean_13:"ean_13",ean_8:"ean_8",upc_a:"upc_a",upc_e:"upc_e",code_128:"code_128",code_39:"code_39",code_93:"code_93",i2of5:"itf",codabar:"codabar"};
+  const run=url=>new Promise(r=>{try{Q.decodeSingle({src:url,numOfWorkers:0,inputStream:{size:800},locate:true,locator:{patchSize:"medium",halfSample:true},
+    decoder:{readers:["ean_reader","ean_8_reader","upc_reader","upc_e_reader","code_128_reader","code_39_reader","code_93_reader","i2of5_reader","codabar_reader"]}},x=>r(x&&x.codeResult&&x.codeResult.code?x:null))}catch(e){r(null)}});
+  return {zx:true,qg:true,async detect(src){const w=src.videoWidth||src.width,h=src.videoHeight||src.height;if(!w||!h)return [];n++;
+    if(zx&&n%3===0){const z=await zx.detect(src);if(z.length&&/QR|DATA/i.test(z[0].format))return z}
+    const k=Math.min(1,800/Math.max(w,h));cv.width=Math.round(w*k);cv.height=Math.round(h*k);cx.drawImage(src,0,0,cv.width,cv.height);
+    const x=await run(cv.toDataURL("image/jpeg",.85));if(!x)return [];const code=x.codeResult.code,now=Date.now();
+    const ok=code===last&&now-lastT<1500;last=code;lastT=now;if(!ok)return [];
+    const pts=(x.box||[]).map(p=>({x:p[0]/k,y:p[1]/k}));
+    return [{rawValue:code,format:FM[x.codeResult.format]||String(x.codeResult.format||""),cornerPoints:pts}]}}};
+SE.detector=async function(fm){if("BarcodeDetector" in window){try{return new BarcodeDetector(fm?{formats:fm}:undefined)}catch(e){}}
+  try{return await SE.qgDetector()}catch(e){return SE.zxDetector()}};
+/* Chrome (वेब) में लाइव कैमरा — BarcodeDetector, नहीं तो ZXing */
 function webLiveScan(){
   return new Promise(async resolve=>{
     let stream=null,stop=false;
@@ -245,8 +279,8 @@ function webLiveScan(){
     try{
       stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1280}},audio:false});
       const v=ov.querySelector("video");v.srcObject=stream;await v.play();
-      const bd=new BarcodeDetector({formats:["ean_13","ean_8","upc_a","upc_e","code_128","code_39","itf","qr_code"]});
-      const tick=async()=>{if(stop)return;try{const r=await bd.detect(v);if(r&&r.length){end(r[0].rawValue);return}}catch(e){}setTimeout(tick,120)};tick();
+      const bd=await SE.detector(["ean_13","ean_8","upc_a","upc_e","code_128","code_39","itf","qr_code"]);
+      const tick=async()=>{if(stop)return;try{const r=await bd.detect(v);const ok=(r||[]).find(x=>SE.scanOk(SE.normCode(x.rawValue),x.format));if(ok){end(ok.rawValue);return}}catch(e){}setTimeout(tick,bd.zx?180:120)};tick();
     }catch(e){end(undefined)}
   });
 }
@@ -315,15 +349,15 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
       try{this.canTorch=!!(await B.isTorchAvailable()).available}catch(e){this.canTorch=false}
       try{this.maxZoom=+(await B.getMaxZoomRatio()).zoomRatio||1;this.canZoom=this.maxZoom>1.05;if(this.canZoom)await this.setZoom(this.wantZoom())}catch(e){this.canZoom=false}
       this.on=true;return true}
-    if(!("BarcodeDetector" in window)||!navigator.mediaDevices)return false;
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return false;
     const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1920},height:{ideal:1080}},audio:false});
     this._stream=st;video.srcObject=st;await video.play().catch(()=>{});
     const tr=st.getVideoTracks()[0];let cap={};try{cap=(tr.getCapabilities&&tr.getCapabilities())||{}}catch(e){}
     this.canTorch=!!cap.torch;
     try{if(cap.focusMode&&cap.focusMode.includes("continuous"))await tr.applyConstraints({advanced:[{focusMode:"continuous"}]})}catch(e){}
     this.maxZoom=cap.zoom&&cap.zoom.max?Math.min(cap.zoom.max,4):1;this.canZoom=this.maxZoom>1.05;if(this.canZoom)await this.setZoom(this.wantZoom());
-    let fm=["ean_13","ean_8","upc_a","upc_e","code_128","code_39","code_93","itf","codabar","qr_code","data_matrix"];try{const sup=await BarcodeDetector.getSupportedFormats();fm=fm.filter(f=>sup.includes(f))}catch(e){}
-    const bd=new BarcodeDetector({formats:fm});
+    let fm=["ean_13","ean_8","upc_a","upc_e","code_128","code_39","code_93","itf","codabar","qr_code","data_matrix"];try{if("BarcodeDetector" in window){const sup=await BarcodeDetector.getSupportedFormats();fm=fm.filter(f=>sup.includes(f))}}catch(e){}
+    let bd;try{bd=await SE.detector(fm)}catch(e){this.stop();return false}/* लैपटॉप: ZXing */
     const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
     this.on=true;let busy=false,n=0;
     const tick=async()=>{if(!this.on)return;
@@ -336,7 +370,7 @@ SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,max
               cv.width=Math.round(sw*k);cv.height=Math.round(sh*k);cx.drawImage(video,sx,sy,sw,sh,0,0,cv.width,cv.height);src=cv}}
           const r=await bd.detect(src);if(r&&r.length){const w=(src.videoWidth||src.width),h=(src.videoHeight||src.height);const r2=r.filter(x=>!/^(https?:|www\.)/i.test(String(x.rawValue)));if(r2.length){const b=r2.length>1?SE.pickCenter(r2,w/2,h/2):r2[0];this._emit(String(b.rawValue),cb,b.format)}}}catch(e){}
         busy=false}
-      this._t=setTimeout(tick,110)};tick();
+      this._t=setTimeout(tick,bd.zx?160:110)};tick();
     return true},
   async stop(){if(!this.on&&!this._stream)return;this.on=false;this.torch=false;clearTimeout(this._t);
     if(SE.isNative){try{await N.BarcodeScanner.stopScan()}catch(e){}for(const h of this._h)try{h.remove()}catch(e){}this._h=[];document.documentElement.classList.remove("camnative")}
@@ -349,11 +383,11 @@ SE.pickCenter=function(L,cx,cy){let best=L[0],bd=1e18;for(const b of L){let x=nu
   if(bb&&bb.width!=null){x=(bb.x!=null?bb.x:bb.left)+bb.width/2;y=(bb.y!=null?bb.y:bb.top)+bb.height/2}
   else if(Array.isArray(cp)&&cp.length){x=0;y=0;cp.forEach(p=>{x+=(p.x!=null?p.x:p[0]);y+=(p.y!=null?p.y:p[1])});x/=cp.length;y/=cp.length}
   if(x==null)continue;const d=(x-cx)**2+(y-cy)**2;if(d<bd){bd=d;best=b}}return best};
-SE.canLiveScan=()=>SE.isNative||("BarcodeDetector" in window&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia));
+SE.canLiveScan=()=>SE.isNative||!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);/* 24-11: BarcodeDetector न हो तो ZXing */
 /* null = बंद किया, undefined = यह फोन लाइव स्कैन नहीं कर सकता */
 SE.scan=async function(){
   if(SE.isNative){try{return await nativeScan()}catch(e){const m=String(e&&e.message||"");if(/cancel/i.test(m))return null;throw e}}
-  if("BarcodeDetector" in window)return webLiveScan();
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)return webLiveScan();
   return undefined;
 };
 

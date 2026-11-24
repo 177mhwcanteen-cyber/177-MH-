@@ -29,6 +29,7 @@ if (fs.existsSync(path.join(W, "order"))) cp(path.join(W, "order"), path.join(OU
 if (fs.existsSync(path.join(W, "sounds"))) cp(path.join(W, "sounds"), path.join(OUT, "sounds")); /* 🎵 घंटी की धुनें (ऐप में सुनने को) */
 if (fs.existsSync(path.join(W, "img"))) cp(path.join(W, "img"), path.join(OUT, "img")); else fs.mkdirSync(path.join(OUT, "img"), { recursive: true });
 cp(path.join(R, "node_modules/qrcodejs/qrcode.min.js"), path.join(OUT, "lib/qrcode.min.js"));
+if (fs.existsSync(path.join(W, "vendor"))) cp(path.join(W, "vendor"), path.join(OUT, "vendor")); /* 🌐 GitHub से सीधी ली गई लाइब्रेरी (docs/गिटहब-सुधार-प्रॉम्प्ट.txt) */
 cp(path.join(R, "node_modules/@zxing/library/umd/index.min.js"), path.join(OUT, "lib/zxing.min.js"));
 cp(path.join(R, "node_modules/jspdf/dist/jspdf.umd.min.js"), path.join(OUT, "lib/jspdf.min.js"));
 // छिपे कंट्रोल-अक्षर (\x01 आदि) को \xNN लिखावट में — कुछ होस्ट कच्चे कंट्रोल-अक्षर नहीं लेते

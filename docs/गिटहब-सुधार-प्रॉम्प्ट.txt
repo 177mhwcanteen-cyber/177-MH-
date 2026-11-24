@@ -23,10 +23,21 @@ sandbox/CI में टेस्ट चल सके (यह sandbox npm नह
     दिन-वार सार, कुल दिया, क्लियर बाकी, वहीं से ✓ क्लियर (se-galla.js SG.rng/SG.rangeHTML)।
     जाँच: 360px (मोबाइल) और 1280px (लैपटॉप) पर हर टैब — पेज कहीं चौड़ा नहीं।
 
+== ✅ 24-11 रात (विक्रम जी: "बाकी वाली भी — असली GitHub कोड से") ==
+11. ericblade/quagga2 (MIT, सीधा उसके repo की docs/examples/dist/quagga.min.js → web/vendor/quagga2.min.js, build में vendor/ कॉपी):
+    जिन ब्राउज़र में BarcodeDetector नहीं (Windows/Linux Chrome, Firefox, Safari — ज़्यादातर लैपटॉप) वहाँ भी लाइव कैमरा-स्कैन —
+    बिलिंग वाला कैमरा और 📷 पॉपअप दोनों (SE.detector → SE.qgDetector)। Quagga पहले बारकोड की जगह ढूँढता है; गलत पढ़ने से बचने को
+    एक ही कोड लगातार 2 फ्रेम में। QR के लिए हर तीसरे फ्रेम zxing-js/library (ऐप में पहले से)। जाँच में मिला: अकेला ZXing बारकोड के
+    आसपास धूसर/गहरा हिस्सा हो तो नहीं पढ़ता — इसलिए Quagga पहले। SE.scanOk की छलनी इन पर भी।
+12. NielsLeenheer/WebBluetoothReceiptPrinter (MIT) — उसकी प्रिंटर-सेवाओं की सूची (18f0/2af1, 49535343…, e7810a71…, ae30, ff00) से
+    se-desk.js में 🔵 ब्लूटूथ (BLE): लैपटॉप Chrome/Edge से सीधे BLE थर्मल प्रिंटर — Windows pair/COM की ज़रूरत नहीं; 180 बाइट टुकड़े,
+    टूटे तो दोबारा जुड़कर एक बार और; बिल और लेबल दोनों (SDK.pickBle / bleSend)।
+    जाँच tests/scanlap.py (नकली वेबकैम पर EAN-13 + नकली navigator.bluetooth)।
+
 == ⏳ आगे (हर एक अलग काम, विक्रम जी से पूछकर) ==
-11. Sec-ant/zxing-wasm + barcode-detector polyfill — लैपटॉप के Firefox/Safari (जिनमें BarcodeDetector नहीं) में भी कैमरा स्कैन तेज़।
+11b. Sec-ant/zxing-wasm — QR भी लैपटॉप पर और तेज़ (wasm फ़ाइल चाहिए — CI में npm से)।
 12. NielsLeenheer/ReceiptPrinterEncoder — बिल की ESC/POS छपाई एक जगह से, हर प्रिंटर (58/80 mm) पर एक जैसी।
-13. NielsLeenheer/WebBluetoothReceiptPrinter / WebSerialReceiptPrinter — लैपटॉप Chrome से सीधी छपाई (se-desk.js को मज़बूत)।
+13. NielsLeenheer/WebUSBReceiptPrinter — USB प्रिंटर बिना ड्राइवर (Web Serial पहले से है)।
 14. GoogleChrome/workbox — लैपटॉप PWA का ऑफ़लाइन कैश (नेट जाए तो भी ऐप खुले)।
 15. dexie/Dexie.js — ऑफ़लाइन बिल/फोटो की कतार IndexedDB में (अभी localStorage/idb हाथ से)।
 16. Firestore persistentLocalCache + persistentMultipleTabManager (firebase-js-sdk) — लैपटॉप पर कई टैब खोलें तो भी ऑफ़लाइन डेटा ठीक।
