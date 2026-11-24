@@ -19,9 +19,9 @@ const fmtP=n=>{n=Math.round(n*100)/100;return Number.isInteger(n)?String(n):n.to
 const sd=s=>{if(!s)return "";const p=String(s).split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0].slice(2):String(s)};
 
 /* ================= सेटिंग (settings/main.lbl — सब फोन पर एक जैसी) ================= */
-const STYLES=[["classic","क्लासिक"],["band","काली पट्टी"],["tag","प्राइस टैग"],["frame","फ्रेम"],["bigprice","बड़ा भाव"],["minimal","सादा"]];
+const STYLES=[["pro","⭐ व्यवस्थित"],["classic","क्लासिक"],["band","काली पट्टी"],["tag","प्राइस टैग"],["frame","फ्रेम"],["bigprice","बड़ा भाव"],["minimal","सादा"]];
 const SHOW=[["shop","🏪 दुकान का नाम"],["name","📝 सामान का नाम"],["price","₹ भाव"],["rack","📍 रैक-खाना"],["mrp","MRP (कटा हुआ)"],["size","⚖️ मात्रा / ml"],["code","# सामान कोड"],["brand","🏭 कंपनी का नाम"],["mfg","📅 पैकिंग तारीख"],["exp","⏳ एक्सपायरी"],["digits","🔢 बारकोड के अंक"],["qr","📱 QR कोड भी"],["extra","💬 नीचे की लाइन"],["caps","🔠 नाम CAPITAL में"]];
-const DEF={shop:"177 वेट कैंटीन · बाड़मेर",style:"classic",extra:"धन्यवाद · फिर पधारें",
+const DEF={shop:"177 वेट कैंटीन · बाड़मेर",style:"pro",extra:"धन्यवाद · फिर पधारें",
   show:{shop:1,name:1,price:1,rack:1,mrp:0,size:0,code:0,brand:0,mfg:0,exp:0,digits:1,qr:0,extra:0,caps:0}};
 SL.STYLES=STYLES;SL.SHOW=SHOW;
 SL.cfg=function(){const s=(S.settings&&S.settings.lbl)||{};return {...DEF,...s,show:{...DEF.show,...(s.show||{})}}};
@@ -111,6 +111,78 @@ SL.draw=function(d,cfg,sk){
       const col=[];if(brand)col.push({t:[brand],p:.22,w:600});if(name){const L=two(name,h*.36,800,X1-cx);col.push({t:L,p:L.length>1?.6:.42,w:800})}if(meta)col.push({t:[meta],p:.22,w:700});
       const tot=col.reduce((a,c)=>a+c.p,0)||1;let yy=y;col.forEach(c=>{const ch=h*c.p/tot,lh=ch/c.t.length;c.t.forEach((l,i)=>txt(l,yy+lh*(i+.5),Math.min(lh*.98,h*(col.length===1&&c.t.length===1?.5:.4)),c.w,cx,X1,"l"));yy+=ch})}}),
   };
+  /* ⭐ व्यवस्थित (24-11-2026, विक्रम जी: "बारकोड थोड़ा छोटा, नाम बढ़िया, भाव अच्छा लिखा, हर चीज़ व्यवस्थित, फिर पधारें वाली लाइन भी"):
+     ऊपर दुकान | काली पट्टी में रैक · बीच में बाएँ सामान का नाम (2 लाइन तक) + दाएँ काले डिब्बे में बड़ा ₹ भाव (MRP कटा हुआ ऊपर) ·
+     नीचे बारकोड — चौड़ाई वही (मॉड्यूल 3 डॉट: पतला करने पर गन/कैमरा अटकते हैं, OpenCV जाँच में 2 डॉट धुंधले में नहीं पढ़ा गया),
+     पर ऊँचाई आधी (~7.5 mm, पहले ~15 mm) · सबसे नीचे तारीखें / "धन्यवाद · फिर पधारें"। */
+  if(st==="pro"){
+    const G=Math.max(3,Math.round(4*U)),avail=H-PT-PB;
+    const hdrR=[sh.rack&&d.rack?d.rack:"",sh.code&&d.code?"#"+d.code:""].filter(Boolean).join(" · ");
+    const offer=d.offer&&d.pmrp>0,mrpT=!offer&&(sh.mrp||d.mrpOn)&&d.mrp>d.price&&price?"MRP ₹"+fmtP(d.mrp):"";
+    const subR=[offer?d.offer+" · पैक MRP ₹"+fmtP(d.pmrp)+" (2 पीस)":"",brand,sh.size&&d.size].filter(Boolean).join(" · ");
+    const hasSub=!!(mrpT||subR);
+    /* नीचे की लाइन: तारीखें + धन्यवाद — जगह हो तो एक ही लाइन में */
+    let foot=[dates,extra].filter(Boolean);
+    if(foot.length>1){x.font=`700 ${Math.round(14*U)}px ${F}`;if(x.measureText(foot.join("   ·   ")).width<=X1-X0)foot=[foot.join("   ·   ")]}
+    const digPx=sh.digits?Math.max(13,Math.round(16*U)):0,digH=digPx?digPx+Math.max(1,Math.round(digPx*.1)):0;
+    let hdrH=(shop||hdrR)?Math.round(18*U):0;const ruleH=hdrH?2:0;let footH=foot.length?Math.round(16*U):0;
+    const bT=Math.min(Math.round(48*U),80),bMax=Math.min(Math.round(56*U),88),bMin=Math.min(Math.max(40,Math.round(40*U)),56);
+    const hasMid=!!(name||price);
+    /* भाव का डिब्बा पहले नापो (नाम को बाकी चौड़ाई) */
+    const pW=s0=>{x.font=`800 ${s0}px ${F}`;return Math.round(x.measureText(price).width+s0*.5)};
+    const nW0=X1-X0-(price?Math.min((X1-X0)*.45,pW(Math.round(36*U)))+Math.round(8*U):0);
+    /* नाम: एक लाइन में ठीक-ठाक बड़ा (≥27) आए तो एक लाइन, नहीं तो 2 लाइन */
+    const lines=w=>{if(!name)return [];let s1=Math.round(36*U);x.font=`800 ${s1}px ${F}`;while(s1>12&&x.measureText(name).width>w){s1--;x.font=`800 ${s1}px ${F}`}
+      return s1>=Math.round(27*U)||!/\s/.test(name)?[name]:two(name,Math.round(30*U),800,w)};
+    const L=lines(nW0);
+    const subH0=hasSub?Math.round(19*U):0;
+    let midH=hasMid?Math.round((L.length>1?46:34)*U)+subH0:0;const midMax=hasMid?Math.round((L.length>1?56:44)*U)+subH0:0;
+    let barH=bT;const blocks=[hdrH,hasMid,d.bc,foot.length].filter(Boolean).length;
+    const need=()=>hdrH+ruleH+midH+(d.bc?barH+digH:0)+footH*foot.length+G*Math.max(0,blocks-1);
+    /* जगह कम: पहले बार (कम से कम ~5.5 mm), फिर लिखाई थोड़ी छोटी */
+    if(need()>avail&&d.bc)barH=Math.max(bMin,barH-(need()-avail));
+    if(need()>avail){const fixed=(d.bc?barH+digH:0)+ruleH+G*Math.max(0,blocks-1),fl=hdrH+midH+footH*foot.length,f=Math.max(.5,(avail-fixed)/Math.max(1,fl));
+      hdrH=Math.round(hdrH*f);midH=Math.round(midH*f);footH=Math.round(footH*f)}
+    /* जगह बची: पहले नाम/भाव बड़ा, फिर बार थोड़ी (ज़्यादा से ज़्यादा ~7 mm) — बाकी खाली जगह हिस्सों के बीच बराबर */
+    if(need()<avail&&hasMid)midH=Math.min(midMax,midH+(avail-need()));
+    if(need()<avail&&d.bc)barH=Math.min(bMax,barH+(avail-need()));
+    const spare=Math.max(0,avail-need()),gx=blocks>1?Math.min(Math.round(8*U),Math.floor(spare/(blocks+1))):0;
+    let y=PT+Math.round((spare-gx*Math.max(0,blocks-1))/2);
+    /* 1) ऊपर: दुकान का नाम (बाएँ) + रैक/कोड (दाएँ, काली पट्टी) */
+    if(hdrH){const yc=y+hdrH/2;let rx=X1;
+      if(hdrR){fitF(hdrR,Math.round(hdrH*.82),(X1-X0)*.45,800);const tw=x.measureText(hdrR).width,pw=Math.round(tw+hdrH*.8);rx=X1-pw;
+        x.save();rr(rx,y,pw,hdrH,Math.round(hdrH*.3));x.fill();x.fillStyle="#fff";x.fillText(hdrR,Math.round(rx+(pw-tw)/2),Math.round(yc+hdrH*.04));x.restore();rx-=Math.round(8*U)}
+      if(shop)txt(shop,yc+hdrH*.04,hdrH*.9,700,X0,rx,hdrR?"l":"c");
+      y+=hdrH+1;x.fillRect(X0,y,X1-X0,ruleH);y+=ruleH+G+gx}
+    /* 2) बीच: बाएँ नाम (+ MRP/कंपनी/मात्रा की छोटी लाइन), दाएँ काले डिब्बे में बड़ा भाव */
+    let midEnd=y;
+    if(hasMid){let ax=X0,bx=X1;const subH=hasSub?Math.round(Math.min(19*U,midH*.36)):0,nh=midH-subH;
+      /* QR (चालू हो तो): सबसे दाएँ, पूरे डॉट — भाव का डिब्बा उसके बाएँ */
+      if(sh.qr&&d.bc){const M=qrMatrix(d.bc),ms=M?Math.floor(midH/(M.n+2)):0;if(M&&ms>=2){const qs=ms*M.n,qx=X1-qs,qy=y+Math.round((midH-qs)/2);
+        for(let r=0;r<M.n;r++)for(let c=0;c<M.n;c++)if(M.dark(r,c))x.fillRect(qx+c*ms,qy+r*ms,ms,ms);cv._qr=1;bx=qx-ms-Math.round(6*U)}}
+      if(price){const ph=Math.min(midH,Math.round(54*U));let s=Math.round(ph*.74);const maxW=name?(bx-ax)*.46:(bx-ax)*.8;
+        while(s>12&&pW(s)>maxW)s--;const pw=pW(s);
+        const px0=name?bx-pw:Math.round((ax+bx-pw)/2),py0=y+Math.round((midH-ph)/2);
+        x.save();rr(px0,py0,pw,ph,Math.round(Math.min(ph,pw)*.18));x.fill();x.fillStyle="#fff";x.font=`800 ${s}px ${F}`;
+        const tw=x.measureText(price).width;x.fillText(price,Math.round(px0+(pw-tw)/2),Math.round(py0+ph/2+s*.05));x.restore();
+        bx=name?px0-Math.round(9*U):bx}
+      if(name){const L2=lines(bx-ax),lh=nh/L2.length,p0=L2.length>1?Math.min(lh*1.02,Math.round(30*U)):Math.min(lh*.9,Math.round(36*U));
+        let sC=Math.round(p0);L2.forEach(l=>{sC=Math.min(sC,fitF(l,p0,bx-ax,800))});/* दोनों लाइन एक ही साइज़ में */
+        L2.forEach((l,i)=>txt(l,y+lh*(i+.5)+lh*.04,sC,800,ax,bx,"l"))}
+      if(hasSub){const yc=y+nh+subH/2;let sx=ax;
+        if(mrpT){const r=txt(mrpT,yc,subH*.95,700,ax,bx,"l");x.fillRect(Math.round(r.tx),Math.round(yc),Math.round(r.tw),Math.max(2,Math.round(r.s/9)));sx=ax+r.tw+Math.round(10*U)}
+        if(subR&&bx-sx>40)txt(subR,yc,subH*.9,700,sx,bx,"l")}
+      midEnd=y+midH;y=midEnd+G+gx}
+    cv._top=midEnd;
+    /* 3) बारकोड: बीच में, कभी स्केल नहीं (बार धारदार); ऊँचाई कम */
+    const fy=H-PB-footH*foot.length;
+    if(d.bc){const bm=SL.barCanvas(d.bc,W-2*PX,barH,digPx>0,digPx,3);
+      if(bm){x.imageSmoothingEnabled=false;const bx2=Math.round((W-bm.c.width)/2),by=Math.max(midEnd+2,fy-(foot.length?G+Math.round(gx/2):0)-bm.c.height);x.drawImage(bm.c,bx2,by);cv._bc={x:bx2,y:by,w:bm.c.width,h:bm.c.height,m:bm.m,fmt:bm.fmt}}
+      else{x.font=`700 ${Math.round(14*U)}px ${F}`;x.fillText(d.bc,X0,Math.round(fy-barH/2))}}
+    /* 4) सबसे नीचे: तारीखें / "धन्यवाद · फिर पधारें" */
+    foot.forEach((t,i)=>txt(t,fy+footH*(i+.5),footH*.92,i===foot.length-1&&extra?700:700,X0,X1,"c"));
+    return cv;
+  }
   const rows=[];
   if(st==="band"){
     if(shop)rows.push(R.band(shop,24*U));if(brand)rows.push(R.text(brand,13*U,600,"l"));
@@ -206,8 +278,9 @@ SL.print=async function(rows){
   const jobs=rows.map(r=>({r,cv:SL.draw(SL.dataOf(r.it,r),cfg,sk)}));
   try{
     if(how==="a4"||!SE.canDirect("label")){const imgs=[];jobs.forEach(j=>{const u=j.cv.toDataURL("image/png");for(let i=0;i<j.r.n;i++)imgs.push(u)});
-      if(how==="a4")await SE.printA4("बारकोड स्टिकर · "+total+" लेबल",`<style>.lg{display:flex;flex-wrap:wrap;gap:2mm}.lg img{width:${w}mm;height:${h}mm;border:0.2mm dashed #bbb}</style><div class="lg">${imgs.map(u=>`<img src="${u}">`).join("")}</div>`);
-      else await SE.printA4("लेबल",`<style>@page{size:${w}mm ${h}mm;margin:0}body{margin:0}h1,.sub{display:none}img{width:${w}mm;height:${h}mm;display:block;page-break-after:always}</style>${imgs.map(u=>`<img src="${u}">`).join("")}`)}
+      /* 24-11: image-rendering:pixelated — A4/लेज़र पर बड़ा करते समय बार धुंधली-धूसर न हों (Canva बारकोड ऐप वाली "रेज़ोल्यूशन" बात), किनारे धारदार */
+      if(how==="a4")await SE.printA4("बारकोड स्टिकर · "+total+" लेबल",`<style>.lg{display:flex;flex-wrap:wrap;gap:2mm}.lg img{width:${w}mm;height:${h}mm;border:0.2mm dashed #bbb;image-rendering:pixelated}</style><div class="lg">${imgs.map(u=>`<img src="${u}">`).join("")}</div>`);
+      else await SE.printA4("लेबल",`<style>@page{size:${w}mm ${h}mm;margin:0}body{margin:0}h1,.sub{display:none}img{width:${w}mm;height:${h}mm;display:block;page-break-after:always;image-rendering:pixelated}</style>${imgs.map(u=>`<img src="${u}">`).join("")}`)}
     else{const pr=SF.labelPrinter;if(!pr.addr)throw {msg:"इस फोन में लेबल प्रिंटर नहीं चुना — ऊपर 🖨️ प्रिंटर से चुनें"};let all="";
       for(const j of jobs){if(pr.type==="escpos"){const one=atob(SE.escpos(j.cv));for(let i=0;i<j.r.n;i++)all+=one}else all+=atob(SE.tspl(j.cv,{wmm:w,hmm:h,copies:j.r.n}))}
       await SE.rawPrint(pr.addr,btoa(all),"label")}

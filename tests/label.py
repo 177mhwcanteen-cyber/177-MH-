@@ -145,7 +145,7 @@ async def main():
         # ---------- 3) सेटिंग: डिज़ाइन, चालू/बंद ----------
         await pg.evaluate("S.tab='set';showTab()")
         await pg.wait_for_selector("#slDesign [data-slstyle]")
-        assert await pg.locator("#slDesign [data-slstyle]").count() == 6
+        assert await pg.locator("#slDesign [data-slstyle]").count() == 7  # 24-11: ⭐ व्यवस्थित (pro) नया
         await pg.fill("#slShop", "177 वेट कैंटीन"); await pg.dispatch_event("#slShop", "change")
         await pg.click('#slDesign [data-slstyle="band"]')
         await pg.check('[data-slshow="mrp"]'); await pg.check('[data-slshow="exp"]')
@@ -159,7 +159,7 @@ async def main():
         sets = {"none": {}, "all": {k: 1 for k in ["shop","name","price","mrp","size","code","brand","mfg","exp","digits","qr","extra","caps"]},
                 "nodigits": {"digits": 0}}
         bad = []
-        for st in ["classic", "band", "tag", "frame", "bigprice", "minimal"]:
+        for st in ["pro", "classic", "band", "tag", "frame", "bigprice", "minimal"]:
             for sz in ["50x25", "38x25", "40x30", "60x40", "100x50"]:
                 for sk, show in sets.items():
                     for code in codes:
@@ -184,8 +184,21 @@ async def main():
                             open(f"{SHOTS}/d-{st}-plain.png", "wb").write(base64.b64decode(r["png"]))
                             if decode(r["png"], blur=True, bc=r["bc"]).lstrip("0") != code.lstrip("0"): bad.append(("blur", st))
         assert not bad, bad[:12]
+        # ⭐ व्यवस्थित (24-11): 50×25 पर बारकोड की चौड़ाई वही (मॉड्यूल 3 — गन/कैमरा पहली बार पढ़े), पर ऊँचाई छोटी (बार+अंक ≤ 10 mm),
+        # भाव काले डिब्बे में (दाएँ ऊपर काला हिस्सा), सबसे नीचे धन्यवाद-लाइन बारकोड से नहीं टकराती
+        r = await pg.evaluate("""()=>{const c=SL.cfg();c.style='pro';c.extra='धन्यवाद · फिर पधारें';c.show={...c.show,shop:1,name:1,price:1,rack:1,digits:1,extra:1,mrp:1};
+          const cv=SL.canvasFor({id:'p',name:'NIHAR BADAM AMLA 240ML',sale:72,mrp:80,barcode:'8901030865275',rack:'6-11'},{},c,'50x25');
+          const x=cv.getContext('2d'),d=x.getImageData(0,0,cv.width,cv.height).data;let dark=0;
+          for(let y=cv._top-30;y<cv._top-6;y++)for(let xx=cv.width-90;xx<cv.width-30;xx++)if(d[(y*cv.width+xx)*4]<128)dark++;
+          let footInk=0;for(let y=cv._bc.y+cv._bc.h+1;y<cv.height-11;y++)for(let xx=24;xx<cv.width-24;xx++)if(d[(y*cv.width+xx)*4]<128)footInk++;
+          return {m:cv._bc.m,h:cv._bc.h,top:cv._top,by:cv._bc.y,dark,footInk,png:cv.toDataURL('image/png').split(',')[1],bc:cv._bc}}""")
+        assert r["m"] == 3 and r["h"] <= 80 and r["top"] <= r["by"], ("pro", r["m"], r["h"], r["top"], r["by"])
+        assert r["dark"] > 600 and r["footInk"] > 50, ("pro panel/foot", r["dark"], r["footInk"])
+        assert decode(r["png"], blur=True, bc=r["bc"]) == "8901030865275", "pro blur"
+        open(f"{SHOTS}/pro-50x25.png", "wb").write(base64.b64decode(r["png"]))
+        print("pro design ok")
         # सामान्य (पहले से चालू) सेटिंग में हर डिज़ाइन — देखने के लिए
-        for st in ["classic", "band", "tag", "frame", "bigprice", "minimal"]:
+        for st in ["pro", "classic", "band", "tag", "frame", "bigprice", "minimal"]:
             for sz in ["50x25", "38x25"]:
                 png = await pg.evaluate("""([st,sz])=>{const c={shop:'177 MH वेट कैंटीन · बाड़मेर',style:st,extra:'',show:{shop:1,name:1,price:1,mrp:0,size:0,code:0,brand:0,mfg:0,exp:0,digits:1,qr:0,extra:0,caps:0}};
                   return SL.canvasFor({id:'n',name:'Nihar Badam Amla 240ml',sale:72,mrp:80,barcode:'2000000100104'},{},c,sz).toDataURL('image/png').split(',')[1]}""", [st, sz])
