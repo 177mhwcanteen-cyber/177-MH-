@@ -516,7 +516,7 @@ const css=document.createElement("style");css.id="slcss";css.textContent=`
 .sl-ar{display:flex;gap:6px;align-items:center}.sl-ar .lb-n{background:var(--bg);border:1.5px solid var(--line)}.sl-ar .lb-n button{color:var(--ink)}
 .sl-ar .big{flex:1;padding:10px!important;font-size:15px!important}.sl-k{flex:1;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;height:34px;font-weight:800}
 .sl-ask{gap:8px!important;padding:10px!important}
-.sl-box{display:grid;gap:8px}.sl-hd{display:flex;justify-content:space-between;align-items:baseline;gap:6px;flex-wrap:wrap}
+.sl-box{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}.sl-hd{display:flex;justify-content:space-between;align-items:baseline;gap:6px;flex-wrap:wrap}
 .sl-srch{display:flex;gap:6px}.sl-srch input{flex:1;min-width:0;border:2px solid var(--line);border-radius:12px;padding:10px 12px;font-size:17px;background:var(--bg);color:var(--ink)}
 .sl-srch .scanbtn{border:0;border-radius:12px;padding:0 14px;font-size:20px;background:var(--haldi);color:var(--haldi-ink)}
 .sl-hits{display:grid;gap:4px}.sl-hits:empty{display:none}

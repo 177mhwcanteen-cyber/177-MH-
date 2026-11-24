@@ -266,17 +266,36 @@ SE.normCode=function(raw){let c=String(raw==null?"":raw).replace(/[\u0000-\u001c
   if(/^\d{14}$/.test(c)&&c[0]==="0")c=c.slice(1);
   return c};
 SE.codeVariants=function(c){c=SE.normCode(c);const v=[c];if(/^\d{12}$/.test(c))v.push("0"+c);if(/^0\d{12}$/.test(c))v.push(c.slice(1));
+  /* 📦 24-11: कार्टून का ITF-14 / GTIN-14 (पहला अंक 1–8 = पैकिंग) → अंदर वाले सामान का EAN-13 (GS1 नियम: बीच के 12 अंक + नया जाँच-अंक) */
+  if(/^[1-8]\d{13}$/.test(c)){const b=c.slice(1,13);let s=0;for(let i=0;i<12;i++)s+=(+b[i])*(i%2?3:1);v.push(b+((10-s%10)%10))}
   if(/^[01]\d{7}$/.test(c)){const d=c.slice(1,7),x=c[7],m=d[5];let a;if("012".includes(m))a=d.slice(0,2)+m+"0000"+d.slice(2,5);else if(m==="3")a=d.slice(0,3)+"00000"+d.slice(3,5);else if(m==="4")a=d.slice(0,4)+"00000"+d[4];else a=d.slice(0,5)+"0000"+m;const up=c[0]+a+x;v.push(up,"0"+up)}
   return [...new Set(v)]};
-const NOCHK=/code_?39|itf|codabar|CODE_39|ITF|CODABAR/i;
+const NOCHK=/code_?39|code_?93|itf|codabar|CODE_39|CODE_93|ITF|CODABAR/i;
+/* 🛡️ 24-11 (विक्रम जी: "स्कैन करते समय सिर्फ़ बारकोड पकड़े — इधर-उधर के अक्षर/QR/लिखाई नहीं"): कसी हुई छलनी।
+   ZXing / ML Kit / GS1 के नियम: EAN/UPC का जाँच-अंक, ITF सिर्फ़ सम अंक, Code-128/39 बिना स्पेस, QR/DataMatrix सिर्फ़ तब जब
+   अंदर सामान का कोड (6–14 अंक) या दुकान में पहले से दर्ज कोड हो। UPI/वाई-फ़ाई/वेबसाइट/फ़ोन/कार्ड वाले QR, लंबी लिखाई — चुपचाप छोड़ो।
+   true = सामान का कोड हो सकता है · false = फालतू (न बीप, न "अनजान सामान") */
+const JUNK=/^(https?:|www\.|upi:|wifi:|mailto:|tel:|sms:|smsto:|geo:|begin:|mecard:|matmsg:|bitcoin:|market:|intent:|file:|data:)/i;
+SE.scanOk=function(code,fmt){const c=String(code||"");const f=String(fmt||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+  if(c.length<4||c.length>30||/\s/.test(c)||JUNK.test(c))return false;
+  if(/^\d+$/.test(c)){if([8,12,13,14].includes(c.length))return gtinOk(c)||(c.length===8&&SE.codeVariants(c).slice(1).some(gtinOk));
+    if(/itf/.test(f))return c.length%2===0&&c.length>=6;return c.length>=4&&c.length<=14}
+  const known=typeof findByCode==="function"&&!!findByCode(c);
+  if(/qr|datamatrix|aztec|pdf/.test(f))return known;/* QR में सामान का कोड नहीं (अंक नहीं) — दुकान में दर्ज हो तभी */
+  if(/itf|ean|upc/.test(f))return false;/* इनमें अक्षर हो ही नहीं सकते */
+  if(/code39|code93|codabar/.test(f))return /^[A-Z0-9\-.\/$+%]{4,24}$/.test(c);
+  return /^[\x21-\x7e]{4,24}$/.test(c)};/* Code-128 / गन: छपने लायक अक्षर, बिना स्पेस, 24 तक */
 function gtinOk(c){if(!/^\d+$/.test(c)||![8,12,13,14].includes(c.length))return true;let s=0;const d=c.slice(0,-1);
   for(let i=0;i<d.length;i++)s+=(+d[d.length-1-i])*(i%2?1:3);return (10-s%10)%10===+c[c.length-1]}
 SE.cam={on:false,torch:false,_seen:{},_h:[],_stream:null,_t:0,GAP:900,zoom:1,maxZoom:1,
   canTorch:false,canZoom:false,
   _cand:{},
-  _emit(code,cb,fmt){code=SE.normCode(code);if(!code||code.length<4)return;/* 22-11: पैकेट पर छपा कंपनी का QR (https://…) सामान का कोड नहीं — "किसी सामान में नहीं" न दिखे */if(/^(https?:|www\.)/i.test(code))return;if(!gtinOk(code)&&!(code.length===8&&SE.codeVariants(code).slice(1).some(gtinOk)))return;const now=Date.now();
-    /* बिना जाँच-अंक वाले कोड: 700ms में 2 बार एक-सा पढ़ा जाए तभी */
-    if(fmt&&NOCHK.test(String(fmt))){const k=this._cand[code];this._cand[code]=now;if(!(k&&now-k<700))return}
+  _emit(code,cb,fmt){code=SE.normCode(code);if(!code||code.length<4)return;/* 22-11: पैकेट पर छपा कंपनी का QR (https://…) सामान का कोड नहीं — "किसी सामान में नहीं" न दिखे */if(!SE.scanOk(code,fmt))return;const now=Date.now();
+    /* बिना जाँच-अंक वाले कोड: 700ms में 2 बार एक-सा पढ़ा जाए तभी · 24-11: 8 अंक (EAN-8) भी — कैमरा कभी-कभी 13 अंक वाले का आधा
+       हिस्सा 8 अंक समझ लेता है (ZXing में जानी-मानी गलती); 900ms में 2 बार एक-सा या उसी दौरान 13 अंक न दिखे तभी */
+    if(fmt&&NOCHK.test(String(fmt))||/^\d{8}$/.test(code)){const k=this._cand[code];this._cand[code]=now;if(!(k&&now-k<900))return;
+      if(/^\d{8}$/.test(code)&&this._l13&&now-this._l13<900)return}
+    if(/^\d{12,13}$/.test(code))this._l13=now;
     const last=this._seen[code];this._seen[code]=now;if(last&&now-last<this.GAP)return;
     for(const k in this._seen)if(now-this._seen[k]>5000)delete this._seen[k];
     if(document.hidden)return;cb(code)},

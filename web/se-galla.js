@@ -44,7 +44,7 @@ SG.graphHTML=function(own){const sl=SG.slots();if(!sl.length)return "";const val
   const exL=own&&ex.some(v=>v!=null)?`<polyline fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3" points="${sl.map((x,i)=>ex[i]==null?null:(31+i*30)+","+(H-20-bh(ex[i]))).filter(Boolean).join(" ")}"/>`:"";
   const miss=sl.filter(x=>x.st==="miss"),ok=sl.filter(x=>x.st==="ok").length;
   return `<div class="sg-graph"><div class="sg-gh"><b>⏰ हर घंटे की गिनती</b><span>${ok}/${sl.filter(x=>x.st!=="later"&&x.st!=="off").length} हुई${miss.length?` · <b style="color:#dc2626">${miss.length} छूटी</b>`:""}</span></div>
-    <div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="हर घंटे का गल्ला">${bars}${exL}</svg></div>
+    <div class="sg-gw"><svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block;max-height:${H}px" role="img" aria-label="हर घंटे का गल्ला">${bars}${exL}</svg></div>
     <div class="sg-leg"><span><i style="background:#16a34a"></i>गिना</span><span><i style="background:#dc2626"></i>छूटा</span><span><i style="background:#f59e0b"></i>अभी</span>${own?`<span><i style="background:#2563eb"></i>होना चाहिए</span>`:""}<span>ऊपर का अंक = पिछली गिनती से बढ़ा/घटा</span></div>
     ${miss.length?`<div class="warn" style="margin-top:6px">✗ गिनती नहीं हुई: ${miss.map(x=>hh(x.h)).join(", ")}</div>`:""}</div>`};
 SG.list=()=>(S.galla||[]).filter(g=>!g.void).slice().sort((a,b)=>a.ts-b.ts);
@@ -180,8 +180,9 @@ SG.dayHTML=function(){
     if(g.kind==="open")return `<div class="li"><div class="mid"><b>🌅 गल्ला खोला</b><span>${ftime(g.ts)} · ${esc(g.byName||"")}${notesTxt(g)}</span></div><div class="rt">${rs(g.total)}</div></div>`;
     if(!KIND[g.kind])return "";const x=SG.expAt(g.ts),df=r2(num(g.total)-x.exp);
     return `<div class="li"><div class="mid"><b>${KIND[g.kind][0]} ${KIND[g.kind][1]} · ${rs(g.total)}</b><span>${ftime(g.ts)} · ${esc(g.byName||"")} · होना चाहिए ${rs(x.exp)}${notesTxt(g)}${g.keep!=null?" · कल के लिए छोड़ा "+rs(g.keep):""}</span></div><div class="rt">${pill(df)}</div></div>`}).join("");
+  if(SG.rng!=="t")return `<div class="card2" data-ds="paisa"><h3>💵 गल्ला <small class="note">(सिर्फ़ आपको)</small></h3>${SG.fltHTML()}${SG.rangeHTML()}</div>`;
   const now=SG.expAt(Date.now()),lastC=st.last,gap=lastC?Math.round((Date.now()-lastC.ts)/36e5*10)/10:null;
-  return `<div class="card2" data-ds="paisa"><h3>💵 गल्ला — दिन भर <small class="note">(सिर्फ़ आपको)</small></h3>
+  return `<div class="card2" data-ds="paisa"><h3>💵 गल्ला — दिन भर <small class="note">(सिर्फ़ आपको)</small></h3>${SG.fltHTML()}
     <div class="stkmeta"><span>${st.open?"सुबह खुला ("+ftime(st.open.ts)+")":"सुबह खुला पैसा (सेटिंग से)"}</span><b>${rs(now.base)}</b></div>
     <div class="stkmeta"><span>+ नकद बिक्री</span><b>${rs(now.cash)}</b></div>
     ${now.jama?`<div class="stkmeta"><span>+ उधारी वसूली (नकद)</span><b>${rs(now.jama)}</b></div>`:""}
@@ -200,6 +201,41 @@ SG.dayHTML=function(){
 };
 const notesTxt=g=>{const N=g.notes||{};const k=Object.keys(N).sort((a,b)=>b-a);return k.length?" · "+k.map(v=>v+"×"+N[v]).join(", ")+(g.coins?" + सिक्के "+g.coins:""):""};
 const pill=df=>Math.abs(df)<=5?'<span class="pill green">✓ ठीक</span>':df<0?`<span class="pill red">${rs(-df)} कम</span>`:`<span class="pill blue">+${rs(df)}</span>`;
+
+/* ---------- 📅 24-11 (विक्रम जी): गल्ले में तारीख का फ़िल्टर — आज · कल · 2 दिन · 7 दिन · कोई तारीख ----------
+   "आज" = पहले जैसा पूरा लाइव हिसाब। बाकी = उन दिनों की हर एंट्री days/{d}/galla से (सिर्फ़ पढ़ना), दिन-वार सार + किस्म-वार सूची। */
+SG.rng="t";SG.kf="all";SG._rc=null;
+const RNG=[["t","आज"],["y","कल"],["2","2 दिन"],["7","7 दिन"]];
+SG.rDays=function(){const t=S.billsDate||today();if(SG.rng==="y")return [dayAdd(t,-1)];if(/^d:/.test(SG.rng))return [SG.rng.slice(2)];
+  const n=+SG.rng||1,L=[];for(let k=0;k<n;k++)L.push(dayAdd(t,-k));return L};
+SG.fltHTML=function(){const cd=/^d:/.test(SG.rng)?SG.rng.slice(2):"";
+  return `<div class="sg-flt" role="group" aria-label="गल्ले की तारीख">${RNG.map(([k,v])=>`<button type="button" class="chip" data-sgr="${k}" aria-pressed="${SG.rng===k}">${v}</button>`).join("")}<label class="chip sg-dt" aria-pressed="${!!cd}">📅<input type="date" data-sgrd value="${cd}" max="${today()}" aria-label="तारीख चुनें"></label></div>`};
+SG.loadRange=async function(){const ds=SG.rDays(),key=SG.rng+"|"+ds.join(",");if(SG._rc&&SG._rc.key===key&&Date.now()-SG._rc.ts<60000)return SG._rc;
+  const rc={key,ts:Date.now(),days:{},busy:1};SG._rc=rc;
+  await Promise.all(ds.map(async d=>{let L=[];try{if(S.demo||!S.db)L=d===S.billsDate?(S.galla||[]).slice():[];else{const q=await S.db.collection("days/"+d+"/galla").get();L=q.docs.map(x=>({id:x.id,date:d,...x.data()}))}}catch(e){L=null}
+    rc.days[d]=L?L.filter(g=>!g.void).sort((a,b)=>a.ts-b.ts):null}));
+  rc.busy=0;if(SG._rc===rc&&S.tab==="day"&&typeof renderDay==="function")renderDay();return rc};
+SG.rangeHTML=function(){const ds=SG.rDays(),key=SG.rng+"|"+ds.join(","),rc=SG._rc;
+  if(!rc||rc.key!==key){SG.loadRange();return `<p class="note">⏳ ${ds.length>1?ds.length+" दिन":fdate(ds[0])} का गल्ला ला रहे हैं…</p>`}
+  if(rc.busy)return `<p class="note">⏳ ला रहे हैं…</p>`;
+  const all=[];let tOut=0,tUn=0,nC=0,nMiss=0;
+  const rows=ds.map(d=>{const L=rc.days[d];if(L==null)return `<div class="li"><div class="mid"><b>${fdate(d)}</b><span>नेट नहीं — फिर खोलें</span></div></div>`;
+    L.forEach(g=>all.push({...g,date:d}));const op=L.find(g=>g.kind==="open"),cl=L.slice().reverse().find(g=>g.kind==="close"),cs=L.filter(g=>g.kind==="count"),
+      os=L.filter(g=>g.kind==="out"),o=os.reduce((a,g)=>a+num(g.total),0),un=os.filter(g=>!g.ok).reduce((a,g)=>a+num(g.total),0);
+    tOut+=o;tUn+=un;nC+=cs.length;if(!L.length)nMiss++;
+    if(!L.length)return `<div class="li sg-dr sg-e"><div class="mid"><b>${fdate(d)}</b><span>— कोई एंट्री नहीं (गल्ला खोला/गिना नहीं)</span></div></div>`;
+    const last=cs[cs.length-1];
+    return `<div class="li sg-dr"><div class="mid"><b>${fdate(d)}${d===today()?" (आज)":""}</b><span>${op?"🌅 "+rs(op.total)+" ("+ftime(op.ts)+")":"🌅 खोला नहीं"} · 💵 ${cs.length} बार${last?" (आख़िरी "+rs(last.total)+")":""} · ${cl?"🔒 "+rs(cl.total)+" ("+ftime(cl.ts)+")":"⚠ बंद नहीं"}${o?" · 📤 "+rs(o):""}${un?` · <b style="color:var(--chili)">क्लियर बाकी ${rs(un)}</b>`:""}</span></div></div>`}).join("");
+  const KF=[["all","सब"],["out","📤 दिया"],["count","💵 गिनती"],["open","🌅 खोला"],["close","🔒 बंद"],["back","🔁 हिसाब"],["kh","🪙 खुले"]];
+  const f=all.filter(g=>SG.kf==="all"||(SG.kf==="kh"?KH(g.kind):g.kind===SG.kf)).sort((a,b)=>b.ts-a.ts);
+  const one=g=>{const k=KIND[g.kind]||["•",g.kind];const amt=KH(g.kind)?(g.amt?rs(g.amt):""):rs(g.total);
+    const det=g.kind==="out"?[g.to,g.person,g.note].filter(Boolean).map(esc).join(" · "):g.kind==="back"?esc((g.person||"")+" · खरीद "+rs(g.buy)+(Math.abs(g.fark||0)>1?" · फ़र्क "+rs(g.fark):"")):KH(g.kind)?esc(khTxt(g)):notesTxt(g).replace(/^ · /,"");
+    return `<div class="li"><div class="mid"><b>${k[0]} ${k[1]}${amt?" · "+amt:""}</b><span>${ds.length>1?fdate(g.date)+" ":""}${ftime(g.ts)} · ${esc(g.byName||"")}${det?" · "+det:""}</span></div><div class="rt">${g.kind==="out"?(g.ok?'<span class="pill green">✓</span>':`<button type="button" class="chip" data-sgok="${esc(g.id)}" data-d="${esc(g.date)}">✓ क्लियर</button>`):""}</div></div>`};
+  return `<div class="kpis sg-k"><div class="kpi"><span>${ds.length>1?ds.length+" दिन":"दिन"} · गिनती</span><b>${nC}</b></div><div class="kpi"><span>📤 कुल दिया</span><b>${rs(tOut)}</b></div><div class="kpi ${tUn?"red":""}"><span>क्लियर बाकी</span><b>${rs(tUn)}</b></div></div>
+    <div class="list" style="margin:8px 0">${rows}</div>
+    <div class="sg-flt" role="group" aria-label="किस्म">${KF.map(([k,v])=>`<button type="button" class="chip" data-sgkf="${k}" aria-pressed="${SG.kf===k}">${v}</button>`).join("")}</div>
+    ${f.length?`<div class="list" style="margin:6px 0">${f.slice(0,200).map(one).join("")}</div>${f.length>200?`<p class="note">पहली 200 दिखाई — फ़िल्टर छोटा करें</p>`:""}`:`<div class="empty">इन दिनों में ऐसी कोई एंट्री नहीं</div>`}
+    <p class="note">"होना चाहिए" और फ़र्क उसी दिन का पूरा हिसाब है — ऊपर "आज" चुनें, या दिन का हिसाब में ऊपर तारीख बदलें।</p>`};
 
 /* रात की रिपोर्ट (मालिक) के लिए एक लाइन */
 SG.ownerLine=function(){const st=SG.state();if(!st.L.length)return "";const c=st.L.filter(g=>g.kind==="count").length;
@@ -269,6 +305,8 @@ SG.nag=function(force){
   if(k==="count"||k==="open"){try{if(!force&&typeof beep==='function'){beep(true);setTimeout(()=>beep(true),700);setTimeout(()=>beep(true),1400)}}catch(e){}}
   const m=document.getElementById("main");if(m)m.prepend(el);else document.body.appendChild(el);return true;
 };
+document.addEventListener("change",e=>{const d=e.target.closest&&e.target.closest("[data-sgrd]");if(!d)return;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(d.value)){SG.rng=d.value===(S.billsDate||today())?"t":"d:"+d.value;SG.kf="all";if(typeof renderDay==="function")renderDay()}});
 document.addEventListener("click",e=>{
   const g=e.target.closest("[data-sg]");if(g){SG.sheet(g.dataset.sg);return}
   const h=e.target.closest("[data-sghrs]");if(h&&S.isOwner){saveSetting({gallaHrs:+h.dataset.sghrs});return}
@@ -276,8 +314,10 @@ document.addEventListener("click",e=>{
   const n=e.target.closest("[data-sgnag]");if(n){const el=document.getElementById("sgNag");const k=el?el.dataset.k:"count";
     if(el)el.remove();if(n.dataset.sgnag==="later"){LSg.set("sg_snz_"+today()+"_"+k,String(Date.now()));return}if(n.dataset.sgnag==="back"){SG.backSheet();return}SG.sheet(n.dataset.sgnag)}
   if(e.target.closest("[data-sgback]")){SG.backSheet();return}
-  const ok=e.target.closest("[data-sgok]");if(ok){ok.disabled=true;SG.clear(ok.dataset.sgok,ok.dataset.d).then(()=>{if(document.getElementById("sgWho"))SG.whoSheet()});return}
+  const ok=e.target.closest("[data-sgok]");if(ok){ok.disabled=true;SG.clear(ok.dataset.sgok,ok.dataset.d).then(()=>{if(document.getElementById("sgWho"))SG.whoSheet();if(SG.rng!=="t"){SG._rc=null;if(typeof renderDay==="function")renderDay()}});return}
   if(e.target.closest("[data-sgwho]")){SG.whoSheet();return}
+  const rg=e.target.closest("[data-sgr]");if(rg){SG.rng=rg.dataset.sgr;SG.kf="all";if(typeof renderDay==="function")renderDay();return}
+  const kf=e.target.closest("[data-sgkf]");if(kf){SG.kf=kf.dataset.sgkf;if(typeof renderDay==="function")renderDay();return}
   const pg=e.target.closest("[data-sgping]");if(pg){const el=document.getElementById("sgPing");if(el)el.remove();if(pg.dataset.sgping==="day"){S.tab="day";if(typeof showTab==="function")showTab()}return}
 });
 setTimeout(()=>{try{SG.loadOld().then(()=>{if(S.tab==="day"&&typeof renderDay==="function")renderDay()})}catch(e){}},8000);setTimeout(()=>{try{SG.nag()}catch(e){}},25000);setInterval(()=>{try{SG.nag();SG.ownerPing();SG.ownerMiss()}catch(e){}},60000);
@@ -288,7 +328,10 @@ const css=document.createElement("style");css.textContent=`
 .sg-row b{text-align:right;font-size:15px;color:var(--muted)}.sg-tot{margin:10px 0}.sg-tot b{font-size:26px}
 .sg-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sg-btns .big:first-child{grid-column:1/-1}
 html.camon .sgnag{display:none}
-.sg-graph{margin:8px 0;border:1px solid var(--line,#e5e7eb);border-radius:14px;padding:8px 10px;background:var(--card,#fff)}
+.sg-flt{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px}.sg-flt .chip{padding:6px 11px;font-size:13px}
+.sg-dt{position:relative;display:inline-flex;align-items:center;gap:4px}.sg-dt input{border:0;background:transparent;font:inherit;color:inherit;width:9.2em;min-width:0;padding:0}
+.kpis.sg-k{grid-template-columns:repeat(3,minmax(0,1fr))}.kpis.sg-k .kpi b{font-size:17px}.sg-e{opacity:.6}.sg-e .mid b{font-size:14px}.sg-dr .mid span{line-height:1.5}
+.sg-graph{min-width:0;max-width:100%;overflow:hidden;margin:8px 0;border:1px solid var(--line,#e5e7eb);border-radius:14px;padding:8px 10px;background:var(--card,#fff)}
 .sg-gh{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:4px}.sg-gh span{color:var(--muted)}
 .sg-leg{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11px;color:var(--muted)}.sg-leg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:3px;vertical-align:-1px}
 .sgnag{position:relative;margin:8px 0 10px;background:var(--warn-bg,#fff7e6);color:var(--ink);border:2px solid var(--haldi,#f59e0b);border-radius:16px;padding:12px 14px;display:grid;gap:8px;animation:pulse .5s ease}

@@ -922,7 +922,13 @@ html .ob-g>div{background:var(--surface2)}
 .grid.rows .tile.art .em{position:static;transform:none;width:auto;height:auto;background:none;box-shadow:none}
 .grid .card{border-radius:14px;border:1px solid rgba(15,23,42,.07);box-shadow:0 1px 2px rgba(16,24,40,.05),0 3px 10px rgba(16,24,40,.06)}
 .toast{font-size:14px;padding:8px 16px;border-radius:14px;max-width:80%;background:rgba(20,24,28,.9);color:#fff;backdrop-filter:blur(6px);box-shadow:0 6px 22px rgba(0,0,0,.25)}
-.toast.xw{background:#b45309;color:#fff;font-weight:700}/* ⚠ एक्सपायरी डेट चेक करें (24-11) */
+.toast.xw{background:#b45309;color:#fff;font-weight:700}
+/* 📱 24-11 (विक्रम जी: "हर चीज़ कसी हुई — लेफ्ट-राइट न हो"): कोई कार्ड/तस्वीर/ग्राफ़ स्क्रीन से चौड़ा न हो — पूरा पेज कभी दाएँ-बाएँ न खिसके।
+   (चिप की पट्टियाँ जानबूझकर अपने अंदर खिसकती हैं — वो वैसी ही) */
+[id^="p-"] .card2,[id^="p-"] .card{min-width:0;max-width:100%}
+[id^="p-"] .card2>*,[id^="p-"] .li .mid,[id^="p-"] .kpi{min-width:0}
+[id^="p-"] img,[id^="p-"] svg,[id^="p-"] canvas,[id^="p-"] video,[id^="p-"] table{max-width:100%}
+[id^="p-"] .warn,[id^="p-"] .li .mid span{overflow-wrap:anywhere}/* ⚠ एक्सपायरी डेट चेक करें (24-11) */
 </style>
 
 <header class="px">
@@ -1982,6 +1988,8 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Enter"||(e.key==="Tab"&&W.buf.length>=6&&now-W.t<80)){
     const b=W.buf,avg=W.gaps.length?W.gaps.reduce((a,x)=>a+x,0)/W.gaps.length:999;W.buf="";W.gaps=[];
     const inPop=document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#sheet");
+    /* 🛡️ 24-11: गन ने तेज़ी से जो लिखा वह सामान का कोड जैसा न हो (QR की वेबसाइट/UPI/लिखाई) — खाने से हटाओ, बिल में कुछ नहीं */
+    if(b.length>=6&&avg<50&&window.SE&&SE.scanOk&&!SE.scanOk(SE.normCode(b),"gun")){e.preventDefault();const ae=document.activeElement;if(ae&&ae.tagName==="INPUT"&&ae.value.endsWith(b)){ae.value=ae.value.slice(0,-b.length);if(ae.id==="q")S.q=ae.value}try{beep(false)}catch(x){}toast("⚠ यह सामान का बारकोड नहीं — छोड़ दिया");return}
     if(b.length>=6&&avg<50&&(!inPop||/^\d{8,14}$/.test(b)&&!(document.activeElement&&document.activeElement.matches&&document.activeElement.matches("#qIn,#aIn,#rtIn")))){e.preventDefault();e.stopImmediatePropagation();
       const ae=document.activeElement;if(ae&&ae.tagName==="INPUT"&&ae.value.endsWith(b)){ae.value=ae.value.slice(0,-b.length);if(ae.id==="q"){S.q=ae.value}}
       handleScan(b);return}

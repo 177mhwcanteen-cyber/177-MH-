@@ -115,6 +115,13 @@ async def main():
             return [expInfo(D),expInfo(K),expNote(D),expNote(K),canSell(item('k1009'))]})()""")
         assert xd == [None, None, "", "", True], xd
         await pg.evaluate("S.cart=S.cart.filter(l=>l.id!=='k1009');refreshAfterCart()")
+        # 🛡️ 24-11: स्कैन की छलनी — सिर्फ़ सामान के बारकोड; UPI/वेबसाइट/वाई-फ़ाई QR, लिखाई, गलत जाँच-अंक चुपचाप छूटें; कार्टून ITF-14 → अंदर का सामान
+        sc = await pg.evaluate("""(()=>{const T=(c,f)=>SE.scanOk(SE.normCode(c),f);
+          const ok=[T('8901030865275','ean_13'),T('96385074','ean_8'),T('036000291452','upc_a'),T('ABC-1234','code_39'),T('X12345','code_128')];
+          const no=[T('8901030865274','ean_13'),T('https://amul.com/x','qr_code'),T('upi://pay?pa=x@y','qr_code'),T('WIFI:S:a;P:b;;','qr_code'),T('hello world','code_128'),T('ABCDEF','qr_code'),T('12345','itf')];
+          const c='8901030865275',b='1'+c.slice(0,12);let s=0;for(let i=0;i<13;i++)s+=(+b[12-i])*(i%2?1:3);const g14=b+((10-s%10)%10);
+          return [ok.every(Boolean),no.every(x=>!x),SE.codeVariants(g14).includes(c)]})()""")
+        assert sc == [True, True, True], sc
         for c in ["8908013982899", "8908013982899"]:
             await pg.evaluate(f"handleScan('{c}')"); await pg.wait_for_timeout(150)
         await pg.click('[data-item="k1010"]'); await pg.wait_for_timeout(150)
