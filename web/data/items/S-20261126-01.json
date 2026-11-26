@@ -1,0 +1,26 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261126-01",
+ "date": "2026-11-26",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "मेथी दाना 200 G: ₹36→40, रैक 11-37 (पहले खाली)",
+ "items": [
+  {
+   "id": "g-methi-dana-fenugreek-200-g",
+   "name": "METHI DANA (FENUGREEK) 200 G",
+   "short": "METHI DANA (FENUGREEK) 2",
+   "unit": "pc",
+   "rack": "11-37",
+   "ph": "6deec39a",
+   "upd": {
+    "sale": {
+     "from": 36,
+     "to": 40
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
