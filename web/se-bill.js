@@ -262,10 +262,27 @@ SB.rateLine=function(bills){const B=(bills||[]).filter(b=>!b.cancelled&&b.rateCh
   let d=0;B.forEach(b=>(b.lines||[]).forEach(l=>{if(l.changed)d+=(num(l.board)-num(l.rate))*num(l.qty)}));
   return "✏️ भाव बदले: "+B.length+" बिल"+(d>0?" · ग्राहक को कुल ₹"+r2(d)+" कम":d<0?" · ₹"+r2(-d)+" ज़्यादा लिए":"")+"\n"+B.slice(0,5).map(b=>"   "+b.no+" ("+(b.byName||"")+"): "+(b.lines||[]).filter(l=>l.changed).map(l=>l.name+" ₹"+l.board+"→₹"+l.rate+(l.why?" "+l.why:"")).join(", ")).join("\n")+"\n"};
 /* ================= जगह-जगह जुड़ाव ================= */
-SB.pendingHTML=function(){
-  const U=unpaid();if(!U.length)return "";
-  return `<div class="sb-pend"><b>⏳ ${U.length} बिल का भुगतान बाकी</b><div>${U.slice(0,6).map(b=>`<button data-sbopen="${esc(b.no)}">${esc(b.partyName&&b.partyName!=="VIP ग्राहक"?b.partyName:b.no)} · ${rs(b.total)}</button>`).join("")}</div></div>`;
+SB.pendingHTML=function(){/* 27-11 (विक्रम जी): छोटी पट्टी, नंबर 1,2,3…; मालिक ✕ (दो बार) = सीधा नकद सेटल */
+  const U=unpaid();if(!U.length)return "";const ow=S.isOwner;
+  const chip=(b,i)=>`<span style="display:inline-flex;gap:2px"><button data-sbopen="${esc(b.no)}"><i>${i+1}</i>${esc(b.partyName&&b.partyName!=="VIP ग्राहक"?b.partyName:b.no)} · ${rs(b.total)}</button>${ow?`<button class="spx" data-sbx="${esc(b.no)}" aria-label="बिल ${esc(b.no)} नकद सेटल">✕</button>`:""}</span>`;
+  return `<details class="sb-pend sm"${SB._pOpen?" open":""}><summary>⏳ ${U.length} बिल का भुगतान बाकी · ${rs(U.reduce((a,b)=>a+num(b.total),0))} <small class="note">▾ खोलें</small></summary><div>${U.map(chip).join("")}</div>${ow?`<p class="note" style="margin:4px 0 0">✕ दो बार दबाएँ = पूरा नकद मिला मानकर सेटल</p>`:""}</details>`;
 };
+document.addEventListener("toggle",e=>{if(e.target.matches&&e.target.matches(".sb-pend.sm"))SB._pOpen=e.target.open},true);
+/* 🗑️ 27-11 (विक्रम जी): साथी ने बिल बनाने से पहले ✕/− से जो हटाया वह मालिक के पास मंज़ूरी को (days/<आज>/meta/cartrm {e:{k:…}, ok:{k:ts}}) */
+SB._rm={e:{},ok:{}};SB._rmT=0;
+SB.rmLoad=function(force){if(!S.isOwner||S.demo||!S.db)return;if(!force&&Date.now()-SB._rmT<60000)return;SB._rmT=Date.now();
+  S.db.doc("days/"+today()+"/meta/cartrm").get().then(d=>{const v=(d&&d.exists&&d.data())||{};const old=SB.rmOpen().length;SB._rm={e:v.e||{},ok:v.ok||{}};if(SB.rmOpen().length!==old)try{renderBill()}catch(x){}}).catch(()=>{})};
+SB.rmOpen=function(){return Object.entries(SB._rm.e||{}).filter(([k])=>!(SB._rm.ok||{})[k]).sort((a,b)=>b[1].ts-a[1].ts)};
+SB.rmHTML=function(){if(!S.isOwner)return "";SB.rmLoad();const L=SB.rmOpen();if(!L.length)return "";
+  return `<button class="sb-rmchip" data-sbrm style="border:0;background:#fee2e2;color:#991b1b;font-weight:800;border-radius:999px;padding:5px 12px;margin:0 0 6px;font-size:13px">🗑️ आज ${L.length} सामान साथी ने बिल से हटाए — देखें</button>`};
+SB.rmSheet=function(){const L=SB.rmOpen();
+  $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="हटाए सामान"><div class="grab"></div>
+  <div class="sh-head"><div><h3>🗑️ बिल से हटाए सामान (आज)</h3><span class="note">स्कैन के बाद बिल बनने से पहले हटाए — ठीक हो तो ✓ दबाएँ</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
+  ${L.length?L.map(([k,x],i)=>`<div class="creq-row"><div><b>${i+1}. ${esc(x.name||x.id)} · ${esc(String(x.qty))} · ${rs(x.amt)}</b><span class="note">${esc(x.byName||"")} · ${ftime(x.ts)}</span></div><button class="big" style="width:auto;padding:6px 14px" data-sbrmok="${esc(k)}">✓ ठीक</button></div>`).join("")+`<button class="big" data-sbrmok="*" style="margin-top:8px">✓ सब ठीक है</button>`:`<p class="note">कुछ बाकी नहीं।</p>`}</div></div>`;
+  $("#sheet").onclick=e=>{if(e.target.matches("[data-close]"))closeSheet()}};
+document.addEventListener("click",e=>{if(e.target.closest("[data-sbrm]")){SB.rmSheet();return}
+  const ok=e.target.closest("[data-sbrmok]");if(!ok||!S.isOwner)return;const ks=ok.dataset.sbrmok==="*"?SB.rmOpen().map(x=>x[0]):[ok.dataset.sbrmok];const m={};ks.forEach(k=>{m[k]=Date.now();SB._rm.ok[k]=m[k]});
+  if(!S.demo&&S.db)S.db.doc("days/"+today()+"/meta/cartrm").set({ok:m},{merge:true}).catch(()=>toast("सेव नहीं हुआ — नेट देखें"));SB.rmSheet();try{renderBill()}catch(x){}});
 SB.receiptActionsHTML=function(b){
   if(b.cancelled)return "";
   {const cr=crOf(b.no);if(cr)return S.isOwner&&window.SF&&SF.crBoxHTML?SF.crBoxHTML(cr):""/* साथी को नीचे "अर्ज़ी विक्रम जी के पास है" दिखता है */}
@@ -281,6 +298,8 @@ SB.editsHTML=function(){
   ${U.length?`<p style="margin:8px 0 4px"><b>⏳ ${U.length} बिल का भुगतान अभी बाकी</b> <small class="note">— दबाकर खोलें</small></p><div class="sb-pend" style="margin:0;padding:2px 8px 8px"><div>${U.map(b=>`<button data-sbopen="${esc(b.no)}">${esc(b.no)} · ${rs(b.total)} · ${esc(b.byName||"")}</button>`).join("")}</div></div>`:""}</div>`;/* 23-11: पहले सिर्फ़ लिखा आता था, खुलता नहीं था */
 };
 document.addEventListener("click",e=>{
+  const sx=e.target.closest("[data-sbx]");if(sx){if(!S.isOwner)return;if(!sx.classList.contains("cf")){document.querySelectorAll(".spx.cf").forEach(x=>{x.classList.remove("cf");x.textContent="✕"});sx.classList.add("cf");sx.textContent="✓ नकद?";setTimeout(()=>{sx.classList.remove("cf");sx.textContent="✕"},4000);return}
+    const b=findBill(sx.dataset.sbx);if(!b)return;sx.disabled=true;doSettle(b,{pay:"cash"}).then(()=>{toast("✅ बिल "+b.no+" नकद सेटल");try{renderBill()}catch(x){}}).catch(()=>{sx.disabled=false;toast("सेटल नहीं हुआ — नेट देखें")});return}
   const o=e.target.closest("[data-sbopen]");if(o){const b=findBill(o.dataset.sbopen);if(b)SB.settleSheet(b);return}
   const ed=e.target.closest("[data-sbeditno]");if(ed){const b=findBill(ed.dataset.sbeditno);if(b)SB.editSheet(b);return}
 });

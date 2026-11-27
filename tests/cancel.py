@@ -49,7 +49,7 @@ async def main():
         print("bills",nos)
         st0=await pg.evaluate("(document.querySelector('.sb-pend')||{}).textContent||''");print("pending strip before:",st0[:80])
         # पहला बिल खोलो → रद्द → वजह-बटन → अर्ज़ी
-        await pg.click(f'.sb-pend [data-sbopen="{nos[0]}"]');await pg.wait_for_timeout(400)
+        await pg.evaluate("document.querySelectorAll('details.sb-pend').forEach(d=>d.open=true)");await pg.click(f'.sb-pend [data-sbopen="{nos[0]}"]');await pg.wait_for_timeout(400)
         await pg.click("[data-sbcancel]");await pg.wait_for_timeout(300)
         lbl=await pg.inner_text("[data-cxgo]");print("staff button:",lbl)
         await pg.click('[data-crwhy="ग्राहक ने सामान नहीं लिया"]');assert await pg.input_value("#crWhy")=="ग्राहक ने सामान नहीं लिया"
@@ -64,7 +64,7 @@ async def main():
         inlist=await pg.evaluate(f"!!document.querySelector('#p-bills [data-bill=\"{nos[0]}\"]')");print("staff list has req bill:",inlist);assert not inlist
         # दूसरे बिल की अर्ज़ी भी (मना करने के लिए)
         await pg.evaluate("S.tab='bill';showTab()");await pg.wait_for_timeout(300)
-        await pg.click(f'.sb-pend [data-sbopen="{nos[1]}"]');await pg.wait_for_timeout(300);await pg.click("[data-sbcancel]");await pg.fill("#crWhy","गलत मात्रा");await pg.click("[data-cxgo]");await pg.wait_for_timeout(900)
+        await pg.evaluate("document.querySelectorAll('details.sb-pend').forEach(d=>d.open=true)");await pg.click(f'.sb-pend [data-sbopen="{nos[1]}"]');await pg.wait_for_timeout(300);await pg.click("[data-sbcancel]");await pg.fill("#crWhy","गलत मात्रा");await pg.click("[data-cxgo]");await pg.wait_for_timeout(900)
         # स्कैन से वही बिल खोलने की कोशिश (BW) → रुके
         await pg.evaluate(f"SA.openBill('{nos[0]}')");await pg.wait_for_timeout(300);print("scan open toast:",await pg.text_content("#toast"))
         ps0=await pg.evaluate("JSON.parse(JSON.stringify(window.__MOCK__.pstock))")

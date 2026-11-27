@@ -302,7 +302,9 @@ SG.nag=function(force){
   const sk="sg_snz_"+today()+"_"+k;if(!force&&Date.now()-(+LSg.get(sk)||0)<(k==="count"&&SG.hrs()===1?10:20)*60000)return false;
   const el=document.createElement("div");el.id="sgNag";el.className="sgnag";el.setAttribute("role","status");
   el.dataset.k=k;el.innerHTML=`<b>${msg}</b><div><button class="nag-go" data-sgnag="${k}">अभी करें</button><button data-sgnag="later">${k==="count"&&SG.hrs()===1?"10":"20"} मिनट बाद</button></div>`;
-  if(k==="count"||k==="open"){try{if(!force&&typeof beep==='function'){beep(true);setTimeout(()=>beep(true),700);setTimeout(()=>beep(true),1400)}}catch(e){}}
+  /* 📢 27-11 (विक्रम जी): गल्ला गिनने की याद = ऑर्डर वाली घंटी (छोटी, ~2.5 से.) + कंपन + "विक्रम जी ने बोला है" */
+  if(k==="count"||k==="open"||k==="close"){el.querySelector("b").insertAdjacentHTML("afterbegin",'<span style="display:block;color:#b91c1c">📢 विक्रम जी ने बोला है: गल्ला गिनकर डालना है</span>');
+    try{if(!force){const R=window.SRG;if(R&&R.play){R.play(R.tone()==="sys"?"t1":R.tone());setTimeout(()=>{try{R.hush()}catch(x){}},2500)}else if(typeof beep==='function'){beep(true);setTimeout(()=>beep(true),700);setTimeout(()=>beep(true),1400)}navigator.vibrate&&navigator.vibrate([300,150,300])}}catch(e){}}
   const m=document.getElementById("main");if(m)m.prepend(el);else document.body.appendChild(el);return true;
 };
 document.addEventListener("change",e=>{const d=e.target.closest&&e.target.closest("[data-sgrd]");if(!d)return;

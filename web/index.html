@@ -931,6 +931,37 @@ html .ob-g>div{background:var(--surface2)}
 [id^="p-"] .warn,[id^="p-"] .li .mid span{overflow-wrap:anywhere}
 /* 👆 24-11 (axe-core/WCAG "target size" का नियम): छोटे लिंक-बटन भी उँगली से आसानी से दबें — कम से कम 28px ऊँचे */
 [id^="p-"] button.lnk{min-height:28px;min-width:28px;padding-top:4px;padding-bottom:4px}/* ⚠ एक्सपायरी डेट चेक करें (24-11) */
+
+/* 📸 27-11 (विक्रम जी): फोटो वाली टाइल सब्ज़ी एक्सप्रेस जैसी — साफ़ सफ़ेद, बड़ी फोटो, ऊपर कोई गोला/पट्टी/रंग नहीं */
+.grid:not(.rows) .card .tile.hasimg{aspect-ratio:4/3!important}
+.grid .tile.art.hasimg{background:#fff!important}.grid .tile.hasimg::after{display:none!important}
+.grid .tile.hasimg .em,.grid .tile.hasimg .tbr{display:none!important}
+.grid .tile.hasimg img{object-fit:contain;padding:4px}.grid .tile.hasimg.food img{object-fit:cover;padding:0}
+@media (prefers-color-scheme:dark){.grid .tile.art.hasimg{background:#f8fafc!important}}
+/* 🧾 27-11 स्कैन-ट्रे: जो जुड़ा वह तुरंत नीचे दिखे — फोटो, नाम, −/+ , ✕ ; नीचे "बिल बनाएँ" */
+#ctray{background:var(--card,#fff);border:1px solid var(--line,#e5e7eb);border-radius:16px 16px 12px 12px;box-shadow:0 -6px 24px rgba(15,23,42,.14);margin:0 0 8px;overflow:hidden}
+#ctray .cth{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:13px;font-weight:800;background:linear-gradient(90deg,#fff7ed,#fff);border-bottom:1px solid var(--line,#e5e7eb);color:#9a3412}
+#ctray .cth span{flex:1}#ctray .cth button{border:0;background:#fed7aa;color:#7c2d12;border-radius:999px;padding:3px 10px;font-weight:800;font-size:12px}
+#ctray .ctl{max-height:min(46vh,368px);overflow:auto;overscroll-behavior:contain}
+#ctray.min .ctl{display:none}
+.ctr{display:grid;grid-template-columns:40px 1fr auto auto 30px;gap:8px;align-items:center;padding:5px 8px;border-bottom:1px solid var(--line,#f1f5f9);min-height:46px}
+.ctr:last-child{border-bottom:0}.ctr.hl{animation:ctrhl 1.6s ease}
+@keyframes ctrhl{0%{background:#bbf7d0}100%{background:transparent}}
+.ctr .cti{width:40px;height:40px;border-radius:9px;background:#f1f5f9;display:grid;place-items:center;font-size:20px;overflow:hidden}
+.ctr .cti img{width:100%;height:100%;object-fit:contain;background:#fff}
+.ctr .ctn{min-width:0;line-height:1.15}.ctr .ctn b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ctr .ctn small{font-size:11px;color:var(--muted,#64748b)}
+.ctr .ctq{display:flex;align-items:center;border:1.5px solid #16a34a;border-radius:10px;overflow:hidden}
+.ctr .ctq button{border:0;background:#f0fdf4;color:#15803d;width:30px;height:30px;font-size:18px;font-weight:900;padding:0}
+.ctr .ctq b{min-width:26px;text-align:center;font-size:14px}.ctr .ctq button.w{width:auto;padding:0 8px;font-size:12.5px}
+.ctr .cta{font-weight:800;font-size:13.5px;min-width:44px;text-align:right}
+.ctr .ctx{border:0;background:#fee2e2;color:#b91c1c;border-radius:50%;width:28px;height:28px;font-weight:900;font-size:14px;padding:0}
+@media (min-width:900px){#ctray{display:none}}
+/* ⏳ भुगतान-बाकी: छोटी नंबर वाली पट्टी */
+.sb-pend.sm{padding:6px 8px}.sb-pend.sm>div{gap:5px}.sb-pend.sm button{font-size:12.5px!important;padding:4px 8px!important;border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.sb-pend.sm button i{font-style:normal;background:#7c2d12;color:#fff;border-radius:999px;min-width:18px;padding:0 4px;font-size:11px}
+.sb-pend.sm .spx{background:#fee2e2!important;color:#b91c1c!important;border:0!important;padding:4px 7px!important}
+.sb-pend.sm .spx.cf{background:#16a34a!important;color:#fff!important}
+.sb-pend.sm summary{cursor:pointer;font-weight:800;list-style:none}.sb-pend.sm summary::-webkit-details-marker{display:none}
 </style>
 
 <header class="px">
@@ -1289,7 +1320,7 @@ function renderBill(){
   if(S.mode==="walk"&&S.cust.phone.length===10){const c=S.cust;const known=c.phone.length===10?S.customers.find(x=>x.id===c.phone):null;
     cb=`${known?`<p class="custinfo">⭐ पुराने ग्राहक${known.name?" "+esc(known.name):""} · ${known.visits||0} बार आए · कुल ${rs(known.spent||0)}${known.lastItems?" · पिछली बार: "+esc(known.lastItems):""} ${known.lastCart&&known.lastCart.length?'<button class="lnk" data-repeat>पिछला सामान दोबारा जोड़ें</button>':""}</p>`:""}`}
   else if(S.mode==="udhar"&&S.partyId){const p=S.parties.find(x=>x.id===S.partyId);if(p&&p.lastCart&&p.lastCart.length)cb+=`<p class="note" style="margin:-4px 0 10px"><button class="lnk" data-repeat>${esc(p.name)} का पिछला सामान दोबारा जोड़ें</button></p>`}
-  $("#custbox").innerHTML=(window.SB?SB.pendingHTML():"")+cb;
+  $("#custbox").innerHTML=(window.SB?(SB.rmHTML?SB.rmHTML():"")+SB.pendingHTML():"")+cb;
   const bl=billList(),searching=!!bl.raw;
   ["#modes","#custbox","#cats","#cats2"].forEach(x=>$(x).hidden=searching);if(S.demo)$("#demo").hidden=searching||!S.demo;
   const tip=$("#qtip");tip.hidden=!searching;S.qq=bl.qq;
@@ -1324,8 +1355,8 @@ function cardHTML(it,LL){{
     if(!S.isOwner&&left!=null&&!(it.track&&left<=lowOf(it)))left=null; // कर्मचारी को सिर्फ़ कम/खत्म स्टॉक दिखे
     const id=esc(it.id),pc=isPc(it.unit),xp=expInfo(it),low=left!=null&&(it.track?left<=lowOf(it):left<=0.5);
     const mrp=+it.mrp||0,off=S.mode!=="inst"&&p>0&&mrp>p?Math.round((mrp-p)/mrp*100):0;
-    const pkN=packsOf(it).map(x=>+x.perPack||0).filter(Boolean);const sz=[pkN.length?"🔹खुला+📦"+pkN.join("/"):"",it.size,it.code?"#"+it.code:""].filter(Boolean).join(" · ");
-    return `<div class="card ${p>0?"":"off"} ${inCart>0?"in":""}" role="button" tabindex="0" data-item="${id}">${pcIn?`<span class="qbub" aria-hidden="true">${+inCart.toFixed(2)}</span>`:""}${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${rkOf(it)?`<span class="rkb${xp?" rkb2":""}">📍${esc(rkOf(it))}${window.SRX&&SRX.more(it)?`<i>+${SRX.more(it)}</i>`:""}</span>`:""}${xp&&!xp.soft?`<span class="xp ${xp.k}">${xp.k==="dead"?"तारीख देखें"/* 24-11: बिलर को "एक्सपायर" नहीं — सिर्फ़ जाँच का इशारा */:xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(SE.capNm(it.name))}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(SE.capNm(it.name))} एक कम">−</button><b data-qo="${id}" role="button" aria-label="${esc(SE.capNm(it.name))} की गिनती लिखें">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(SE.capNm(it.name))} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
+    const pkN=packsOf(it).map(x=>+x.perPack||0).filter(Boolean);const _ph=!!SE.photoSrc(it);/* 27-11: फोटो वाली टाइल पर कुछ न ढके — रैक नीचे लिखाई में */const sz=[pkN.length?"🔹खुला+📦"+pkN.join("/"):"",it.size,it.code?"#"+it.code:"",_ph&&rkOf(it)?"📍"+rkOf(it):""].filter(Boolean).join(" · ");
+    return `<div class="card ${p>0?"":"off"} ${inCart>0?"in":""}" role="button" tabindex="0" data-item="${id}">${pcIn?`<span class="qbub" aria-hidden="true">${+inCart.toFixed(2)}</span>`:""}${tileHTML(it)}${left!=null?`<span class="stk ${low?"low":""}">${left<=0?"खत्म":(low&&it.track?"सिर्फ ":"बचे ")+fq(left,it.unit)}</span>`:""}${rkOf(it)&&!_ph?`<span class="rkb${xp?" rkb2":""}">📍${esc(rkOf(it))}${window.SRX&&SRX.more(it)?`<i>+${SRX.more(it)}</i>`:""}</span>`:""}${xp&&!xp.soft?`<span class="xp ${xp.k}">${xp.k==="dead"?"तारीख देखें"/* 24-11: बिलर को "एक्सपायर" नहीं — सिर्फ़ जाँच का इशारा */:xp.t}</span>`:inCart&&!pc?`<span class="badge">${fq(inCart,it.unit)}</span>`:""}<span class="nm">${esc(SE.capNm(it.name))}${!it.hi&&SN.en(it)?`<small class="en">${esc(SN.en(it))}</small>`:""}</span>${sz?`<span class="sz">${esc(sz)}</span>`:""}<span class="pr">${p>0?`<b>${rs(p)}</b>${off?`<s>${rs(mrp)}</s><i class="offp">${off}% OFF</i>`:pc?"":"/"+(UNITS[it.unit]||it.unit)}`:(+it.oldSale>0?`<i class="offp" style="font-style:normal">पुराना ${rs(it.oldSale)}</i> · रेट बाकी`:"रेट बाकी")}</span>${S.isOwner&&window.SR?SR.marginHTML(it,p):""}${pc&&p>0?(inCart?`<span class="cstep"><button type="button" data-dec="${id}" aria-label="${esc(SE.capNm(it.name))} एक कम">−</button><b data-qo="${id}" role="button" aria-label="${esc(SE.capNm(it.name))} की गिनती लिखें">${+inCart.toFixed(2)}</b><button type="button" data-inc="${id}" aria-label="${esc(SE.capNm(it.name))} एक और">+</button></span>`:`<span class="addb">+ जोड़ें</span>`):""}</div>`;
   }}
 /* कार्ट बदला तो सिर्फ़ वही एक कार्ड दोबारा बनाओ — 5000 सामान पर भी झटपट */
 function patchCard(id){const g=$("#grid");const c=g&&g.querySelector('[data-item="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');const it=item(id);if(!c||!it)return false;
@@ -1442,7 +1473,7 @@ function openQty(it,lineIdx){if(it&&it.id==="xyz"&&window.SR)return SR.xyzSheet(
     if(e.target.closest("[data-close]")){closeSheet();return}
     const ca=e.target.closest("[data-a]");if(ca&&rate>0){const v=+ca.dataset.a;st.amt=v;st.qty=Math.round(v/rate*100000)/100000;qi.value=+st.qty.toFixed(3);ai.value=v;upd();add();return}
     const c=e.target.closest("[data-q]");if(c){st.amt=null;st.qty=+c.dataset.q;qi.value=st.qty;ai.value=r2(st.qty*rate);upd();add();return}
-    if(e.target.closest("[data-rm]")){S.cart.splice(lineIdx,1);closeSheet();refreshAfterCart();return}
+    if(e.target.closest("[data-rm]")){rmLog({...S.cart[lineIdx]});S.cart.splice(lineIdx,1);closeSheet();refreshAfterCart();return}
     if(e.target.closest("[data-add]"))add();
   };
 }
@@ -1463,7 +1494,7 @@ $("#side").addEventListener("click",e=>{
   const d=e.target.closest("[data-sdec]");if(d){decItem(d.dataset.sdec);return}
   const i=e.target.closest("[data-sinc]");if(i){const x=item(i.dataset.sinc);if(x)quickAdd(x,1);return}
   const ed=e.target.closest("[data-sedit]");if(ed){const l=S.cart[+ed.dataset.sedit],x=l&&item(l.id);if(x)openQty(x,+ed.dataset.sedit);return}
-  const x=e.target.closest("[data-sdel]");if(x){S.cart.splice(+x.dataset.sdel,1);refreshAfterCart();return}
+  const x=e.target.closest("[data-sdel]");if(x){rmLog({...S.cart[+x.dataset.sdel]});S.cart.splice(+x.dataset.sdel,1);refreshAfterCart();return}
   if(e.target.closest("[data-sgo]")&&S.cart.length)openCheckout();
 });
 /* लैपटॉप के बटन: / खोज · F9 या Ctrl+Enter बिल/सेव · Esc बंद */
@@ -1475,11 +1506,35 @@ document.addEventListener("keydown",e=>{
 });
 function renderCart(){
   renderSide();
-  const show=S.tab==="bill"&&S.cart.length>0;$("#cartbar").hidden=!show;renderBillTabs();if(!show)return;
+  const show=S.tab==="bill"&&S.cart.length>0;$("#cartbar").hidden=!show;renderBillTabs();ctray(show);if(!show)return;
   $("#cartc").innerHTML=`${S.cart.length} चीज़ें<br>${S.mode==="inst"?"संस्था बिल":S.mode==="udhar"?"उधार खाता":"VIP ग्राहक"}`;
   $("#cartt").textContent=rs(S.mode==="inst"?cartTotal():Math.round(cartTotal()));
 }
 $("#cartbtn").onclick=()=>openCheckout();
+/* 🧾 27-11 (विक्रम जी) स्कैन-ट्रे: स्कैन/टैप से जो जुड़ा वह तुरंत नीचे दिखे — फोटो, नाम, −/+ , ✕ (गलती से जुड़ा हटाएँ); 7-8 सामान एक साथ; नीचे "बिल बनाएँ" */
+let CT_prev={};
+function ctray(show){let t=$("#ctray");
+  if(!show){if(t)t.remove();CT_prev={};return}
+  if(!t){t=document.createElement("div");t.id="ctray";$("#cartbar").prepend(t);if(lsGet("se_ctmin")==="1")t.classList.add("min")}
+  const now={};S.cart.forEach(l=>now[l.key||l.id]=l.qty);let hl="";for(const k in now)if(CT_prev[k]!==now[k])hl=k;CT_prev=now;
+  const L=S.cart.map((l,i)=>({l,i})).reverse();
+  t.innerHTML=`<div class="cth"><span>🧾 चालू बिल · ${S.cart.length} सामान · ${rs(cartTotal())}</span><button type="button" data-ctmin>${t.classList.contains("min")?"▴ दिखाएँ":"▾ छोटा"}</button></div>
+  <div class="ctl">${L.map(({l,i})=>{const it=item(l.id),pc=isPc(l.unit),ps=it&&SE.photoSrc(it);return `<div class="ctr${(l.key||l.id)===hl?" hl":""}" data-cti="${i}">
+    <span class="cti">${ps?`<img src="${esc(ps)}" alt="" loading="lazy" onerror="this.remove()">`:esc(l.emoji||"🛒")}</span>
+    <span class="ctn"><b>${esc(appNm(l))}</b><small>₹${l.rate}${pc?"":"/"+(UNITS[l.unit]||l.unit)}${rkOf(l.id)?" · 📍"+esc(rkOf(l.id)):""}</small></span>
+    <span class="ctq">${pc&&!l.changed&&!l.free?`<button type="button" data-ctdec="${esc(l.id)}" aria-label="एक कम">−</button><b>${l.qty}</b><button type="button" data-ctinc="${esc(l.id)}" aria-label="एक और">+</button>`:`<button type="button" class="w" data-ctedit="${i}">${fq(l.qty,l.unit)}</button>`}</span>
+    <span class="cta">₹${l.amt}</span><button type="button" class="ctx" data-ctdel="${i}" aria-label="${esc(appNm(l))} हटाएँ">✕</button></div>`}).join("")}</div>`;
+  if(hl){const r=t.querySelector(".ctr.hl");if(r)r.scrollIntoView({block:"nearest"})}
+  const go=$("#cartbtn .go");if(go)go.textContent="🧾 बिल बनाएँ →";}
+/* ✕ से हटाया — साथी का हटाना विक्रम जी के पास (मंज़ूरी) */
+function rmLog(l){try{if(S.isOwner||S.demo||!S.db||!l)return;const k=Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  S.db.collection("days/"+today()+"/meta").doc("cartrm").set({e:{[k]:{ts:Date.now(),by:S.uid||"",byName:biller(),id:l.id,name:l.realName||l.name,qty:l.qty,unit:l.unit,amt:l.amt}}},{merge:true}).catch(()=>{})}catch(e){}}
+document.addEventListener("click",e=>{const t=e.target.closest("#ctray");if(!t)return;
+  if(e.target.closest("[data-ctmin]")){t.classList.toggle("min");lsSet("se_ctmin",t.classList.contains("min")?"1":"0");ctray(true);return}
+  const d=e.target.closest("[data-ctdec]");if(d){const l=S.cart.find(x=>x.id===d.dataset.ctdec&&!x.changed&&!x.free);if(l&&l.qty<=1)rmLog({...l});decItem(d.dataset.ctdec);return}
+  const i=e.target.closest("[data-ctinc]");if(i){const x=item(i.dataset.ctinc);if(x)quickAdd(x,1);return}
+  const ed=e.target.closest("[data-ctedit]");if(ed){const l=S.cart[+ed.dataset.ctedit],x=l&&item(l.id);if(x)openQty(x,+ed.dataset.ctedit);return}
+  const x=e.target.closest("[data-ctdel]");if(x){const l=S.cart[+x.dataset.ctdel];if(l){rmLog({...l});S.cart.splice(+x.dataset.ctdel,1);refreshAfterCart();toast("✕ "+appNm(l)+" बिल से हटाया")}return}});
 
 /* ---------- checkout ---------- */
 function newBillNo(){const d=new Date(),p=n=>String(n).padStart(2,"0");return "BW"+p(d.getDate())+p(d.getMonth()+1)+"-"+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds())+Math.random().toString(36).slice(2,4).toUpperCase()}
