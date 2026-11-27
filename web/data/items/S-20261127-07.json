@@ -1,0 +1,51 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-07",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "पेपर कप: फूल छपे ₹80 (90) — #35; छोटे पेपर कप ₹20 (150) — #36; दोनों स्टोर में",
+ "items": [
+  {
+   "id": "g-paper-cup-flower-print-pack-80",
+   "name": "PAPER CUP FLOWER PRINT PACK",
+   "short": "PAPER CUP FLOWER PACK",
+   "hi": "पेपर कप (फूल छपे) पैकेट",
+   "alias": "paper cup glass disposable flower print पेपर कप गिलास",
+   "cat": "kirana",
+   "sub": "disposal",
+   "unit": "pc",
+   "mrp": 80,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "329fb37b",
+   "open": {
+    "qty": 90,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-paper-cup-small-pack-20",
+   "name": "PAPER CUP SMALL PACK",
+   "short": "PAPER CUP SMALL PACK",
+   "hi": "पेपर कप छोटा पैकेट",
+   "alias": "paper cup chai tea small disposable पेपर कप चाय",
+   "cat": "kirana",
+   "sub": "disposal",
+   "unit": "pc",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "88e72ceb",
+   "open": {
+    "qty": 150,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
