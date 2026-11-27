@@ -1,0 +1,44 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-08",
+ "date": "2026-11-27",
+ "by": "विक्रम जी",
+ "note": "गिलास पैकेट = 50 पीस, छोटे चाय कप पैकेट = 24 पीस",
+ "items": [
+  {
+   "id": "g-disposable-plastic-glass-pack-50",
+   "name": "DISPOSABLE PLASTIC GLASS PACK",
+   "short": "DISPOSABLE PLASTIC GLASS",
+   "unit": "pc",
+   "upd": {
+    "name": {
+     "from": "DISPOSABLE PLASTIC GLASS PACK",
+     "to": "DISPOSABLE PLASTIC GLASS PACK (50 PC)"
+    },
+    "short": {
+     "from": "DISPOSABLE GLASS PACK",
+     "to": "DISPOSABLE GLASS 50PC"
+    }
+   }
+  },
+  {
+   "id": "g-paper-cup-small-pack-20",
+   "name": "PAPER CUP SMALL PACK",
+   "short": "PAPER CUP SMALL PACK",
+   "unit": "pc",
+   "upd": {
+    "name": {
+     "from": "PAPER CUP SMALL PACK",
+     "to": "PAPER TEA CUP SMALL PACK (24 PC)"
+    },
+    "short": {
+     "from": "PAPER CUP SMALL PACK",
+     "to": "PAPER TEA CUP 24PC"
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
