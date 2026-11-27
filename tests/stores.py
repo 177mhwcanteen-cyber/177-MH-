@@ -39,6 +39,7 @@ async def main():
         cname = []
         async def fs(route):
             u = route.request.url
+            if "/projects/sabji-express-9a8f0/" in u and "/pub/ot_SXT" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in {"st": "out", "ts": 2, "msg": "van"}.items()}})
             if "/projects/sabji-express-9a8f0/" in u and "/pub/rates" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in SX.items()}})
             if "/projects/mh177-canteen/" in u and "/pub/rates" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in MH.items()}})
             if u.split("?")[0].endswith("/documents/orders") and route.request.method == "POST":
@@ -113,7 +114,8 @@ async def main():
         hs = await c.evaluate("[...document.querySelectorAll('#ov a.upi')].map(a=>decodeURIComponent(a.href))")
         assert any("pa=9460409552@okbizaxis" in h and "VIKRAM CHARAN" in h for h in hs) and any("pa=6367183480@okbizaxis" in h for h in hs), hs  # 27-11: सब्ज़ी का पैसा सब्ज़ी के UPI पर
         assert len(sxm) == 1, sxm; f = sxm[0]; assert set(f) <= {"name", "phone", "addr", "note", "items", "ts", "status", "src"} and f["status"]["stringValue"] == "new", f
-        si = f["items"]["arrayValue"]["values"]; assert si[0]["mapValue"]["fields"]["id"]["stringValue"] == "tamatar" and "UPI" in f["note"]["stringValue"], si  # सब्ज़ी ऐप के 📥 ऑर्डर में
+        si = f["items"]["arrayValue"]["values"]; assert si[0]["mapValue"]["fields"]["id"]["stringValue"] == "tamatar" and "UPI" in f["note"]["stringValue"] and "🆔O" in f["note"]["stringValue"], si  # सब्ज़ी ऐप के 📥 ऑर्डर में (🆔 = ट्रैकिंग)
+        assert (await c.evaluate("_orderT({id:'SXT',shop:'sabji'})"))["st"] == "out", "सब्ज़ी ऐप की ट्रैकिंग (pub/ot_) ग्राहक को दिखे"
         assert await c.locator("#ov a.wa[href*='wa.me/91']").count() == 1, "पेमेंट का स्क्रीनशॉट WhatsApp पर"
         me_ = await c.evaluate("JSON.parse(localStorage.getItem('mh_me'))"); assert me_.get("qt") == "12/B" and me_.get("un") == "177 MH" and "ll" not in me_, me_
         await c.wait_for_timeout(600); assert await c.locator("[id^=pqr] img, [id^=pqr] canvas").count() >= 2, "भुगतान का QR"; await c.screenshot(path=f"{SHOTS}/st5b-pay.png", full_page=True)

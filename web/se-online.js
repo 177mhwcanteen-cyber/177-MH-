@@ -63,7 +63,7 @@ const ACTIVE=["new","billing","acc","pack","out"];
 SON.parse=function(o){const n=String(o.note||"");if(!n.includes("¦"))return {note:n};const [meta,rest]=n.split("¦");const p=meta.split("|");const r={note:rest||""};
   p.forEach(x=>{if(x==="🛵")r.mode="d";else if(x==="🏪")r.mode="p";else if(x==="💵")r.pay="नकद";else if(x==="📱")r.pay="UPI";else if(x.startsWith("⏰"))r.when=x.slice(1).trim();else if(x.startsWith("📍"))r.ll=x.slice(2);else if(x.startsWith("☎️"))r.alt=x.slice(2).replace(/\D/g,"");else if(x.startsWith("₹"))r.total=num(x.slice(1));else if(x.startsWith("🎟")){const m=x.slice(2).split("-₹");r.cpn=m[0];r.cpnOff=num(m[1])}else if(x.startsWith("🏬"))r.store=x.slice(2).trim();else if(x.startsWith("🧺"))r.grp=x.slice(2).trim()});return r};
 /* 🛍️ तीन दुकानें एक पेज पर (11-11-2026): 🛒 177 MH (यही) · 🥬 सब्ज़ी एक्सप्रेस · 🍛 मारवाड़ रसोई — हर दुकान का अलग ऑर्डर/बिल */
-SON.STORES={mh:{i:"🛒",n:"177 वेट कैंटीन"},sabji:{i:"🥬",n:"सब्ज़ी एक्सप्रेस",ph:""},rasoi:{i:"🍛",n:"मारवाड़ रसोई",ph:"8696283600"}};
+SON.STORES={mh:{i:"🛒",n:"177 वेट कैंटीन"},sabji:{i:"🥬",n:"सब्ज़ी एक्सप्रेस",ph:"6367183480"},rasoi:{i:"🍛",n:"मारवाड़ रसोई",ph:"8696283600"}};
 SON.storeOf=o=>{const s=String(o.src||"");return s.startsWith("web2:")?s.slice(5):(SON.parse(o).store||"mh")};
 SON.storePh=k=>{const c=((SON.cfg().stores||{})[k])||{};return String(c.ph||(SON.STORES[k]||{}).ph||"").replace(/\D/g,"").slice(-10)};
 SON.storeText=function(o){const p=SON.parse(o),k=SON.storeOf(o),st=SON.STORES[k]||{n:k};const items=(o.items||[]).map((x,i)=>`${i+1}. ${SE.capNm(x.n)} — *${fq(num(x.q),x.u||"pc")}*${num(x.s)?" × ₹"+num(x.s):""}`).join("\n");

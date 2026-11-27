@@ -215,7 +215,12 @@ function rsState(){const d=new Date(),c=window.__rsClock,n=c?(+c.split(":")[0])*
 async function orderT(o){
   if(o&&o.shop==="rasoi"&&RB){const r=await fetch(RB+"orders/"+o.id+"?key="+RS.key,{cache:"no-store"});if(!r.ok)return null;const d=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
     const a=(d.log||[]).find(l=>l.s==="acc");return{st:({new:"new",acc:"acc",cook:"pack",out:"out",done:"done",rej:"cancel"})[d.status]||"new",eta:a&&d.eta?a.ts+d.eta*60000:0,msg:d.status==="rej"?(d.why||""):"",by:a?a.by:"",billNo:d.tm||""}}
-  const r=await fetch(B+"pub/ot_"+o.id+"?key="+C.apiKey,{cache:"no-store"});if(!r.ok)return null;return V({mapValue:{fields:(await r.json()).fields||{}}})||{}}
+  const r=await fetch(B+"pub/ot_"+o.id+"?key="+C.apiKey,{cache:"no-store"});const a=r.ok?V({mapValue:{fields:(await r.json()).fields||{}}})||{}:null;
+  /* 🥬 सब्ज़ी का ऑर्डर: सब्ज़ी एक्सप्रेस ऐप भी अपने pub/ot_<id> में हालत लिखता है (27-11) — दोनों में जो आगे हो वही */
+  if(o&&o.shop==="sabji"&&SC.pid&&SC.key){try{const r2=await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/pub/ot_"+o.id+"?key="+SC.key,{cache:"no-store"});
+    if(r2.ok){const b=V({mapValue:{fields:(await r2.json()).fields||{}}})||{};const rk=x=>x&&x.st?(x.st==="cancel"?9:["new","acc","pack","out","done"].indexOf(x.st)):-1;if(!a||rk(b)>rk(a)||(rk(b)===rk(a)&&+b.ts>+(a.ts||0)))return b}}catch(e){}}
+  return a}
+window._orderT=orderT; /* जाँच के लिए */
 const rasoiOpen=()=>{const H=(RJ&&RJ.shop&&RJ.shop.hours)||[];if(!H.length)return true;const n=new Date(),m=n.getHours()*60+n.getMinutes(),p=s=>{const[a,b]=String(s).split(":");return(+a)*60+(+b||0)};return H.some(h=>m>=p(h[0])&&m<p(h[1]))};
 /* सब्ज़ी एक्सप्रेस के आज के भाव न मिलें (उसका ऐप अभी तक खुला नहीं) → उसकी सामान-सूची से, "भाव पक्का होगा" नोट के साथ */
 let SXOLD=0;async function sabjiFallback(){if(LX.length||!SC.base)return;try{const r=await fetch(SC.base+"migrate.json",{cache:"no-store"});if(!r.ok)return;const M=(await r.json()).items||{};
@@ -408,7 +413,7 @@ const upiUrl=(a,ref,t)=>{t=t||PAYTO("mh");return `upi://pay?pa=${encodeURICompon
 async function sxMirror(body,nm,ph,total,mid){try{if(!SC.pid||!SC.key)return;const F=body.fields,S2=v=>({stringValue:String(v)});
   const items={arrayValue:{values:(F.items.arrayValue.values||[]).map(v=>{const f=v.mapValue.fields;return {mapValue:{fields:{id:S2(String(f.id.stringValue).replace(/^sx-/,"")),n:f.n,q:f.q,u:f.u,s:f.s}}}})}};
   const pay=(me.pay||"u")==="u"?"📱 UPI चुना (पैसा आया या नहीं — देखें)":"💵 नकद (डिलीवरी पर)";
-  const note=[pay,"₹"+total,"⏰ "+(me.when||"Now"),"🛒 ऑर्डर-पेज #"+String(mid||"").slice(-6).toUpperCase(),NT||""].filter(Boolean).join(" · ").slice(0,200);
+  const note=[pay,"₹"+total,"⏰ "+(me.when||"Now"),"🛒 #"+String(mid||"").slice(-6).toUpperCase()+" 🆔"+String(mid||""),NT||""].filter(Boolean).join(" · ").slice(0,200);
   await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/orders?key="+SC.key,{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({fields:{name:S2(nm.slice(0,40)),phone:S2(ph),addr:F.addr,note:S2(note),items,ts:F.ts,status:S2("new"),src:S2("web2")}})})}catch(e){}}
 function payHTML(P){if(!P)return"";const T=(P.gs||[]).map(k=>`<div class="row"><span>${STS[k].ic} ${esc(STS[k].n)}</span><small>${k==="rasoi"?"🍳 min. 30 min":"🛵 when partner is free"}</small></div>`).join("");
