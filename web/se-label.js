@@ -305,7 +305,7 @@ const hitsHTML=()=>hits(V.q).map(i=>`<button type="button" data-sladd="${esc(i.i
 function rowHTML(r){const it=item(r.id);if(!it)return "";const d=SL.dataOf(it,r),sh=SL.cfg().show,id=esc(r.id);
   return `<div class="sl-row${V.flash===r.id?" flash":""}${V.prev===r.id?" sel":""}">
     <button type="button" class="sl-tl" data-slprev="${id}" aria-label="${esc(it.name)} की झलक">${tileHTML(it)}</button>
-    <div class="sl-nm" data-slprev="${id}"><b>${esc(d.name)}</b><span>${d.price>0?rs(d.price):'<em>भाव नहीं</em>'}${it.code?" · #"+esc(it.code):""}${d.bc?"":' · <em>⚠ बारकोड नहीं</em>'}${doneTag(it)}</span></div>
+    <div class="sl-nm" data-slprev="${id}"><b>${esc(d.name)}</b><span>${d.price>0?rs(d.price):'<em>भाव नहीं</em>'}${it.code?" · #"+esc(it.code):""}${typeof rkOf==="function"&&rkOf(it)?` · <b class="sl-rk">📍${esc(rkOf(it))}</b>`:""}${SL.stockN(it)!=null?" · स्टॉक "+SL.stockN(it):""}${d.bc?"":' · <em>⚠ बारकोड नहीं</em>'}${doneTag(it)}</span></div>
     <div class="sl-n"><button type="button" data-slm="${id}" aria-label="एक कम">−</button><input data-sln="${id}" inputmode="numeric" value="${Math.round(+r.n)||0}" aria-label="${esc(it.name)} के कितने लेबल"><button type="button" data-slp="${id}" aria-label="एक ज़्यादा">＋</button></div>
     <button type="button" class="sl-x" data-slx="${id}" aria-label="${esc(it.name)} हटाएँ">✕</button>
     ${sh.mfg||sh.exp?`<div class="sl-dt">${sh.mfg?`<label>पैक<input type="date" data-slmfg="${id}" value="${esc(r.mfg||today())}"></label>`:""}${sh.exp?`<label>एक्सपायरी<input type="date" data-slexp="${id}" value="${esc(r.exp||it.exp||"")}"></label>`:""}</div>`:""}</div>`}
@@ -353,7 +353,7 @@ SL.prnHTML=function(){const pr=SF.labelPrinter,bp=SE.printer||{},fl=localStorage
 SL.drawPrev=function(){const cv=$("#slPrev");if(!cv)return;const it=item(V.prev)||SL.sample();const r=Q.find(x=>x.id===it.id)||{};
   const src=SL.canvasFor(it,r);cv.width=src.width;cv.height=src.height;cv.getContext("2d").drawImage(src,0,0)};
 function sumUp(){const s=$("#slSum");if(s)s.innerHTML=sumHTML();const n=SL.count(),b=$("[data-slprint]");if(b){b.disabled=!n;b.textContent="🖨️ "+(n?n+" लेबल छापें":"लिस्ट में सामान जोड़ें")}}
-function addFromTab(id,n){SL.add(id,n||1);V.q="";SL.render(1);
+function addFromTab(id,n){SL.add(id,SL.firstN(item(id),n));V.q="";SL.render(1);
   setTimeout(()=>{const i=document.querySelector(`[data-sln="${CSS.escape(id)}"]`);if(i){i.focus();i.select()}},30)}
 SL.bind=function(){
   const el=$("#p-label");if(!el||SL._b)return;SL._b=1;
@@ -399,7 +399,7 @@ SL.scan=function(code){
   let it=findByCode(code);if(!it&&SF.parseVW){const v=SF.parseVW(code);if(v&&v.it)it=v.it}
   beep(!!it);if(!it){toast("यह बारकोड किसी सामान में नहीं: "+code);return true}
   if(onB){SL.tap(it,1);return true}
-  const n=SL.add(it.id,1);V.q="";SL.render(1);
+  const n=SL.add(it.id,SL.firstN(it,1));V.q="";SL.render(1);
   toast("🏷️ "+SL.dataOf(it).name+" · "+n+" लेबल (लिस्ट में "+Q.length+" सामान)");return true;
 };
 
@@ -407,17 +407,22 @@ SL.scan=function(code){
    कोई बड़ा पॉपअप नहीं। हेडर में एक पतली पट्टी: आख़िरी सामान · [− संख्या ＋] · 📋 लिस्ट · ✕ — कीबोर्ड खुलने पर भी दिखे। */
 SL.chipHTML=function(){const n=SL.count();setTimeout(()=>{SL.syncBar(1);SL.marks()},0);
   return `<button class="chip lblchip${S.lblMode?" on":""}" data-lblmode>${S.lblMode?"🏷️ बारकोड मोड · बंद ✕":"🏷️ बारकोड छापें"}${n&&!S.lblMode?` <i>${n}</i>`:""}</button>`};
-SL.tap=function(it,n){if(!it||it.virtual)return;SL.add(it.id,n||1);V.last=it.id;try{if(navigator.vibrate)navigator.vibrate(20)}catch(e){}SL.syncBar(1);SL.marks()};
+/* 📦 27-11 (विक्रम जी): पहली बार जोड़ें तो लेबल-संख्या = ऐप में जितना स्टॉक (पीस); फिर −/+ से कम-ज़्यादा। किलो/बिना स्टॉक = 1 */
+SL.stockN=function(it){try{if(!it)return null;let s=null;if(it.packOf&&+it.perPack>0){const b=typeof stockLeft==="function"?stockLeft(it.packOf):null;s=b==null?null:Math.floor(b/ +it.perPack)}
+  else if(typeof isPc!=="function"||isPc(it.unit)){s=typeof stockLeft==="function"?stockLeft(it.id):null}return s==null?null:Math.max(0,Math.floor(+s||0))}catch(e){return null}};
+SL.defN=it=>{const s=SL.stockN(it);return s>0?Math.min(500,s):1};
+SL.firstN=(it,n)=>(!n||+n===1)&&it&&!Q.some(x=>x.id===it.id)?SL.defN(it):(n||1);
+SL.tap=function(it,n){if(!it||it.virtual)return;n=SL.firstN(it,n);SL.add(it.id,n);V.last=it.id;try{if(navigator.vibrate)navigator.vibrate(20)}catch(e){}SL.syncBar(1);SL.marks()};
 /* कार्ड पर 🏷️ गिनती */
 SL.marks=function(){const g=$("#grid");if(!g)return;g.querySelectorAll(".lbub").forEach(x=>x.remove());if(!(S.tab==="bill"&&S.lblMode))return;
   Q.forEach(r=>{const c=g.querySelector(`[data-item="${CSS.escape(r.id)}"]`);if(c&&r.n>0){const s=document.createElement("span");s.className="lbub";s.textContent="🏷️"+r.n;c.appendChild(s)}})};
-SL.syncBar=function(keep){const sb=$("#sbar");if(!sb)return;let b=$("#lblbar");
+SL.syncBar=function(keep){try{SL.tray(keep)}catch(e){}const sb=$("#sbar");if(!sb)return;let b=$("#lblbar");
   if(!b){b=document.createElement("div");b.id="lblbar";b.className="lblbar";sb.parentNode.insertBefore(b,sb.nextSibling);bindBar(b)}
   const on=S.tab==="bill"&&!!S.lblMode;b.hidden=!on;document.documentElement.classList.toggle("lblon",on);if(!on){V.last="";return}
   if(keep&&b.contains(document.activeElement)&&document.activeElement.id==="lbN"){const r=Q.find(x=>x.id===V.last);const g=b.querySelector(".lb-go");if(g)g.innerHTML=`📋 ${Q.length}·${SL.count()} ›`;return}
   const it=item(V.last),r=it&&Q.find(x=>x.id===it.id),n=SL.count();
   b.innerHTML=`<span class="lb-ic">🏷️</span>${r?`<b class="lb-nm">${esc(SL.dataOf(it).name)}</b><span class="lb-n"><button type="button" data-lbm aria-label="एक कम">−</button><input id="lbN" inputmode="numeric" enterkeyhint="done" value="${r.n}" aria-label="कितने लेबल"><button type="button" data-lbp aria-label="एक ज़्यादा">＋</button></span>`
-    :`<b class="lb-nm lb-hint">सामान दबाएँ या स्कैन करें — हर बार +1</b>`}
+    :`<b class="lb-nm lb-hint">सामान दबाएँ/स्कैन करें — स्टॉक जितने लेबल नीचे लिस्ट में</b>`}
     <button type="button" class="lb-go" data-lblgo ${n?"":"disabled"} aria-label="लेबल की लिस्ट खोलें और छापें">📋 ${Q.length}·${n} ›</button><button type="button" class="lb-x" data-lbloff aria-label="बारकोड मोड बंद करें">✕</button>`};
 function bindBar(b){
   b.addEventListener("click",e=>{const c=s=>e.target.closest(s);
@@ -427,6 +432,50 @@ function bindBar(b){
       if(!r.n){Q=Q.filter(x=>x!==r);V.last=""}saveQ();SL.syncBar();SL.marks()}});
   b.addEventListener("input",e=>{if(e.target.id!=="lbN")return;const r=Q.find(x=>x.id===V.last);if(!r)return;r.n=Math.max(0,Math.min(500,Math.round(num(e.target.value))));saveQ();SL.syncBar(1);SL.marks()});
   b.addEventListener("keydown",e=>{if(e.target.id==="lbN"&&e.key==="Enter"){e.preventDefault();const r=Q.find(x=>x.id===V.last);if(r&&!r.n){Q=Q.filter(x=>x!==r);saveQ()}e.target.blur();SL.syncBar();SL.marks()}});
+}
+/* ================= 🏷️ 27-11 लेबल-ट्रे (विक्रम जी): बारकोड मोड में जो जोड़ा वह नीचे सूची में — फोटो · नाम · 📍रैक · स्टॉक ·
+   [− n ＋] · ✕; ऊपर प्रिंटर (जुड़ा ✓ / "प्रिंटर जोड़ें"); नीचे एक बटन "🖨️ N लेबल छापें" — लेबल टैब में जाने की ज़रूरत नहीं।
+   वही लिस्ट (Q, se_lq) लेबल टैब में भी दिखती है। ब्योरा: docs/लेबल-ट्रे-प्रॉम्प्ट.txt ================= */
+const TV={min:LSl.get("se_ltmin")==="1",cf:0,undo:null,msg:""};
+function prnChip(){const pr=SF.labelPrinter,a4=(LSl.get("se_lout")||"label")==="a4";
+  if(a4)return `<button type="button" class="lt-pr" data-ltprn>📄 A4 शीट ›</button>`;
+  if(SE.canDirect&&SE.canDirect("label")&&pr.addr)return `<button type="button" class="lt-pr ok" data-ltprn aria-label="लेबल प्रिंटर बदलें">🖨️ ${esc((pr.name||"प्रिंटर").slice(0,14))} ✓</button>`;
+  if(SE.canDirect&&SE.canDirect("label"))return `<button type="button" class="lt-pr no" data-ltprn>🖨️ प्रिंटर जोड़ें</button>`;
+  return `<button type="button" class="lt-pr" data-ltprn aria-label="प्रिंटर सेटिंग">🖨️ प्रिंटर ›</button>`}
+SL.tray=function(keep){let t=$("#ltray");const on=S.tab==="bill"&&!!S.lblMode;
+  if(!on){if(t)t.remove();return}
+  if(!t){t=document.createElement("div");t.id="ltray";t.setAttribute("role","region");t.setAttribute("aria-label","छापने की लिस्ट");document.body.appendChild(t);bindTray(t)}
+  if(keep&&t.contains(document.activeElement)&&document.activeElement.matches("input")){const n=SL.count(),g=t.querySelector("[data-ltgo]");if(g){g.disabled=!n;g.textContent="🖨️ "+n+" लेबल छापें"}const h=t.querySelector(".lt-cnt");if(h)h.textContent=Q.length+" सामान · "+n+" लेबल";return}
+  t.classList.toggle("min",TV.min);const n=SL.count(),last=V.last;
+  const row=r=>{const it=item(r.id);if(!it)return "";const d=SL.dataOf(it,r),ps=SE.photoSrc&&SE.photoSrc(it),rk=typeof rkOf==="function"?rkOf(it):"",st=SL.stockN(it),dn=SL.doneOf(it),id=esc(r.id);
+    return `<div class="lt-r${r.id===last?" hl":""}"><span class="lt-i">${ps?`<img src="${esc(ps)}" alt="" loading="lazy" onerror="this.remove()">`:esc(it.emoji||"🏷️")}</span>
+    <span class="lt-n"><b>${esc(d.name)}</b><small>${rk?`<i class="lt-rk">📍${esc(rk)}</i>`:`<i class="lt-rk no">📍 रैक नहीं</i>`}${st!=null?` स्टॉक ${st}`:""}${d.price>0?" · "+rs(d.price):" · ⚠ भाव नहीं"}${d.bc?"":" · ⚠ बारकोड नहीं"}${dn?` · <em>🖨️ ${dd(dn.ts)}</em>`:""}</small></span>
+    <span class="lt-q"><button type="button" data-ltm="${id}" aria-label="एक कम">−</button><input data-ltn="${id}" inputmode="numeric" enterkeyhint="done" value="${Math.round(+r.n)||0}" aria-label="${esc(d.name)} के कितने लेबल"><button type="button" data-ltp="${id}" aria-label="एक ज़्यादा">＋</button></span>
+    <button type="button" class="lt-x" data-ltx="${id}" aria-label="${esc(d.name)} हटाएँ">✕</button></div>`};
+  const dup=Q.filter(r=>(+r.n||0)>0&&SL.doneOf(item(r.id))).length;
+  t.innerHTML=`<div class="lt-h"><b>🏷️ <span class="lt-cnt">${Q.length} सामान · ${n} लेबल</span></b>${prnChip()}<button type="button" class="lt-mn" data-ltmin aria-label="${TV.min?"लिस्ट दिखाएँ":"लिस्ट छोटी करें"}">${TV.min?"▴":"▾"}</button></div>
+  ${TV.msg?`<div class="lt-ok">${TV.msg}${TV.undo?` <button type="button" class="lnk" data-ltundo>↩ वापस</button>`:""}</div>`:""}
+  <div class="lt-l">${Q.map(row).join("")||`<p class="lt-e">सामान दबाएँ, नाम लिखकर Enter या बारकोड स्कैन करें — जितना स्टॉक है उतने लेबल अपने-आप लिखे आएँगे, −/＋ से बदलें</p>`}</div>
+  <div class="lt-f"><button type="button" class="lt-all" data-ltall aria-label="पूरी लिस्ट लेबल टैब में खोलें">📋 पूरी लिस्ट</button><button type="button" class="big lt-go${TV.cf?" cf":""}" data-ltgo ${n?"":"disabled"}>${TV.cf?`⚠ ${dup} पहले छप चुके — फिर भी छापें?`:"🖨️ "+n+" लेबल छापें"}</button></div>`;
+  if(last){const h=t.querySelector(".lt-r.hl");if(h)h.scrollIntoView({block:"nearest"})}};
+function bindTray(t){
+  const upd=(id,f)=>{const r=Q.find(x=>x.id===id);if(!r)return;r.n=Math.max(0,Math.min(500,f(Math.round(+r.n)||0)));V.last=id;TV.cf=0;saveQ();SL.syncBar();SL.marks()};
+  t.addEventListener("click",async e=>{const c=s=>e.target.closest(s);let b;
+    if(c("[data-ltmin]")){TV.min=!TV.min;LSl.set("se_ltmin",TV.min?"1":"0");SL.tray();return}
+    if(c("[data-ltprn]")){if(typeof prnGo==="function")prnGo();return}
+    if(c("[data-ltall]")){S.tab="label";showTab();return}
+    if((b=c("[data-ltp]"))){upd(b.dataset.ltp,n=>n+1);return}
+    if((b=c("[data-ltm]"))){upd(b.dataset.ltm,n=>n-1);return}
+    if((b=c("[data-ltx]"))){Q=Q.filter(x=>x.id!==b.dataset.ltx);if(V.last===b.dataset.ltx)V.last="";TV.cf=0;saveQ();SL.syncBar();SL.marks();return}
+    if(c("[data-ltundo]")){if(TV.undo){Q=TV.undo;TV.undo=null;TV.msg="";saveQ();SL.syncBar();SL.marks();toast("↩ लिस्ट वापस")}return}
+    if((b=c("[data-ltgo]"))){const dup=Q.some(r=>(+r.n||0)>0&&SL.doneOf(item(r.id)));
+      if(dup&&!TV.cf){TV.cf=1;SL.tray();setTimeout(()=>{if(TV.cf){TV.cf=0;SL.tray()}},5000);return}
+      TV.cf=0;b.disabled=true;b.textContent="🖨️ छप रहा है…";const rows=Q.slice(),k=await SL.print(rows);
+      if(k){TV.undo=Q.slice();Q=[];saveQ();V.last="";TV.msg="✓ "+k+" लेबल प्रिंटर को भेजे";setTimeout(()=>{TV.msg="";TV.undo=null;SL.tray()},15000)}
+      SL.syncBar();SL.marks();return}});
+  t.addEventListener("input",e=>{const id=e.target.dataset&&e.target.dataset.ltn;if(!id)return;const r=Q.find(x=>x.id===id);if(!r)return;r.n=Math.max(0,Math.min(500,Math.round(num(e.target.value))||0));saveQ();SL.tray(1);SL.marks()});
+  t.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.ltn){e.preventDefault();e.target.blur();const q=$("#q");if(q)q.focus()}});
+  t.addEventListener("focusout",e=>{if(e.target.dataset&&e.target.dataset.ltn)setTimeout(()=>SL.syncBar(),0)});
 }
 /* छोटा पॉपअप (सेटिंग/कहीं से एक सामान): नाम · [− n ＋] · 1/5/10/20 · अभी छापें / जोड़ें — कोई बड़ी तस्वीर नहीं */
 SL.ask=function(it){if(!it||it.virtual)return;
@@ -450,7 +499,7 @@ SL.ask=function(it){if(!it||it.virtual)return;
 function bindBill(){const pb=$("#p-bill");if(!pb)return;
   pb.addEventListener("click",e=>{
     if(e.target.closest("[data-lblmode]")){e.stopPropagation();S.lblMode=!S.lblMode;if(S.lblMode)S.rateMode=false;V.last="";renderBill();
-      if(S.lblMode)toast("🏷️ सामान दबाते जाएँ — हर बार +1 लेबल");return}
+      if(S.lblMode)toast("🏷️ सामान दबाएँ — जितना स्टॉक उतने लेबल नीचे लिस्ट में, −/＋ से बदलें, फिर 🖨️ छापें");return}
     if(e.target.closest("[data-ratemode]")){S.lblMode=false;return}
     if(!S.lblMode)return;
     const c=e.target.closest("[data-item]");if(c){e.stopPropagation();e.preventDefault();SL.tap(item(c.dataset.item),1)}
@@ -525,6 +574,35 @@ const css=document.createElement("style");css.id="slcss";css.textContent=`
 .sl-hits span{flex:1;min-width:0;display:grid}.sl-hits b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sl-hits small{color:var(--muted);font-size:12px}
 .sl-hits em{font-style:normal;font-weight:900;font-size:20px;color:var(--leaf)}
 .sl-list{display:grid;gap:6px}
+#ltray{position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:7;max-width:640px;margin:0 auto;background:var(--surface,#fff);border:1.5px solid #f59e0b;border-radius:18px;box-shadow:0 -8px 28px rgba(15,23,42,.22);overflow:hidden;display:flex;flex-direction:column}
+@media (min-width:1100px){body.hasside #ltray{right:372px}}
+html.lblon #cartbar{display:none!important}html.lblon #p-bill{padding-bottom:52vh}
+#ltray .lt-h{display:flex;align-items:center;gap:6px;padding:7px 8px 7px 12px;background:linear-gradient(90deg,#fef3c7,#fff7ed);border-bottom:1px solid #fde68a}
+#ltray .lt-h>b{flex:1;font-size:14px;color:#92400e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ltray .lt-pr{border:0;border-radius:999px;padding:5px 10px;font-weight:800;font-size:12.5px;background:#e2e8f0;color:#0f172a;white-space:nowrap}
+#ltray .lt-pr.ok{background:#dcfce7;color:#166534}#ltray .lt-pr.no{background:#dc2626;color:#fff;animation:ltpulse 1.4s infinite}
+@keyframes ltpulse{50%{box-shadow:0 0 0 5px rgba(220,38,38,.25)}}
+#ltray .lt-mn{border:0;background:#fde68a;color:#78350f;border-radius:50%;width:30px;height:30px;font-weight:900}
+#ltray .lt-ok{padding:5px 12px;background:#dcfce7;color:#166534;font-weight:800;font-size:13px}
+#ltray .lt-l{max-height:min(44vh,360px);overflow:auto;overscroll-behavior:contain}#ltray.min .lt-l{display:none}
+#ltray .lt-e{margin:0;padding:10px 12px;font-size:13px;color:var(--muted,#64748b)}
+.lt-r{display:grid;grid-template-columns:42px minmax(0,1fr) auto 30px;gap:7px;align-items:center;padding:5px 8px;border-bottom:1px solid var(--line,#f1f5f9);min-height:50px}
+.lt-r:last-child{border-bottom:0}.lt-r.hl{animation:ltrhl 1.6s ease}
+@keyframes ltrhl{0%{background:#fde68a}100%{background:transparent}}
+.lt-i{width:42px;height:42px;border-radius:10px;background:#fff;border:1px solid var(--line,#e5e7eb);display:grid;place-items:center;font-size:20px;overflow:hidden}.lt-i img{width:100%;height:100%;object-fit:contain}
+.lt-n{min-width:0;line-height:1.2}.lt-n b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lt-n small{display:block;font-size:11.5px;color:var(--muted,#64748b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lt-n em{font-style:normal;color:#b42318;font-weight:700}
+.lt-rk{font-style:normal;font-weight:900;color:#fff;background:#1e3a8a;border-radius:6px;padding:0 5px;margin-right:3px}.lt-rk.no{background:#94a3b8}
+.lt-q{display:flex;align-items:center;border:1.5px solid #d97706;border-radius:10px;overflow:hidden;background:#fffbeb}
+.lt-q button{border:0;background:transparent;color:#92400e;width:30px;height:32px;font-size:18px;font-weight:900;padding:0}
+.lt-q input{width:38px;border:0;background:#fff;text-align:center;font-size:15px;font-weight:800;height:32px;padding:0;color:var(--ink,#0f172a)}
+.lt-x{border:0;background:#fee2e2;color:#b91c1c;border-radius:50%;width:28px;height:28px;font-weight:900;padding:0}
+#ltray .lt-f{display:flex;gap:6px;padding:7px 8px;border-top:1px solid var(--line,#e5e7eb)}
+#ltray .lt-all{border:1.5px solid var(--line,#e2e8f0);background:var(--bg,#f8fafc);color:var(--ink,#0f172a);border-radius:12px;padding:0 10px;font-weight:800;font-size:13px;white-space:nowrap}
+#ltray .lt-go{flex:1;margin:0!important;padding:11px!important;font-size:16px!important;background:linear-gradient(135deg,#f59e0b,#ea580c)!important;color:#fff!important}
+#ltray .lt-go.cf{background:#b91c1c!important;font-size:14px!important}
+.sl-rk{color:#1e3a8a}
+
 .sl-row{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:14px;padding:6px;background:var(--surface)}
 .sl-pr{display:inline-block;margin-left:4px;padding:0 6px;border-radius:8px;background:#fde8e8;color:#b42318;font-style:normal;font-weight:700;font-size:11px}
 .sl-prn{color:#b42318}.sl-mk{display:block;margin-top:4px;color:#1f8a4c!important}

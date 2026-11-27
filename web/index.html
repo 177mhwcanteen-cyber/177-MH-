@@ -1229,7 +1229,7 @@ function showTab(){
   renderTabs();
   ["bill","udhar","bills","day","report","set","kharid","label","route","stock","mkt"].forEach(k=>$("#p-"+k).hidden=S.tab!==k);$("#sbar").hidden=S.tab==="mkt"||S.tab==="kharid"||S.tab==="label"||S.tab==="route"||S.tab==="stock";
   if(S.tab!=="day")S.scanIn=false;
-  renderPane(true);renderCart();renderBillTabs();window.scrollTo(0,0);document.body.scrollTop=0;camAuto();
+  renderPane(true);renderCart();renderBillTabs();try{if(window.SL&&SL.syncBar)SL.syncBar()}catch(e){}/* 27-11: लेबल-ट्रे सिर्फ़ बिलिंग में */window.scrollTo(0,0);document.body.scrollTop=0;camAuto();
 }
 /* ⚡ हल्का: Firebase से एक साथ कई बदलाव आएँ तो स्क्रीन सिर्फ़ एक बार बने (40ms में जोड़कर) */
 let _paneT=0,_paneF=false,_billT=0,_setT=0;
