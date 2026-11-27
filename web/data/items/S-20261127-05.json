@@ -1,0 +1,51 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-05",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "रॉयल टिशू ₹35, 100, स्टोर — सामान #33; डिस्पोज़ल थाली: 1 पैकेट = 20 थाली, +10 पैकेट और",
+ "items": [
+  {
+   "id": "g-royal-funny-soft-tissue-35",
+   "name": "ROYAL FUNNY SOFT TISSUE 30X30 CM",
+   "short": "ROYAL TISSUE 30X30",
+   "hi": "रॉयल सॉफ्ट टिशू पेपर",
+   "brand": "ROYAL FUNNY",
+   "alias": "tissue napkin royal funny soft paper टिशू नैपकिन",
+   "cat": "kirana",
+   "sub": "disposal",
+   "unit": "pc",
+   "mrp": 35,
+   "sale": 35,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "c508d979",
+   "open": {
+    "qty": 100,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-disposable-compartment-plate-pack-80",
+   "name": "DISPOSABLE COMPARTMENT PLATE PACK",
+   "short": "DISPOSABLE COMPARTMENT P",
+   "unit": "pc",
+   "inq": 10,
+   "bill": "साथी 27-11 (+10 पैकेट)",
+   "upd": {
+    "name": {
+     "from": "DISPOSABLE COMPARTMENT PLATE PACK",
+     "to": "DISPOSABLE COMPARTMENT PLATE PACK (20 PC)"
+    },
+    "short": {
+     "from": "DISPOSABLE THALI PACK",
+     "to": "DISPOSABLE THALI 20PC"
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
