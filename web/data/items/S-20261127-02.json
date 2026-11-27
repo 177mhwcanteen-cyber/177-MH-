@@ -1,0 +1,35 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-02",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "HELL एनर्जी ड्रिंक क्लासिक 250 ML ₹60, 10, कोका-कोला फ्रिज (20-1) — सामान #30",
+ "items": [
+  {
+   "id": "b5999884034469",
+   "name": "HELL ENERGY DRINK CLASSIC 250 ML CAN",
+   "short": "HELL ENERGY 250ML",
+   "hi": "हेल एनर्जी ड्रिंक 250 मि.ली.",
+   "brand": "HELL",
+   "size": "250ml",
+   "alias": "hell energy drink classic can हेल एनर्जी",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "5999884034469",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "7eec43c1",
+   "open": {
+    "qty": 10,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
