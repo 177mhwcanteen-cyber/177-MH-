@@ -962,6 +962,23 @@ html .ob-g>div{background:var(--surface2)}
 .sb-pend.sm .spx{background:#fee2e2!important;color:#b91c1c!important;border:0!important;padding:4px 7px!important}
 .sb-pend.sm .spx.cf{background:#16a34a!important;color:#fff!important}
 .sb-pend.sm summary{cursor:pointer;font-weight:800;list-style:none}.sb-pend.sm summary::-webkit-details-marker{display:none}
+
+/* 🔍 27-11 खोज-ओवरले (स्कैनर के ऊपर) */
+#qov{position:fixed;left:8px;right:8px;z-index:12;max-width:720px;margin:0 auto;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:18px;box-shadow:0 14px 40px rgba(15,23,42,.35);border:1.5px solid #fdba74;display:flex;flex-direction:column;overflow:hidden;animation:qovin .16s ease-out}
+@keyframes qovin{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+#qov .qov-h{display:flex;align-items:center;gap:8px;padding:8px 10px 8px 12px;background:linear-gradient(90deg,#fff7ed,#fff);border-bottom:1px solid #fed7aa}
+#qov .qov-h b{flex:1;font-size:14px;color:#9a3412;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#qov .qov-h button{border:0;background:#dc2626;color:#fff;border-radius:999px;padding:7px 12px;font-weight:800;font-size:13px;white-space:nowrap}
+#qov .qov-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:8px;overflow:auto;overscroll-behavior:contain}
+@media (min-width:600px){#qov .qov-g{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.qov-t{display:flex;flex-direction:column;align-items:stretch;gap:3px;text-align:left;border:1.5px solid #e2e8f0;border-radius:14px;background:#fff;padding:5px;color:#0f172a;min-width:0}
+.qov-t:active{transform:scale(.96);border-color:#16a34a}
+.qov-i{position:relative;aspect-ratio:4/3;border-radius:10px;background:#f8fafc;display:grid;place-items:center;overflow:hidden}
+.qov-i img{width:100%;height:100%;object-fit:contain}.qov-i em{font-style:normal;font-size:30px}
+.qov-q{position:absolute;top:4px;right:4px;background:#16a34a;color:#fff;font-style:normal;font-weight:900;font-size:11px;border-radius:999px;padding:1px 7px}
+.qov-t b{font-size:12px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
+.qov-t small{font-size:11px;color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qov-t small u{text-decoration:none;font-weight:800;color:#1e3a8a}
+.qov-e{grid-column:1/-1;margin:6px;font-size:13px;color:#64748b}.qov-m{margin:0;padding:4px 12px 8px;font-size:12px;color:#64748b}
 </style>
 
 <header class="px">
@@ -1229,7 +1246,7 @@ function showTab(){
   renderTabs();
   ["bill","udhar","bills","day","report","set","kharid","label","route","stock","mkt"].forEach(k=>$("#p-"+k).hidden=S.tab!==k);$("#sbar").hidden=S.tab==="mkt"||S.tab==="kharid"||S.tab==="label"||S.tab==="route"||S.tab==="stock";
   if(S.tab!=="day")S.scanIn=false;
-  renderPane(true);renderCart();renderBillTabs();try{if(window.SL&&SL.syncBar)SL.syncBar()}catch(e){}/* 27-11: लेबल-ट्रे सिर्फ़ बिलिंग में */window.scrollTo(0,0);document.body.scrollTop=0;camAuto();
+  renderPane(true);renderCart();renderBillTabs();try{if(window.SL&&SL.syncBar)SL.syncBar()}catch(e){}qOverlay();/* 27-11: लेबल-ट्रे सिर्फ़ बिलिंग में */window.scrollTo(0,0);document.body.scrollTop=0;camAuto();
 }
 /* ⚡ हल्का: Firebase से एक साथ कई बदलाव आएँ तो स्क्रीन सिर्फ़ एक बार बने (40ms में जोड़कर) */
 let _paneT=0,_paneF=false,_billT=0,_setT=0;
@@ -1295,6 +1312,27 @@ function billList(){
   return {raw,q,qq,list};
 }
 function clearSearch(){if(S.q){S.q="";$("#q").value="";S.qq=0}}
+/* 🔍 27-11 (विक्रम जी): कैमरा (स्कैनर) खुला हो और नाम खोजें तो नतीजे स्कैनर के ऊपर फोटो के साथ — दबाओ = वही काम जो टाइल दबाने का
+   (बिल / लेबल-मोड / भाव-मोड)। "✕ खोज हटाएँ" = खोज साफ़, स्कैनर फिर साफ़ दिखे; स्कैनर बंद नहीं करना पड़ता। ब्योरा: docs/खोज-ओवरले-प्रॉम्प्ट.txt */
+function qOverlay(){let o=document.getElementById("qov");const camOn_=document.documentElement.classList.contains("camon");
+  const on=S.tab==="bill"&&camOn_&&!!String(S.q||"").trim();
+  if(!on){if(o)o.remove();return}
+  if(!o){o=document.createElement("div");o.id="qov";o.setAttribute("role","dialog");o.setAttribute("aria-label","खोज के नतीजे");document.body.appendChild(o);
+    o.addEventListener("click",e=>{
+      if(e.target.closest("[data-qovx]")){clearSearch();renderBill();try{document.activeElement&&document.activeElement.blur()}catch(x){}return}
+      const b=e.target.closest("[data-qov]");if(!b)return;const id=b.dataset.qov;const t=document.querySelector(`#grid [data-item="${CSS.escape(id)}"]`);
+      if(t){const h=t.querySelector(".tile")||t;h.click()}else{const x=item(id);if(x)quickAdd(x,S.qq>0?S.qq:1)}
+      try{document.activeElement&&document.activeElement.blur()}catch(x){}})}
+  const hd=document.querySelector("header"),top=hd?Math.max(0,Math.round(hd.getBoundingClientRect().bottom)):0;
+  o.style.top=top+"px";o.style.maxHeight=Math.max(180,Math.round(innerHeight*.56)-top+Math.round(innerHeight*.12))+"px";
+  const {list}=billList(),L=list.slice(0,12),inC=id=>S.cart.filter(l=>l.id===id).reduce((a,l)=>a+(+l.qty||0),0);
+  o.innerHTML=`<div class="qov-h"><b>🔍 “${esc(S.q.trim())}” · ${list.length} मिलीं</b><button type="button" data-qovx aria-label="खोज हटाएँ, स्कैनर साफ़ करें">✕ खोज हटाएँ</button></div>
+  <div class="qov-g">${L.map(it=>{const ps=SE.photoSrc&&SE.photoSrc(it),p=priceOf(it),rk=rkOf(it),q=inC(it.id),st=typeof stockLeft==="function"?stockLeft(it.id):null;
+    return `<button type="button" class="qov-t" data-qov="${esc(it.id)}"><span class="qov-i">${ps?`<img src="${esc(ps)}" alt="" loading="lazy" onerror="this.remove()">`:`<em>${esc(it.emoji||"🛒")}</em>`}${q?`<i class="qov-q">${fq(q,it.unit)}</i>`:""}</span>
+    <b>${esc(SE.capNm?SE.capNm(it.name):it.name)}</b><small>${p>0?"₹"+p+(isPc(it.unit)?"":"/"+(UNITS[it.unit]||it.unit)):"भाव नहीं"}${rk?` · <u>📍${esc(rk)}</u>`:""}${st!=null?` · स्टॉक ${st}`:""}</small></button>`}).join("")
+    ||`<p class="qov-e">“${esc(S.q.trim())}” नहीं मिला — नाम दूसरी तरह लिखें (हिंदी/अंग्रेज़ी) या ✕ दबाकर स्कैन करें</p>`}</div>
+  ${list.length>L.length?`<p class="qov-m">और ${list.length-L.length} — नाम थोड़ा और लिखें</p>`:""}`}
+
 /* 💲 नया भाव: पुराना भाव सिर्फ़ सहारा (secondary) — मालिक एक दबाव में "वही रखें" या नया लिखें */
 function priceAsk(it){const o=+it.oldSale||0;
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="भाव पक्का करें"><div class="grab"></div>
@@ -1306,7 +1344,7 @@ function priceAsk(it){const o=+it.oldSale||0;
     closeSheet();toast("✓ "+it.name+" · "+rs(v));renderBill()};
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}if(e.target.closest("[data-pakeep]"))done(o);if(e.target.closest("[data-paok]"))done(parseFloat($("#paV").value)||0)};
   setTimeout(()=>{try{$("#paV").focus()}catch(e){}},50)}
-function renderBill(){
+function renderBill(){setTimeout(qOverlay,0);
   $("#demo").hidden=!S.demo;syncTab();renderBillTabs();
   $("#modes").innerHTML=[["walk","⭐ VIP ग्राहक",""],["udhar","उधार / क्रेडिट","ud"],["inst","अपनी संस्था","inst"]]
     .map(([k,v,c])=>`<button class="chip ${c}" aria-pressed="${S.mode===k}" data-mode="${k}">${v}</button>`).join("");
@@ -2008,7 +2046,7 @@ async function camOn(){
   if(lsGet("se_torch")==="1"&&SE.cam.canTorch&&!SE.cam.torch){try{const t=await SE.cam.toggleTorch();$("#camTorch").textContent=t?"🔦 बंद":"🔦"}catch(e){}}
 }
 async function camOff(remember){await SE.cam.stop();camUi(false);if(remember)lsSet("se_cam","0")}
-function camUi(on){document.documentElement.classList.toggle("camon",on);$("#camwin").hidden=!on;$("#scanBtn").setAttribute("aria-pressed",on?"true":"false");
+function camUi(on){document.documentElement.classList.toggle("camon",on);setTimeout(qOverlay,0);$("#camwin").hidden=!on;$("#scanBtn").setAttribute("aria-pressed",on?"true":"false");
   const tb=$("#camTorch");tb.hidden=!(on&&SE.cam.canTorch);tb.textContent="🔦";
   const zb=$("#camZoom");zb.hidden=!(on&&SE.cam.canZoom);zb.textContent=(+SE.cam.zoom||1).toFixed(1).replace(".0","")+"x";if(on)camLayout()}
 /* कैमरा-खिड़की हेडर के ठीक नीचे (स्क्रीन के बीच) — हेडर की ऊँचाई नापकर */
