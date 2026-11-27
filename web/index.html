@@ -1856,10 +1856,10 @@ async function handleScan(code){
 let PEH=null;async function pehchan(){if(PEH)return PEH;try{const r=await fetch("pehchan.json");const j=await r.json();PEH=new Map();j.items.forEach(x=>x.barcodes.forEach(b=>PEH.set(b.code,x)))}catch(e){PEH=new Map()}return PEH}
 const PEH_SUB={NAM:"namkeen",DRY:"dryfruit",SAU:"achar",RAS:"rashan",MAS:"masala",BAK:"bakery",BEV:"drinks",BIS:"sweet",CHO:"sweet",DAI:"dairy",ICE:"ice",TOB:"tob",OTH:"clean",POO:"pooja",DIS:"disposal",PAR:"party"};
 async function pehchanFill(code){const m=await pehchan(),x=m.get(code);window.PEH_HIT=x?{code,x}:null;if(!x){if($("#nbName")&&window.SM)SM.fillNew(code);return}if(!$("#nbName"))return;
-  $("#nbName").value=x.bill;$("#nbHi").value=x.hi||"";if(x.mrp)$("#nbMrp").value=x.mrp;
+  $("#nbName").value=x.bill;$("#nbHi").value=x.hi||"";if(x.mrp)$("#nbMrp").value=x.mrp;/* 27-11: पुराना बिक्री भाव पहले से भरो — साथी सिर्फ़ "जोड़ें" दबाएँ, बिल न रुके (मालिक बाद में पास करते हैं) */if(x.lastSale&&$("#nbSale")&&!$("#nbSale").value&&!(x.mrp&&x.lastSale>x.mrp))$("#nbSale").value=x.lastSale;if(S.isOwner&&x.lastPur&&$("#nbCost")&&!$("#nbCost").value)$("#nbCost").value=x.lastPur;
   const sb=$("#nbSub");if(sb&&PEH_SUB[x.cat]&&[...sb.options].some(o=>o.value===PEH_SUB[x.cat]))sb.value=PEH_SUB[x.cat];
   const n=document.createElement("p");n.className="note";n.style.cssText="background:var(--soft,#eef3ff);padding:8px 10px;border-radius:10px;margin:0 0 10px";
-  n.textContent=`🗂️ पहचान सूची से भरा: ${x.brand?x.brand+" · ":""}${x.bill}`+(x.lastSale?` — पिछली बार ₹${x.lastSale} में बिका`:"")+(S.isOwner&&x.lastPur?`, खरीद ₹${x.lastPur}`:"")+`। आज का MRP पैकेट पर देखकर भाव लिखें।`;
+  n.textContent=`🗂️ पहचान सूची से भरा: ${x.brand?x.brand+" · ":""}${x.bill}`+(x.lastSale?` — पिछली बार ₹${x.lastSale} में बिका`:"")+(S.isOwner&&x.lastPur?`, खरीद ₹${x.lastPur}`:"")+(x.lastSale?`। भाव भर दिया है — पैकेट पर नया MRP हो तो बदलकर "जोड़ें" दबाएँ।`:`। आज का MRP पैकेट पर देखकर भाव लिखें।`);
   const c=$("#sheet .card2");if(c)c.parentNode.insertBefore(n,c)}
 /* 🔒 गुप्त कोड वाले सामान (गुटखा/ज़र्दा/सिगरेट): बिल/प्रिंट/WhatsApp पर असली नाम नहीं छपता */
 /* ✂️ स्थायी नियम: बिल व लेबल पर छोटा नाम (24 अक्षर तक) — "कंपनी + सामान + साइज़"। it.short हो तो वही, नहीं तो अपने-आप छोटा */
