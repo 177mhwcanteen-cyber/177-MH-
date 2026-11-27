@@ -1,0 +1,35 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-03",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "रेड बुल 250 ML ₹125, 9, कोका-कोला फ्रिज 20-1 (HELL के साथ आया) — सामान #31",
+ "items": [
+  {
+   "id": "b90162602",
+   "name": "RED BULL ENERGY DRINK 250 ML CAN",
+   "short": "RED BULL 250ML",
+   "hi": "रेड बुल एनर्जी ड्रिंक 250 मि.ली.",
+   "brand": "RED BULL",
+   "size": "250ml",
+   "alias": "red bull redbull energy drink can रेड बुल",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "90162602",
+   "mrp": 125,
+   "sale": 125,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "20-1",
+   "ph": "91d41583",
+   "open": {
+    "qty": 9,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
