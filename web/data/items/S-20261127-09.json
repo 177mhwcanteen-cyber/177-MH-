@@ -1,0 +1,32 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-09",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "ECO HEALTHWARE गन्ने के रेशे की प्लेट पैकेट ₹190, 23, स्टोर — सामान #37 (एक पैकेट में कितनी, बाद में)",
+ "items": [
+  {
+   "id": "g-eco-healthware-cane-fiber-plate-190",
+   "name": "ECO HEALTHWARE CANE FIBER PLATE PACK",
+   "short": "ECO CANE FIBER PLATE",
+   "hi": "इको हेल्थवेयर गन्ना-रेशा प्लेट पैकेट",
+   "brand": "ECO HEALTHWARE",
+   "alias": "eco healthware cane fiber bagasse plate biodegradable disposable प्लेट गन्ना",
+   "cat": "kirana",
+   "sub": "disposal",
+   "unit": "pc",
+   "mrp": 190,
+   "sale": 190,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "fe28fe50",
+   "open": {
+    "qty": 23,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
