@@ -1,0 +1,31 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-06",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "डिस्पोज़ल प्लास्टिक गिलास पैकेट ₹50, 95, स्टोर — सामान #34 (एक पैकेट में कितने, बाद में)",
+ "items": [
+  {
+   "id": "g-disposable-plastic-glass-pack-50",
+   "name": "DISPOSABLE PLASTIC GLASS PACK",
+   "short": "DISPOSABLE GLASS PACK",
+   "hi": "डिस्पोज़ल प्लास्टिक गिलास पैकेट",
+   "alias": "disposable glass plastic cup gilas डिस्पोज़ल गिलास कप",
+   "cat": "kirana",
+   "sub": "disposal",
+   "unit": "pc",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "1dae5a92",
+   "open": {
+    "qty": 95,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
