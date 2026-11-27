@@ -1,0 +1,34 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-10",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "PRIYAGOLD MARIE LITE बिस्किट ₹10, 21 पीस, रैक 11-38 — सामान #38",
+ "items": [
+  {
+   "id": "b8901652140903",
+   "name": "PRIYAGOLD MARIE LITE BISCUIT",
+   "short": "PRIYAGOLD MARIE LITE 10",
+   "hi": "प्रियागोल्ड मैरी लाइट बिस्किट",
+   "brand": "PRIYAGOLD",
+   "alias": "priyagold priya gold marie lite biscuit मैरी लाइट बिस्किट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652140903",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-38",
+   "ph": "195b0fe1",
+   "open": {
+    "qty": 21,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
