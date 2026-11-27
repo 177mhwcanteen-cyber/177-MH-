@@ -166,6 +166,7 @@ function ownerText(){
   (d.nWaste?`🗑️ खराब/एक्सपायर हटाया: ${d.nWaste} बार · लगभग ${rs(d.waste)}\n`:"")+
   (window.SG?SG.ownerLine():"")+
   (window.SB&&SB.rateLine?SB.rateLine(S.dayBills):"")+
+  (window.SB&&SB.rmLine&&S.billsDate===today()?SB.rmLine():"")+
   (window.SV?SV.dayLine(S.billsDate):"")+
   ((S.cancelReqs||[]).length?`🚫 रद्द की अर्ज़ी — आपका फ़ैसला बाकी: ${S.cancelReqs.map(r=>r.no+" "+rs(r.total)+" ("+(r.byName||"")+")").join(", ")}\n`:"")+
   (cnt.length?`🔢 गिनती: ${cnt.map(c=>c.byName+" · "+(c.nDiff?c.nDiff+" सामान में फर्क"+(c.short>0?", कम "+rs(c.short):""):"सब मिला")).join(", ")}\n`:"")+

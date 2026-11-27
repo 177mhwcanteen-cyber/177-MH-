@@ -197,6 +197,7 @@ SG.dayHTML=function(){
     <button type="button" class="lnk" data-sgwho style="margin-top:8px">📤 किसने कितना ले गया (30 दिन) ›</button>
     <div class="seg" style="margin-top:8px"><span class="note" style="align-self:center">कर्मचारी को गिनती की याद हर</span>${[1,2,3].map(h=>`<button class="chip" data-sghrs="${h}" aria-pressed="${SG.hrs()===h}">${h} घंटे</button>`).join("")}</div>
     <div class="seg" style="margin-top:6px"><span class="note" style="align-self:center">⏰ फोन पर घंटी (${hh(SG.win()[0])}–${hh(SG.win()[1])})</span><button class="chip" data-sgal="1" aria-pressed="${(S.settings||{}).gallaAlarm!==false}">चालू</button><button class="chip" data-sgal="0" aria-pressed="${(S.settings||{}).gallaAlarm===false}">बंद</button></div>
+    <div class="seg" style="margin-top:6px"><span class="note" style="align-self:center">🎲 बीच में अचानक भी याद (हर घंटे किसी भी मिनट)</span><button class="chip" data-sgrnd="1" aria-pressed="${!!(S.settings||{}).gallaRand}">चालू</button><button class="chip" data-sgrnd="0" aria-pressed="${!(S.settings||{}).gallaRand}">बंद</button></div>
   </div>`;
 };
 const notesTxt=g=>{const N=g.notes||{};const k=Object.keys(N).sort((a,b)=>b-a);return k.length?" · "+k.map(v=>v+"×"+N[v]).join(", ")+(g.coins?" + सिक्के "+g.coins:""):""};
@@ -298,6 +299,9 @@ SG.nag=function(force){
   else if(!st.close&&h>=21.5){msg="🔒 दुकान बंद करते समय गल्ला बंद करें — नोट गिनकर लिखें";k="close"}
   else if(!st.close&&SG.hrs()===1&&(()=>{const c=SG.slots().find(x=>x.st==="now");return c&&!c.e})()){msg="⏰ "+hh(new Date().getHours())+" — इस घंटे की गल्ला गिनती बाकी है। नोट गिनकर लिख दें (1 मिनट)";k="count"}
   else if(!st.close&&SG.hrs()>1&&st.last&&Date.now()-st.last.ts>=SG.hrs()*36e5){msg="💵 गल्ला गिनती का समय — नोट गिनकर लिख दें (1 मिनट)";k="count"}
+  /* 🎲 27-11 (विक्रम जी): "रैंडमली" — हर घंटे एक अनजान मिनट (तारीख+घंटे से, 5–50), पिछली गिनती 25 मिनट से पुरानी हो तो */
+  if(!k&&!st.close&&st.open&&(S.settings||{}).gallaRand){const d=new Date(),hr=d.getHours();let x=0;for(const c of today()+"|"+hr)x=(x*31+c.charCodeAt(0))%997;const rm=5+x%46,mn=d.getMinutes();
+    if(mn>=rm&&mn<rm+10&&(!st.last||Date.now()-st.last.ts>=25*60000)&&LSg.get("sg_rnd")!==today()+"|"+hr){LSg.set("sg_rnd",today()+"|"+hr);msg="🎲 अचानक जाँच — अभी गल्ला गिनकर लिखें (1 मिनट)";k="count"}}
   if(!k)return false;
   const sk="sg_snz_"+today()+"_"+k;if(!force&&Date.now()-(+LSg.get(sk)||0)<(k==="count"&&SG.hrs()===1?10:20)*60000)return false;
   const el=document.createElement("div");el.id="sgNag";el.className="sgnag";el.setAttribute("role","status");
@@ -311,6 +315,7 @@ document.addEventListener("change",e=>{const d=e.target.closest&&e.target.closes
   if(/^\d{4}-\d{2}-\d{2}$/.test(d.value)){SG.rng=d.value===(S.billsDate||today())?"t":"d:"+d.value;SG.kf="all";if(typeof renderDay==="function")renderDay()}});
 document.addEventListener("click",e=>{
   const g=e.target.closest("[data-sg]");if(g){SG.sheet(g.dataset.sg);return}
+  const rd=e.target.closest("[data-sgrnd]");if(rd&&S.isOwner){saveSetting({gallaRand:rd.dataset.sgrnd==="1"});return}
   const h=e.target.closest("[data-sghrs]");if(h&&S.isOwner){saveSetting({gallaHrs:+h.dataset.sghrs});return}
   const al=e.target.closest("[data-sgal]");if(al&&S.isOwner){saveSetting({gallaAlarm:al.dataset.sgal==="1"});setTimeout(()=>{try{window.SRG&&SRG.start&&SRG.start(false)}catch(x){}},800);return}
   const n=e.target.closest("[data-sgnag]");if(n){const el=document.getElementById("sgNag");const k=el?el.dataset.k:"count";

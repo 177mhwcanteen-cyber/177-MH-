@@ -275,6 +275,8 @@ SB.rmLoad=function(force){if(!S.isOwner||S.demo||!S.db)return;if(!force&&Date.no
 SB.rmOpen=function(){return Object.entries(SB._rm.e||{}).filter(([k])=>!(SB._rm.ok||{})[k]).sort((a,b)=>b[1].ts-a[1].ts)};
 SB.rmHTML=function(){if(!S.isOwner)return "";SB.rmLoad();const L=SB.rmOpen();if(!L.length)return "";
   return `<button class="sb-rmchip" data-sbrm style="border:0;background:#fee2e2;color:#991b1b;font-weight:800;border-radius:999px;padding:5px 12px;margin:0 0 6px;font-size:13px">🗑️ आज ${L.length} सामान साथी ने बिल से हटाए — देखें</button>`};
+SB.rmLine=function(){SB.rmLoad();const A=Object.values(SB._rm.e||{});if(!A.length)return "";const n=SB.rmOpen().length;
+  return `🗑️ बिल बनने से पहले हटाए: ${A.length} सामान · ${rs(A.reduce((a,x)=>a+num(x.amt),0))}${n?` (⚠ ${n} पर आपका ✓ बाकी)`:""} — ${A.slice(0,6).map(x=>(x.name||x.id)+" ("+(x.byName||"")+")").join(", ")}\n`};
 SB.rmSheet=function(){const L=SB.rmOpen();
   $("#sheet").innerHTML=`<div class="scrim" data-close><div class="sheet px" role="dialog" aria-label="हटाए सामान"><div class="grab"></div>
   <div class="sh-head"><div><h3>🗑️ बिल से हटाए सामान (आज)</h3><span class="note">स्कैन के बाद बिल बनने से पहले हटाए — ठीक हो तो ✓ दबाएँ</span></div><button class="x" data-close aria-label="बंद करें">✕</button></div>
