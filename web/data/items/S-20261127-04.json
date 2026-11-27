@@ -1,0 +1,31 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-04",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "डिस्पोज़ल खाने वाली थाली (खानों वाली) पैकेट ₹80, 32, स्टोर में — सामान #32 (एक पैकेट में कितनी, बाद में)",
+ "items": [
+  {
+   "id": "g-disposable-compartment-plate-pack-80",
+   "name": "DISPOSABLE COMPARTMENT PLATE PACK",
+   "short": "DISPOSABLE THALI PACK",
+   "hi": "डिस्पोज़ल थाली (खानों वाली) पैकेट",
+   "alias": "disposable plate thali compartment dona pattal डिस्पोज़ल थाली प्लेट",
+   "cat": "kirana",
+   "sub": "disposal",
+   "unit": "pc",
+   "mrp": 80,
+   "sale": 80,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "be0ecfd8",
+   "open": {
+    "qty": 32,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
