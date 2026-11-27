@@ -1,0 +1,32 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261127-01",
+ "date": "2026-11-27",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "कुल्हड़ लस्सी ₹50, 8, फ्रिज (22-1) — सामान #29",
+ "items": [
+  {
+   "id": "g-kulhad-lassi-50",
+   "name": "KULHAD LASSI",
+   "short": "KULHAD LASSI",
+   "hi": "कुल्हड़ लस्सी",
+   "alias": "lassi kulhad kesar dry fruit लस्सी कुल्हड़",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "mrp": 50,
+   "sale": 50,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-1",
+   "ph": "4d554d96",
+   "open": {
+    "qty": 8,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
