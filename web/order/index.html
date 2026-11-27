@@ -114,7 +114,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:18px 12px 8px}
 .eta2{margin:-4px 0 8px;font-size:12.5px;font-weight:700;color:#9a3412;background:#fff7ed;border-radius:9px;padding:5px 8px}.box.bill h3{color:#7a1c1c}
 .adr{display:flex;gap:10px;align-items:center;background:#fff7ed;border:1.5px solid #fdba74;border-radius:12px;padding:9px 11px;margin-top:10px}.adr>span{font-size:24px}.adr div{flex:1;display:grid;line-height:1.3}.adr small{font-size:11.5px;color:#9a3412;font-weight:700}.adr b{font-size:15px}
 .box.pay .wa{display:block;background:#25d366;color:#fff;border-radius:12px;padding:11px;font-weight:800;text-decoration:none;margin-top:8px}.ok{font-size:40px;margin:-4px 0}
-.box.pay{border:2px solid #16a34a;text-align:center}.box.pay .upi{display:block;background:#16a34a;color:#fff;border-radius:12px;padding:12px;font-weight:800;text-decoration:none;margin:4px 0 8px}#pqr{display:grid;place-items:center;margin:4px 0}#pqr img,#pqr canvas{border:6px solid #fff;border-radius:8px}
+.box.pay{border:2px solid #16a34a;text-align:center}.box.pay .upi{display:block;background:#16a34a;color:#fff;border-radius:12px;padding:12px;font-weight:800;text-decoration:none;margin:4px 0 8px}[id^=pqr]{display:grid;place-items:center;margin:4px 0}[id^=pqr] img,[id^=pqr] canvas{border:6px solid #fff;border-radius:8px}
 .ch .hero{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:16px;margin:0 0 10px;box-shadow:0 4px 14px rgba(80,20,10,.25)}
 .mrp{background:linear-gradient(160deg,#fff7ed,#fff 55%);border:1.5px solid #fdba74}.mrh{display:flex;justify-content:space-between;gap:10px}.mrh>div:first-child{display:grid}.mrh small{font-size:12px;color:#9a3412;font-weight:700}.mrh b{font-size:20px}.mrh span{font-size:12px;color:#666}
 .mrr{display:grid;justify-items:center;background:#7a1c1c;color:#fff;border-radius:14px;padding:6px 10px;min-width:74px}.mrr b{font-size:24px;line-height:1}.mrst{color:#fbbf24;font-size:12px;letter-spacing:1px}.mrr small{font-size:10px;opacity:.85}
@@ -376,7 +376,7 @@ async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.
   const CH=[];GS.forEach(k=>{const A=all.filter(i=>stOf(i)===k);for(let j=0;j<A.length;j+=40)CH.push([k,A.slice(j,j+40)])});const grp=CH.length>1?"G"+Date.now().toString(36).slice(-6):"";let paid=0;
   if(GS.includes("rasoi")&&!rsState().ok){toast("🌙 Marwar Rasoi takes orders 8:00 AM – 10:30 PM — please remove the restaurant items for now");return}
   const btn=$("#place");btn.disabled=true;btn.textContent="⏳ Placing order…";
-  const S=v=>({stringValue:String(v)});const ts=Date.now(),ids=[];
+  const S=v=>({stringValue:String(v)});const ts=Date.now(),ids=[],byShop={};
   try{for(let ci=0;ci<CH.length;ci++){const [k,I]=CH[ci],first=ci===0,st=Math.round(I.reduce((a,i)=>a+Q[i.id]*i.s,0)*100)/100,total=Math.round((st+(first?fe-Math.min(dc,st):0))*100)/100;
       const meta=[mode()==="d"?"🛵":"🏪",(me.pay||"u")==="u"?"📱":"💵","⏰ "+(me.when||"Now"),"",alt&&alt!==ph?"☎️"+alt:"","₹"+total,first&&dc?"🎟"+String(me.cp).toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12)+"-₹"+Math.min(dc,st):"",k!=="mh"?"🏬"+k:"",grp?"🧺"+grp+"/"+CH.length:""].filter(Boolean).join("|");
       const note=(meta+"¦"+nt).slice(0,200);
@@ -389,19 +389,33 @@ async function place(){const A=ACC();if(!A.ph){welcome(false);return}const nm=A.
       const r=await fetch(toRs?RB+"orders?key="+RS.key:B+"orders?key="+C.apiKey,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(toRs?rb:body)});if(!r.ok)throw new Error(r.status);
       const j=await r.json();const id=String(j.name||"").split("/").pop();ids.push(id);
       const mine=LS.get("mh_orders",[]);mine.unshift({id,ts,total,n:I.length,items:I.map(i=>[i.id,Q[i.id]]),mode:mode(),st:k,shop:k});LS.set("mh_orders",mine.slice(0,30));
+      byShop[k]=Math.round(((byShop[k]||0)+total)*100)/100;if(k==="sabji")sxMirror(body,nm,ph,total,id);
       I.forEach(i=>delete Q[i.id]);LS.set("mh_cart",Q);PART=true;paid+=total}
-    Q={};LS.set("mh_cart",Q);PART=false;NT="";draw();PAYDUE=(me.pay||"u")==="u"?{amt:Math.round(paid*100)/100,ref:String(ids[0]).slice(-6).toUpperCase(),gs:GS}:{gs:GS};track(ids[0],true);if(ids.length>1)setTimeout(()=>toast("✅ "+ids.length+" orders placed — one per shop"),600)}
+    Q={};LS.set("mh_cart",Q);PART=false;NT="";draw();PAYDUE=(me.pay||"u")==="u"?{amt:Math.round(paid*100)/100,ref:String(ids[0]).slice(-6).toUpperCase(),gs:GS,parts:payParts(byShop)}:{gs:GS};track(ids[0],true);if(ids.length>1)setTimeout(()=>toast("✅ "+ids.length+" orders placed — one per shop"),600)}
   catch(e){btn.disabled=false;btn.textContent="✓ Place order";bar();toast(ids.length?"Some orders sent ("+ids.length+") — tap Place order again for the rest":"Order not sent — check internet and try again")}}
 
 /* 🛵 हर दुकान का समय (विक्रम जी, 15-11): रसोई — कम से कम 30 मिनट (ताज़ा बनता है); कैंटीन/सब्ज़ी — डिलीवरी पार्टनर फ्री होते ही अलग से */
 const ETA2=k=>k==="rasoi"?"🍳 Cooked fresh after you order · delivery in about 30–40 min (minimum 30 min)":"🛵 Comes separately — sent as soon as our delivery partner is free";
 /* 📱 अभी भुगतान: UPI ऐप सीधा खुले (रकम भरी) + QR (दूसरे फोन से स्कैन) — दुकान का वही UPI जो 177 के बिल पर है */
 let PAYDUE=null,ADED=false,NT="",PART=false; /* NT = लिखी हिदायत (कार्ट दोबारा बनने पर न मिटे) · PART = आधा ऑर्डर जा चुका, डिलीवरी फीस/कूपन लग चुका (23-11) */ /* ADED = पता बदल रहे हैं (सेव पता की जगह खाने दिखें) — फौज के इलाके में lat/lng नहीं लेते (विक्रम जी 15-11) */const UPI=()=>CF.upi||"6367183480@okbizaxis";
-const upiUrl=(a,ref)=>`upi://pay?pa=${encodeURIComponent(UPI())}&pn=${encodeURIComponent("Marwar Rasoi")}&am=${(+a).toFixed(2)}&cu=INR&tn=${encodeURIComponent("Order #"+ref)}`;
+/* 💰 हर दुकान का पैसा उसी के खाते में (विक्रम जी 27-11): 🥬 सब्ज़ी का "Pay now" अब सब्ज़ी एक्सप्रेस के UPI पर (पहले 177 MH के खाते में जाता था,
+   नाम "Marwar Rasoi" दिखता था) — 177 MH और रसोई वही पुराना UPI। config: CF.upi (MH/रसोई), stores.sabji.upi (सब्ज़ी)। */
+const PAYTO=k=>k==="sabji"?{pa:SC.upi||"9460409552@okbizaxis",pn:SC.payee||"VIKRAM CHARAN",n:"Sabji Express"}:{pa:UPI(),pn:k==="rasoi"?"Marwar Rasoi":"177 MH Wet Canteen",n:k==="rasoi"?"Marwar Rasoi":"177 MH Canteen"};
+function payParts(by){const M={};Object.entries(by).forEach(([k,a])=>{if(!(a>0))return;const t=PAYTO(k),o=M[t.pa]||(M[t.pa]={...t,amt:0,ks:[]});o.amt=Math.round((o.amt+a)*100)/100;o.ks.push(k);if(o.ks.length>1)o.n=o.ks.map(x=>STS[x].n).join(" + ")});return Object.values(M)}
+const upiUrl=(a,ref,t)=>{t=t||PAYTO("mh");return `upi://pay?pa=${encodeURIComponent(t.pa)}&pn=${encodeURIComponent(t.pn)}&am=${(+a).toFixed(2)}&cu=INR&tn=${encodeURIComponent("Order #"+ref)}`};
+/* 🥬 सब्ज़ी के ऑर्डर की नकल सब्ज़ी एक्सप्रेस ऐप के 📥 ऑर्डर-डिब्बे में भी (उसके Firebase में, बिना लॉगिन — उसके नियम यही खाने मानते हैं),
+   ताकि गाड़ी वाले साथी "🧾 बिल बनाएँ" दबाएँ → बिक्री, स्टॉक, UPI/नकद सब सब्ज़ी ऐप के हिसाब में (पहले ये ऑर्डर सिर्फ़ 177 ऐप में आते थे) */
+async function sxMirror(body,nm,ph,total,mid){try{if(!SC.pid||!SC.key)return;const F=body.fields,S2=v=>({stringValue:String(v)});
+  const items={arrayValue:{values:(F.items.arrayValue.values||[]).map(v=>{const f=v.mapValue.fields;return {mapValue:{fields:{id:S2(String(f.id.stringValue).replace(/^sx-/,"")),n:f.n,q:f.q,u:f.u,s:f.s}}}})}};
+  const pay=(me.pay||"u")==="u"?"📱 UPI चुना (पैसा आया या नहीं — देखें)":"💵 नकद (डिलीवरी पर)";
+  const note=[pay,"₹"+total,"⏰ "+(me.when||"Now"),"🛒 ऑर्डर-पेज #"+String(mid||"").slice(-6).toUpperCase(),NT||""].filter(Boolean).join(" · ").slice(0,200);
+  await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/orders?key="+SC.key,{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({fields:{name:S2(nm.slice(0,40)),phone:S2(ph),addr:F.addr,note:S2(note),items,ts:F.ts,status:S2("new"),src:S2("web2")}})})}catch(e){}}
 function payHTML(P){if(!P)return"";const T=(P.gs||[]).map(k=>`<div class="row"><span>${STS[k].ic} ${esc(STS[k].n)}</span><small>${k==="rasoi"?"🍳 min. 30 min":"🛵 when partner is free"}</small></div>`).join("");
-  return `${P.amt?`<div class="box pay"><h3>📱 Pay now — ${rs(P.amt)}</h3><a class="big upi" href="${upiUrl(P.amt,P.ref)}">Pay ${rs(P.amt)} with UPI app ›</a><div id="pqr"></div><p class="hint">Pay to <b>${esc(UPI())}</b> · Order #${esc(P.ref)}. Paid orders are packed first. Prefer cash? Pay the delivery partner.</p>
-    <a class="big wa" href="https://wa.me/91${esc(waPh()||"6367183480")}?text=${encodeURIComponent("✅ Payment done for Marwar Rasoi order #"+P.ref+" — ₹"+P.amt+"\n(Screenshot attached / स्क्रीनशॉट भेज रहा हूँ)")}" target="_blank" rel="noopener">📸 Paid? Send screenshot on WhatsApp</a><p class="hint">पेमेंट के बाद उसका स्क्रीनशॉट WhatsApp पर भेजें — तभी पक्का होगा कि पैसा आ गया।</p></div>`:""}${T?`<div class="box"><h3>🕒 When will it arrive?</h3>${T}${(P.gs||[]).length>1?`<p class="hint">Each shop sends its own bag — you may get them at different times.</p>`:""}</div>`:""}`}
-function payQR(){const el=$("#pqr");if(!el||!PAYDUE||!PAYDUE.amt)return;const tx=upiUrl(PAYDUE.amt,PAYDUE.ref),go=()=>{try{new QRCode(el,{text:tx,width:150,height:150,correctLevel:QRCode.CorrectLevel.M})}catch(e){}};
+  const PT=P.parts&&P.parts.length?P.parts:[{...PAYTO("mh"),amt:P.amt}],many=PT.length>1;
+  return `${P.amt?`<div class="box pay"><h3>📱 Pay now — ${rs(P.amt)}</h3>${many?`<p class="hint">Two shops, two UPI payments:</p>`:""}${PT.map((t,i)=>`<a class="big upi" href="${upiUrl(t.amt,P.ref,t)}">Pay ${rs(t.amt)}${many?" · "+esc(t.n):""} with UPI app ›</a><div id="pqr${i}"></div><p class="hint">Pay to <b>${esc(t.pa)}</b>${many?"":" ("+esc(t.n)+")"} · Order #${esc(P.ref)}.</p>`).join("")}<p class="hint">Paid orders are packed first. Prefer cash? Pay the delivery partner.</p>
+    <a class="big wa" href="https://wa.me/91${esc(waPh()||"6367183480")}?text=${encodeURIComponent("✅ Payment done for "+PT.map(t=>t.n+" ₹"+t.amt).join(" + ")+" · order #"+P.ref+"\n(Screenshot attached / स्क्रीनशॉट भेज रहा हूँ)")}" target="_blank" rel="noopener">📸 Paid? Send screenshot on WhatsApp</a><p class="hint">पेमेंट के बाद उसका स्क्रीनशॉट WhatsApp पर भेजें — तभी पक्का होगा कि पैसा आ गया।</p></div>`:""}${T?`<div class="box"><h3>🕒 When will it arrive?</h3>${T}${(P.gs||[]).length>1?`<p class="hint">Each shop sends its own bag — you may get them at different times.</p>`:""}</div>`:""}`}
+function payQR(){if(!PAYDUE||!PAYDUE.amt)return;const P=PAYDUE,PT=P.parts&&P.parts.length?P.parts:[{...PAYTO("mh"),amt:P.amt}];const go=()=>PT.forEach((t,i)=>{const el=$("#pqr"+i);if(el)try{new QRCode(el,{text:upiUrl(t.amt,P.ref,t),width:150,height:150,correctLevel:QRCode.CorrectLevel.M})}catch(e){}});
   if(window.QRCode)return go();const sc=document.createElement("script");sc.src="../lib/qrcode.min.js";sc.onload=go;document.head.appendChild(sc)}
 /* ---------- 📦 ट्रैकिंग (pub/ot_<id> — दुकान का ऐप हर कदम पर भरता है) ---------- */
 const STEPS=[["new","Order placed","Received at the shop"],["acc","Accepted","The shop has confirmed your order"],["pack","Packing","Your items are being packed"],["out","On the way","🛵 Coming to you"],["done","Delivered","Thank you! 🙏"]];

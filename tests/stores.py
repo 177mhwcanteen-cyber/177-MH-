@@ -31,7 +31,7 @@ SX = {"items": [{"id": "tamatar", "n": "टमाटर", "e": "Tomato", "u": "k
 
 
 async def main():
-    posted = []; posted_urls = []
+    posted = []; posted_urls = []; sxm = []
     async with async_playwright() as p:
         b = await p.chromium.launch()
         ctx = await b.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
@@ -42,7 +42,9 @@ async def main():
             if "/projects/sabji-express-9a8f0/" in u and "/pub/rates" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in SX.items()}})
             if "/projects/mh177-canteen/" in u and "/pub/rates" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in MH.items()}})
             if u.split("?")[0].endswith("/documents/orders") and route.request.method == "POST":
-                body = json.loads(route.request.post_data); posted.append(body["fields"]); posted_urls.append(u)
+                body = json.loads(route.request.post_data)
+                if "/projects/sabji-express-9a8f0/" in u: sxm.append(body["fields"]); return await route.fulfill(json={"name": "projects/s/databases/(default)/documents/orders/SX1"})
+                posted.append(body["fields"]); posted_urls.append(u)
                 return await route.fulfill(json={"name": "projects/x/databases/(default)/documents/orders/O" + str(len(posted)), "fields": body["fields"]})
             if "/projects/marwar-rasoi-24d56/" in u and "/cname" in u: cname.append(u); return await route.fulfill(json={"name": "x"})
             if "/projects/marwar-rasoi-24d56/" in u and "/cfav/" in u:
@@ -107,10 +109,14 @@ async def main():
         await c.fill("#un", "177 MH")
         await c.click("#place"); await c.wait_for_timeout(1500)
         assert len(posted) == 3, posted
-        t = await c.inner_text("#ov"); assert "Pay now" in t and "min. 30 min" in t and await c.locator("#ov a.upi[href^='upi://pay?pa=']").count() == 1, "ऑर्डर के बाद: अभी भुगतान (UPI) + दुकान-वार समय"
+        t = await c.inner_text("#ov"); assert "Pay now" in t and "min. 30 min" in t and await c.locator("#ov a.upi[href^='upi://pay?pa=']").count() == 2, "ऑर्डर के बाद: अभी भुगतान (UPI) + दुकान-वार समय"
+        hs = await c.evaluate("[...document.querySelectorAll('#ov a.upi')].map(a=>decodeURIComponent(a.href))")
+        assert any("pa=9460409552@okbizaxis" in h and "VIKRAM CHARAN" in h for h in hs) and any("pa=6367183480@okbizaxis" in h for h in hs), hs  # 27-11: सब्ज़ी का पैसा सब्ज़ी के UPI पर
+        assert len(sxm) == 1, sxm; f = sxm[0]; assert set(f) <= {"name", "phone", "addr", "note", "items", "ts", "status", "src"} and f["status"]["stringValue"] == "new", f
+        si = f["items"]["arrayValue"]["values"]; assert si[0]["mapValue"]["fields"]["id"]["stringValue"] == "tamatar" and "UPI" in f["note"]["stringValue"], si  # सब्ज़ी ऐप के 📥 ऑर्डर में
         assert await c.locator("#ov a.wa[href*='wa.me/91']").count() == 1, "पेमेंट का स्क्रीनशॉट WhatsApp पर"
         me_ = await c.evaluate("JSON.parse(localStorage.getItem('mh_me'))"); assert me_.get("qt") == "12/B" and me_.get("un") == "177 MH" and "ll" not in me_, me_
-        await c.wait_for_timeout(600); assert await c.locator("#pqr img, #pqr canvas").count() >= 1, "भुगतान का QR"; await c.screenshot(path=f"{SHOTS}/st5b-pay.png", full_page=True)
+        await c.wait_for_timeout(600); assert await c.locator("[id^=pqr] img, [id^=pqr] canvas").count() >= 2, "भुगतान का QR"; await c.screenshot(path=f"{SHOTS}/st5b-pay.png", full_page=True)
         await c.click("#ov .x"); await c.wait_for_timeout(200); await c.locator("#m [data-p]").first.click(); await c.click("#cbar"); await c.wait_for_timeout(300); assert await c.locator("#ov .adr").count() == 1 and "Quarter 12/B" in await c.inner_text("#ov .adr") and await c.locator("#qt").count() == 0, "सेव पता दिखा, दोबारा नहीं पूछा"
         await c.screenshot(path=f"{SHOTS}/st5c-saved-addr.png"); await c.click("[data-aded]"); assert await c.input_value("#un") == "177 MH", "बदलें → खाने भरे हुए"; await c.click("#ov .x")
         rsp = [x for x in posted if "src" not in x]; posted177 = [x for x in posted if "src" in x]
