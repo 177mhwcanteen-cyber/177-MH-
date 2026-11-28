@@ -37,6 +37,7 @@
   `.github/check-request` बदलने पर check.yml जाँच करके `checks/report.txt` लिखता है।
 - Sentry: org `vbe-tt`, project `mh177-canteen` — फोन की गलतियाँ यहीं आती हैं (se-watch.js, बिना SDK)।
 - बहन ऐप (इन्हीं की अच्छी चीज़ें यहाँ लाई गई हैं): `177mhwcanteen-cyber/bhairav-canteen-app`, `177mhwcanteen-cyber/sabji-express-app`।
+  🥬 सब्ज़ी एक्सप्रेस का कुछ भी छूना हो (यहाँ का `web/order` सब्ज़ी वाला हिस्सा भी) → पहले sabji-express-app की `docs/SHURU-YAHAN-SE.md` (अभी की हालत, 🔒 काम-ताला)।
 
 ## दुकान
 177 MH (मिलिट्री हॉस्पिटल) वेट कैंटीन, आकाशवाणी रोड, बाड़मेर — आर्मी कैंटीन: मिठाई (किलो), नाश्ता/डोसा/पिज़्ज़ा/चाइनीज़, किराना,
