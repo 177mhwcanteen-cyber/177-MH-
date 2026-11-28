@@ -190,6 +190,24 @@ async def main():
         await a.evaluate("SON._mt='sabji';SON.menus.ts=0;SON.menuSheet()"); await a.wait_for_timeout(1200)
         assert "TOMATO" in await a.inner_text("#sheet")
         assert "omenu" in await a.evaluate("SMN.acts().map(x=>x.k)")
+        # 28-11: सब्ज़ी के भाव 36 घंटे से पुराने (pub/rates.ts) → "भाव फ़ोन पर पक्के" वाली पट्टी; ताज़ा हों तो नहीं
+        import time as _t
+        for age, want in ((3 * 864e5, True), (3600e3, False)):
+            o = await ctx.new_page(); o.on("pageerror", lambda e: errs.append("old: " + str(e)))
+            def mk(age):
+                async def fs_old(route):
+                    return await _fs_old(route, age)
+                return fs_old
+            async def _fs_old(route, age):
+                u = route.request.url
+                if "/projects/sabji-express-9a8f0/" in u and "/pub/rates" in u: return await route.fulfill(json={"fields": {k: fsv(v) for k, v in {**SX, "ts": int(_t.time() * 1000 - age)}.items()}})
+                return await fs(route)
+            await o.route("https://firestore.googleapis.com/**", mk(age)); await o.route("https://177mhwcanteen-cyber.github.io/**", lambda r: r.fulfill(status=404, body=""))
+            await o.add_init_script("if(!sessionStorage.getItem('y')){localStorage.clear();sessionStorage.setItem('y','1')}")
+            await o.goto("http://127.0.0.1:8793/order/?s=sabji&u=9876543210"); await o.wait_for_timeout(2500)
+            has = await o.evaluate("document.body.innerText.includes(\"Today's rates may differ\")")
+            assert has == want, ("stale sabji rates note", age, has)
+            await o.close()
         await b.close()
     bad = [e for e in errs if "Failed to load" not in e]
     assert not bad, bad

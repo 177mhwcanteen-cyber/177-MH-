@@ -229,7 +229,8 @@ async function loadSabji(){if(!SC.pid)return;const c=LS.get("mh_sx",null);if(Arr
   try{const r=await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/pub/rates?key="+SC.key,{cache:"no-store"});if(!r.ok)throw 0;
     const X=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
     LX=(X.items||[]).filter(i=>i&&i.id&&+i.s>0).map(i=>({id:"sx-"+i.id,n:String(i.e||i.n||"").toUpperCase(),hi:i.e?i.n:"",u:i.u||"kg",s:+i.s,c:["sabzi","patta","fal","packed"].includes(i.c)?i.c:"sabzi",p:i.p?(/^https?:/.test(i.p)?i.p:SC.base+String(i.p).replace(/^\.?\//,"")):"",h:i.h,em:"🥬",st:"sabji"}));
-    SXOLD=0;LS.set("mh_sx",LX);build();if(!LX.length)sabjiFallback()}catch(e){sabjiFallback()}}
+    /* 28-11: सब्ज़ी एक्सप्रेस का कोई फोन 36 घंटे से नहीं खुला तो भाव पुराने हैं — पहले बिना बताए "आज के भाव" जैसे दिखते थे; अब वही "भाव फ़ोन पर पक्के होंगे" वाली पट्टी */
+    SXOLD=+X.ts>0&&Date.now()-(+X.ts)>36*3600e3?1:0;LS.set("mh_sx",LX);build();if(!LX.length)sabjiFallback()}catch(e){sabjiFallback()}}
 async function loadRasoi(){try{const r=await fetch("rasoi.json",{cache:"no-store"});if(!r.ok)throw 0;RJ=await r.json();
     mkLR();build()}catch(e){}}
 /* 🎛️ मालिक का कंट्रोल (pub/rates.cfg): rp={id:भाव} · rx=[नई डिश] · hide={i:[id],c:[श्रेणी]} · offer="पट्टी" */
