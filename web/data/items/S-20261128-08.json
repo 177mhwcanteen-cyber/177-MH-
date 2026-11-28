@@ -1,0 +1,88 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261128-08",
+ "date": "2026-11-28",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "इंडिया गेट तिबार 5kg ₹728 ×12 (6-13), अंजीर डिब्बा 200g ₹240 ×5 (22-2); भाव: पर्ल थैली 154→130, मिरेकल मीडियम 170→90, मिरेकल लार्ज 210→120",
+ "items": [
+  {
+   "id": "b690225103121",
+   "name": "INDIA GATE TIBAR BASMATI RICE 5 KG",
+   "short": "INDIA GATE TIBAR 5KG",
+   "hi": "इंडिया गेट तिबार बासमती 5 किलो",
+   "brand": "INDIA GATE",
+   "size": "5kg",
+   "alias": "india gate tibar basmati rice chawal चावल बासमती",
+   "cat": "kirana",
+   "sub": "rashan",
+   "unit": "pc",
+   "barcode": "690225103121",
+   "mrp": 728,
+   "sale": 728,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "6-13",
+   "ph": "18b66869",
+   "open": {
+    "qty": 12,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-anjeer-dry-fig-box-200-g",
+   "name": "ANJEER DRY FIG BOX 200 G",
+   "short": "ANJEER BOX 200G",
+   "hi": "अंजीर डिब्बा 200 ग्राम",
+   "size": "200g",
+   "alias": "anjeer anjir dry fig box 200 अंजीर",
+   "cat": "kirana",
+   "sub": "dryfruit",
+   "unit": "pc",
+   "mrp": 240,
+   "sale": 240,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-2",
+   "ph": "0e551e19",
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-pearl-premium-garbage-bags-10-bags",
+   "name": "PEARL PREMIUM GARBAGE BAGS 10 BAGS",
+   "upd": {
+    "sale": {
+     "from": 154,
+     "to": 130
+    }
+   }
+  },
+  {
+   "id": "g-miracle-garbage-bags-medium-48x54-cm-30-",
+   "name": "MIRACLE GARBAGE BAGS MEDIUM 48X54 CM 30 BAGS",
+   "upd": {
+    "sale": {
+     "from": 170,
+     "to": 90
+    }
+   }
+  },
+  {
+   "id": "g-miracle-garbage-bags-large-61x81-cm-15-b",
+   "name": "MIRACLE GARBAGE BAGS LARGE 61X81 CM 15 BAGS",
+   "upd": {
+    "sale": {
+     "from": 210,
+     "to": 120
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
