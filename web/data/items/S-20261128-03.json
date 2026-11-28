@@ -1,0 +1,100 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261128-03",
+ "date": "2026-11-28",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "स्निकर्स ₹10 ×100 (22-1), वीनस + विकास जूता ब्रश ₹60 ×12-12, लौंग ₹10 ×50 — ब्रश/लौंग का रैक बाद में (सामान #43-46)",
+ "items": [
+  {
+   "id": "b8902433030598",
+   "name": "SNICKERS 11.5 G BAR 1 PC",
+   "short": "SNICKERS 11.5G",
+   "hi": "स्निकर्स ₹10",
+   "brand": "SNICKERS",
+   "size": "11.5g",
+   "alias": "snickers chocolate 10 स्निकर्स चॉकलेट",
+   "cat": "kirana",
+   "sub": "chocolate",
+   "unit": "pc",
+   "barcode": "8902433030598",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "22-1",
+   "ph": "729eb13c",
+   "open": {
+    "qty": 100,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8904380700012",
+   "name": "VENUS NO1 SHOE BRUSH",
+   "short": "VENUS SHOE BRUSH",
+   "hi": "वीनस जूता ब्रश",
+   "brand": "VENUS",
+   "alias": "venus shoe brush joota boot polish brush जूता ब्रश",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "barcode": "8904380700012",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "1c7beb2c",
+   "open": {
+    "qty": 12,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "g-vikas-shoe-life-shoe-brush",
+   "name": "VIKAS SHOE LIFE SHOE BRUSH",
+   "short": "VIKAS SHOE BRUSH",
+   "hi": "विकास जूता ब्रश",
+   "brand": "VIKAS",
+   "alias": "vikas shoe life brush joota जूता ब्रश",
+   "cat": "daily",
+   "sub": "home",
+   "unit": "pc",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "375fdca6",
+   "open": {
+    "qty": 12,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8906020732698",
+   "name": "SAVOUR SPICE VALLEY CLOVES",
+   "short": "SAVOUR CLOVES 10",
+   "hi": "लौंग पैकेट ₹10",
+   "brand": "SAVOUR",
+   "alias": "savour spice valley cloves laung long लौंग",
+   "cat": "kirana",
+   "sub": "masala",
+   "unit": "pc",
+   "barcode": "8906020732698",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "cdd368fb",
+   "open": {
+    "qty": 50,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
