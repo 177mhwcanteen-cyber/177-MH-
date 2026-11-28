@@ -869,6 +869,7 @@ SR.wasteSheet=function(id,why0){
 /* ✏️ भाव बदलना — कर्मचारी भी; मालिक को खबर */
 SR.rateChipHTML=function(){return S.rateMode?`<button class="chip ratechip on" data-ratemode>✏️ भाव बदलने का मोड — सामान दबाएँ · बंद ✕</button>`:`<button class="chip ratechip" data-ratemode>✏️ भाव बदलें</button>`};
 SR.rateSheet=function(it){
+  if(it&&it.sx){toast("🥬 "+it.name+" का भाव सब्ज़ी एक्सप्रेस से आता है — वहीं बदलें, यहाँ अपने-आप आ जाएगा");return}
   if(!it||it.virtual)return;const old=+it.sale||0,u=UNITS[it.unit]||it.unit;const cost=window.SF?SF.costOf(it):(+it.cost||0);
   const hd=$("header").getBoundingClientRect(),top=Math.max(8,Math.round(hd.bottom)+6);
   $("#sheet").innerHTML=`<div class="qscrim" data-close></div><div class="qpop" style="top:${top}px" role="dialog" aria-label="${esc(it.name)} का भाव">

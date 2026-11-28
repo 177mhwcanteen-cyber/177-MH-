@@ -1101,7 +1101,7 @@ const NEWCATS=["daily","stationery","gift","kapde"];
 /* 🎪 मेला: तीन वैरायटी (पुराने सेव सामान पर भी — नाम/ID से तय) */
 const MELA_G=[["kadhai","🍲 कड़ाही-रोटी"],["fast","🍔 फास्ट फूड"],["dosa","🫓 डोसा"]];
 function melaSub(it){if(it.msub)return it.msub;const k=(it.name+" "+(it.hi||"")).toLowerCase();return /dosa|डोसा/.test(k)?"dosa":/kad?h?ai|कड़ाही|कढ़ाई|roti|रोटी|naan|नान|chicken|चिकन/.test(k)?"kadhai":"fast"}
-const SUBS={mithai:[["mithai","🍬 मिठाई"],["bakery","🍰 बेकरी-केक"]],kirana:[["dairy","🥛 दूध-दही"],["ice","🍦 आइसक्रीम"],["tob","📦 कोड वाले"],["namkeen","🥨 नमकीन-चिप्स"],["dryfruit","🥜 ड्राई फ्रूट"],["achar","🌶️ अचार-सॉस"],["rashan","🌾 आटा-दाल-चावल"],["oil","🫗 तेल-घी"],["masala","🌶️ मसाले"],["drinks","🥤 कोल्ड ड्रिंक-पेय"],["sweet","🍫 बिस्किट-चॉकलेट"],["pooja","🪔 पूजा"],["disposal","🥤 डिस्पोज़ल"]],daily:[["personal","🪥 पर्सनल केयर"],["hair","💇 बाल-तेल-डाई-कंघा"],["clean","🧼 साबुन-सफाई"],["home","🪣 बाल्टी-घर का सामान"],["tools","✂️ कैंची-छोटे औज़ार"],["elec","🔦 बैटरी-बल्ब-चार्जर"]],stationery:[["pen","🖊️ पेन-पेंसिल"],["copy","📒 कॉपी-रजिस्टर"],["office","📎 फाइल-ऑफिस"],["art","🎨 कलर-क्राफ्ट"]],gift:[["party","🎁 पार्टी-गिफ्ट"],["toys","🧸 खिलौने"],["decor","🏺 सजावट-शोपीस"],["army","🎖️ आर्मी यादगार"]],kapde:[["men","👔 पुरुष"],["women","👗 महिला"],["kids","🧒 बच्चे"],["inner","🧦 बनियान-मोज़े-तौलिया"]],fast:[["nashta","🍳 नाश्ता"],["dosa","🫓 डोसा"],["pizza","🍕 पिज़्ज़ा"],["chinese","🥢 चाइनीज़"],["meal","🍛 खाना-थाली"],["chai","☕ चाय-कॉफी"]],sabzi:[["sabzi","🥬 सब्ज़ी"],["fruit","🍎 फल"]]};
+const SUBS={mithai:[["mithai","🍬 मिठाई"],["bakery","🍰 बेकरी-केक"]],kirana:[["dairy","🥛 दूध-दही"],["ice","🍦 आइसक्रीम"],["tob","📦 कोड वाले"],["namkeen","🥨 नमकीन-चिप्स"],["dryfruit","🥜 ड्राई फ्रूट"],["achar","🌶️ अचार-सॉस"],["rashan","🌾 आटा-दाल-चावल"],["oil","🫗 तेल-घी"],["masala","🌶️ मसाले"],["drinks","🥤 कोल्ड ड्रिंक-पेय"],["sweet","🍫 बिस्किट-चॉकलेट"],["pooja","🪔 पूजा"],["disposal","🥤 डिस्पोज़ल"]],daily:[["personal","🪥 पर्सनल केयर"],["hair","💇 बाल-तेल-डाई-कंघा"],["clean","🧼 साबुन-सफाई"],["home","🪣 बाल्टी-घर का सामान"],["tools","✂️ कैंची-छोटे औज़ार"],["elec","🔦 बैटरी-बल्ब-चार्जर"]],stationery:[["pen","🖊️ पेन-पेंसिल"],["copy","📒 कॉपी-रजिस्टर"],["office","📎 फाइल-ऑफिस"],["art","🎨 कलर-क्राफ्ट"]],gift:[["party","🎁 पार्टी-गिफ्ट"],["toys","🧸 खिलौने"],["decor","🏺 सजावट-शोपीस"],["army","🎖️ आर्मी यादगार"]],kapde:[["men","👔 पुरुष"],["women","👗 महिला"],["kids","🧒 बच्चे"],["inner","🧦 बनियान-मोज़े-तौलिया"]],fast:[["nashta","🍳 नाश्ता"],["dosa","🫓 डोसा"],["pizza","🍕 पिज़्ज़ा"],["chinese","🥢 चाइनीज़"],["meal","🍛 खाना-थाली"],["chai","☕ चाय-कॉफी"]],sabzi:[["sabzi","🥬 सब्ज़ी"],["patta","🌿 पत्तेदार"],["fruit","🍎 फल"]]};
 const OLDCAT={packed:"kirana",patta:"sabzi",fal:"sabzi",biryani:"fast",nonveg:"fast",veg:"fast",chinese:"fast",drinks:"fast"};
 const UNITS={pc:"पीस",pk:"पैकेट",kg:"कि.ग्रा",pl:"प्लेट",dz:"दर्जन",gd:"गड्डी"};
 /* किराना से अलग: रोज़मर्रा (साबुन, तेल, कंघा, बाल्टी, डाई, कैंची…), स्टेशनरी, गिफ्ट, कपड़े (आगे) — पुराना सामान बदले बिना sub से सही जगह */
@@ -1344,7 +1344,7 @@ function priceAsk(it){const o=+it.oldSale||0;
     closeSheet();toast("✓ "+it.name+" · "+rs(v));renderBill()};
   $("#sheet").onclick=e=>{if(e.target.matches("[data-close]")){closeSheet();return}if(e.target.closest("[data-pakeep]"))done(o);if(e.target.closest("[data-paok]"))done(parseFloat($("#paV").value)||0)};
   setTimeout(()=>{try{$("#paV").focus()}catch(e){}},50)}
-function renderBill(){setTimeout(qOverlay,0);
+function renderBill(){setTimeout(qOverlay,0);setTimeout(()=>{try{window.SSX&&SSX.syncBar()}catch(e){}},0);
   $("#demo").hidden=!S.demo;syncTab();renderBillTabs();
   $("#modes").innerHTML=[["walk","⭐ VIP ग्राहक",""],["udhar","उधार / क्रेडिट","ud"],["inst","अपनी संस्था","inst"]]
     .map(([k,v,c])=>`<button class="chip ${c}" aria-pressed="${S.mode===k}" data-mode="${k}">${v}</button>`).join("");
@@ -2771,7 +2771,7 @@ async function boot(){
   if(S.isOwner&&!S.demo)setTimeout(autoNewData,6000);
   if(S.isOwner&&!S.demo&&window.SPK)setTimeout(()=>SPK.apply(),9000);
   const sortItems=a=>a.sort((x,y)=>(x.order??999)-(y.order??999)||x.name.localeCompare(y.name,"hi"));
-  db.collection("items").onSnapshot(s=>{S.items=sortItems(s.docs.map(d=>({id:d.id,...d.data()})));bootMark(s);if(window.SR)SR.addVirtual();if(S.isOwner&&window.SF&&S.items.some(i=>!i.plu))SF.ensurePLU();S.cart.forEach(l=>{const it=item(l.id);if(it&&!l.changed&&!l.free){l.board=priceOf(it);l.rate=l.board;l.cost=+it.cost||0;l.amt=r2(l.qty*l.rate)}});paneSoon();renderCart()},()=>toast("सामान की लिस्ट लोड नहीं हुई"));
+  db.collection("items").onSnapshot(s=>{S.items=sortItems(s.docs.map(d=>({id:d.id,...d.data()})));bootMark(s);if(window.SR)SR.addVirtual();if(window.SSX)SSX.merge();if(S.isOwner&&window.SF&&S.items.some(i=>!i.plu&&!i.virtual))SF.ensurePLU();S.cart.forEach(l=>{const it=item(l.id);if(it&&!l.changed&&!l.free){l.board=priceOf(it);l.rate=l.board;l.cost=+it.cost||0;l.amt=r2(l.qty*l.rate)}});paneSoon();renderCart()},()=>toast("सामान की लिस्ट लोड नहीं हुई"));
   db.doc("settings/main").onSnapshot(s=>{S.settings=s.exists?s.data():{};checkLock();if(s.exists&&S.isOwner&&window.SF&&SF.lblPush)SF.lblPush();if(S.tab!=="set")paneSoon()});
   if(S.isOwner)db.collection("presence").onSnapshot(s=>{S.presence=s.docs.map(d=>d.data());if(S.tab==="bills"&&!paneTyping($("#p-bills")))renderBills()},()=>{});
   setTimeout(()=>{flushOutbox();beat();netbar()},1500);
@@ -2822,6 +2822,7 @@ boot();
 <script src="se-packs.js"></script>
 <script src="se-khula.js"></script>
 <script src="se-desk.js"></script>
+<script src="se-sabji.js"></script>
 <script>renderBills=ownOnly(renderBills);renderDay=ownOnly(renderDay);if(window.SK)SK.bind();if(window.SI)SI.bind();if(window.SM)SM.bind();</script>
 
 </body></html>

@@ -851,8 +851,8 @@ SF.parseVW=function(code){
 };
 async function ensurePLU(){
   if(S.demo||!S.isOwner||ensurePLU.busy)return;ensurePLU.busy=true;try{
-  const used=new Set(S.items.map(i=>+i.plu).filter(Boolean));let next=Math.max(100,...used)+1;
-  for(const it of S.items.filter(i=>!i.plu)){while(used.has(next))next++;used.add(next);it.plu=next;try{await S.db.doc("items/"+it.id).update({plu:next})}catch(e){}next++}
+  const used=new Set(S.items.filter(i=>!i.sx).map(i=>+i.plu).filter(Boolean));let next=Math.max(100,...used)+1;
+  for(const it of S.items.filter(i=>!i.plu&&!i.virtual)){while(used.has(next))next++;used.add(next);it.plu=next;try{await S.db.doc("items/"+it.id).update({plu:next})}catch(e){}next++}
   /* 🔢 23-11: बिना 4 अंक कोड वाले सामान (बिलिंग से "नया सामान" वगैरह) — खाली खाने में कोड (पुराना कोड कभी नहीं बदलता) */
   if(typeof nextCode==="function")for(const it of S.items.filter(i=>!i.virtual&&i.id!=="xyz"&&i.active!==false&&!String(i.code||"").trim())){/* 24-11: बंद (पुराने) सामान को कोड नहीं — किस्म के खाने न भरें */const c=nextCode(typeof mcat==="function"?mcat(it):(it.cat||"kirana"));it.code=c;try{await S.db.doc("items/"+it.id).update({code:c})}catch(e){}}
   }finally{ensurePLU.busy=false}
