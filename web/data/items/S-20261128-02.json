@@ -1,0 +1,80 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261128-02",
+ "date": "2026-11-28",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "कोका-कोला 2.5L ₹100 ×5, किनले पानी 1L ₹20 ×22, सरस बटर 100g ₹56 ×1 — रैक बाद में (सामान #40-42)",
+ "items": [
+  {
+   "id": "b8901764012501",
+   "name": "COCA-COLA ORIGINAL TASTE 2.5L",
+   "short": "COCA-COLA 2.5L",
+   "hi": "कोका-कोला 2.5 लीटर",
+   "brand": "COCA-COLA",
+   "size": "2.5L",
+   "alias": "coca cola coke 2.5 litre कोका कोला कोक",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764012501",
+   "mrp": 100,
+   "sale": 100,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "8f52126d",
+   "open": {
+    "qty": 5,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8901764082405",
+   "name": "KINLEY PACKAGED DRINKING WATER 1L",
+   "short": "KINLEY WATER 1L",
+   "hi": "किनले पानी 1 लीटर",
+   "brand": "KINLEY",
+   "size": "1L",
+   "alias": "kinley water bottle mineral 1 litre पानी बोतल किनले",
+   "cat": "kirana",
+   "sub": "drinks",
+   "unit": "pc",
+   "barcode": "8901764082405",
+   "mrp": 20,
+   "sale": 20,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "7b190676",
+   "open": {
+    "qty": 22,
+    "exp": "",
+    "batchNo": ""
+   }
+  },
+  {
+   "id": "b8908017595057",
+   "name": "SARAS PASTEURISED BUTTER 100G",
+   "short": "SARAS BUTTER 100G",
+   "hi": "सरस बटर 100 ग्राम",
+   "brand": "SARAS",
+   "size": "100g",
+   "alias": "saras butter makhan सरस बटर मक्खन",
+   "cat": "kirana",
+   "sub": "dairy",
+   "unit": "pc",
+   "barcode": "8908017595057",
+   "mrp": 56,
+   "sale": 56,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "af46a2d8",
+   "open": {
+    "qty": 1,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
