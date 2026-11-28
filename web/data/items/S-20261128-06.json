@@ -1,0 +1,30 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261128-06",
+ "date": "2026-11-28",
+ "by": "विक्रम जी",
+ "note": "KRUSHERZ DODO SURPRISE EGG 1 PC — भाव ₹10 → ₹15, जगह 9-21 → 22-1 (काउंटर का फ्रिज)",
+ "items": [
+  {
+   "id": "g-krusherz-dodo-surprise-egg-choco-toy-jar-pc",
+   "name": "KRUSHERZ DODO SURPRISE EGG (CHOCO + TOY) 1 PC",
+   "upd": {
+    "mrp": {
+     "from": 10,
+     "to": 15
+    },
+    "sale": {
+     "from": 10,
+     "to": 15
+    },
+    "rack": {
+     "from": "9-21",
+     "to": "22-1"
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
