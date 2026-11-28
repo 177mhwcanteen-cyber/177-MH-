@@ -1,0 +1,26 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261128-04",
+ "date": "2026-11-28",
+ "by": "विक्रम जी",
+ "note": "PRIYAGOLD MAGIC FRUIT CAKE 150G — भाव ₹35 → ₹38 (पैकेट पर MRP 38)",
+ "items": [
+  {
+   "id": "b8901652141511",
+   "name": "PRIYAGOLD MAGIC FRUIT CAKE 150 G",
+   "upd": {
+    "mrp": {
+     "from": 35,
+     "to": 38
+    },
+    "sale": {
+     "from": 35,
+     "to": 38
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
