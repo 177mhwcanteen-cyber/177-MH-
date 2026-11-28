@@ -228,7 +228,7 @@ let SXOLD=0;async function sabjiFallback(){if(LX.length||!SC.base)return;try{con
 async function loadSabji(){if(!SC.pid)return;const c=LS.get("mh_sx",null);if(Array.isArray(c)&&c.length&&!LX.length){LX=c;build()}
   try{const r=await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/pub/rates?key="+SC.key,{cache:"no-store"});if(!r.ok)throw 0;
     const X=V({mapValue:{fields:(await r.json()).fields||{}}})||{};
-    LX=(X.items||[]).filter(i=>i&&i.id&&+i.s>0).map(i=>({id:"sx-"+i.id,n:String(i.e||i.n||"").toUpperCase(),hi:i.e?i.n:"",u:i.u||"kg",s:+i.s,c:["sabzi","patta","fal","packed"].includes(i.c)?i.c:"sabzi",p:i.p?(/^https?:/.test(i.p)?i.p:SC.base+String(i.p).replace(/^\.?\//,"")):"",h:i.h,em:"🥬",st:"sabji"}));
+    LX=(X.items||[]).filter(i=>i&&i.id&&+i.s>0).map(i=>({id:"sx-"+i.id,n:String(i.e||i.n||"").toUpperCase(),hi:i.e?i.n:"",u:i.u||"kg",s:+i.s,c:["sabzi","patta","fal","packed"].includes(i.c)?i.c:"sabzi",p:i.p?(/^https?:/.test(i.p)?i.p:SC.base+String(i.p).replace(/^\.?\//,"")):"",h:i.h,em:"🥬",st:"sabji",...(i.o?{k:0}:{})}));/* 28-11: o=आज गाड़ी में नहीं → Sold out */
     /* 28-11: सब्ज़ी एक्सप्रेस का कोई फोन 36 घंटे से नहीं खुला तो भाव पुराने हैं — पहले बिना बताए "आज के भाव" जैसे दिखते थे; अब वही "भाव फ़ोन पर पक्के होंगे" वाली पट्टी */
     SXOLD=+X.ts>0&&Date.now()-(+X.ts)>36*3600e3?1:0;LS.set("mh_sx",LX);build();if(!LX.length)sabjiFallback()}catch(e){sabjiFallback()}}
 async function loadRasoi(){try{const r=await fetch("rasoi.json",{cache:"no-store"});if(!r.ok)throw 0;RJ=await r.json();
@@ -411,12 +411,17 @@ function payParts(by){const M={};Object.entries(by).forEach(([k,a])=>{if(!(a>0))
 const upiUrl=(a,ref,t)=>{t=t||PAYTO("mh");return `upi://pay?pa=${encodeURIComponent(t.pa)}&pn=${encodeURIComponent(t.pn)}&am=${(+a).toFixed(2)}&cu=INR&tn=${encodeURIComponent("Order #"+ref)}`};
 /* 🥬 सब्ज़ी के ऑर्डर की नकल सब्ज़ी एक्सप्रेस ऐप के 📥 ऑर्डर-डिब्बे में भी (उसके Firebase में, बिना लॉगिन — उसके नियम यही खाने मानते हैं),
    ताकि गाड़ी वाले साथी "🧾 बिल बनाएँ" दबाएँ → बिक्री, स्टॉक, UPI/नकद सब सब्ज़ी ऐप के हिसाब में (पहले ये ऑर्डर सिर्फ़ 177 ऐप में आते थे) */
+/* 28-11: सब्ज़ी ऐप वाली नकल फेल हो (नेट/सर्वर) तो पहले हमेशा के लिए छूट जाती — अब फोन में कतार (mh_sxq), पेज अगली बार खुलते ही दोबारा भेजे */
+async function sxSend(pl){const r=await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/orders?key="+SC.key,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pl)});if(!r.ok&&r.status!==400&&r.status!==403)throw new Error(r.status)}
+async function sxFlush(){if(!SC.pid||!SC.key)return;let q=LS.get("mh_sxq",[]);if(!Array.isArray(q)||!q.length)return;const keep=[];for(const it of q){if(!it||!it.pl||Date.now()-(+it.ts||0)>2*864e5)continue;try{await sxSend(it.pl)}catch(e){keep.push(it)}}LS.set("mh_sxq",keep)}
+setTimeout(()=>{try{sxFlush()}catch(e){}},3000);
 async function sxMirror(body,nm,ph,total,mid){try{if(!SC.pid||!SC.key)return;const F=body.fields,S2=v=>({stringValue:String(v)});
   const items={arrayValue:{values:(F.items.arrayValue.values||[]).map(v=>{const f=v.mapValue.fields;return {mapValue:{fields:{id:S2(String(f.id.stringValue).replace(/^sx-/,"")),n:f.n,q:f.q,u:f.u,s:f.s}}}})}};
   const pay=(me.pay||"u")==="u"?"📱 UPI चुना (पैसा आया या नहीं — देखें)":"💵 नकद (डिलीवरी पर)";
-  const note=[pay,"₹"+total,"⏰ "+(me.when||"Now"),"🛒 #"+String(mid||"").slice(-6).toUpperCase()+" 🆔"+String(mid||""),NT||""].filter(Boolean).join(" · ").slice(0,200);
-  await fetch("https://firestore.googleapis.com/v1/projects/"+SC.pid+"/databases/(default)/documents/orders?key="+SC.key,{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({fields:{name:S2(nm.slice(0,40)),phone:S2(ph),addr:F.addr,note:S2(note),items,ts:F.ts,status:S2("new"),src:S2("web2")}})})}catch(e){}}
+  const cp=((F.note&&F.note.stringValue)||"").match(/🎟[A-Z0-9]+-₹[\d.]+/);/* 28-11: कूपन की छूट सब्ज़ी ऐप के ऑर्डर में भी दिखे */
+  const note=[pay,"₹"+total,cp?cp[0]:"","⏰ "+(me.when||"Now"),"🛒 #"+String(mid||"").slice(-6).toUpperCase()+" 🆔"+String(mid||""),NT||""].filter(Boolean).join(" · ").slice(0,200);
+  const pl={fields:{name:S2(nm.slice(0,40)),phone:S2(ph),addr:F.addr,note:S2(note),items,ts:F.ts,status:S2("new"),src:S2("web2")}};
+  try{await sxSend(pl)}catch(e){const q=LS.get("mh_sxq",[]);(Array.isArray(q)?q:[]).push({pl,ts:Date.now()});LS.set("mh_sxq",(Array.isArray(q)?q:[]).slice(-20))}}catch(e){}}
 function payHTML(P){if(!P)return"";const T=(P.gs||[]).map(k=>`<div class="row"><span>${STS[k].ic} ${esc(STS[k].n)}</span><small>${k==="rasoi"?"🍳 min. 30 min":"🛵 when partner is free"}</small></div>`).join("");
   const PT=P.parts&&P.parts.length?P.parts:[{...PAYTO("mh"),amt:P.amt}],many=PT.length>1;
   return `${P.amt?`<div class="box pay"><h3>📱 Pay now — ${rs(P.amt)}</h3>${many?`<p class="hint">Two shops, two UPI payments:</p>`:""}${PT.map((t,i)=>`<a class="big upi" href="${upiUrl(t.amt,P.ref,t)}">Pay ${rs(t.amt)}${many?" · "+esc(t.n):""} with UPI app ›</a><div id="pqr${i}"></div><p class="hint">Pay to <b>${esc(t.pa)}</b>${many?"":" ("+esc(t.n)+")"} · Order #${esc(P.ref)}.</p>`).join("")}<p class="hint">Paid orders are packed first. Prefer cash? Pay the delivery partner.</p>
