@@ -1,0 +1,34 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261128-01",
+ "date": "2026-11-28",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "PRIYAGOLD CLASSIC CREME ORANGE बिस्किट ₹10, 12 पीस, रैक 11-31 — सामान #39",
+ "items": [
+  {
+   "id": "b8901652140231",
+   "name": "PRIYAGOLD CLASSIC CREME ORANGE BISCUIT",
+   "short": "PRIYAGOLD ORANGE CREME 1",
+   "hi": "प्रियागोल्ड क्लासिक क्रीम ऑरेंज बिस्किट",
+   "brand": "PRIYAGOLD",
+   "alias": "priyagold priya gold classic creme cream orange biscuit ऑरेंज क्रीम बिस्किट",
+   "cat": "kirana",
+   "sub": "sweet",
+   "unit": "pc",
+   "barcode": "8901652140231",
+   "mrp": 10,
+   "sale": 10,
+   "cost": 0,
+   "perPack": 0,
+   "rack": "11-31",
+   "ph": "14c42478",
+   "open": {
+    "qty": 12,
+    "exp": "",
+    "batchNo": ""
+   }
+  }
+ ]
+}
