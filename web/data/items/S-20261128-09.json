@@ -1,0 +1,29 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261128-09",
+ "date": "2026-11-28",
+ "by": "साथी → विक्रम जी (3600)",
+ "note": "VI-JOHN 22° कूलिंग टैल्क 100g ₹60 — पीस/रैक बाद में",
+ "items": [
+  {
+   "id": "b8906010084516",
+   "name": "VI-JOHN 22 DEGREE COOLING TALC 100 G",
+   "short": "VI-JOHN 22 TALC 100G",
+   "hi": "वी-जॉन 22 डिग्री कूलिंग पाउडर 100 ग्राम",
+   "brand": "VI-JOHN",
+   "size": "100g",
+   "alias": "vijohn vi john 22 degree cooling talc prickly heat powder पाउडर टैल्क",
+   "cat": "daily",
+   "sub": "personal",
+   "unit": "pc",
+   "barcode": "8906010084516",
+   "mrp": 60,
+   "sale": 60,
+   "cost": 0,
+   "perPack": 0,
+   "ph": "bc627752"
+  }
+ ]
+}
