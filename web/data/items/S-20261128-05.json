@@ -1,0 +1,26 @@
+{
+ "app": "mh177-pack",
+ "org": "mh177",
+ "v": 5,
+ "id": "S-20261128-05",
+ "date": "2026-11-28",
+ "by": "विक्रम जी",
+ "note": "AMUL MASTI DAHI CUP (छोटा डब्बा) — भाव ₹25 → ₹26",
+ "items": [
+  {
+   "id": "b8901262200028",
+   "name": "AMUL MASTI DAHI CUP",
+   "upd": {
+    "mrp": {
+     "from": 25,
+     "to": 26
+    },
+    "sale": {
+     "from": 25,
+     "to": 26
+    }
+   }
+  }
+ ],
+ "min": "1.221"
+}
